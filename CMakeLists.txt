@@ -34,9 +34,9 @@ cpp_find_or_build_dependency(
     BUILD_TARGET MADworld
     FIND_TARGET MADworld
     CMAKE_ARGS BUILD_TESTING=OFF 
-		       ENABLE_UNITTESTS=OFF
-		       MADNESS_ENABLE_CEREAL=ON
-			   MADNESS_BUILD_MADWORLD_ONLY=ON
+	       ENABLE_UNITTESTS=OFF
+               MADNESS_BUILD_MADWORLD_ONLY=ON
+	       MADNESS_ENABLE_CEREAL=ON
 )
 
 cpp_find_or_build_dependency(
@@ -48,12 +48,13 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=OFF
 )
 
-#cpp_add_library(
-#    runtime
-#    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/runtime"
-#    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/runtime"
-#    DEPENDS cereal bphash::bphash MADworld
-#)
+cpp_add_library(
+    runtime
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/runtime"
+    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/runtime"
+    DEPENDS MADworld bphash::bphash
+
+)
 
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(

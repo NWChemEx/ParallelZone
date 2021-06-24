@@ -40,6 +40,8 @@ cpp_find_or_build_dependency(
 	           MADNESS_ENABLE_CEREAL=ON
 )
 
+# Uncomment below to enable using typeid for hashes. Note that hashes may differ with different compilers.
+# add_compile_definitions(BPHASH_USE_TYPEID)
 cpp_find_or_build_dependency(
     bphash
     URL github.com/ryanmrichard/BPHash

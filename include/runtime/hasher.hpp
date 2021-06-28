@@ -12,6 +12,10 @@ using HashType  = bphash::HashType;
 
 inline auto make_hasher() { return Hasher(HashType::Hash128); }
 
+inline std::string hash_to_string(const HashValue& hash) {
+    return bphash::hash_to_string(hash);
+}
+
 template<typename... Args>
 auto hash_objects(Args&&... args) {
     auto h = make_hasher();

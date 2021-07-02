@@ -23,6 +23,13 @@ auto hash_objects(Args&&... args) {
     return bphash::hash_to_string(h.finalize());
 }
 
+template<typename... Args>
+auto make_hash(Args&&... args) {
+    auto h = make_hasher();
+    h(std::forward<Args>(args)...);
+    return h.finalize();
+}
+
 } // namespace runtime
 
 namespace std {

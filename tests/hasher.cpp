@@ -26,6 +26,7 @@ TEST_CASE("Hashing with BPHash") {
     auto rv            = std::ref(v);
     auto rs            = std::ref(sa);
 
+    REQUIRE(hash_objects(v) == hash_to_string(make_hash(v)));
     REQUIRE(hash_objects(v) == hash_objects(std::vector<int>{1, 2, 3}));
     REQUIRE_FALSE(hash_objects(rv) == hash_objects(std::vector<int>{3, 2, 1}));
     REQUIRE_FALSE(hash_objects(double(i)) == hash_objects(float(i)));

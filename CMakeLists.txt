@@ -33,11 +33,11 @@ cpp_find_or_build_dependency(
     URL github.com/m-a-d-n-e-s-s/madness
     VERSION 7ce06234c23aa8e0ab3d9e9b87eff9cd85390d80
     BUILD_TARGET MADworld
-    FIND_TARGET madness::MADworld
-    CMAKE_ARGS BUILD_TESTING=OFF 
-	       ENABLE_UNITTESTS=OFF
+    FIND_TARGET MADworld
+    CMAKE_ARGS BUILD_TESTING=OFF
+               ENABLE_UNITTESTS=OFF
                MADNESS_BUILD_MADWORLD_ONLY=ON
-	       MADNESS_ENABLE_CEREAL=ON
+               MADNESS_ENABLE_CEREAL=ON
 )
 
 # Note that hashes may differ with different compilers when typeid is used.
@@ -57,7 +57,7 @@ cpp_add_library(
     runtime
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/runtime"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/runtime"
-    DEPENDS madness::MADworld bphash::bphash
+    DEPENDS MADworld bphash::bphash
 
 )
 

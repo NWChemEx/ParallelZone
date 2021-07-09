@@ -29,15 +29,17 @@ if("${BUILD_DOCS}")
 endif()
 
 cpp_find_or_build_dependency(
-    madness
+    MADworld
     URL github.com/m-a-d-n-e-s-s/madness
     VERSION 7ce06234c23aa8e0ab3d9e9b87eff9cd85390d80
     BUILD_TARGET MADworld
     FIND_TARGET MADworld
-    CMAKE_ARGS BUILD_TESTING=OFF
-               ENABLE_UNITTESTS=OFF
+    CMAKE_ARGS ENABLE_UNITTESTS=OFF
                MADNESS_BUILD_MADWORLD_ONLY=ON
                MADNESS_ENABLE_CEREAL=ON
+               ENABLE_MKL=OFF
+               ENABLE_ACML=OFF
+               BUILD_TESTING=OFF
 )
 
 # Note that hashes may differ with different compilers when typeid is used.

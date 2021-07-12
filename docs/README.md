@@ -1,13 +1,13 @@
 Building the Documentation
 ==========================
 
-Runtime's documentation has two parts:
+ParallelZone's documentation has two parts:
 
 - The Sphinx front-end which contains things like tutorials
 - The Doxygen-generated C++ API documentation
 
 The C++ API documentation is built as part of the build process and then moved
-to `docs/source/runtime_cxx_api`. When the Sphinx front-end documentation is built 
+to `docs/source/parallelzone_cxx_api`. When the Sphinx front-end documentation is built 
 it will link to the C++ documentation. If the C++ documentation does not exist,
 building the Sphinx front-end will still work, but the link to the C++ API won't
 work.
@@ -23,11 +23,11 @@ The Sphinx front-end of the documentation requires the following Python packages
 
 To build the Sphinx front-end of the documentation it is recommended that you
 use Python's virtual environments. Assuming you want to call your virtual
-environment `runtime_venv` the steps are (run from this directory):
+environment `parallelzone_venv` the steps are (run from this directory):
 
 ```.bash
-python3 -m venv runtime_venv
-source runtime_venv/bin/activate
+python3 -m venv parallelzone_venv
+source parallelzone_venv/bin/activate
 pip install -r requirements.txt
 make html
 ```

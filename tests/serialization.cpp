@@ -1,14 +1,14 @@
-#include "runtime/serialization.hpp"
+#include "parallelzone/serialization.hpp"
 #include <catch2/catch.hpp>
 #include <madness/world/buffer_archive.h>
 
 TEMPLATE_TEST_CASE("Serialization with Cereal wrapper",
                    "[serialization][serializer][deserializer]",
-                   cereal::BinaryOutputArchive, runtime::BinaryOutputArchive,
-                   runtime::PortableBinaryOutputArchive,
-                   runtime::JSONOutputArchive, runtime::XMLOutputArchive) {
+                   cereal::BinaryOutputArchive, pz::BinaryOutputArchive,
+                   pz::PortableBinaryOutputArchive, pz::JSONOutputArchive,
+                   pz::XMLOutputArchive) {
     using output = TestType;
-    using input  = typename runtime::get_input_from_output<output>::type;
+    using input  = typename pz::get_input_from_output<output>::type;
     std::stringstream ss;
 
     SECTION("Plain-old-data") {

@@ -1,19 +1,19 @@
-#include "runtime/hasher.hpp"
+#include "parallelzone/hasher.hpp"
 #include <catch2/catch.hpp>
 #include <functional>
 #include <iostream>
 
-using namespace runtime;
+using namespace pz;
 TEST_CASE("Hashing with BPHash") {
     struct SA {
         int idx;
         std::vector<int> vec;
-        void hash(runtime::Hasher& h) const { return h(idx, vec); }
+        void hash(pz::Hasher& h) const { return h(idx, vec); }
     };
     struct SB {
         int idx;
         std::vector<int> vec;
-        void hash(runtime::Hasher& h) const { return h(idx, vec); }
+        void hash(pz::Hasher& h) const { return h(idx, vec); }
     };
     SA sa, sa0;
     SB sb, sb0;

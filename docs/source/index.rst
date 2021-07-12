@@ -1,9 +1,9 @@
-.. Runtime documentation master file, created by
+.. ParallelZone documentation master file, created by
    sphinx-quickstart on Tue Jun 15 18:51:18 2021.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Runtime's documentation!
+Welcome to ParallelZone's documentation!
 ===================================
 
 .. toctree::

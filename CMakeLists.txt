@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
-project(runtime VERSION "${VERSION}" LANGUAGES CXX)
+project(parallelzone VERSION "${VERSION}" LANGUAGES CXX)
 
 set(
     CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
@@ -22,7 +22,7 @@ option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 if("${BUILD_DOCS}")
     find_package(Doxygen REQUIRED)
     set(DOXYGEN_EXTRA_PACKAGES amsmath) # Extra LaTeX packages for documentation
-    doxygen_add_docs(runtime_cxx_api "${CMAKE_CURRENT_LIST_DIR}/runtime")
+    doxygen_add_docs(parallelzone_cxx_api "${CMAKE_CURRENT_LIST_DIR}/parallelzone")
     if("${ONLY_BUILD_DOCS}")
         return()
     endif()
@@ -56,9 +56,9 @@ cpp_find_or_build_dependency(
 )
 
 cpp_add_library(
-    runtime
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/runtime"
-    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/runtime"
+    parallelzone
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/parallelzone"
+    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/parallelzone"
     DEPENDS MADworld bphash::bphash
 
 )
@@ -72,10 +72,10 @@ if("${BUILD_TESTING}")
 		VERSION v2.13.3
     )
     cpp_add_tests(
-        test_runtime
+        test_parallelzone
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
-        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/runtime"
-        DEPENDS Catch2::Catch2 MADworld runtime
+        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/parallelzone"
+        DEPENDS Catch2::Catch2 MADworld parallelzone
     )
 endif()
 

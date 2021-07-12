@@ -4,7 +4,7 @@
 #include <bphash/types/All.hpp>
 #include <functional>
 
-namespace runtime {
+namespace pz {
 
 using Hasher    = bphash::Hasher;
 using HashValue = bphash::HashValue;
@@ -30,7 +30,7 @@ auto make_hash(Args&&... args) {
     return h.finalize();
 }
 
-} // namespace runtime
+} // namespace pz
 
 namespace std {
 template<typename T>

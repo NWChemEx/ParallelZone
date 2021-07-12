@@ -5,5 +5,5 @@
  * directory is empty.
  */
 
-#include "parallelzone/pz.hpp"
+#include "parallelzone/parallelzone.hpp"
 namespace pz {} // namespace pz

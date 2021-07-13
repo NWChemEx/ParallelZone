@@ -10,7 +10,7 @@ import os
 
 # -- Project information -----------------------------------------------------
 
-project = u'runtime'
+project = u'parallelzone'
 copyright = u'2021, NWChemEx Team'
 author = u'NWChemEx Team'
 

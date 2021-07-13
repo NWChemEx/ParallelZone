@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
-project(runtime VERSION "${VERSION}" LANGUAGES CXX)
+project(parallelzone VERSION "${VERSION}" LANGUAGES CXX)
 
 set(
     CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
@@ -22,37 +22,43 @@ option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 if("${BUILD_DOCS}")
     find_package(Doxygen REQUIRED)
     set(DOXYGEN_EXTRA_PACKAGES amsmath) # Extra LaTeX packages for documentation
-    doxygen_add_docs(runtime_cxx_api "${CMAKE_CURRENT_LIST_DIR}/runtime")
+    doxygen_add_docs(parallelzone_cxx_api "${CMAKE_CURRENT_LIST_DIR}/parallelzone")
     if("${ONLY_BUILD_DOCS}")
         return()
     endif()
 endif()
 
 cpp_find_or_build_dependency(
-    madness
+    MADworld
     URL github.com/m-a-d-n-e-s-s/madness
-	VERSION 7ce06234c23aa8e0ab3d9e9b87eff9cd85390d80
+    VERSION 7ce06234c23aa8e0ab3d9e9b87eff9cd85390d80
     BUILD_TARGET MADworld
     FIND_TARGET MADworld
-    CMAKE_ARGS BUILD_TESTING=OFF 
-	       	   ENABLE_UNITTESTS=OFF
+    CMAKE_ARGS ENABLE_UNITTESTS=OFF
                MADNESS_BUILD_MADWORLD_ONLY=ON
-	           MADNESS_ENABLE_CEREAL=ON
+               MADNESS_ENABLE_CEREAL=ON
+               ENABLE_MKL=OFF
+               ENABLE_ACML=OFF
+               BUILD_TESTING=OFF
 )
+
+# Note that hashes may differ with different compilers when typeid is used.
+# Uncomment below to enable using typeid for hashes. 
+# add_compile_definitions(BPHASH_USE_TYPEID)
 
 cpp_find_or_build_dependency(
     bphash
     URL github.com/ryanmrichard/BPHash
     BUILD_TARGET bphash
     FIND_TARGET bphash::bphash
-    BRANCH cmake_patch
+    BRANCH master
     CMAKE_ARGS BUILD_TESTING=OFF
 )
 
 cpp_add_library(
-    runtime
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/runtime"
-    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/runtime"
+    parallelzone
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/parallelzone"
+    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/parallelzone"
     DEPENDS MADworld bphash::bphash
 
 )
@@ -66,10 +72,10 @@ if("${BUILD_TESTING}")
 		VERSION v2.13.3
     )
     cpp_add_tests(
-        test_runtime
+        test_parallelzone
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
-        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/runtime"
-        DEPENDS Catch2::Catch2 MADworld runtime
+        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/parallelzone"
+        DEPENDS Catch2::Catch2 MADworld parallelzone
     )
 endif()
 

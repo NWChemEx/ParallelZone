@@ -30,7 +30,7 @@
 #include <madness/world/buffer_archive.h>
 #include <madness/world/cereal_archive.h>
 
-namespace runtime {
+namespace pz {
 using XMLOutputArchive =
   madness::archive::CerealOutputArchive<cereal::XMLOutputArchive>;
 using XMLInputArchive =
@@ -57,15 +57,13 @@ using is_deserializable = cereal::traits::is_input_serializable<T, Archive>;
 template<typename Archive>
 using get_output_from_input =
   cereal::traits::detail::get_output_from_input<Archive>;
-} // namespace runtime
+} // namespace pz
 
 CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,
                             madness::archive::BufferOutputArchive)
 
-CEREAL_SETUP_ARCHIVE_TRAITS(runtime::XMLInputArchive, runtime::XMLOutputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(runtime::JSONInputArchive,
-                            runtime::JSONOutputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(runtime::BinaryInputArchive,
-                            runtime::BinaryOutputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(runtime::PortableBinaryInputArchive,
-                            runtime::PortableBinaryOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(pz::XMLInputArchive, pz::XMLOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(pz::JSONInputArchive, pz::JSONOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(pz::BinaryInputArchive, pz::BinaryOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(pz::PortableBinaryInputArchive,
+                            pz::PortableBinaryOutputArchive)

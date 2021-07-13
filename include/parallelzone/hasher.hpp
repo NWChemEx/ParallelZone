@@ -17,25 +17,26 @@ using HashType  = bphash::HashType;
 
 inline auto make_hasher() { return Hasher(HashType::Hash128); }
 
-/*! \brief Return a string representation of a hash
+/** @brief Return a string representation of a hash
  *
  * The string in lower case hex representation
  * with the length of 2*number_of_bits/8 characters.
  *
- * \param [in] hash The hash
- * \return A string representing the hash
+ * @param[in] hash The hash
+ * @returns A string representing the hash
  */
 inline std::string hash_to_string(const HashValue& hash) {
     return bphash::hash_to_string(hash);
 }
 
-/*! \brief Generates a hash string in a single call
+/** @brief Generates a hash string in a single call
  *
  * This can be used to easily obtain the hash string for several
  * objects at once without creating a Hasher object manually.
  *
- * \param [in] args Objects to hash
- * \return Hash string of the given object(s)
+ * @tparam Args variadic template for types of input objects
+ * @param[in] args Objects to hash
+ * @returns Hash string of the given object(s)
  */
 template<typename... Args>
 auto hash_objects(Args&&... args) {
@@ -44,13 +45,14 @@ auto hash_objects(Args&&... args) {
     return bphash::hash_to_string(h.finalize());
 }
 
-/*! \brief Generates a hash in a single call
+/** @brief Generates a hash in a single call
  *
  * This can be used to easily obtain the hash of several objects at once
  * without creating a Hasher object manually.
  *
- * \param [in] args Objects to hash
- * \return 128 bit hash of the given object(s)
+ * @tparam Args variadic template for types of input objects
+ * @param[in] args Objects to hash
+ * @returns 128 bit hash of the given object(s)
  */
 template<typename... Args>
 auto make_hash(Args&&... args) {
@@ -62,6 +64,7 @@ auto make_hash(Args&&... args) {
 } // namespace pz
 
 namespace std {
+// Free function to make std::reference_wrapper hashable
 template<typename T>
 void hash_object(const reference_wrapper<T>& ref, bphash::Hasher& h) {
     h(ref.get());

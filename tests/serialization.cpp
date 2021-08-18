@@ -10,7 +10,8 @@ TEMPLATE_TEST_CASE("Serialization with Cereal wrapper",
     using output = TestType;
     using input  = typename pz::get_input_from_output<output>::type;
     std::stringstream ss;
-
+    REQUIRE(pz::is_output_archive_v<output>);
+    REQUIRE(pz::is_input_archive_v<input>);
     SECTION("Plain-old-data") {
         {
             output ar(ss);

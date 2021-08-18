@@ -29,6 +29,7 @@
 #include <madness/world/archive.h>
 #include <madness/world/buffer_archive.h>
 #include <madness/world/cereal_archive.h>
+#include <madness/world/type_traits.h>
 
 namespace pz {
 using XMLOutputArchive =
@@ -57,6 +58,14 @@ using is_deserializable = cereal::traits::is_input_serializable<T, Archive>;
 template<typename Archive>
 using get_output_from_input =
   cereal::traits::detail::get_output_from_input<Archive>;
+template<typename Archive>
+using is_output_archive = madness::is_output_archive<Archive>;
+template<typename Archive>
+inline constexpr bool is_output_archive_v = is_output_archive<Archive>::value;
+template<typename Archive>
+using is_input_archive = madness::is_input_archive<Archive>;
+template<typename Archive>
+inline constexpr bool is_input_archive_v = is_input_archive<Archive>::value;
 } // namespace pz
 
 CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,

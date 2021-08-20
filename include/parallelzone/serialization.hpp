@@ -54,10 +54,10 @@ template<typename T, typename Archive>
 using is_deserializable = cereal::traits::is_input_serializable<T, Archive>;
 using cereal::traits::detail::get_input_from_output;
 using cereal::traits::detail::get_output_from_input;
-using madness::is_output_archive;
 using madness::is_input_archive;
-using madness::is_output_archive_v;
 using madness::is_input_archive_v;
+using madness::is_output_archive;
+using madness::is_output_archive_v;
 } // namespace pz
 
 CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,

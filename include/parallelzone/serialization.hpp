@@ -50,22 +50,14 @@ using PortableBinaryInputArchive =
   madness::archive::CerealInputArchive<cereal::PortableBinaryInputArchive>;
 template<typename T, typename Archive>
 using is_serializable = cereal::traits::is_output_serializable<T, Archive>;
-template<typename Archive>
-using get_input_from_output =
-  cereal::traits::detail::get_input_from_output<Archive>;
 template<typename T, typename Archive>
 using is_deserializable = cereal::traits::is_input_serializable<T, Archive>;
-template<typename Archive>
-using get_output_from_input =
-  cereal::traits::detail::get_output_from_input<Archive>;
-template<typename Archive>
-using is_output_archive = madness::is_output_archive<Archive>;
-template<typename Archive>
-inline constexpr bool is_output_archive_v = is_output_archive<Archive>::value;
-template<typename Archive>
-using is_input_archive = madness::is_input_archive<Archive>;
-template<typename Archive>
-inline constexpr bool is_input_archive_v = is_input_archive<Archive>::value;
+using cereal::traits::detail::get_input_from_output;
+using cereal::traits::detail::get_output_from_input;
+using madness::is_output_archive;
+using madness::is_input_archive;
+using madness::is_output_archive_v;
+using madness::is_input_archive_v;
 } // namespace pz
 
 CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,

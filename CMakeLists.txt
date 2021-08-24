@@ -28,23 +28,32 @@ if("${BUILD_DOCS}")
     endif()
 endif()
 
-cpp_find_or_build_dependency(
-    MADworld
-    URL github.com/m-a-d-n-e-s-s/madness
-    VERSION 7ce06234c23aa8e0ab3d9e9b87eff9cd85390d80
-    BUILD_TARGET MADworld
-    FIND_TARGET MADworld
-    CMAKE_ARGS ENABLE_UNITTESTS=OFF
-               MADNESS_BUILD_MADWORLD_ONLY=ON
-               MADNESS_ENABLE_CEREAL=ON
-               ENABLE_MKL=OFF
-               ENABLE_ACML=OFF
-               BUILD_TESTING=OFF
-)
+# cpp_find_or_build_dependency(
+#     MADworld
+#     URL github.com/m-a-d-n-e-s-s/madness
+#     VERSION 7ce06234c23aa8e0ab3d9e9b87eff9cd85390d80
+#     BUILD_TARGET MADworld
+#     FIND_TARGET MADworld
+#     CMAKE_ARGS ENABLE_UNITTESTS=OFF
+#                MADNESS_BUILD_MADWORLD_ONLY=ON
+#                MADNESS_ENABLE_CEREAL=ON
+#                ENABLE_MKL=OFF
+#                ENABLE_ACML=OFF
+#                BUILD_TESTING=OFF
+# )
 
 # Note that hashes may differ with different compilers when typeid is used.
-# Uncomment below to enable using typeid for hashes. 
+# Uncomment below to enable using typeid for hashes.
 # add_compile_definitions(BPHASH_USE_TYPEID)
+
+
+cpp_find_or_build_dependency(
+    cereal
+    URL github.com/USCiLab/cereal
+    BUILD_TARGET cereal
+    FIND_TARGET cereal::cereal
+    CMAKE_ARGS JUST_INSTALL_CEREAL=ON
+)
 
 cpp_find_or_build_dependency(
     bphash
@@ -59,7 +68,7 @@ cpp_add_library(
     parallelzone
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/parallelzone"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/parallelzone"
-    DEPENDS MADworld bphash::bphash
+    DEPENDS bphash::bphash cereal
 
 )
 
@@ -75,7 +84,6 @@ if("${BUILD_TESTING}")
         test_parallelzone
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
         INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/parallelzone"
-        DEPENDS Catch2::Catch2 MADworld parallelzone
+        DEPENDS Catch2::Catch2 parallelzone
     )
 endif()
-

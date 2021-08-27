@@ -26,45 +26,45 @@
 #include <cereal/types/valarray.hpp>
 #include <cereal/types/variant.hpp>
 #include <cereal/types/vector.hpp>
-// #include <madness/world/archive.h>
-// #include <madness/world/buffer_archive.h>
-// #include <madness/world/cereal_archive.h>
-// #include <madness/world/type_traits.h>
+#include <madness/world/archive.h>
+#include <madness/world/buffer_archive.h>
+#include <madness/world/cereal_archive.h>
+#include <madness/world/type_traits.h>
 
 namespace pz {
-using XMLOutputArchive = cereal::XMLOutputArchive;
-//   madness::archive::CerealOutputArchive<cereal::XMLOutputArchive>;
-// using XMLInputArchive =
-//   madness::archive::CerealInputArchive<cereal::XMLInputArchive>;
-using JSONOutputArchive = cereal::JSONOutputArchive;
-//   madness::archive::CerealOutputArchive<cereal::JSONOutputArchive>;
-// using JSONInputArchive =
-//   madness::archive::CerealInputArchive<cereal::JSONInputArchive>;
-using BinaryOutputArchive = cereal::BinaryOutputArchive;
-//   madness::archive::CerealOutputArchive<cereal::BinaryOutputArchive>;
-// using BinaryInputArchive =
-//   madness::archive::CerealInputArchive<cereal::BinaryInputArchive>;
-using PortableBinaryOutputArchive = cereal::PortableBinaryOutputArchive;
-//   madness::archive::CerealOutputArchive<cereal::PortableBinaryOutputArchive>;
-// using PortableBinaryInputArchive =
-//   madness::archive::CerealInputArchive<cereal::PortableBinaryInputArchive>;
+using XMLOutputArchive =
+  madness::archive::CerealOutputArchive<cereal::XMLOutputArchive>;
+using XMLInputArchive =
+  madness::archive::CerealInputArchive<cereal::XMLInputArchive>;
+using JSONOutputArchive =
+  madness::archive::CerealOutputArchive<cereal::JSONOutputArchive>;
+using JSONInputArchive =
+  madness::archive::CerealInputArchive<cereal::JSONInputArchive>;
+using BinaryOutputArchive =
+  madness::archive::CerealOutputArchive<cereal::BinaryOutputArchive>;
+using BinaryInputArchive =
+  madness::archive::CerealInputArchive<cereal::BinaryInputArchive>;
+using PortableBinaryOutputArchive =
+  madness::archive::CerealOutputArchive<cereal::PortableBinaryOutputArchive>;
+using PortableBinaryInputArchive =
+  madness::archive::CerealInputArchive<cereal::PortableBinaryInputArchive>;
 template<typename T, typename Archive>
 using is_serializable = cereal::traits::is_output_serializable<T, Archive>;
 template<typename T, typename Archive>
 using is_deserializable = cereal::traits::is_input_serializable<T, Archive>;
 using cereal::traits::detail::get_input_from_output;
 using cereal::traits::detail::get_output_from_input;
-// using madness::is_input_archive;
-// using madness::is_input_archive_v;
-// using madness::is_output_archive;
-// using madness::is_output_archive_v;
+using madness::is_input_archive;
+using madness::is_input_archive_v;
+using madness::is_output_archive;
+using madness::is_output_archive_v;
 } // namespace pz
 
-// CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,
-//                             madness::archive::BufferOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,
+                            madness::archive::BufferOutputArchive)
 
-// CEREAL_SETUP_ARCHIVE_TRAITS(pz::XMLInputArchive, pz::XMLOutputArchive)
-// CEREAL_SETUP_ARCHIVE_TRAITS(pz::JSONInputArchive, pz::JSONOutputArchive)
-// CEREAL_SETUP_ARCHIVE_TRAITS(pz::BinaryInputArchive, pz::BinaryOutputArchive)
-// CEREAL_SETUP_ARCHIVE_TRAITS(pz::PortableBinaryInputArchive,
-//                             pz::PortableBinaryOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(pz::XMLInputArchive, pz::XMLOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(pz::JSONInputArchive, pz::JSONOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(pz::BinaryInputArchive, pz::BinaryOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(pz::PortableBinaryInputArchive,
+                            pz::PortableBinaryOutputArchive)

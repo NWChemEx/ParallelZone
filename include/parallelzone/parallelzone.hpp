@@ -7,5 +7,5 @@
  * library.
  */
 
-//#include <madness/world/world.h>
+#include <madness/world/world.h>
 namespace pz {} // namespace pz

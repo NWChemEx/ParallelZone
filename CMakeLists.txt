@@ -28,19 +28,11 @@ if("${BUILD_DOCS}")
     endif()
 endif()
 
-cpp_find_or_build_dependency(
-    cereal
-    URL github.com/USCiLab/cereal
-    BUILD_TARGET cereal
-    FIND_TARGET cereal::cereal
-    CMAKE_ARGS JUST_INSTALL_CEREAL=ON
-)
-
 #TODO: Make sure MADworld uses the Cereal we build
 cpp_find_or_build_dependency(
     MADworld
     URL github.com/m-a-d-n-e-s-s/madness
-    VERSION 7ce06234c23aa8e0ab3d9e9b87eff9cd85390d80
+    VERSION 34ef8e6d6c61098d44ca559a530b4096e40b9a01
     BUILD_TARGET MADworld
     FIND_TARGET MADworld
     CMAKE_ARGS ENABLE_UNITTESTS=OFF
@@ -49,7 +41,6 @@ cpp_find_or_build_dependency(
                ENABLE_MKL=OFF
                ENABLE_ACML=OFF
                BUILD_TESTING=OFF
-    DEPENDS cereal	       
 )
 
 # Note that hashes may differ with different compilers when typeid is used.
@@ -69,7 +60,7 @@ cpp_add_library(
     parallelzone
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/parallelzone"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/parallelzone"
-    DEPENDS MADworld bphash::bphash cereal
+    DEPENDS MADworld bphash::bphash
 
 )
 

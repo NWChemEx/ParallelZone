@@ -54,6 +54,15 @@ function(cppyy_make_python_package)
     set(target_lib "$<TARGET_FILE_NAME:${install_data_PACKAGE}>")
     set(output_dir "${CMAKE_BINARY_DIR}/${install_data_PACKAGE}")
     #---------------------------------------------------------------------------
+    #------------Defines in BTAS and Madness at runtime are needed by cppyy-----
+    #---------------------------------------------------------------------------
+    set(python_defines_file "${output_dir}/python_defines.hpp")
+    set(python_defines "#define MADNESS_HAS_CEREAL\n")
+    if(BTAS_USE_BLAS_LAPACK)
+        set(python_defines "#define BTAS_HAS_BLAS_LAPACK\n")
+    endif()
+    file(GENERATE OUTPUT ${python_defines_file} CONTENT "${python_defines}")
+    #---------------------------------------------------------------------------
     #-----------------Generate _init__.py file contents------------------------
     #---------------------------------------------------------------------------
     set(init_file_name "${output_dir}/__init__.py")
@@ -77,6 +86,7 @@ function(cppyy_make_python_package)
         set(init_file "${init_file}\#undef thread_local\n")
         set(init_file "${init_file}\"\"\")\n")
     endif()
+    set(init_file "${init_file}cppyy.include(\"${python_defines_file}\")\n")
     set(init_file "${init_file}headers = \"${include_headers}\".split(';')\n")
     set(init_file "${init_file}for h in headers:\n")
     set(init_file "${init_file}    inc = os.path.join(\"${header_PREFIX}\",h)\n")

@@ -64,6 +64,16 @@ cpp_add_library(
 
 )
 
+if(BUILD_PYBINDINGS)
+    include(nwx_python_mods)
+    find_package(Python3 REQUIRED)
+    find_package(Cppyy REQUIRED)
+    cppyy_make_python_package(PACKAGENAME parallelzone 
+                              DEPENDSON MADworld bphash MPI
+                              HEADERS parallelzone 
+                              NAMESPACES pz )
+endif()
+
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(
         Catch2

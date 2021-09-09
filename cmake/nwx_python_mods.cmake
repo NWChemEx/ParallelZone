@@ -13,6 +13,8 @@
 #       i.e. previous Python package builds.
 #     * PACKAGE - Package name to used as an alternative to NAMESPACE.  
 #     * DEPENDS - List of modules this module depends on.
+#     * PYTHONIZE - Add special function to Pythonize class with more complex 
+#       arguments. Helps LibChemist.
 #
 function(cppyy_make_python_package)
     #---------------------------------------------------------------------------
@@ -28,17 +30,25 @@ function(cppyy_make_python_package)
     #---------------------------------------------------------------------------
     #--------------------------Argument Parsing---------------------------------
     #---------------------------------------------------------------------------
-    set(options MPI)
+    set(options MPI PYTHONIZE)
     set(oneValueArgs PACKAGE)
-    set(multiValueArgs DEPENDS NAMESPACES DEPNAMESPACES)
+    set(multiValueArgs NAMESPACES DEPNAMESPACES)
     cmake_parse_arguments(install_data "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
     #---------------------------------------------------------------------------
     #--------------------------Get include directories--------------------------
     #---------------------------------------------------------------------------
     get_target_property(include_dirs ${install_data_PACKAGE} INTERFACE_INCLUDE_DIRECTORIES)
-    foreach(item ${install_data_DEPENDS})
+    get_target_property(link_libs ${install_data_PACKAGE} INTERFACE_LINK_LIBRARIES)
+    foreach(item ${link_libs})
         get_target_property(include_item ${item} INTERFACE_INCLUDE_DIRECTORIES)
         list(APPEND include_dirs ${include_item})
+        #-----------------------------------------------------------------------
+        #--Special check for MADworld, as cereal is installed implicitly--------
+        #-----------------------------------------------------------------------
+        if("${item}" STREQUAL "MADworld")
+            get_target_property(include_item "cereal" INTERFACE_INCLUDE_DIRECTORIES)
+            list(APPEND include_dirs ${include_item})
+        endif()
     endforeach()
     if (install_data_MPI)
         list(APPEND include_dirs ${MPI_CXX_HEADER_DIR})
@@ -86,6 +96,9 @@ function(cppyy_make_python_package)
         set(init_file "${init_file}\#undef thread_local\n")
         set(init_file "${init_file}\"\"\")\n")
     endif()
+    #---------------------------------------------------------------------------
+    #--End of temporary band-aid------------------------------------------------
+    #---------------------------------------------------------------------------
     set(init_file "${init_file}cppyy.include(\"${python_defines_file}\")\n")
     set(init_file "${init_file}headers = \"${include_headers}\".split(';')\n")
     set(init_file "${init_file}for h in headers:\n")
@@ -96,6 +109,22 @@ function(cppyy_make_python_package)
         set(init_file "${init_file}from cppyy.gbl import ${namespace}\n")
     endforeach()
     set(init_file "${init_file}from cppyy.gbl.std import array, vector, make_shared\n\n")
+    if(install_data_PYTHONIZE)
+        set(_cmpp_file "${_cmpp_file}def pythonize_class(klass, name):\n")
+        set(_cmpp_file "${_cmpp_file}    def x_init(self, *args, **kwds):\n")
+        set(_cmpp_file "${_cmpp_file}        newargs = list(args)\n")
+        set(_cmpp_file "${_cmpp_file}        for kw, value in kwds.items():\n")
+        set(_cmpp_file "${_cmpp_file}            try:\n")
+        set(_cmpp_file "${_cmpp_file}                newargs.append(getattr(klass, kw)(value))\n")
+        set(_cmpp_file "${_cmpp_file}            except AttributeError as e:\n")
+        set(_cmpp_file "${_cmpp_file}                break\n")
+        set(_cmpp_file "${_cmpp_file}        else:\n")
+        set(_cmpp_file "${_cmpp_file}            return self.__orig_init__(*newargs)\n")
+        set(_cmpp_file "${_cmpp_file}        raise TypeError(\"__init__\(\) got an unexpected keyword argument \'\%s\'\" \% kw)\n\n")
+        set(_cmpp_file "${_cmpp_file}    klass.__orig_init__ = klass.__init__\n")
+        set(_cmpp_file "${_cmpp_file}    klass.__init__ = x_init\n\n")
+        set(_cmpp_file "${_cmpp_file}cppyy.py.add_pythonization(pythonize_class, \"${namespace}\")\n")
+    endif()
     #Write it out
     file(GENERATE OUTPUT ${init_file_name} CONTENT "${init_file}")
 endfunction()

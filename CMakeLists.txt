@@ -65,9 +65,7 @@ cpp_add_library(
 )
 
 include(nwx_python_mods)
-cppyy_make_python_package(MPI PACKAGE parallelzone 
-                              DEPENDS MADworld bphash cereal
-                              NAMESPACES pz )
+cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES pz )
 
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(

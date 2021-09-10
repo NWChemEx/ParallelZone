@@ -42,13 +42,6 @@ function(cppyy_make_python_package)
     foreach(item ${link_libs})
         get_target_property(include_item ${item} INTERFACE_INCLUDE_DIRECTORIES)
         list(APPEND include_dirs ${include_item})
-        #-----------------------------------------------------------------------
-        #--Special check for MADworld, as cereal is installed implicitly--------
-        #-----------------------------------------------------------------------
-        if("${item}" STREQUAL "MADworld")
-            get_target_property(include_item "cereal" INTERFACE_INCLUDE_DIRECTORIES)
-            list(APPEND include_dirs ${include_item})
-        endif()
     endforeach()
     if (install_data_MPI)
         list(APPEND include_dirs ${MPI_CXX_HEADER_DIR})

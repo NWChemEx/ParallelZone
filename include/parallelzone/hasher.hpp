@@ -8,7 +8,8 @@
 #include <bphash/Hasher.hpp>
 #include <bphash/types/All.hpp>
 #include <functional>
-
+#include <typeindex>
+#include <typeinfo>
 namespace pz {
 
 using bphash::hash_to_string;
@@ -64,4 +65,17 @@ void hash_object(const reference_wrapper<T>& ref, bphash::Hasher& h) {
     h(ref.get());
 }
 
+// Free function to make std::optional hashable
+template<typename T>
+void hash_object(const optional<T>& opt, bphash::Hasher& h) {
+    if(opt.has_value()) h(opt.value());
+}
+
+// Free function to make std::type_info hashable
+// Note that the hash generated may differ for different compilers
+void hash_object(const type_info& t, bphash::Hasher& h) { h(t.name()); }
+
+// Free function to make std::type_index hashable
+// Note that the hash generated may differ for different compilers
+void hash_object(const type_index t, bphash::Hasher& h) { h(t.name()); }
 } // namespace std

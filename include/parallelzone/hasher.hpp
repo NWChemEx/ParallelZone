@@ -16,6 +16,7 @@ using bphash::Hasher;
 using bphash::HashType;
 using bphash::HashValue;
 using bphash::make_hash;
+using hash_type = std::string;
 
 inline auto make_hasher() { return Hasher(HashType::Hash128); }
 
@@ -34,6 +35,25 @@ auto hash_objects(Args&&... args) {
     h(std::forward<Args>(args)...);
     return bphash::hash_to_string(h.finalize());
 }
+
+/** @brief Is type @p T the same as `hash_type`?
+ *
+ *  This is a compile-time constant indicating whether type @p T is the same
+ *  type as `hash_type` (it's set to true if @p T is the same type and false
+ *  otherwise). It is used primarily for TMP.
+ *
+ *  @tparam T The type we are comparing to `hash_type`
+ */
+template<typename T>
+static constexpr bool is_hash_v = std::is_same_v<T, hash_type>;
+
+/** @brief Disables an overload if @p T is the same as `hash_type`.
+ *
+ *  This type exploits SFINAE to disable templated overloads of functions
+ *  when the user passes the hash instead of an object that needs hashing.
+ */
+template<typename T>
+using disable_if_hash_t = std::enable_if_t<!is_hash_v<T>>;
 
 } // namespace pz
 

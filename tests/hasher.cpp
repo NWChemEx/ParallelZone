@@ -5,6 +5,11 @@
 #include <limits>
 
 using namespace pz;
+TEST_CASE("Hashing type traits") {
+    STATIC_REQUIRE(std::is_same_v<hash_type, std::string>);
+    STATIC_REQUIRE(is_hash_v<hash_type>);
+}
+
 TEST_CASE("Hashing with BPHash") {
     struct SA {
         int idx;

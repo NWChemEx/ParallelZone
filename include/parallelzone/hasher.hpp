@@ -73,7 +73,7 @@ void hash_object(const optional<T>& opt, bphash::Hasher& h) {
 
 // Free function to make std::type_info hashable
 // Note that the hash generated may differ for different compilers
-void hash_object(const type_info& t, bphash::Hasher& h) { h(t.name()); }
+inline void hash_object(const type_info& t, bphash::Hasher& h) { h(t.name()); }
 
 // Free function to make std::type_index hashable
 // Note that the hash generated may differ for different compilers

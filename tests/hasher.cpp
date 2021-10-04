@@ -5,11 +5,6 @@
 #include <limits>
 
 using namespace pz;
-TEST_CASE("Hashing type traits") {
-    STATIC_REQUIRE(std::is_same_v<hash_type, std::string>);
-    STATIC_REQUIRE(is_hash_v<hash_type>);
-}
-
 TEST_CASE("Hashing with BPHash") {
     struct SA {
         int idx;
@@ -63,34 +58,4 @@ TEST_CASE("Hashing with BPHash") {
         REQUIRE_FALSE(hash_objects(float(1.)) ==
                       hash_objects(float(1. + fepsilon)));
     }
-}
-
-TEST_CASE("Hash std::reference wrapper") {
-    int m  = 33;
-    auto r = std::ref(m);
-    REQUIRE(hash_objects(m) == hash_objects(r));
-}
-
-TEST_CASE("Hash std::optional") {
-    std::optional<int> novalue;
-    std::optional<int> one{1};
-    REQUIRE(hash_objects(one) == hash_objects(1));
-    REQUIRE(hash_objects(novalue) == "00000000000000000000000000000000");
-    REQUIRE_FALSE(hash_objects(one) == hash_objects(novalue));
-}
-
-TEST_CASE("Hash std::type_info/std::type_index") {
-    class A {};
-    class B {};
-    std::type_index a(typeid(A));
-    std::type_index b(typeid(B));
-    std::type_index i(typeid(int));
-    const std::type_info& aref(typeid(A));
-    const std::type_info& bref(typeid(B));
-    const std::type_info& iref(typeid(int));
-
-    REQUIRE(hash_objects(a) == hash_objects(aref));
-    REQUIRE_FALSE(hash_objects(a) == hash_objects(b));
-    REQUIRE_FALSE(hash_objects(aref) == hash_objects(bref));
-    REQUIRE(hash_objects(typeid(int)) == hash_objects(typeid(int).name()));
 }

@@ -79,7 +79,7 @@ function(cppyy_make_python_package)
     set(init_file "${init_file}    if p and p!=\"\":\n")
     set(init_file "${init_file}        cppyy.add_include_path(p)\n")
     #---------------------------------------------------------------------------
-    #--Temporary band-aid for MADword MPI threads fixed in future cling/cppyy---
+    #--Temporary band-aid for MADworld MPI threads fixed in future cling/cppyy---
     #---------------------------------------------------------------------------
     if (install_data_MPI)
         set(init_file "${init_file}cppyy.cppdef(\"\"\"\\ \n")

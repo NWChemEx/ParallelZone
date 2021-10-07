@@ -56,13 +56,24 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=OFF
 )
 
+cpp_find_or_build_dependency(
+    cereal
+    URL github.com/USCiLab/cereal
+    BUILD_TARGET cereal
+    FIND_TARGET cereal::cereal
+    CMAKE_ARGS JUST_INSTALL_CEREAL=ON
+)
+
 cpp_add_library(
     parallelzone
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/parallelzone"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/parallelzone"
-    DEPENDS MADworld bphash::bphash
+    DEPENDS MADworld bphash::bphash cereal::cereal
 
 )
+
+include(nwx_python_mods)
+cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES pz )
 
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(
@@ -76,7 +87,7 @@ if("${BUILD_TESTING}")
         test_parallelzone
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
         INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/parallelzone"
-        DEPENDS Catch2::Catch2 MADworld parallelzone
+        DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
     )
 endif()
 

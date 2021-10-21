@@ -22,7 +22,7 @@
 
 namespace ParallelZone {
 
-class ProcessorGroup;
+class ProcGroup;
 
 class Parallel {
 public:
@@ -41,8 +41,8 @@ public:
     static void finalizeManager(Circumstances cirumstances = NormalShutdown);
 
     //////////
-    // Returns the root context ProcessorGroup
-    static ProcessorGroup* getRootProcessorGroup();
+    // Returns the root context ProcGroup
+    static ProcGroup* getRootProcGroup();
 
     //////////
     // Returns the MPI Rank of this process.  If this is not running under MPI,
@@ -119,7 +119,7 @@ private:
     static int s_world_rank;
     static int s_world_size;
     static std::thread::id s_main_thread_id;
-    static ProcessorGroup* s_root_context;
+    static ProcGroup* s_root_context;
 };
 
 } // End namespace ParallelZone

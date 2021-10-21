@@ -28,16 +28,6 @@ inline int psize(MPI_Comm c) {
     MPI_Comm_size(c, &s);
     return s;
 }
-inline int prank(MPI_Comm c) {
-    int r;
-    MPI_Comm_rank(c, &r);
-    return r;
-}
-inline int num_neighbors(MPI_Comm c) {
-    int r = prank(c);
-    int n = MPI_Graph_neighbors_count(c, r, &n);
-    return n;
-}
 
 //------------------------------------------------------------------------------
 
@@ -64,98 +54,6 @@ inline int tid() {
     return id;
 }
 
-//------------------------------------------------------------------------------
-
-enum CommStatsType {
-    COMM_COUNT,
-    COMM_SIZE,
-    COMM_HISTOGRAM_0,
-    COMM_HISTOGRAM_1,
-    COMM_HISTOGRAM_2,
-    COMM_HISTOGRAM_3,
-    SIZE
-};
-
-template<typename Tag>
-struct CommStats {
-    static constexpr int64_t one  = 1;
-    static constexpr int64_t zero = 0;
-
-    static constexpr int64_t Cacheline = 64;      // cacheline
-    static constexpr int64_t Page      = 4096;    // page
-    static constexpr int64_t HugePage  = 2 << 20; // huge page
-
-    CommStats(int64_t count, MPI_Datatype d) noexcept { apply(count, d); }
-
-    CommStats(const int* counts, MPI_Datatype d, MPI_Comm c) noexcept {
-        apply(counts, d, c);
-    }
-
-    static void clear() {
-        for(auto& v : s_values) { v = 0; }
-    }
-
-    static int64_t get(CommStatsType i) {
-        int64_t result  = 0;
-        const int begin = i * MPI_MAX_THREADS;
-        const int end   = (i + 1) * MPI_MAX_THREADS;
-        for(int j = begin; j < end; ++j) { result += s_values[j]; }
-        return result;
-    }
-
-private:
-    static void apply(int64_t count, MPI_Datatype d) noexcept {
-        int s;
-        MPI_Type_size(d, &s);
-
-        const int64_t n = count * s;
-
-        const int i = n <= Cacheline ? 0 :
-                      n <= Page      ? 1 :
-                      n <= HugePage  ? 2 :
-                                       3;
-
-        const int t = tid();
-
-        ++s_values[COMM_COUNT * MPI_MAX_THREADS + t];
-        ++s_values[(COMM_HISTOGRAM_0 + i) * MPI_MAX_THREADS + t];
-        s_values[COMM_SIZE * MPI_MAX_THREADS + t] += n;
-    }
-
-    static void apply(const int* counts, MPI_Datatype d, MPI_Comm c) noexcept {
-        int64_t count           = 0;
-        const int parallel_size = psize(c);
-        for(int i = 0; i < parallel_size; ++i) { count += counts[i]; }
-
-        apply(count, d);
-    }
-
-    static int64_t s_values[SIZE * MPI_MAX_THREADS];
-};
-
-template<typename Tag>
-int64_t CommStats<Tag>::s_values[SIZE * MPI_MAX_THREADS]{};
-
-//------------------------------------------------------------------------------
-
-struct AlltoAllTag {};
-struct BcastTag {};
-struct GatherTag {};
-struct ReduceTag {};
-struct ScanTag {};
-struct ScatterTag {};
-struct RecvTag {};
-struct SendTag {};
-struct TestTag {};
-struct WaitTag {};
-struct CommTag {};
-struct OneSidedTag {};
-
-using OneVolumeStats  = CommStats<OneSidedTag>;
-using SendVolumeStats = CommStats<SendTag>;
-using RecvVolumeStats = CommStats<RecvTag>;
-
-//------------------------------------------------------------------------------
 } // end namespace Impl
 
 #if PARALLELZONE_ENABLE_MPI3
@@ -170,15 +68,14 @@ inline MPI_Aint Aint_diff(MPI_Aint addr1, MPI_Aint addr2) {
 inline int Abort(MPI_Comm comm, int errorcode) {
     return Impl::mpi_err_check(MPI_Abort(comm, errorcode));
 }
-inline int Accumulate(MPICONST void* origin_addr, int origin_count,
-                      MPI_Datatype origin_datatype, int target_rank,
-                      MPI_Aint target_disp, int target_count,
-                      MPI_Datatype target_datatype, MPI_Op op, MPI_Win win) {
-    Impl::OneVolumeStats(origin_count, origin_datatype);
-    return Impl::mpi_err_check(
-      MPI_Accumulate(origin_addr, origin_count, origin_datatype, target_rank,
-                     target_disp, target_count, target_datatype, op, win));
-}
+// inline int Accumulate(MPICONST void* origin_addr, int origin_count,
+//                       MPI_Datatype origin_datatype, int target_rank,
+//                       MPI_Aint target_disp, int target_count,
+//                       MPI_Datatype target_datatype, MPI_Op op) {
+//     return Impl::mpi_err_check(
+//       MPI_Accumulate(origin_addr, origin_count, origin_datatype, target_rank,
+//                      target_disp, target_count, target_datatype, op));
+// }
 inline int Add_error_class(int* errorclass) {
     return Impl::mpi_err_check(MPI_Add_error_class(errorclass));
 }
@@ -191,8 +88,6 @@ inline int Add_error_string(int errorcode, MPICONST char* string) {
 inline int Allgather(MPICONST void* sendbuf, int sendcount,
                      MPI_Datatype sendtype, void* recvbuf, int recvcount,
                      MPI_Datatype recvtype, MPI_Comm comm) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    Impl::RecvVolumeStats(recvcount, recvtype);
     return Impl::mpi_err_check(MPI_Allgather(
       sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm));
 }
@@ -200,8 +95,6 @@ inline int Allgatherv(MPICONST void* sendbuf, int sendcount,
                       MPI_Datatype sendtype, void* recvbuf,
                       MPICONST int* recvcounts, MPICONST int* displs,
                       MPI_Datatype recvtype, MPI_Comm comm) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    Impl::RecvVolumeStats(recvcounts, recvtype, comm);
     return Impl::mpi_err_check(MPI_Allgatherv(sendbuf, sendcount, sendtype,
                                               recvbuf, recvcounts, displs,
                                               recvtype, comm));
@@ -211,16 +104,12 @@ inline int Alloc_mem(MPI_Aint size, MPI_Info info, void* baseptr) {
 }
 inline int Allreduce(MPICONST void* sendbuf, void* recvbuf, int count,
                      MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
-    Impl::SendVolumeStats(count, datatype);
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm));
 }
 inline int Alltoall(MPICONST void* sendbuf, int sendcount,
                     MPI_Datatype sendtype, void* recvbuf, int recvcount,
                     MPI_Datatype recvtype, MPI_Comm comm) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    Impl::RecvVolumeStats(recvcount, recvtype);
     return Impl::mpi_err_check(MPI_Alltoall(
       sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm));
 }
@@ -229,8 +118,6 @@ inline int Alltoallv(MPICONST void* sendbuf, MPICONST int* sendcounts,
                      void* recvbuf, MPICONST int* recvcounts,
                      MPICONST int* rdispls, MPI_Datatype recvtype,
                      MPI_Comm comm) {
-    Impl::SendVolumeStats(sendcounts, sendtype, comm);
-    Impl::RecvVolumeStats(recvcounts, recvtype, comm);
     return Impl::mpi_err_check(MPI_Alltoallv(sendbuf, sendcounts, sdispls,
                                              sendtype, recvbuf, recvcounts,
                                              rdispls, recvtype, comm));
@@ -248,8 +135,6 @@ inline int Alltoallw(MPICONST void* sendbuf, MPICONST int sendcounts[],
         scounts += sendcounts[i];
         rcounts += recvcounts[i];
     }
-    Impl::SendVolumeStats(scounts, sendtypes[0]);
-    Impl::RecvVolumeStats(rcounts, recvtypes[0]);
     return Impl::mpi_err_check(MPI_Alltoallw(sendbuf, sendcounts, sdispls,
                                              sendtypes, recvbuf, recvcounts,
                                              rdispls, recvtypes, comm));
@@ -259,16 +144,10 @@ inline int Barrier(MPI_Comm comm) {
 }
 inline int Bcast(void* buffer, int count, MPI_Datatype datatype, int root,
                  MPI_Comm comm) {
-    if(Impl::prank(comm) == root) {
-        Impl::SendVolumeStats(count, datatype);
-    } else {
-        Impl::RecvVolumeStats(count, datatype);
-    }
     return Impl::mpi_err_check(MPI_Bcast(buffer, count, datatype, root, comm));
 }
 inline int Bsend(MPICONST void* buf, int count, MPI_Datatype datatype, int dest,
                  int tag, MPI_Comm comm) {
-    Impl::SendVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Bsend(buf, count, datatype, dest, tag, comm));
 }
@@ -285,40 +164,6 @@ inline int Buffer_detach(void* buffer_addr, int* size) {
 }
 inline int Cancel(MPI_Request* request) {
     return Impl::mpi_err_check(MPI_Cancel(request));
-}
-inline int Cart_coords(MPI_Comm comm, int rank, int maxdims, int coords[]) {
-    return Impl::mpi_err_check(MPI_Cart_coords(comm, rank, maxdims, coords));
-}
-inline int Cart_create(MPI_Comm comm_old, int ndims, MPICONST int dims[],
-                       MPICONST int periods[], int reorder,
-                       MPI_Comm* comm_cart) {
-    return Impl::mpi_err_check(
-      MPI_Cart_create(comm_old, ndims, dims, periods, reorder, comm_cart));
-}
-inline int Cart_get(MPI_Comm comm, int maxdims, int dims[], int periods[],
-                    int coords[]) {
-    return Impl::mpi_err_check(
-      MPI_Cart_get(comm, maxdims, dims, periods, coords));
-}
-inline int Cart_map(MPI_Comm comm, int ndims, MPICONST int dims[],
-                    MPICONST int periods[], int* newrank) {
-    return Impl::mpi_err_check(
-      MPI_Cart_map(comm, ndims, dims, periods, newrank));
-}
-inline int Cart_rank(MPI_Comm comm, MPICONST int coords[], int* rank) {
-    return Impl::mpi_err_check(MPI_Cart_rank(comm, coords, rank));
-}
-inline int Cart_shift(MPI_Comm comm, int direction, int disp, int* rank_source,
-                      int* rank_dest) {
-    return Impl::mpi_err_check(
-      MPI_Cart_shift(comm, direction, disp, rank_source, rank_dest));
-}
-inline int Cart_sub(MPI_Comm comm, MPICONST int remain_dims[],
-                    MPI_Comm* newcomm) {
-    return Impl::mpi_err_check(MPI_Cart_sub(comm, remain_dims, newcomm));
-}
-inline int Cartdim_get(MPI_Comm comm, int* ndims) {
-    return Impl::mpi_err_check(MPI_Cartdim_get(comm, ndims));
 }
 inline int Close_port(MPICONST char* port_name) {
     return Impl::mpi_err_check(MPI_Close_port(port_name));
@@ -471,12 +316,10 @@ inline int Comm_test_inter(MPI_Comm comm, int* flag) {
 #if PARALLELZONE_ENABLE_MPI3
 inline int Compare_and_swap(const void* origin_addr, const void* compare_addr,
                             void* result_addr, MPI_Datatype datatype,
-                            int target_rank, MPI_Aint target_disp,
-                            MPI_Win win) {
-    Impl::OneVolumeStats(1, datatype);
+                            int target_rank, MPI_Aint target_disp) {
     return Impl::mpi_err_check(
       MPI_Compare_and_swap(origin_addr, compare_addr, result_addr, datatype,
-                           target_rank, target_disp, win));
+                           target_rank, target_disp));
 }
 #endif
 inline int Dims_create(int nnodes, int ndims, int dims[]) {
@@ -528,18 +371,15 @@ inline int Error_string(int errorcode, char* string, int* resultlen) {
 }
 inline int Exscan(MPICONST void* sendbuf, void* recvbuf, int count,
                   MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
-    Impl::SendVolumeStats(count, datatype);
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Exscan(sendbuf, recvbuf, count, datatype, op, comm));
 }
 #if PARALLELZONE_ENABLE_MPI3
 inline int Fetch_and_op(const void* origin_addr, void* result_addr,
                         MPI_Datatype datatype, int target_rank,
-                        MPI_Aint target_disp, MPI_Op op, MPI_Win win) {
-    Impl::OneVolumeStats(1, datatype);
+                        MPI_Aint target_disp, MPI_Op op) {
     return Impl::mpi_err_check(MPI_Fetch_and_op(
-      origin_addr, result_addr, datatype, target_rank, target_disp, op, win));
+      origin_addr, result_addr, datatype, target_rank, target_disp, op));
 }
 #endif
 inline int File_call_errhandler(MPI_File fh, int errorcode) {
@@ -567,10 +407,6 @@ inline int Free_mem(void* base) {
 inline int Gather(MPICONST void* sendbuf, int sendcount, MPI_Datatype sendtype,
                   void* recvbuf, int recvcount, MPI_Datatype recvtype, int root,
                   MPI_Comm comm) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    if(root == Impl::prank(comm)) {
-        Impl::RecvVolumeStats(recvcount, recvtype);
-    }
     return Impl::mpi_err_check(MPI_Gather(sendbuf, sendcount, sendtype, recvbuf,
                                           recvcount, recvtype, root, comm));
 }
@@ -578,10 +414,6 @@ inline int Gatherv(MPICONST void* sendbuf, int sendcount, MPI_Datatype sendtype,
                    void* recvbuf, MPICONST int* recvcounts,
                    MPICONST int* displs, MPI_Datatype recvtype, int root,
                    MPI_Comm comm) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    if(root == Impl::prank(comm)) {
-        Impl::RecvVolumeStats(recvcounts, recvtype, comm);
-    }
     return Impl::mpi_err_check(MPI_Gatherv(sendbuf, sendcount, sendtype,
                                            recvbuf, recvcounts, displs,
                                            recvtype, root, comm));
@@ -589,11 +421,10 @@ inline int Gatherv(MPICONST void* sendbuf, int sendcount, MPI_Datatype sendtype,
 inline int Get(void* origin_addr, int origin_count,
                MPI_Datatype origin_datatype, int target_rank,
                MPI_Aint target_disp, int target_count,
-               MPI_Datatype target_datatype, MPI_Win win) {
-    Impl::OneVolumeStats(origin_count, origin_datatype);
+               MPI_Datatype target_datatype) {
     return Impl::mpi_err_check(
       MPI_Get(origin_addr, origin_count, origin_datatype, target_rank,
-              target_disp, target_count, target_datatype, win));
+              target_disp, target_count, target_datatype));
 }
 #if PARALLELZONE_ENABLE_MPI3
 inline int Get_accumulate(const void* origin_addr, int origin_count,
@@ -601,12 +432,11 @@ inline int Get_accumulate(const void* origin_addr, int origin_count,
                           int result_count, MPI_Datatype result_datatype,
                           int target_rank, MPI_Aint target_disp,
                           int target_count, MPI_Datatype target_datatype,
-                          MPI_Op op, MPI_Win win) {
-    Impl::OneVolumeStats(origin_count, origin_datatype);
+                          MPI_Op op) {
     return Impl::mpi_err_check(MPI_Get_accumulate(
       origin_addr, origin_count, origin_datatype, result_addr, result_count,
       result_datatype, target_rank, target_disp, target_count, target_datatype,
-      op, win));
+      op));
 }
 #endif
 inline int Get_address(MPICONST void* location, MPI_Aint* address) {
@@ -634,34 +464,6 @@ inline int Get_processor_name(char* name, int* resultlen) {
 }
 inline int Get_version(int* version, int* subversion) {
     return Impl::mpi_err_check(MPI_Get_version(version, subversion));
-}
-inline int Graph_create(MPI_Comm comm_old, int nnodes, MPICONST int indx[],
-                        MPICONST int edges[], int reorder,
-                        MPI_Comm* comm_graph) {
-    return Impl::mpi_err_check(
-      MPI_Graph_create(comm_old, nnodes, indx, edges, reorder, comm_graph));
-}
-inline int Graph_get(MPI_Comm comm, int maxindex, int maxedges, int indx[],
-                     int edges[]) {
-    return Impl::mpi_err_check(
-      MPI_Graph_get(comm, maxindex, maxedges, indx, edges));
-}
-inline int Graph_map(MPI_Comm comm, int nnodes, MPICONST int indx[],
-                     MPICONST int edges[], int* newrank) {
-    return Impl::mpi_err_check(
-      MPI_Graph_map(comm, nnodes, indx, edges, newrank));
-}
-inline int Graph_neighbors(MPI_Comm comm, int rank, int maxneighbors,
-                           int neighbors[]) {
-    return Impl::mpi_err_check(
-      MPI_Graph_neighbors(comm, rank, maxneighbors, neighbors));
-}
-inline int Graph_neighbors_count(MPI_Comm comm, int rank, int* nneighbors) {
-    return Impl::mpi_err_check(
-      MPI_Graph_neighbors_count(comm, rank, nneighbors));
-}
-inline int Graphdims_get(MPI_Comm comm, int* nnodes, int* nedges) {
-    return Impl::mpi_err_check(MPI_Graphdims_get(comm, nnodes, nedges));
 }
 inline int Grequest_complete(MPI_Request request) {
     return Impl::mpi_err_check(MPI_Grequest_complete(request));
@@ -725,8 +527,6 @@ inline int Group_union(MPI_Group group1, MPI_Group group2,
 inline int Iallgather(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                       void* recvbuf, int recvcount, MPI_Datatype recvtype,
                       MPI_Comm comm, MPI_Request* request) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    Impl::RecvVolumeStats(recvcount, recvtype);
     return Impl::mpi_err_check(MPI_Iallgather(sendbuf, sendcount, sendtype,
                                               recvbuf, recvcount, recvtype,
                                               comm, request));
@@ -736,8 +536,6 @@ inline int Iallgatherv(const void* sendbuf, int sendcount,
                        const int recvcounts[], const int displs[],
                        MPI_Datatype recvtype, MPI_Comm comm,
                        MPI_Request* request) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    Impl::RecvVolumeStats(recvcounts, recvtype, comm);
     return Impl::mpi_err_check(MPI_Iallgatherv(sendbuf, sendcount, sendtype,
                                                recvbuf, recvcounts, displs,
                                                recvtype, comm, request));
@@ -745,16 +543,12 @@ inline int Iallgatherv(const void* sendbuf, int sendcount,
 inline int Iallreduce(const void* sendbuf, void* recvbuf, int count,
                       MPI_Datatype datatype, MPI_Op op, MPI_Comm comm,
                       MPI_Request* request) {
-    Impl::SendVolumeStats(count, datatype);
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Iallreduce(sendbuf, recvbuf, count, datatype, op, comm, request));
 }
 inline int Ialltoall(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                      void* recvbuf, int recvcount, MPI_Datatype recvtype,
                      MPI_Comm comm, MPI_Request* request) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    Impl::RecvVolumeStats(recvcount, recvtype);
     return Impl::mpi_err_check(MPI_Ialltoall(sendbuf, sendcount, sendtype,
                                              recvbuf, recvcount, recvtype, comm,
                                              request));
@@ -764,8 +558,6 @@ inline int Ialltoallv(const void* sendbuf, const int sendcounts[],
                       const int recvcounts[], const int rdispls[],
                       MPI_Datatype recvtype, MPI_Comm comm,
                       MPI_Request* request) {
-    Impl::SendVolumeStats(sendcounts, sendtype, comm);
-    Impl::RecvVolumeStats(recvcounts, recvtype, comm);
     return Impl::mpi_err_check(
       MPI_Ialltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf,
                      recvcounts, rdispls, recvtype, comm, request));
@@ -783,8 +575,6 @@ inline int Ialltoallw(MPICONST void* sendbuf, const int sendcounts[],
         scounts += sendcounts[i];
         rcounts += recvcounts[i];
     }
-    Impl::SendVolumeStats(scounts, sendtypes[0]);
-    Impl::RecvVolumeStats(rcounts, recvtypes[0]);
     return Impl::mpi_err_check(
       MPI_Ialltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf,
                      recvcounts, rdispls, recvtypes, comm, request));
@@ -794,18 +584,12 @@ inline int Ibarrier(MPI_Comm comm, MPI_Request* request) {
 }
 inline int Ibcast(void* buffer, int count, MPI_Datatype datatype, int root,
                   MPI_Comm comm, MPI_Request* request) {
-    if(Impl::prank(comm) == root) {
-        Impl::SendVolumeStats(count, datatype);
-    } else {
-        Impl::RecvVolumeStats(count, datatype);
-    }
     return Impl::mpi_err_check(
       MPI_Ibcast(buffer, count, datatype, root, comm, request));
 }
 #endif
 inline int Ibsend(MPICONST void* buf, int count, MPI_Datatype datatype,
                   int dest, int tag, MPI_Comm comm, MPI_Request* request) {
-    Impl::SendVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Ibsend(buf, count, datatype, dest, tag, comm, request));
 }
@@ -813,18 +597,12 @@ inline int Ibsend(MPICONST void* buf, int count, MPI_Datatype datatype,
 inline int Iexscan(const void* sendbuf, void* recvbuf, int count,
                    MPI_Datatype datatype, MPI_Op op, MPI_Comm comm,
                    MPI_Request* request) {
-    Impl::SendVolumeStats(count, datatype);
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Iexscan(sendbuf, recvbuf, count, datatype, op, comm, request));
 }
 inline int Igather(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                    void* recvbuf, int recvcount, MPI_Datatype recvtype,
                    int root, MPI_Comm comm, MPI_Request* request) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    if(root == Impl::prank(comm)) {
-        Impl::RecvVolumeStats(recvcount, recvtype);
-    }
     return Impl::mpi_err_check(MPI_Igather(sendbuf, sendcount, sendtype,
                                            recvbuf, recvcount, recvtype, root,
                                            comm, request));
@@ -833,10 +611,6 @@ inline int Igatherv(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                     void* recvbuf, const int recvcounts[], const int displs[],
                     MPI_Datatype recvtype, int root, MPI_Comm comm,
                     MPI_Request* request) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    if(root == Impl::prank(comm)) {
-        Impl::RecvVolumeStats(recvcounts, recvtype, comm);
-    }
     return Impl::mpi_err_check(MPI_Igatherv(sendbuf, sendcount, sendtype,
                                             recvbuf, recvcounts, displs,
                                             recvtype, root, comm, request));
@@ -848,65 +622,8 @@ inline int Improbe(int source, int tag, MPI_Comm comm, int* flag,
 }
 inline int Imrecv(void* buf, int count, MPI_Datatype datatype,
                   MPI_Message* message, MPI_Request* request) {
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Imrecv(buf, count, datatype, message, request));
-}
-inline int Ineighbor_allgather(const void* sendbuf, int sendcount,
-                               MPI_Datatype sendtype, void* recvbuf,
-                               int recvcount, MPI_Datatype recvtype,
-                               MPI_Comm comm, MPI_Request* request) {
-    Impl::OneVolumeStats(sendcount, sendtype);
-    return Impl::mpi_err_check(
-      MPI_Ineighbor_allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount,
-                              recvtype, comm, request));
-}
-inline int Ineighbor_allgatherv(const void* sendbuf, int sendcount,
-                                MPI_Datatype sendtype, void* recvbuf,
-                                const int recvcounts[], const int displs[],
-                                MPI_Datatype recvtype, MPI_Comm comm,
-                                MPI_Request* request) {
-    Impl::OneVolumeStats(sendcount, sendtype);
-    return Impl::mpi_err_check(
-      MPI_Ineighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf,
-                               recvcounts, displs, recvtype, comm, request));
-}
-inline int Ineighbor_alltoall(const void* sendbuf, int sendcount,
-                              MPI_Datatype sendtype, void* recvbuf,
-                              int recvcount, MPI_Datatype recvtype,
-                              MPI_Comm comm, MPI_Request* request) {
-    Impl::OneVolumeStats(sendcount, sendtype);
-    return Impl::mpi_err_check(
-      MPI_Ineighbor_alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount,
-                             recvtype, comm, request));
-}
-inline int Ineighbor_alltoallv(const void* sendbuf, const int sendcounts[],
-                               const int sdispls[], MPI_Datatype sendtype,
-                               void* recvbuf, const int recvcounts[],
-                               const int rdispls[], MPI_Datatype recvtype,
-                               MPI_Comm comm, MPI_Request* request) {
-    const int nn    = Impl::num_neighbors(comm);
-    int64_t scounts = 0;
-    for(int i = 0; i < nn; ++i) { scounts += sendcounts[i]; }
-    Impl::OneVolumeStats(scounts, sendtype);
-    return Impl::mpi_err_check(
-      MPI_Ineighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf,
-                              recvcounts, rdispls, recvtype, comm, request));
-}
-inline int Ineighbor_alltoallw(const void* sendbuf, const int sendcounts[],
-                               const MPI_Aint sdispls[],
-                               const MPI_Datatype sendtypes[], void* recvbuf,
-                               const int recvcounts[], const MPI_Aint rdispls[],
-                               const MPI_Datatype recvtypes[], MPI_Comm comm,
-                               MPI_Request* request) {
-    // TODO handle multiple send and recv types
-    const int psize = Impl::psize(comm);
-    int64_t scounts = 0;
-    for(int i = 0; i < psize; ++i) { scounts += sendcounts[i]; }
-    Impl::OneVolumeStats(scounts, sendtypes[0]);
-    return Impl::mpi_err_check(
-      MPI_Ineighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf,
-                              recvcounts, rdispls, recvtypes, comm, request));
 }
 #endif
 inline int Info_create(MPI_Info* info) {
@@ -965,7 +682,6 @@ inline int Iprobe(int source, int tag, MPI_Comm comm, int* flag,
 }
 inline int Irecv(void* buf, int count, MPI_Datatype datatype, int source,
                  int tag, MPI_Comm comm, MPI_Request* request) {
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Irecv(buf, count, datatype, source, tag, comm, request));
 }
@@ -973,8 +689,6 @@ inline int Irecv(void* buf, int count, MPI_Datatype datatype, int source,
 inline int Ireduce(const void* sendbuf, void* recvbuf, int count,
                    MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm,
                    MPI_Request* request) {
-    Impl::SendVolumeStats(count, datatype);
-    if(root == Impl::prank(comm)) { Impl::RecvVolumeStats(count, datatype); }
     return Impl::mpi_err_check(
       MPI_Ireduce(sendbuf, recvbuf, count, datatype, op, root, comm, request));
 }
@@ -984,8 +698,6 @@ inline int Ireduce_scatter(MPICONST void* sendbuf, void* recvbuf,
     int psize      = Impl::psize(comm);
     int64_t counts = 0;
     for(int i = 0; i < psize; ++i) { counts += recvcounts[i]; }
-    Impl::SendVolumeStats(counts, datatype);
-    Impl::RecvVolumeStats(counts, datatype);
     return Impl::mpi_err_check(MPI_Ireduce_scatter(
       sendbuf, recvbuf, recvcounts, datatype, op, comm, request));
 }
@@ -993,15 +705,12 @@ inline int Ireduce_scatter_block(const void* sendbuf, void* recvbuf,
                                  int recvcount, MPI_Datatype datatype,
                                  MPI_Op op, MPI_Comm comm,
                                  MPI_Request* request) {
-    Impl::SendVolumeStats(recvcount, datatype);
-    Impl::RecvVolumeStats(recvcount, datatype);
     return Impl::mpi_err_check(MPI_Ireduce_scatter_block(
       sendbuf, recvbuf, recvcount, datatype, op, comm, request));
 }
 #endif
 inline int Irsend(MPICONST void* buf, int count, MPI_Datatype datatype,
                   int dest, int tag, MPI_Comm comm, MPI_Request* request) {
-    Impl::SendVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Irsend(buf, count, datatype, dest, tag, comm, request));
 }
@@ -1012,19 +721,12 @@ inline int Is_thread_main(int* flag) {
 inline int Iscan(const void* sendbuf, void* recvbuf, int count,
                  MPI_Datatype datatype, MPI_Op op, MPI_Comm comm,
                  MPI_Request* request) {
-    Impl::SendVolumeStats(count, datatype);
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Iscan(sendbuf, recvbuf, count, datatype, op, comm, request));
 }
 inline int Iscatter(const void* sendbuf, int sendcount, MPI_Datatype sendtype,
                     void* recvbuf, int recvcount, MPI_Datatype recvtype,
                     int root, MPI_Comm comm, MPI_Request* request) {
-    if(root == Impl::prank(comm)) {
-        Impl::SendVolumeStats(sendcount, sendtype);
-    } else {
-        Impl::RecvVolumeStats(recvcount, recvtype);
-    }
     return Impl::mpi_err_check(MPI_Iscatter(sendbuf, sendcount, sendtype,
                                             recvbuf, recvcount, recvtype, root,
                                             comm, request));
@@ -1033,11 +735,6 @@ inline int Iscatterv(MPICONST void* sendbuf, MPICONST int sendcounts[],
                      MPICONST int displs[], MPI_Datatype sendtype,
                      void* recvbuf, int recvcount, MPI_Datatype recvtype,
                      int root, MPI_Comm comm, MPI_Request* request) {
-    if(root == Impl::prank(comm)) {
-        Impl::SendVolumeStats(sendcounts, sendtype, comm);
-    } else {
-        Impl::RecvVolumeStats(recvcount, recvtype);
-    }
     return Impl::mpi_err_check(MPI_Iscatterv(sendbuf, sendcounts, displs,
                                              sendtype, recvbuf, recvcount,
                                              recvtype, root, comm, request));
@@ -1045,13 +742,11 @@ inline int Iscatterv(MPICONST void* sendbuf, MPICONST int sendcounts[],
 #endif
 inline int Isend(MPICONST void* buf, int count, MPI_Datatype datatype, int dest,
                  int tag, MPI_Comm comm, MPI_Request* request) {
-    Impl::SendVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Isend(buf, count, datatype, dest, tag, comm, request));
 }
 inline int Issend(MPICONST void* buf, int count, MPI_Datatype datatype,
                   int dest, int tag, MPI_Comm comm, MPI_Request* request) {
-    Impl::SendVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Issend(buf, count, datatype, dest, tag, comm, request));
 }
@@ -1066,76 +761,8 @@ inline int Mprobe(int source, int tag, MPI_Comm comm, MPI_Message* message,
 }
 inline int Mrecv(void* buf, int count, MPI_Datatype datatype,
                  MPI_Message* message, MPI_Status* status) {
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Mrecv(buf, count, datatype, message, status));
-}
-inline int Neighbor_allgather(MPICONST void* sendbuf, int sendcount,
-                              MPI_Datatype sendtype, void* recvbuf,
-                              int recvcount, MPI_Datatype recvtype,
-                              MPI_Comm comm) {
-    Impl::OneVolumeStats(sendcount, sendtype);
-    return Impl::mpi_err_check(MPI_Neighbor_allgather(
-      sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm));
-}
-inline int Neighbor_allgatherv(MPICONST void* sendbuf, int sendcount,
-                               MPI_Datatype sendtype, void* recvbuf,
-                               MPICONST int recvcounts[], MPICONST int displs[],
-                               MPI_Datatype recvtype, MPI_Comm comm) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    const int nn    = Impl::num_neighbors(comm);
-    int64_t rcounts = 0;
-    for(int i = 0; i < nn; ++i) { rcounts += recvcounts[i]; }
-    Impl::RecvVolumeStats(rcounts, recvtype);
-    return Impl::mpi_err_check(
-      MPI_Neighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts,
-                              displs, recvtype, comm));
-}
-inline int Neighbor_alltoall(const void* sendbuf, int sendcount,
-                             MPI_Datatype sendtype, void* recvbuf,
-                             int recvcount, MPI_Datatype recvtype,
-                             MPI_Comm comm) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    Impl::RecvVolumeStats(recvcount, recvtype);
-    return Impl::mpi_err_check(MPI_Neighbor_alltoall(
-      sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm));
-}
-inline int Neighbor_alltoallv(const void* sendbuf, const int sendcounts[],
-                              const int sdispls[], MPI_Datatype sendtype,
-                              void* recvbuf, const int recvcounts[],
-                              const int rdispls[], MPI_Datatype recvtype,
-                              MPI_Comm comm) {
-    const int nn    = Impl::num_neighbors(comm);
-    int64_t rcounts = 0;
-    int64_t scounts = 0;
-    for(int i = 0; i < nn; ++i) {
-        scounts += sendcounts[i];
-        rcounts += recvcounts[i];
-    }
-    Impl::SendVolumeStats(scounts, sendtype);
-    Impl::RecvVolumeStats(rcounts, recvtype);
-    return Impl::mpi_err_check(
-      MPI_Neighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf,
-                             recvcounts, rdispls, recvtype, comm));
-}
-inline int Neighbor_alltoallw(const void* sendbuf, const int sendcounts[],
-                              const MPI_Aint sdispls[],
-                              const MPI_Datatype sendtypes[], void* recvbuf,
-                              const int recvcounts[], const MPI_Aint rdispls[],
-                              const MPI_Datatype recvtypes[], MPI_Comm comm) {
-    // TODO handle multiple send and recv types
-    const int psize = Impl::psize(comm);
-    int64_t rcounts = 0;
-    int64_t scounts = 0;
-    for(int i = 0; i < psize; ++i) {
-        scounts += sendcounts[i];
-        rcounts += recvcounts[i];
-    }
-    Impl::SendVolumeStats(scounts, sendtypes[0]);
-    Impl::RecvVolumeStats(rcounts, recvtypes[0]);
-    return Impl::mpi_err_check(
-      MPI_Neighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf,
-                             recvcounts, rdispls, recvtypes, comm));
 }
 inline int Op_commutative(MPI_Op op, int* commute) {
     return Impl::mpi_err_check(MPI_Op_commutative(op, commute));
@@ -1179,7 +806,6 @@ inline int Put(MPICONST void* origin_addr, int origin_count,
                MPI_Datatype origin_datatype, int target_rank,
                MPI_Aint target_disp, int target_count,
                MPI_Datatype target_datatype, MPI_Win win) {
-    Impl::OneVolumeStats(origin_count, origin_datatype);
     return Impl::mpi_err_check(
       MPI_Put(origin_addr, origin_count, origin_datatype, target_rank,
               target_disp, target_count, target_datatype, win));
@@ -1191,17 +817,15 @@ inline int Query_thread(int* provided) {
 inline int Raccumulate(const void* origin_addr, int origin_count,
                        MPI_Datatype origin_datatype, int target_rank,
                        MPI_Aint target_disp, int target_count,
-                       MPI_Datatype target_datatype, MPI_Op op, MPI_Win win,
+                       MPI_Datatype target_datatype, MPI_Op op,
                        MPI_Request* request) {
-    Impl::OneVolumeStats(origin_count, origin_datatype);
     return Impl::mpi_err_check(MPI_Raccumulate(
       origin_addr, origin_count, origin_datatype, target_rank, target_disp,
-      target_count, target_datatype, op, win, request));
+      target_count, target_datatype, op, request));
 }
 #endif
 inline int Recv(void* buf, int count, MPI_Datatype datatype, int source,
                 int tag, MPI_Comm comm, MPI_Status* status) {
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Recv(buf, count, datatype, source, tag, comm, status));
 }
@@ -1212,8 +836,6 @@ inline int Recv_init(void* buf, int count, MPI_Datatype datatype, int source,
 }
 inline int Reduce(MPICONST void* sendbuf, void* recvbuf, int count,
                   MPI_Datatype datatype, MPI_Op op, int root, MPI_Comm comm) {
-    Impl::SendVolumeStats(count, datatype);
-    if(Impl::prank(comm) == root) { Impl::RecvVolumeStats(count, datatype); }
     return Impl::mpi_err_check(
       MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, comm));
 }
@@ -1228,8 +850,6 @@ inline int Reduce_scatter(MPICONST void* sendbuf, void* recvbuf,
     int psize      = Impl::psize(comm);
     int64_t counts = 0;
     for(int i = 0; i < psize; ++i) { counts += recvcounts[i]; }
-    Impl::SendVolumeStats(counts, datatype);
-    Impl::RecvVolumeStats(recvcounts, datatype, comm);
     return Impl::mpi_err_check(
       MPI_Reduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm));
 }
@@ -1237,8 +857,6 @@ inline int Reduce_scatter(MPICONST void* sendbuf, void* recvbuf,
 inline int Reduce_scatter_block(const void* sendbuf, void* recvbuf,
                                 int recvcount, MPI_Datatype datatype, MPI_Op op,
                                 MPI_Comm comm) {
-    Impl::SendVolumeStats(recvcount, datatype);
-    Impl::RecvVolumeStats(recvcount, datatype);
     return Impl::mpi_err_check(MPI_Reduce_scatter_block(
       sendbuf, recvbuf, recvcount, datatype, op, comm));
 }
@@ -1256,7 +874,6 @@ inline int Rget(void* origin_addr, int origin_count,
                 MPI_Aint target_disp, int target_count,
                 MPI_Datatype target_datatype, MPI_Win win,
                 MPI_Request* request) {
-    Impl::OneVolumeStats(origin_count, origin_datatype);
     return Impl::mpi_err_check(
       MPI_Rget(origin_addr, origin_count, origin_datatype, target_rank,
                target_disp, target_count, target_datatype, win, request));
@@ -1267,7 +884,6 @@ inline int Rget_accumulate(const void* origin_addr, int origin_count,
                            int target_rank, MPI_Aint target_disp,
                            int target_count, MPI_Datatype target_datatype,
                            MPI_Op op, MPI_Win win, MPI_Request* request) {
-    Impl::OneVolumeStats(origin_count, origin_datatype);
     return Impl::mpi_err_check(MPI_Rget_accumulate(
       origin_addr, origin_count, origin_datatype, result_addr, result_count,
       result_datatype, target_rank, target_disp, target_count, target_datatype,
@@ -1278,7 +894,6 @@ inline int Rput(const void* origin_addr, int origin_count,
                 MPI_Aint target_disp, int target_count,
                 MPI_Datatype target_datatype, MPI_Win win,
                 MPI_Request* request) {
-    Impl::OneVolumeStats(origin_count, origin_datatype);
     return Impl::mpi_err_check(
       MPI_Rput(origin_addr, origin_count, origin_datatype, target_rank,
                target_disp, target_count, target_datatype, win, request));
@@ -1286,7 +901,6 @@ inline int Rput(const void* origin_addr, int origin_count,
 #endif
 inline int Rsend(MPICONST void* buf, int count, MPI_Datatype datatype, int dest,
                  int tag, MPI_Comm comm) {
-    Impl::SendVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Rsend(buf, count, datatype, dest, tag, comm));
 }
@@ -1297,19 +911,12 @@ inline int Rsend_init(MPICONST void* buf, int count, MPI_Datatype datatype,
 }
 inline int Scan(MPICONST void* sendbuf, void* recvbuf, int count,
                 MPI_Datatype datatype, MPI_Op op, MPI_Comm comm) {
-    Impl::SendVolumeStats(count, datatype);
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Scan(sendbuf, recvbuf, count, datatype, op, comm));
 }
 inline int Scatter(MPICONST void* sendbuf, int sendcount, MPI_Datatype sendtype,
                    void* recvbuf, int recvcount, MPI_Datatype recvtype,
                    int root, MPI_Comm comm) {
-    if(root == Impl::prank(comm)) {
-        Impl::SendVolumeStats(sendcount, sendtype);
-    } else {
-        Impl::RecvVolumeStats(recvcount, recvtype);
-    }
     return Impl::mpi_err_check(MPI_Scatter(
       sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm));
 }
@@ -1317,18 +924,12 @@ inline int Scatterv(MPICONST void* sendbuf, MPICONST int* sendcounts,
                     MPICONST int* displs, MPI_Datatype sendtype, void* recvbuf,
                     int recvcount, MPI_Datatype recvtype, int root,
                     MPI_Comm comm) {
-    if(root == Impl::prank(comm)) {
-        Impl::SendVolumeStats(sendcounts, sendtype, comm);
-    } else {
-        Impl::RecvVolumeStats(recvcount, recvtype);
-    }
     return Impl::mpi_err_check(MPI_Scatterv(sendbuf, sendcounts, displs,
                                             sendtype, recvbuf, recvcount,
                                             recvtype, root, comm));
 }
 inline int Send(MPICONST void* buf, int count, MPI_Datatype datatype, int dest,
                 int tag, MPI_Comm comm) {
-    Impl::SendVolumeStats(count, datatype);
     return Impl::mpi_err_check(MPI_Send(buf, count, datatype, dest, tag, comm));
 }
 inline int Send_init(MPICONST void* buf, int count, MPI_Datatype datatype,
@@ -1340,8 +941,6 @@ inline int Sendrecv(MPICONST void* sendbuf, int sendcount,
                     MPI_Datatype sendtype, int dest, int sendtag, void* recvbuf,
                     int recvcount, MPI_Datatype recvtype, int source,
                     int recvtag, MPI_Comm comm, MPI_Status* status) {
-    Impl::SendVolumeStats(sendcount, sendtype);
-    Impl::RecvVolumeStats(recvcount, recvtype);
     return Impl::mpi_err_check(
       MPI_Sendrecv(sendbuf, sendcount, sendtype, dest, sendtag, recvbuf,
                    recvcount, recvtype, source, recvtag, comm, status));
@@ -1349,14 +948,11 @@ inline int Sendrecv(MPICONST void* sendbuf, int sendcount,
 inline int Sendrecv_replace(void* buf, int count, MPI_Datatype datatype,
                             int dest, int sendtag, int source, int recvtag,
                             MPI_Comm comm, MPI_Status* status) {
-    Impl::SendVolumeStats(count, datatype);
-    Impl::RecvVolumeStats(count, datatype);
     return Impl::mpi_err_check(MPI_Sendrecv_replace(
       buf, count, datatype, dest, sendtag, source, recvtag, comm, status));
 }
 inline int Ssend(MPICONST void* buf, int count, MPI_Datatype datatype, int dest,
                  int tag, MPI_Comm comm) {
-    Impl::SendVolumeStats(count, datatype);
     return Impl::mpi_err_check(
       MPI_Ssend(buf, count, datatype, dest, tag, comm));
 }
@@ -1603,153 +1199,6 @@ inline int Waitsome(int incount, MPI_Request array_of_requests[], int* outcount,
     return Impl::mpi_err_check(MPI_Waitsome(incount, array_of_requests,
                                             outcount, array_of_indices,
                                             array_of_statuses));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_allocate(MPI_Aint size, int disp_unit, MPI_Info info,
-                        MPI_Comm comm, void* baseptr, MPI_Win* win) {
-    return Impl::mpi_err_check(
-      MPI_Win_allocate(size, disp_unit, info, comm, baseptr, win));
-}
-inline int Win_allocate_shared(MPI_Aint size, int disp_unit, MPI_Info info,
-                               MPI_Comm comm, void* baseptr, MPI_Win* win) {
-    return Impl::mpi_err_check(
-      MPI_Win_allocate_shared(size, disp_unit, info, comm, baseptr, win));
-}
-inline int Win_attach(MPI_Win win, void* base, MPI_Aint size) {
-    return Impl::mpi_err_check(MPI_Win_attach(win, base, size));
-}
-#endif
-inline int Win_call_errhandler(MPI_Win win, int errorcode) {
-    return Impl::mpi_err_check(MPI_Win_call_errhandler(win, errorcode));
-}
-inline int Win_complete(MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_complete(win));
-}
-inline int Win_create(void* base, MPI_Aint size, int disp_unit, MPI_Info info,
-                      MPI_Comm comm, MPI_Win* win) {
-    return Impl::mpi_err_check(
-      MPI_Win_create(base, size, disp_unit, info, comm, win));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_create_dynamic(MPI_Info info, MPI_Comm comm, MPI_Win* win) {
-    return Impl::mpi_err_check(MPI_Win_create_dynamic(info, comm, win));
-}
-#endif
-inline int Win_create_errhandler(MPI_Win_errhandler_function* win_errhandler_fn,
-                                 MPI_Errhandler* errhandler) {
-    return Impl::mpi_err_check(
-      MPI_Win_create_errhandler(win_errhandler_fn, errhandler));
-}
-inline int Win_create_keyval(MPI_Win_copy_attr_function* win_copy_attr_fn,
-                             MPI_Win_delete_attr_function* win_delete_attr_fn,
-                             int* win_keyval, void* extra_state) {
-    return Impl::mpi_err_check(MPI_Win_create_keyval(
-      win_copy_attr_fn, win_delete_attr_fn, win_keyval, extra_state));
-}
-inline int Win_delete_attr(MPI_Win win, int win_keyval) {
-    return Impl::mpi_err_check(MPI_Win_delete_attr(win, win_keyval));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_detach(MPI_Win win, const void* base) {
-    return Impl::mpi_err_check(MPI_Win_detach(win, base));
-}
-#endif
-inline int Win_fence(int assert, MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_fence(assert, win));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_flush(int rank, MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_flush(rank, win));
-}
-inline int Win_flush_all(MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_flush_all(win));
-}
-inline int Win_flush_local(int rank, MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_flush_local(rank, win));
-}
-inline int Win_flush_local_all(MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_flush_local_all(win));
-}
-#endif
-inline int Win_free(MPI_Win* win) {
-    return Impl::mpi_err_check(MPI_Win_free(win));
-}
-inline int Win_free_keyval(int* win_keyval) {
-    return Impl::mpi_err_check(MPI_Win_free_keyval(win_keyval));
-}
-inline int Win_get_attr(MPI_Win win, int win_keyval, void* attribute_val,
-                        int* flag) {
-    return Impl::mpi_err_check(
-      MPI_Win_get_attr(win, win_keyval, attribute_val, flag));
-}
-inline int Win_get_errhandler(MPI_Win win, MPI_Errhandler* errhandler) {
-    return Impl::mpi_err_check(MPI_Win_get_errhandler(win, errhandler));
-}
-inline int Win_get_group(MPI_Win win, MPI_Group* group) {
-    return Impl::mpi_err_check(MPI_Win_get_group(win, group));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_get_info(MPI_Win win, MPI_Info* info_used) {
-    return Impl::mpi_err_check(MPI_Win_get_info(win, info_used));
-}
-#endif
-inline int Win_get_name(MPI_Win win, char* win_name, int* resultlen) {
-    return Impl::mpi_err_check(MPI_Win_get_name(win, win_name, resultlen));
-}
-inline int Win_lock(int lock_type, int rank, int assert, MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_lock(lock_type, rank, assert, win));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_lock_all(int assert, MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_lock_all(assert, win));
-}
-#endif
-inline int Win_post(MPI_Group group, int assert, MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_post(group, assert, win));
-}
-inline int Win_set_attr(MPI_Win win, int win_keyval, void* attribute_val) {
-    return Impl::mpi_err_check(
-      MPI_Win_set_attr(win, win_keyval, attribute_val));
-}
-inline int Win_set_errhandler(MPI_Win win, MPI_Errhandler errhandler) {
-    return Impl::mpi_err_check(MPI_Win_set_errhandler(win, errhandler));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_set_info(MPI_Win win, MPI_Info info) {
-    return Impl::mpi_err_check(MPI_Win_set_info(win, info));
-}
-#endif
-inline int Win_set_name(MPI_Win win, MPICONST char* win_name) {
-    return Impl::mpi_err_check(MPI_Win_set_name(win, win_name));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_shared_query(MPI_Win win, int rank, MPI_Aint* size,
-                            int* disp_unit, void* baseptr) {
-    return Impl::mpi_err_check(
-      MPI_Win_shared_query(win, rank, size, disp_unit, baseptr));
-}
-#endif
-inline int Win_start(MPI_Group group, int assert, MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_start(group, assert, win));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_sync(MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_sync(win));
-}
-#endif
-inline int Win_test(MPI_Win win, int* flag) {
-    return Impl::mpi_err_check(MPI_Win_test(win, flag));
-}
-inline int Win_unlock(int rank, MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_unlock(rank, win));
-}
-#if PARALLELZONE_ENABLE_MPI3
-inline int Win_unlock_all(MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_unlock_all(win));
-}
-#endif
-inline int Win_wait(MPI_Win win) {
-    return Impl::mpi_err_check(MPI_Win_wait(win));
 }
 
 } // namespace MPI

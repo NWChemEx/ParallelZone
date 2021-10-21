@@ -2,7 +2,7 @@
 
 #include "Exception.hpp"
 // #include <Malloc/Allocator.h>
-// #include <Parallel/ProcessorGroup.h>
+#include "ProcGroup.hpp"
 #include "ParallelZoneMPI.hpp"
 
 #include <cstdlib>
@@ -30,7 +30,7 @@ int Parallel::s_threads_per_partition      = -1;
 int Parallel::s_world_rank                 = -1;
 int Parallel::s_world_size                 = -1;
 std::thread::id Parallel::s_main_thread_id = std::this_thread::get_id();
-ProcessorGroup* Parallel::s_root_context   = nullptr;
+ProcGroup* Parallel::s_root_context   = nullptr;
 
 namespace ParallelZone {
 
@@ -178,7 +178,7 @@ void Parallel::initializeManager(int& argc, char**& argv) {
     }
 
     s_root_context =
-      scinew ProcessorGroup(nullptr, ParallelZone::worldComm_, s_world_rank,
+      new ProcGroup(nullptr, ParallelZone::worldComm_, s_world_rank,
                             s_world_size, s_num_threads);
 
     if(s_root_context->myRank() == 0) {
@@ -283,7 +283,7 @@ void Parallel::finalizeManager(
 
 //_____________________________________________________________________________
 //
-ProcessorGroup* Parallel::getRootProcessorGroup() {
+ProcGroup* Parallel::getRootProcGroup() {
     if(s_root_context == nullptr) {
         throw ParallelZone::pz_exception("Parallel not initialized", __FILE__,
                                          __LINE__);

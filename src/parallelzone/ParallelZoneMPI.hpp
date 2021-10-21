@@ -317,9 +317,9 @@ inline int Comm_test_inter(MPI_Comm comm, int* flag) {
 inline int Compare_and_swap(const void* origin_addr, const void* compare_addr,
                             void* result_addr, MPI_Datatype datatype,
                             int target_rank, MPI_Aint target_disp) {
-    return Impl::mpi_err_check(
-      MPI_Compare_and_swap(origin_addr, compare_addr, result_addr, datatype,
-                           target_rank, target_disp));
+    return Impl::mpi_err_check(MPI_Compare_and_swap(origin_addr, compare_addr,
+                                                    result_addr, datatype,
+                                                    target_rank, target_disp));
 }
 #endif
 inline int Dims_create(int nnodes, int ndims, int dims[]) {
@@ -819,9 +819,9 @@ inline int Raccumulate(const void* origin_addr, int origin_count,
                        MPI_Aint target_disp, int target_count,
                        MPI_Datatype target_datatype, MPI_Op op,
                        MPI_Request* request) {
-    return Impl::mpi_err_check(MPI_Raccumulate(
-      origin_addr, origin_count, origin_datatype, target_rank, target_disp,
-      target_count, target_datatype, op, request));
+    return Impl::mpi_err_check(
+      MPI_Raccumulate(origin_addr, origin_count, origin_datatype, target_rank,
+                      target_disp, target_count, target_datatype, op, request));
 }
 #endif
 inline int Recv(void* buf, int count, MPI_Datatype datatype, int source,

@@ -2,8 +2,8 @@
 
 #include "Exception.hpp"
 // #include <Malloc/Allocator.h>
-#include "ProcGroup.hpp"
 #include "ParallelZoneMPI.hpp"
+#include "ProcGroup.hpp"
 
 #include <cstdlib>
 #include <iostream>
@@ -30,7 +30,7 @@ int Parallel::s_threads_per_partition      = -1;
 int Parallel::s_world_rank                 = -1;
 int Parallel::s_world_size                 = -1;
 std::thread::id Parallel::s_main_thread_id = std::this_thread::get_id();
-ProcGroup* Parallel::s_root_context   = nullptr;
+ProcGroup* Parallel::s_root_context        = nullptr;
 
 namespace ParallelZone {
 
@@ -177,9 +177,8 @@ void Parallel::initializeManager(int& argc, char**& argv) {
         mpiErr(const_cast<char*>("ParallelZone::MPI::Comm_rank"), status);
     }
 
-    s_root_context =
-      new ProcGroup(nullptr, ParallelZone::worldComm_, s_world_rank,
-                            s_world_size, s_num_threads);
+    s_root_context = new ProcGroup(nullptr, ParallelZone::worldComm_,
+                                   s_world_rank, s_world_size, s_num_threads);
 
     if(s_root_context->myRank() == 0) {
         std::string plural =

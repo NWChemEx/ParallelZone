@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace pz {
+namespace ParallelZone {
 
   class pz_exception : public std::runtime_error {
     std::string msg;

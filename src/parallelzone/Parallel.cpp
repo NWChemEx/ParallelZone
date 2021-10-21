@@ -1,378 +1,339 @@
-/* Parallel.C
-   Author - Eric Bylaska
-	this class is used for defining 3d parallel maps
-*/
+#include "Parallel.hpp"
 
-#include        <cmath>
-#include        <cstdlib>
-using namespace std;
+#include "Exception.hpp"
+// #include <Core/Malloc/Allocator.h>
+// #include <Core/Parallel/ProcessorGroup.h>
+#include "ParallelZoneMPI.hpp"
 
-#include	"mpi.h"
-#include	"Parallel.hpp"
-#include	"Control2.hpp"
+#include <cstdlib>
+#include <iostream>
+#include <sstream>
+#include <thread>
 
-/********************************
- *                              *
- *         Constructors         *
- *                              *
- ********************************/
-//Parallel::Parallel(int argc, char *argv[]) 
-Parallel::Parallel(MPI_Comm comm_world0)
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+using namespace ParallelZone;
+
+#define THREADED_MPI_AVAILABLE
+
+#if defined(__digital__) || defined(_AIX)
+#  undef THREADED_MPI_AVAILABLE
+#endif
+
+bool             Parallel::s_initialized             = false;
+bool             Parallel::s_using_device            = false;
+int              Parallel::s_num_threads             = -1;
+int              Parallel::s_num_partitions          = -1;
+int              Parallel::s_threads_per_partition   = -1;
+int              Parallel::s_world_rank              = -1;
+int              Parallel::s_world_size              = -1;
+std::thread::id  Parallel::s_main_thread_id          = std::this_thread::get_id();
+ProcessorGroup*  Parallel::s_root_context            = nullptr;
+
+
+namespace ParallelZone {
+
+  // While worldComm_ should be declared in Parallel.hpp, I would need to
+  // #include mpi.h, which then makes about everything in ParallelZone
+  // depend on mpi.h, so I'm just going to create it here.
+
+  static MPI_Comm worldComm_ = MPI_Comm(-1);
+
+}  // namespace ParallelZone
+
+
+//_____________________________________________________________________________
+//
+static
+void
+mpiErr( char * what, int errorcode )
 {
+  // Simple error handling for now...
+  int  resultlen = -1;
+  char string_name[ MPI_MAX_ERROR_STRING ];
 
-   int indx,d,dd,ii,np0,done;
+  ParallelZone::MPI::Error_string( errorcode, string_name, &resultlen );
+  std::cerr << "MPI Error in " << what << ": " << string_name << '\n';
 
-   //MPI::Init(argc,argv);
-   //MPI_Init(&argc,&argv);
-
-   dim = 1;
-
-   //comm_i[0]   = MPI_COMM_WORLD;
-
-   comm_world  = comm_world0;
-   comm_i[0]   = comm_world;
-   //npi[0]     = comm_i[0].Get_size();
-   //taskidi[0] = comm_i[0].Get_rank();
-   MPI_Comm_size(comm_i[0],&npi[0]);
-   MPI_Comm_rank(comm_i[0],&taskidi[0]);
-
-   comm_i[1]   = comm_i[0];
-   comm_i[2]   = comm_i[0];
-   npi[1]     = npi[0];
-   npi[2]     = 1;
-   taskidi[1] = taskidi[0];
-   taskidi[2] = 0;
-
-   procNd      = new int [npi[0]];
-
-   npi[1] = npi[0];
-   npi[2] = 1;
-   for (int i=0; i<npi[0]; ++i)
-      procNd[i] = i;
-
+  std::exit(1);
 }
 
-void Parallel::init2d(const int ncolumns, const int pfft3_qsize)
+//_____________________________________________________________________________
+//
+bool
+Parallel::usingMPI()
 {
-   int ii;
-   MPI_Group orig_group;
+  // TODO: Remove this method once all prior usage of Parallel::usingMPI() is gone
+  // We now assume this to be an invariant for ParallelZone, and hence this is always true.
+  return true;
+}
 
-   if (ncolumns>1)
-   {
-      dim = 2;
-      npi[1] = npi[0]/ncolumns;
-      npi[2] = ncolumns;
+//_____________________________________________________________________________
+//
+bool
+Parallel::usingDevice()
+{
+  return s_using_device;
+}
 
-      int icount = 0;
-      for (int j=0; j<npi[2]; ++j)
-      for (int i=0; i<npi[1]; ++i)
-      {
-         if (icount==taskidi[0])
-         {
-            taskidi[1] = i;
-            taskidi[2] = j;
-         }
-         procNd[i+j*npi[1]] = icount;
-         icount = (icount+1)%npi[0];
-      }
+//_____________________________________________________________________________
+//
+void
+Parallel::setUsingDevice( bool state )
+{
+  s_using_device = state;
+}
 
-      int *itmp = new int[npi[0]];
+//_____________________________________________________________________________
+//
+int
+Parallel::getNumThreads()
+{
+  return s_num_threads;
+}
 
-      for (int i=0; i<npi[1]; ++i) itmp[i] = procNd[i+taskidi[2]*npi[1]];
-      //group_i[1] = MPI::COMM_WORLD.Get_group().Incl(npi[1],itmp);
-      //comm_i[1]  = MPI::COMM_WORLD.Create(group_i[1]);
-      //MPI_Comm_group(MPI_COMM_WORLD,&orig_group);
-      MPI_Comm_group(comm_world,&orig_group);
-      MPI_Group_incl(orig_group,npi[1],itmp,&group_i[1]);
-      //MPI_Comm_create(MPI_COMM_WORLD,group_i[1],&comm_i[1]);
-      MPI_Comm_create(comm_world,group_i[1],&comm_i[1]);
+//_____________________________________________________________________________
+//
+int
+Parallel::getNumPartitions()
+{
+  return s_num_partitions;
+}
 
+//_____________________________________________________________________________
+//
+int
+Parallel::getThreadsPerPartition()
+{
+  return s_threads_per_partition;
+}
 
-      for (int j=0; j<npi[2]; ++j) itmp[j] = procNd[taskidi[1]+j*npi[1]];
-      //group_i[2] = MPI::COMM_WORLD.Get_group().Incl(npi[2],itmp);
-      //comm_i[2]  = MPI::COMM_WORLD.Create(group_i[2]);
-      MPI_Group_incl(orig_group,npi[2],itmp,&group_i[2]);
-      //MPI_Comm_create(MPI_COMM_WORLD,group_i[2],&comm_i[2]);
-      MPI_Comm_create(comm_world,group_i[2],&comm_i[2]);
+//_____________________________________________________________________________
+//
+std::thread::id
+Parallel::getMainThreadID()
+{
+  return s_main_thread_id;
+}
 
-      delete [] itmp;
+//_____________________________________________________________________________
+//
+void
+Parallel::setNumThreads( int num )
+{
+  s_num_threads = num;
+}
+
+//_____________________________________________________________________________
+//
+void
+Parallel::setNumPartitions( int num )
+{
+  s_num_partitions = num;
+}
+
+//_____________________________________________________________________________
+//
+void
+Parallel::setThreadsPerPartition( int num )
+{
+  s_threads_per_partition = num;
+}
+
+//_____________________________________________________________________________
+//
+bool
+Parallel::isInitialized()
+{
+  return s_initialized;
+}
+
+//_____________________________________________________________________________
+//
+void
+Parallel::initializeManager( int& argc , char**& argv )
+{
+  s_initialized = true;
+
+  if (s_world_rank != -1) {  // IF ALREADY INITIALIZED, JUST RETURN...
+    return;
+    // If s_world_rank is not -1, then we have already been initialized..
+    // This only happens (I think) if usage() is called (due to bad
+    // input parameters (to sus)) and usage() needs to init MPI so that
+    // it only displays the usage to the root process.
+  }
+
+#ifdef _OPENMP
+  s_num_partitions = omp_get_max_threads();
+#else
+  s_num_partitions = 1;
+#endif
+
+  if ( s_threads_per_partition <= 0 ) {
+#ifdef _OPENMP
+    s_threads_per_partition = omp_get_max_threads() / getNumPartitions();
+#else
+    s_threads_per_partition = 1;
+#endif
+  }
+
+#ifdef THREADED_MPI_AVAILABLE
+  int provided = -1;
+  int required = MPI_THREAD_SINGLE;
+  if ( s_num_threads > 0 || s_num_partitions > 0 ) {
+    required = MPI_THREAD_MULTIPLE;
+  }
+  else {
+    required = MPI_THREAD_SINGLE;
+  }
+#endif
+
+  int status;
+
+#ifdef THREADED_MPI_AVAILABLE
+  if ((status = ParallelZone::MPI::Init_thread(&argc, &argv, required, &provided)) != MPI_SUCCESS) {
+#else
+    if( ( status = ParallelZone::MPI::Init( &argc, &argv ) ) != MPI_SUCCESS) {
+#endif
+      mpiErr(const_cast<char*>("ParallelZone::MPI::Init"), status);
+    }
+
+#ifdef THREADED_MPI_AVAILABLE
+  if (provided < required) {
+    std::cerr << "Provided MPI parallel support of " << provided << " is not enough for the required level of " << required << "\n"
+              << "To use multi-threaded scheduler, your MPI implementation needs to support MPI_THREAD_MULTIPLE (level-3)"
+              << std::endl;
+    throw ParallelZone::pz_exception("Bad MPI level", __FILE__, __LINE__);
+  }
+#endif
+
+  ParallelZone::worldComm_ = MPI_COMM_WORLD;
+  if ((status = ParallelZone::MPI::Comm_size(ParallelZone::worldComm_, &s_world_size)) != MPI_SUCCESS) {
+    mpiErr(const_cast<char*>("ParallelZone::MPI::Comm_size"), status);
+  }
+
+  if ((status = ParallelZone::MPI::Comm_rank(ParallelZone::worldComm_, &s_world_rank)) != MPI_SUCCESS) {
+    mpiErr(const_cast<char*>("ParallelZone::MPI::Comm_rank"), status);
+  }
+
+  s_root_context = scinew ProcessorGroup(nullptr, ParallelZone::worldComm_, s_world_rank, s_world_size, s_num_threads);
+
+  if (s_root_context->myRank() == 0) {
+    std::string plural = (s_root_context->nRanks() > 1) ? "processes" : "process";
+    std::cout << "Parallel: " << s_root_context->nRanks() << " MPI " << plural << " (using MPI)\n";
+
+#ifdef THREADED_MPI_AVAILABLE
+    if (s_num_threads > 0) {
+      std::cout << "Parallel: " << s_num_threads << " threads per MPI process\n";
+    }
+    std::cout << "Parallel: MPI Level Required: " << required << ", provided: " << provided << "\n";
+#endif
+  }
+//    ParallelZone::MPI::Errhandler_set(ParallelZone::worldComm_, MPI_ERRORS_RETURN);
+}
+
+  //_____________________________________________________________________________
+  //
+int
+Parallel::getMPIRank()
+{
+  if( s_world_rank == -1 ) {
+    // Can't throw an exception here because it won't get trapped
+    // properly because 'getMPIRank()' is called in the exception
+    // handler...
+    std::cout << "ERROR:\n";
+    std::cout << "ERROR: getMPIRank() called before initializeManager()...\n";
+    std::cout << "ERROR:\n";
+    exitAll(1);
+  }
+  return s_world_rank;
+}
+
+//_____________________________________________________________________________
+//
+int
+Parallel::getMPISize()
+{
+  return s_world_size;
+}
+
+//_____________________________________________________________________________
+//
+void
+Parallel::finalizeManager( Circumstances circumstances /* = NormalShutdown */ )
+{
+  static bool finalized = false;
+
+  if (finalized) {
+    // Due to convoluted logic, signal, and exception handling,
+    // finalizeManager() can be easily/mistakenly called multiple
+    // times.  This catches that case and returns harmlessly.
+    //
+    // (One example of this occurs when ParallelZone::MPI::Abort causes a SIG_TERM
+    // to be thrown, which is caught by ParallelZone's exit handler, which
+    // in turn calls finalizeManager.)
+    return;
+  }
+
+  finalized = true;
+
+  // s_world_rank is not reset here as even after finalizeManager,
+  // some things need to know their rank...
+
+  // Only finalize if MPI was initialized.
+  if (s_initialized == false) {
+    throw ParallelZone::pz_exception("Trying to finalize without having MPI initialized", __FILE__, __LINE__);
+  }
+
+  if (circumstances == Abort) {
+    int errorcode = 1;
+    if (s_world_rank == 0) {
+      std::cout << "FinalizeManager() called... Calling ParallelZone::MPI::Abort on rank " << s_world_rank << ".\n";
+    }
+    std::cerr.flush();
+    std::cout.flush();
+
+    double seconds = 1.0;
+
+    struct timespec ts;
+    ts.tv_sec = (int)seconds;
+    ts.tv_nsec = (int)(1.e9 * (seconds - ts.tv_sec));
+
+    nanosleep(&ts, &ts);
+
+    ParallelZone::MPI::Abort(ParallelZone::worldComm_, errorcode);
+  }
+  else {
+    int status;
+    if ((status = ParallelZone::MPI::Finalize()) != MPI_SUCCESS) {
+      mpiErr(const_cast<char*>("ParallelZone::MPI::Finalize"), status);
+    }
+  }
+
+  if (s_root_context != nullptr) {
+    delete s_root_context;
+    s_root_context = nullptr;
+  }
+}
+
+//_____________________________________________________________________________
+//
+ProcessorGroup*
+Parallel::getRootProcessorGroup()
+{
+   if( s_root_context == nullptr ) {
+      throw ParallelZone::pz_exception("Parallel not initialized", __FILE__, __LINE__);
    }
 
-   //ii = 3+control.pfft3_qsize();
-   //request = new MPI::Request*[ii];
-   ii = 3+pfft3_qsize;
-   reqcnt   = new int[ii];
-   request  = new MPI_Request*[ii];
-   statuses = new MPI_Status*[ii];
-
+   return s_root_context;
 }
 
-/********************************
- *                              *
- *          Destructors         *
- *                              *
- ********************************/
-Parallel::~Parallel()
+//_____________________________________________________________________________
+//
+void
+Parallel::exitAll( int code )
 {
-   if (dim>1)
-   {
-      for (int d=1; d<=dim; ++d)
-      {
-         //group_i[d].Free();
-        // comm_i[d].Free();
-         MPI_Comm_free(&comm_i[d]);
-         MPI_Group_free(&group_i[d]);
-      }
-   }
-
-   delete [] procNd;
-
-   delete [] reqcnt;
-   delete [] request;
-   delete [] statuses;
-
-
-   //MPI::Finalize();
-   //MPI_Finalize();
-}
-/********************************
- *                              *
- *          MaxAll              *
- *                              *
- ********************************/
-double Parallel::MaxAll(const int d, const double sum)
-{
-   double sumout;
-   if (npi[d]>1) 
-      //comm_i[d].Allreduce(&sum,&sumout,1,MPI_DOUBLE_PRECISION,MPI_MAX);
-      MPI_Allreduce(&sum,&sumout,1,MPI_DOUBLE_PRECISION,MPI_MAX,comm_i[d]);
-   else 
-      sumout = sum;
-   return sumout;
-}
-
-/********************************
- *                              *
- *          SumAll              *
- *                              *
- ********************************/
-double Parallel::SumAll(const int d, const double sum)
-{
-   double sumout;
-
-   if (npi[d]>1) 
-      //comm_i[d].Allreduce(&sum,&sumout,1,MPI_DOUBLE_PRECISION,MPI_SUM);
-      MPI_Allreduce(&sum,&sumout,1,MPI_DOUBLE_PRECISION,MPI_SUM,comm_i[d]);
-   else
-      sumout = sum;
-   return sumout;
-}
-
-/********************************
- *                              *
- *         ISumAll              *
- *                              *
- ********************************/
-int Parallel::ISumAll(const int d, const int sum)
-{
-   int sumout;
-
-   if (npi[d]>1) 
-      //comm_i[d].Allreduce(&sum,&sumout,1,MPI_INTEGER,MPI_SUM);
-      MPI_Allreduce(&sum,&sumout,1,MPI_INTEGER,MPI_SUM,comm_i[d]);
-   else
-      sumout = sum;
-   return sumout;
-}
-
-
-/********************************
- *                              *
- *       Vector_SumAll          *
- *                              *
- ********************************/
-void Parallel::Vector_SumAll(const int d, const int n, double *sum)
-{
-   double *sumout;
-   if (npi[d]>1)
-   {
-      sumout = new double [n];
-      //comm_i[d].Allreduce(sum,sumout,n,MPI_DOUBLE_PRECISION,MPI_SUM);
-      MPI_Allreduce(sum,sumout,n,MPI_DOUBLE_PRECISION,MPI_SUM,comm_i[d]);
-      for (int i=0; i<n; ++i) sum[i] = sumout[i];
-      delete [] sumout;
-   }
-}
-
-/********************************
- *                              *
- *       Vector_ISumAll         *
- *                              *
- ********************************/
-void Parallel::Vector_ISumAll(const int d, const int n, int *sum)
-{
-   int *sumout;
-   if (npi[d]>1)
-   {
-      sumout = new int [n];
-      //comm_i[d].Allreduce(sum,sumout,n,MPI_INTEGER,MPI_SUM);
-      MPI_Allreduce(sum,sumout,n,MPI_INTEGER,MPI_SUM,comm_i[d]);
-      for (int i=0; i<n; ++i) sum[i] = sumout[i];
-      delete [] sumout;
-   }
-}
-
-
-/********************************
- *                              *
- *       Brdcst_Values          *
- *                              *
- ********************************/
-void Parallel::Brdcst_Values(const int d, const int root, const int n, double *sum)
-{
-   //if (npi[d]>1) comm_i[d].Bcast(sum,n,MPI_DOUBLE_PRECISION,root);
-   if (npi[d]>1) MPI_Bcast(sum,n,MPI_DOUBLE_PRECISION,root,comm_i[d]);
-}
-
-/********************************
- *                              *
- *       Brdcst_iValues         *
- *                              *
- ********************************/
-void Parallel::Brdcst_iValues(const int d, const int root, const int n, int *sum)
-{
-   //if (npi[d]>1) comm_i[d].Bcast(sum,n,MPI_INTEGER,root);
-   if (npi[d]>1) MPI_Bcast(sum,n,MPI_INTEGER,root,comm_i[d]);
-}
-
-/********************************
- *                              *
- *       Brdcst_iValue          *
- *                              *
- ********************************/
-void Parallel::Brdcst_iValue(const int d, const int root, int *sum)
-{
-   //if (npi[d]>1) comm_i[d].Bcast(sum,1,MPI_INTEGER,root);
-   if (npi[d]>1) MPI_Bcast(sum,1,MPI_INTEGER,root,comm_i[d]);
-}
-
-/********************************
- *                              *
- *       Brdcst_cValues         *
- *                              *
- ********************************/
-void Parallel::Brdcst_cValues(const int d, const int root, const int n, void *sum)
-{
-   //if (npi[d]>1) comm_i[d].Bcast(sum,n,MPI_CHAR,root);
-   if (npi[d]>1) MPI_Bcast(sum,n,MPI_CHAR,root,comm_i[d]);
-}
-
-/********************************
- *                              *
- *       Parallel::dsend        *
- *                              *
- ********************************/
-void Parallel::dsend(const int d, const int tag, const int procto, const int n, double *sum)
-{
-   //if (npi[d]>1) comm_i[d].Send(sum,n,MPI_DOUBLE_PRECISION,procto,tag);
-   if (npi[d]>1) MPI_Send(sum,n,MPI_DOUBLE_PRECISION,procto,tag,comm_i[d]);
-}
-
-
-/********************************
- *                              *
- *       Parallel::dreceive     *
- *                              *
- ********************************/
-void Parallel::dreceive(const int d, const int tag, const int procfrom, const int n, double *sum)
-{
-   //MPI::Status status;
-   //if (npi[d]>1) comm_i[d].Recv(sum,n,MPI_DOUBLE_PRECISION,procfrom,tag);
-   MPI_Status status;
-   if (npi[d]>1) MPI_Recv(sum,n,MPI_DOUBLE_PRECISION,procfrom,tag,comm_i[d],&status);
-}
-
-
-
-/********************************
- *                              *
- *       Parallel::isend        *
- *                              *
- ********************************/
-void Parallel::isend(const int d, const int tag, const int procto, const int n, int *sum)
-{
-   //if (npi[d]>1) comm_i[d].Send(sum,n,MPI_INTEGER,procto,tag);
-   if (npi[d]>1) MPI_Send(sum,n,MPI_INTEGER,procto,tag,comm_i[d]);
-}  
-
-
-/********************************
- *                              *
- *       Parallel::ireceive     *
- *                              *
- ********************************/
-void Parallel::ireceive(const int d, const int tag, const int procfrom, const int n, int *sum)
-{
-   //MPI::Status status;
-   //if (npi[d]>1) comm_i[d].Recv(sum,n,MPI_INTEGER,procfrom,tag);
-   MPI_Status status;
-   if (npi[d]>1) MPI_Recv(sum,n,MPI_INTEGER,procfrom,tag,comm_i[d],&status);
-}  
-
-
-
-
-/********************************
- *                              *
- *       Parallel::astart       *
- *                              *
- ********************************/
-void Parallel::astart(const int d, const int sz)
-{
-   if (npi[d]>1)
-   {
-      reqcnt[d]  = 0;
-      //request[d] = new MPI::Request[sz];
-      request[d]  = new MPI_Request[sz];
-      statuses[d] = new MPI_Status[sz];
-   }
-}
-/********************************
- *                              *
- *       Parallel::aend         *
- *                              *
- ********************************/
-void Parallel::aend(const int d)
-{
-   //MPI::Status status[reqcnt[d]];
-   //request[d][0].Waitall(reqcnt[d],request[d],status);
-   if (npi[d]>1)
-   {
-      //request[d][0].Waitall(reqcnt[d],request[d]);
-      MPI_Waitall(reqcnt[d],request[d],statuses[d]);
-      delete [] request[d];
-      delete [] statuses[d];
-   }
-}
-
-/********************************
- *                              *
- *       Parallel::adreceive     *
- *                              *
- ********************************/
-void Parallel::adreceive(const int d, const int tag, const int procfrom, const int n, double *sum)
-{
-   //MPI::Status status;
-   //if (npi[d]>1) request[d][reqcnt[d]++] = comm_i[d].Irecv(sum,n,MPI_DOUBLE_PRECISION,procfrom,tag);
-   if (npi[d]>1) MPI_Irecv(sum,n,MPI_DOUBLE_PRECISION,procfrom,tag,comm_i[d],&request[d][reqcnt[d]++]);
-}
-
-/********************************
- *                              *
- *       Parallel::adsend        *
- *                              *
- ********************************/
-void Parallel::adsend(const int d, const int tag, const int procto, const int n, double *sum)
-{
-   if (npi[d]>1) MPI_Isend(sum,n,MPI_DOUBLE_PRECISION,procto,tag,comm_i[d],&request[d][reqcnt[d]++]);
+  std::exit(code);
 }

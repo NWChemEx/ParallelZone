@@ -34,12 +34,12 @@ namespace pz {
 
     int retval = PAPI_library_init(PAPI_VER_CURRENT);
     if (retval != PAPI_VER_CURRENT) {
-      throw pz::pz_exception("PZ: PAPI_library_init() failed", __FILE__, __LINE__);
+      throw ParallelZone::pz_exception("PZ: PAPI_library_init() failed", __FILE__, __LINE__);
     }
 
     m_hwInfo = PAPI_get_hardware_info();
     if (m_hwInfo == nullptr) {
-      throw pz::pz_exception("PZ: PAPI_get_hardware_info() failed", __FILE__, __LINE__);
+      throw ParallelZone::pz_exception("PZ: PAPI_get_hardware_info() failed", __FILE__, __LINE__);
     }
     PAPI_dev_type_info_t *dev_type_info = m_hwInfo->dev_type_arr;
 

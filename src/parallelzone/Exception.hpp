@@ -21,4 +21,4 @@ public:
     const char* what() const throw() { return msg.c_str(); }
 };
 
-} // namespace pz
+} // namespace ParallelZone

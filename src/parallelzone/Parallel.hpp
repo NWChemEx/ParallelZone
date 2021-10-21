@@ -21,7 +21,6 @@ namespace ParallelZone {
 class ProcessorGroup;
 
 class Parallel {
-
    public:
 
       enum Circumstances {
@@ -121,6 +120,5 @@ class Parallel {
 };
 
 } // End namespace ParallelZone
-
 #endif // end _PARALLEL_HPP_
   

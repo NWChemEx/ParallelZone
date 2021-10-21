@@ -1,8 +1,8 @@
 #include "Parallel.hpp"
 
 #include "Exception.hpp"
-// #include <Core/Malloc/Allocator.h>
-// #include <Core/Parallel/ProcessorGroup.h>
+// #include <Malloc/Allocator.h>
+// #include <Parallel/ProcessorGroup.h>
 #include "ParallelZoneMPI.hpp"
 
 #include <cstdlib>

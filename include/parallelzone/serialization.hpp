@@ -68,3 +68,34 @@ CEREAL_SETUP_ARCHIVE_TRAITS(pz::JSONInputArchive, pz::JSONOutputArchive)
 CEREAL_SETUP_ARCHIVE_TRAITS(pz::BinaryInputArchive, pz::BinaryOutputArchive)
 CEREAL_SETUP_ARCHIVE_TRAITS(pz::PortableBinaryInputArchive,
                             pz::PortableBinaryOutputArchive)
+
+// Enables serialization/deserialization of std::map
+// To be moved to MADNESS archive
+namespace madness {
+namespace archive {
+template<class Archive, typename T, typename Compare, typename Alloc>
+struct ArchiveStoreImpl<Archive, std::set<T, Compare, Alloc>> {
+    static inline void store(const Archive& ar,
+                            const std::set<T, Compare, Alloc>& s) {
+        ar << s.size();
+        for(const auto& i : s) ar << i;
+    };
+};
+
+template<class Archive, typename T, typename Compare, typename Alloc>
+struct ArchiveLoadImpl<Archive, std::set<T, Compare, Alloc>> {
+    static inline void load(const Archive& ar,
+                              std::set<T, Compare, Alloc>& s) {
+        std::size_t size;
+        ar >> size;
+        s.clear();
+        auto hint = s.begin();
+        for(std::size_t i = 0; i < size; ++i) {
+            typename std::set<T,Compare, Alloc>::key_type key;
+            ar >> key;
+            hint = s.emplace_hint(hint, std::move(key));
+        }
+    };
+};
+} // namespace archive
+} // namespace madness

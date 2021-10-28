@@ -1,6 +1,7 @@
 #include "parallelzone/serialization.hpp"
 #include <catch2/catch.hpp>
 #include <madness/world/buffer_archive.h>
+#include <set>
 
 TEMPLATE_TEST_CASE("Serialization with Cereal wrapper",
                    "[serialization][serializer][deserializer]",
@@ -34,19 +35,22 @@ TEMPLATE_TEST_CASE("Serialization with Cereal wrapper",
     SECTION("Containers") {
         std::vector<int> v{1, 2, 3, 4};
         std::map<std::string, double> m{{"Hello", 1.23}, {"World", 3.14}};
+        std::set<int> s{1, 33, 6, 352};
         {
             output ar(ss);
-            ar << v << m;
+            ar << v << m << s;
         }
 
         std::vector<int> v2;
         std::map<std::string, double> m2;
+        std::set<int> s2;
         {
             input ar(ss);
-            ar >> v2 >> m2;
+            ar >> v2 >> m2 >> s2;
         }
         REQUIRE(v2 == v);
         REQUIRE(m2 == m);
+        REQUIRE(s2 == s);
     }
 }
 

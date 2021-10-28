@@ -76,7 +76,7 @@ namespace archive {
 template<class Archive, typename T, typename Compare, typename Alloc>
 struct ArchiveStoreImpl<Archive, std::set<T, Compare, Alloc>> {
     static inline void store(const Archive& ar,
-                            const std::set<T, Compare, Alloc>& s) {
+                             const std::set<T, Compare, Alloc>& s) {
         ar << s.size();
         for(const auto& i : s) ar << i;
     };
@@ -84,14 +84,13 @@ struct ArchiveStoreImpl<Archive, std::set<T, Compare, Alloc>> {
 
 template<class Archive, typename T, typename Compare, typename Alloc>
 struct ArchiveLoadImpl<Archive, std::set<T, Compare, Alloc>> {
-    static inline void load(const Archive& ar,
-                              std::set<T, Compare, Alloc>& s) {
+    static inline void load(const Archive& ar, std::set<T, Compare, Alloc>& s) {
         std::size_t size;
         ar >> size;
         s.clear();
         auto hint = s.begin();
         for(std::size_t i = 0; i < size; ++i) {
-            typename std::set<T,Compare, Alloc>::key_type key;
+            typename std::set<T, Compare, Alloc>::key_type key;
             ar >> key;
             hint = s.emplace_hint(hint, std::move(key));
         }

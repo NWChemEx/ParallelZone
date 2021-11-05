@@ -287,7 +287,6 @@ ProcGroup* Parallel::getRootProcGroup() {
         throw ParallelZone::pz_exception("Parallel not initialized", __FILE__,
                                          __LINE__);
     }
-
     return s_root_context;
 }
 

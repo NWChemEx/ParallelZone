@@ -29,8 +29,9 @@
 #include <madness/world/archive.h>
 #include <madness/world/buffer_archive.h>
 #include <madness/world/cereal_archive.h>
+#include <madness/world/type_traits.h>
 
-namespace pz {
+namespace parallelzone {
 using XMLOutputArchive =
   madness::archive::CerealOutputArchive<cereal::XMLOutputArchive>;
 using XMLInputArchive =
@@ -49,21 +50,26 @@ using PortableBinaryInputArchive =
   madness::archive::CerealInputArchive<cereal::PortableBinaryInputArchive>;
 template<typename T, typename Archive>
 using is_serializable = cereal::traits::is_output_serializable<T, Archive>;
-template<typename Archive>
-using get_input_from_output =
-  cereal::traits::detail::get_input_from_output<Archive>;
 template<typename T, typename Archive>
 using is_deserializable = cereal::traits::is_input_serializable<T, Archive>;
-template<typename Archive>
-using get_output_from_input =
-  cereal::traits::detail::get_output_from_input<Archive>;
-} // namespace pz
+using cereal::traits::detail::get_input_from_output;
+using cereal::traits::detail::get_output_from_input;
+using madness::is_input_archive;
+using madness::is_input_archive_v;
+using madness::is_output_archive;
+using madness::is_output_archive_v;
+} // namespace parallelzone
 
+// Can be removed once the other codes ares updated
+namespace pz = parallelzone;
 CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,
                             madness::archive::BufferOutputArchive)
 
-CEREAL_SETUP_ARCHIVE_TRAITS(pz::XMLInputArchive, pz::XMLOutputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(pz::JSONInputArchive, pz::JSONOutputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(pz::BinaryInputArchive, pz::BinaryOutputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(pz::PortableBinaryInputArchive,
-                            pz::PortableBinaryOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::XMLInputArchive,
+                            parallelzone::XMLOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::JSONInputArchive,
+                            parallelzone::JSONOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::BinaryInputArchive,
+                            parallelzone::BinaryOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::PortableBinaryInputArchive,
+                            parallelzone::PortableBinaryOutputArchive)

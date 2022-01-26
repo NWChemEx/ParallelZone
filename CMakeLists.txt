@@ -28,10 +28,11 @@ if("${BUILD_DOCS}")
     endif()
 endif()
 
+#TODO: Make sure MADworld uses the Cereal we build
 cpp_find_or_build_dependency(
     MADworld
     URL github.com/m-a-d-n-e-s-s/madness
-    VERSION 7ce06234c23aa8e0ab3d9e9b87eff9cd85390d80
+    VERSION 34ef8e6d6c61098d44ca559a530b4096e40b9a01
     BUILD_TARGET MADworld
     FIND_TARGET MADworld
     CMAKE_ARGS ENABLE_UNITTESTS=OFF
@@ -55,13 +56,24 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=OFF
 )
 
+cpp_find_or_build_dependency(
+    cereal
+    URL github.com/USCiLab/cereal
+    BUILD_TARGET cereal
+    FIND_TARGET cereal::cereal
+    CMAKE_ARGS JUST_INSTALL_CEREAL=ON
+)
+
 cpp_add_library(
     parallelzone
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/parallelzone"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/parallelzone"
-    DEPENDS MADworld bphash::bphash
+    DEPENDS MADworld bphash::bphash cereal::cereal
 
 )
+
+include(nwx_python_mods)
+cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone )
 
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(
@@ -75,7 +87,7 @@ if("${BUILD_TESTING}")
         test_parallelzone
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
         INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/parallelzone"
-        DEPENDS Catch2::Catch2 MADworld parallelzone
+        DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
     )
 endif()
 

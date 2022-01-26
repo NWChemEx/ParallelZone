@@ -4,7 +4,7 @@
 #include <iostream>
 #include <limits>
 
-using namespace pz;
+using namespace parallelzone;
 TEST_CASE("Hashing type traits") {
     STATIC_REQUIRE(std::is_same_v<hash_type, std::string>);
     STATIC_REQUIRE(is_hash_v<hash_type>);
@@ -14,12 +14,12 @@ TEST_CASE("Hashing with BPHash") {
     struct SA {
         int idx;
         std::vector<int> vec;
-        void hash(pz::Hasher& h) const { return h(idx, vec); }
+        void hash(parallelzone::Hasher& h) const { return h(idx, vec); }
     };
     struct SB {
         int idx;
         std::vector<int> vec;
-        void hash(pz::Hasher& h) const { return h(idx, vec); }
+        void hash(parallelzone::Hasher& h) const { return h(idx, vec); }
     };
     SA sa, sa0;
     SB sb, sb0;

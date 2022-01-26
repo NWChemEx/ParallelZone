@@ -10,7 +10,7 @@
 #include <functional>
 #include <typeindex>
 #include <typeinfo>
-namespace pz {
+namespace parallelzone {
 
 using bphash::hash_to_string;
 using bphash::Hasher;
@@ -56,7 +56,10 @@ static constexpr bool is_hash_v = std::is_same_v<T, hash_type>;
 template<typename T>
 using disable_if_hash_t = std::enable_if_t<!is_hash_v<T>>;
 
-} // namespace pz
+} // namespace parallelzone
+
+// Can be removed once the other codes ares updated
+namespace pz = parallelzone;
 
 namespace std {
 // Free function to make std::reference_wrapper hashable

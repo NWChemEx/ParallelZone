@@ -7,5 +7,7 @@
  * library.
  */
 
+#include "parallelzone/hasher.hpp"
+#include "parallelzone/serialization.hpp"
 #include <madness/world/world.h>
-namespace pz {} // namespace pz
+namespace parallelzone {} // namespace parallelzone

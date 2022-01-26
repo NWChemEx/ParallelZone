@@ -31,7 +31,7 @@
 #include <madness/world/cereal_archive.h>
 #include <madness/world/type_traits.h>
 
-namespace pz {
+namespace parallelzone {
 using XMLOutputArchive =
   madness::archive::CerealOutputArchive<cereal::XMLOutputArchive>;
 using XMLInputArchive =
@@ -58,13 +58,18 @@ using madness::is_input_archive;
 using madness::is_input_archive_v;
 using madness::is_output_archive;
 using madness::is_output_archive_v;
-} // namespace pz
+} // namespace parallelzone
 
+// Can be removed once the other codes ares updated
+namespace pz = parallelzone;
 CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,
                             madness::archive::BufferOutputArchive)
 
-CEREAL_SETUP_ARCHIVE_TRAITS(pz::XMLInputArchive, pz::XMLOutputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(pz::JSONInputArchive, pz::JSONOutputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(pz::BinaryInputArchive, pz::BinaryOutputArchive)
-CEREAL_SETUP_ARCHIVE_TRAITS(pz::PortableBinaryInputArchive,
-                            pz::PortableBinaryOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::XMLInputArchive,
+                            parallelzone::XMLOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::JSONInputArchive,
+                            parallelzone::JSONOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::BinaryInputArchive,
+                            parallelzone::BinaryOutputArchive)
+CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::PortableBinaryInputArchive,
+                            parallelzone::PortableBinaryOutputArchive)

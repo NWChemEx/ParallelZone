@@ -3,26 +3,25 @@
 #include <madness/world/MADworld.h>
 #include <madness/world/safempi.h>
 
-#include <sstream>
 #include <any>
+#include <sstream>
 
 namespace parallelzone {
 
 class Runtime {
-
 public:
-  enum class Circumstances { NormalShutdown, Abort };
+    enum class Circumstances { NormalShutdown, Abort };
 
-  /// Gets the type-erased MPI Communicator
-  std::any mpi_comm();
+    /// Gets the type-erased MPI Communicator
+    std::any mpi_comm();
 
-  inline int getNumPartitions() { return num_partitions; }
+    inline int getNumPartitions() { return num_partitions; }
 
-  inline void setNumPartitions(int num) { num_partitions = num; }
+    inline void setNumPartitions(int num) { num_partitions = num; }
 
-/// @return true, if Runtime (and, necessarily, MADWorld runtime) is in an
-/// initialized state
-  inline bool isInitialized() { return initialized; }
+    /// @return true, if Runtime (and, necessarily, MADWorld runtime) is in an
+    /// initialized state
+    inline bool isInitialized() { return initialized; }
 
 private:
     Runtime();

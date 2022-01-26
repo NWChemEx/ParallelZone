@@ -1,21 +1,20 @@
-# This function will skim a CMake target and create a file _init__.py that
+# This function will skim a CMake target and create a file __init__.py that
 # should be placed next to the shared library created by that target. This
 # function assumes the target's:
 #
 # * public header files are in the ``PUBLIC_HEADER`` property
 # * include paths are in the ``INTERFACE_INCLUDE_DIRECTORIES`` property
-# * dependencies are targets and in the ``INTERFACE_LINK_LIBRAIRES`` property
-#
+# * dependencies are targets and in the ``INTERFACE_LINK_LIBRARIES`` property
 #
 # :Additional Named Arguments:
-#     * NAMESPACE - The C++ namespace that your bindings live in. 
-#     * DEPNAMESPACES - The C++ namespaceis that your bindings require,
-#       i.e. previous Python package builds.
+#     * NAMESPACES - The C++ namespace that your bindings live in. 
 #     * PACKAGE - Package name to used as an alternative to NAMESPACE.  
-#     * DEPENDS - List of modules this module depends on.
+#     * DEPPACKAGES - Packages this module depends on.
 #     * PYTHONIZE - Add special function to Pythonize class with more complex 
 #       arguments. Helps LibChemist.
+#     * MPI - When set will ensure MPI stuff is handled properly.
 #
+
 function(cppyy_make_python_package)
     #---------------------------------------------------------------------------
     #----------------------Check if Python bindings need to be build------------
@@ -37,6 +36,7 @@ function(cppyy_make_python_package)
     #---------------------------------------------------------------------------
     #--------------------------Argument Parsing---------------------------------
     #---------------------------------------------------------------------------
+    #set(options MPI PYTHONIZE BLAS TILED)
     set(options MPI PYTHONIZE)
     set(oneValueArgs PACKAGE)
     set(multiValueArgs NAMESPACES DEPPACKAGES)
@@ -44,27 +44,27 @@ function(cppyy_make_python_package)
     #---------------------------------------------------------------------------
     #--------------------------Get include directories--------------------------
     #---------------------------------------------------------------------------
-    get_target_property(include_dirs ${install_data_PACKAGE} INTERFACE_INCLUDE_DIRECTORIES)
-    get_target_property(link_libs ${install_data_PACKAGE} INTERFACE_LINK_LIBRARIES)
-    foreach(item ${link_libs})
-        get_target_property(include_item ${item} INTERFACE_INCLUDE_DIRECTORIES)
-        list(APPEND include_dirs ${include_item})
-    endforeach()
-    if (install_data_MPI)
-        list(APPEND include_dirs ${MPI_CXX_HEADER_DIR})
-    endif()
+    get_true_target_property(include_dirs ${install_data_PACKAGE} INTERFACE_INCLUDE_DIRECTORIES)
+    list(APPEND include_dirs ${MPI_CXX_HEADER_DIR})
+    list(APPEND include_dirs ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
+    list(REMOVE_DUPLICATES include_dirs)
     #---------------------------------------------------------------------------
-    #--------------------------Get headers to includer--------------------------
+    #--------------------------Get headers to include---------------------------
     #---------------------------------------------------------------------------
     get_target_property(include_headers ${install_data_PACKAGE} PUBLIC_HEADER)
     get_filename_component(header_PREFIX ${CMAKE_CURRENT_SOURCE_DIR} NAME_WE)
+    #---------------------------------------------------------------------------
+    #-----------------Blacklist headers we do not want to expose----------------
+    #---------------------------------------------------------------------------
+    list(FILTER include_headers EXCLUDE REGEX ".*linalg_inner_tensors\\.hpp$")
+    list(FILTER include_headers EXCLUDE REGEX ".*pow\\.hpp$")
     #---------------------------------------------------------------------------
     #------------Collect the information we need off the target-----------------
     #---------------------------------------------------------------------------
     set(target_lib "$<TARGET_FILE_NAME:${install_data_PACKAGE}>")
     set(output_dir "${CMAKE_BINARY_DIR}/Python/${install_data_PACKAGE}")
     #---------------------------------------------------------------------------
-    #------------Defines in BTAS and Madness at runtime are needed by cppyy-----
+    #----Defines needed by BTAS and Madness at runtime are needed by cppyy------
     #---------------------------------------------------------------------------
     set(python_defines_file "${output_dir}/python_defines.hpp")
     set(python_defines "#define MADNESS_HAS_CEREAL\n")
@@ -101,8 +101,7 @@ function(cppyy_make_python_package)
     #---------------------------------------------------------------------------
     set(init_file "${init_file}cppyy.include(\"${python_defines_file}\")\n")
     set(init_file "${init_file}headers = \"${include_headers}\".split(';')\n")
-    set(init_file "${init_file}for h in headers:\n")
-    set(init_file "${init_file}    inc = os.path.join(\"${header_PREFIX}\",h)\n")
+    set(init_file "${init_file}for inc in headers:\n")
     set(init_file "${init_file}    cppyy.include(inc)\n")
     set(init_file "${init_file}\ncppyy.load_library(\"${CMAKE_CURRENT_BINARY_DIR}/${target_lib}\")\n\n")
     foreach(namespace ${install_data_NAMESPACES})
@@ -127,4 +126,36 @@ function(cppyy_make_python_package)
     endif()
     #Write it out
     file(GENERATE OUTPUT ${init_file_name} CONTENT "${init_file}")
+endfunction()
+
+
+#---------------------------------------------------------------------------
+#--------Function to recursively find all include directories needed--------
+#---------------------------------------------------------------------------
+function( get_true_target_property _out _target _property )
+  if( TARGET ${_target} )
+    get_property( _${_target}_imported TARGET ${_target} PROPERTY IMPORTED )
+    if( NOT ${_property} MATCHES "INTERFACE_LINK_LIBRARIES" )
+      get_property( _${_target}_property TARGET ${_target} PROPERTY ${_property} )
+    endif()
+    if( 1 )
+      get_property( _${_target}_link TARGET ${_target} PROPERTY INTERFACE_LINK_LIBRARIES )
+      foreach( _lib ${_${_target}_link} )
+        if( TARGET ${_lib} )
+          get_true_target_property( _${_lib}_property ${_lib} ${_property} )
+          if( _${_lib}_property )
+            list( APPEND _${_target}_property_imported ${_${_lib}_property} )
+          endif()
+        elseif( ${_property} MATCHES "INTERFACE_LINK_LIBRARIES" )
+          list( APPEND _${_target}_property_imported ${_lib} )
+        endif()
+      endforeach()
+      if(_${_target}_property_imported)
+        list(APPEND _${_target}_property ${_${_target}_property_imported} )
+      endif()
+      set( ${_out} ${_${_target}_property} PARENT_SCOPE )
+    else()
+      set( ${_out} ${_${_target}_property} PARENT_SCOPE )
+    endif()
+  endif()
 endfunction()

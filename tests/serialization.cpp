@@ -4,14 +4,16 @@
 
 TEMPLATE_TEST_CASE("Serialization with Cereal wrapper",
                    "[serialization][serializer][deserializer]",
-                   cereal::BinaryOutputArchive, pz::BinaryOutputArchive,
-                   pz::PortableBinaryOutputArchive, pz::JSONOutputArchive,
-                   pz::XMLOutputArchive) {
+                   cereal::BinaryOutputArchive,
+                   parallelzone::BinaryOutputArchive,
+                   parallelzone::PortableBinaryOutputArchive,
+                   parallelzone::JSONOutputArchive,
+                   parallelzone::XMLOutputArchive) {
     using output = TestType;
-    using input  = typename pz::get_input_from_output<output>::type;
+    using input  = typename parallelzone::get_input_from_output<output>::type;
     std::stringstream ss;
-    REQUIRE(pz::is_output_archive_v<output>);
-    REQUIRE(pz::is_input_archive_v<input>);
+    REQUIRE(parallelzone::is_output_archive_v<output>);
+    REQUIRE(parallelzone::is_input_archive_v<input>);
     SECTION("Plain-old-data") {
         {
             output ar(ss);

@@ -6,4 +6,4 @@
  */
 
 #include "parallelzone/parallelzone.hpp"
-namespace pz {} // namespace pz
+namespace parallelzone {} // namespace parallelzone

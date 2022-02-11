@@ -99,7 +99,8 @@ TEST_CASE("Hash std::type_info/std::type_index") {
 
 #ifdef BPHASH_USE_TYPEID
     REQUIRE_FALSE(hash_objects(a) == hash_objects(aref));
-    REQUIRE_FALSE(hash_objects(typeid(int)) == hash_objects(typeid(int).name()));
+    REQUIRE_FALSE(hash_objects(typeid(int)) ==
+                  hash_objects(typeid(int).name()));
 #else
     REQUIRE(hash_objects(a) == hash_objects(aref));
     REQUIRE(hash_objects(typeid(int)) == hash_objects(typeid(int).name()));

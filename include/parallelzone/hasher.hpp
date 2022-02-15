@@ -8,6 +8,7 @@
 #include <bphash/Hasher.hpp>
 #include <bphash/types/All.hpp>
 #include <functional>
+#include <optional>
 #include <typeindex>
 #include <typeinfo>
 namespace parallelzone {

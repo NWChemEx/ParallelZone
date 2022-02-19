@@ -10,11 +10,11 @@ See [discussions](https://github.com/NWChemEx-Project/ParallelZone/discussions) 
 ## Dependencies
 ParallelZone depends on 
 - [MADNESS](https://github.com/m-a-d-n-e-s-s/madness) for parallel runtime, 
-- [BPHash](http://bennybp.github.io/) for hashing, and 
+- [BPHash](http://bennybp.github.io/) for hashing, 
 - [Cereal](https://uscilab.github.io/cereal/) for serialization. 
 - [Catch 2](https://github.com/catchorg/Catch2) is required only for testing. 
 
-See documentation for more details.
+See the [documentation](https://nwchemex-project.github.io/ParallelZone/) for more details.
 
 ```mermaid
 graph TD

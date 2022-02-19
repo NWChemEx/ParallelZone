@@ -10,6 +10,8 @@ Welcome to ParallelZone's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   hashing/index
+   serialization/index
 
 `C++ API <parallelzone_cxx_api/index.html>`_
 

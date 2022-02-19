@@ -40,16 +40,31 @@ function with the desired properties listed below.
    :math:`x+\epsilon` or `Small_change` and `small_change` should have different
    hashes.
 #. Support for hashing custom classes, pointers, arrays, and STL containers.
-#. Permissive license, active support, reasonable documentation.
+#. Permissive license and reasonable documentation.
 
 .. table:: Hashing libraries for C++
    :widths: auto
 
-   ====================================================================================  ===== ===== ===== ===== ===== ===== ====================================================================================  
-    Library                                                                              1     2     3     4     5     6      Notes                                                                              
-   ====================================================================================  ===== ===== ===== ===== ===== ===== ====================================================================================  
-   `std::hash <https://en.cppreference.com/w/cpp/utility/hash>`_                         ✅    ✅     ❌    ✅    ✅    ✅     Doesn't have the properties we need.                                       
-   `boost::hash <https://www.boost.org/doc/libs/1_78_0/doc/html/hash.html>`_             ✅    ✅     ?     ✅    ✅    ✅     Already a dependency. Harder to modify.   
-   `BPHash <http://bennybp.github.io/BPHash/>`_                                          ✅    ✅     ⚠     ✅    ✅    ✅     Current choice. Easy to modify. More work required for portability.                                          
-   `Hash-library <https://github.com/stbrumme/hash-library>`_                            ✅    ?      ?     ✅    ❌    ?     Doesn't have the properties we need.                              
-   ====================================================================================  ===== ===== ===== ===== ===== ===== ====================================================================================  
+   ====================================================================================  ===== ===== ===== ===== ===== ===== 
+    Library                                                                              1     2     3     4     5     6     
+   ====================================================================================  ===== ===== ===== ===== ===== ===== 
+   `std::hash <https://en.cppreference.com/w/cpp/utility/hash>`_                         ✅    ✅     ❌     ✅    ✅    ✅  
+   `boost::hash <https://www.boost.org/doc/libs/1_78_0/doc/html/hash.html>`_             ✅    ✅     ❌     ✅    ✅    ✅  
+   `BPHash <http://bennybp.github.io/BPHash/>`_  \ :sup:`1`                              ✅    ✅     ❌     ✅    ✅    ✅                           
+   `Hash-library <https://github.com/stbrumme/hash-library>`_  \ :sup:`2`                ✅    ❌     ✅     ✅    ❌    ✅  
+   ====================================================================================  ===== ===== ===== ===== ===== ===== 
+   
+\ :sup:`1` Based on noncryptographic `MurmurHash3
+<https://github.com/aappleby/smhasher/blob/master/src/MurmurHash3.cpp>`_
+algorithm. More work required for portability. 
+\ :sup:`2` You need to serialize
+the object into a buffer of bytes or a string before hashing. A variety of
+hashing algorithms are available, CRC32, MD5, SHA1 SHA256, Keccak, and SHA3.
+
+Notes 
+--------
+BPHash API and details about how to define hashing function for custom classes
+are described in BPHash `documentation
+<http://bennybp.github.io/BPHash/using_page.html>`_. You can read the `initial
+discussion <https://github.com/NWChemEx-Project/PluginPlay/issues/17>`_ on
+hashing for NWChemEx. 

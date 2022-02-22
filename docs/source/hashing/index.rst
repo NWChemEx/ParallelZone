@@ -13,14 +13,7 @@ collisions is a notoriously difficult problem as the number of keys grow, but a
 very important one to avoid hard to debug problems. Hashing is used in different
 applications including caches, databases, cryptography, and cybersecurity. In
 NWChemEx, hashing is primarily used for the memoization and checkpoint/restart
-infrastructure.
-
-Memoization is a run-time optimization technique to speed up calculations by
-storing the inputs and results of function calls (caching) and returning the
-results when the same inputs occur again instead of recomputing the functions.
-This can be implemented by using a hash table where the keys are the hashed
-inputs of the functions and the values are the return values of these functions.
-In NWChemEx, this hash table is implemented in the `Cache` class of PluginPlay. 
+infrastructure. 
 
 There are various libraries that implements different hashing algorithms
 developed for a variety of applications. Some of these libraries are focused on
@@ -32,10 +25,13 @@ function with the desired properties listed below.
 #. Minimize hash collisions. This is the most important property since hash
    collisions can give us wrong results and debugging such problems could be
    very difficult.
-#. The hash function needs to account for the type of the objects. (See `issue
-   #30 <https://github.com/NWChemEx-Project/ParallelZone/issues/30>`_)
+#. The hash function needs to account for the type of the objects. (This is
+   required to distinguished uninitialized variables, types with same data, or
+   in template meta-programming, see `issue
+   #30. <https://github.com/NWChemEx-Project/ParallelZone/issues/30>`_)
 #. The hashes should be reproducable and portable, i.e. they should not change
-   for different runs, compilers, or platforms.
+   for different runs, compilers, or platforms. This is required for
+   checkpoint/restart capabilities.
 #. Any change in the input should result in a new hash, i.e. :math:`x` and
    :math:`x+\epsilon` or `Small_change` and `small_change` should have different
    hashes.
@@ -68,3 +64,12 @@ are described in BPHash `documentation
 <http://bennybp.github.io/BPHash/using_page.html>`_. You can read the `initial
 discussion <https://github.com/NWChemEx-Project/PluginPlay/issues/17>`_ on
 hashing for NWChemEx. 
+
+Memoization
+------------
+Memoization is a run-time optimization technique to speed up calculations by
+storing the inputs and results of function calls (caching) and returning the
+results when the same inputs occur again instead of recomputing the functions.
+This can be implemented by using a hash table where the keys are the hashed
+inputs of the functions and the values are the return values of these functions.
+In NWChemEx, this hash table is implemented in the `Cache` class of PluginPlay.

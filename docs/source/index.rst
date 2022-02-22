@@ -12,6 +12,7 @@ Welcome to ParallelZone's documentation!
 
    hashing/index
    serialization/index
+   checkpoint/index
 
 `C++ API <parallelzone_cxx_api/index.html>`_
 

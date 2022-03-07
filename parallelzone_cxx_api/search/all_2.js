@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['hash_5fobjects_2',['hash_objects',['../hasher_8hpp.html#a10e87fd7e63c18a7ae2f6e52144eb9ec',1,'parallelzone']]],
-  ['hasher_2ehpp_3',['hasher.hpp',['../hasher_8hpp.html',1,'']]]
+  ['get_5fnum_5fpartitions_2',['get_num_partitions',['../classparallelzone_1_1Runtime.html#a9af120c1c289bafee0f48951e9d18b41',1,'parallelzone::Runtime']]]
 ];

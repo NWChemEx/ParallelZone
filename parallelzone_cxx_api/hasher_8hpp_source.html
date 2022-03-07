@@ -104,30 +104,27 @@ $(function() {
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;} <span class="comment">// namespace parallelzone</span></div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment">// Can be removed once the other codes ares updated</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">namespace </span>pz = parallelzone;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">namespace </span>std {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">// Free function to make std::reference_wrapper hashable</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keywordtype">void</span> hash_object(<span class="keyword">const</span> reference_wrapper&lt;T&gt;&amp; ref, bphash::Hasher&amp; h) {</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    h(ref.get());</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment">// Free function to make std::optional hashable</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keywordtype">void</span> hash_object(<span class="keyword">const</span> optional&lt;T&gt;&amp; opt, bphash::Hasher&amp; h) {</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordflow">if</span>(opt.has_value()) h(opt.value());</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">// Free function to make std::type_info hashable</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">// Note that the hash generated may differ for different compilers</span></div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> hash_object(<span class="keyword">const</span> type_info&amp; t, bphash::Hasher&amp; h) { h(t.name()); }</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">// Free function to make std::type_index hashable</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="comment">// Note that the hash generated may differ for different compilers</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> hash_object(<span class="keyword">const</span> type_index t, bphash::Hasher&amp; h) { h(t.name()); }</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;} <span class="comment">// namespace std</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="keyword">namespace </span>std {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment">// Free function to make std::reference_wrapper hashable</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keywordtype">void</span> hash_object(<span class="keyword">const</span> reference_wrapper&lt;T&gt;&amp; ref, bphash::Hasher&amp; h) {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    h(ref.get());</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;}</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="comment">// Free function to make std::optional hashable</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keywordtype">void</span> hash_object(<span class="keyword">const</span> optional&lt;T&gt;&amp; opt, bphash::Hasher&amp; h) {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">if</span>(opt.has_value()) h(opt.value());</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;}</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment">// Free function to make std::type_info hashable</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment">// Note that the hash generated may differ for different compilers</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> hash_object(<span class="keyword">const</span> type_info&amp; t, bphash::Hasher&amp; h) { h(t.name()); }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">// Free function to make std::type_index hashable</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">// Note that the hash generated may differ for different compilers</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="keyword">inline</span> <span class="keywordtype">void</span> hash_object(<span class="keyword">const</span> type_index t, bphash::Hasher&amp; h) { h(t.name()); }</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;} <span class="comment">// namespace std</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="ahasher_8hpp_html_a10e87fd7e63c18a7ae2f6e52144eb9ec"><div class="ttname"><a href="hasher_8hpp.html#a10e87fd7e63c18a7ae2f6e52144eb9ec">parallelzone::hash_objects</a></div><div class="ttdeci">auto hash_objects(Args &amp;&amp;... args)</div><div class="ttdoc">Generates a hash string in a single call.</div><div class="ttdef"><b>Definition:</b> hasher.hpp:35</div></div>
 <div class="ttc" id="ahasher_8hpp_html_a6fc727ae773313aa52d1a4fd0c0d2f5b"><div class="ttname"><a href="hasher_8hpp.html#a6fc727ae773313aa52d1a4fd0c0d2f5b">parallelzone::disable_if_hash_t</a></div><div class="ttdeci">std::enable_if_t&lt;!is_hash_v&lt; T &gt; &gt; disable_if_hash_t</div><div class="ttdoc">Disables an overload if T is the same as hash_type.</div><div class="ttdef"><b>Definition:</b> hasher.hpp:58</div></div>

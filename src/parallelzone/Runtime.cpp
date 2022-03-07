@@ -33,14 +33,14 @@ Runtime::Runtime() :
 Runtime::Runtime(int argc, char** argv) :
   initialized(true),
   num_partitions(1),
-  madness_world(madness::initialize(argc, argv, SafeMPI::COMM_WORLD, false)) {}
+  mad_world(madness::initialize(argc, argv, SafeMPI::COMM_WORLD, false)) {}
 
 Runtime::Runtime(const MPI_Comm& comm) : Runtime(SafeMPI::Intracomm(comm)) {}
 
 Runtime::Runtime(const SafeMPI::Intracomm& comm) :
   initialized(false),
   num_partitions(1),
-  madness_world(*madness::World::find_instance(comm)) {}
+  mad_world(*madness::World::find_instance(comm)) {}
 
 Runtime::~Runtime() {
     if(!initialized) return;

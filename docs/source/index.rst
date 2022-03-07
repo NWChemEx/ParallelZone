@@ -4,14 +4,14 @@
    contain the root `toctree` directive.
 
 Welcome to ParallelZone's documentation!
-===================================
+========================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
 
-`C++ API <sde_cxx_api/index.html>`_
+`C++ API <parallelzone_cxx_api/index.html>`_
 
 Indices and tables
 ==================

@@ -19,10 +19,14 @@ option(
 
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 
+# Work out the project paths
+set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
+set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
+
 if("${BUILD_DOCS}")
     find_package(Doxygen REQUIRED)
     set(DOXYGEN_EXTRA_PACKAGES amsmath) # Extra LaTeX packages for documentation
-    doxygen_add_docs(parallelzone_cxx_api "${CMAKE_CURRENT_LIST_DIR}/parallelzone")
+    doxygen_add_docs(parallelzone_cxx_api "${project_inc_dir}")
     if("${ONLY_BUILD_DOCS}")
         return()
     endif()
@@ -43,10 +47,6 @@ cpp_find_or_build_dependency(
                BUILD_TESTING=OFF
 )
 
-# Note that hashes may differ with different compilers when typeid is used.
-# Uncomment below to enable using typeid for hashes. 
-# add_compile_definitions(BPHASH_USE_TYPEID)
-
 cpp_find_or_build_dependency(
     bphash
     URL github.com/ryanmrichard/BPHash
@@ -55,6 +55,9 @@ cpp_find_or_build_dependency(
     BRANCH master
     CMAKE_ARGS BUILD_TESTING=OFF
 )
+# Note that hashes may differ with different compilers when typeid is used.
+# Comment below to disable using typeid for hashes. 
+target_compile_definitions(bphash PUBLIC BPHASH_USE_TYPEID)
 
 cpp_find_or_build_dependency(
     cereal
@@ -65,15 +68,15 @@ cpp_find_or_build_dependency(
 )
 
 cpp_add_library(
-    parallelzone
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/parallelzone"
-    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/parallelzone"
+    ${PROJECT_NAME}
+    SOURCE_DIR "${project_src_dir}"
+    INCLUDE_DIR "${project_inc_dir}"
     DEPENDS MADworld bphash::bphash cereal::cereal
 
 )
 
 include(nwx_python_mods)
-cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES pz )
+cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone )
 
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(

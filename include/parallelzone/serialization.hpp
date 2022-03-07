@@ -60,7 +60,6 @@ using madness::is_output_archive;
 using madness::is_output_archive_v;
 } // namespace parallelzone
 
-// Can be removed once the other codes ares updated
 CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,
                             madness::archive::BufferOutputArchive)
 

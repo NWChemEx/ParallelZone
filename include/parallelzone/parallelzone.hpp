@@ -10,6 +10,5 @@
 #include "parallelzone/hasher.hpp"
 #include "parallelzone/serialization.hpp"
 #include <madness/world/world.h>
-//#include <mpi4py/mpi4py.h>
 
 namespace parallelzone {} // namespace parallelzone

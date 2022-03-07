@@ -28,25 +28,22 @@ private:
 } // namespace detail
 
 Runtime::Runtime() :
-  madness_world(detail::default_world::get()),
+  Runtime(1, nullptr) {} // As of MPI-2 you can actually pass null pointers
+
+Runtime::Runtime(int argc, char** argv) :
   initialized(true),
-  num_partitions(1) {}
+  num_partitions(1),
+  madness_world(madness::initialize(argc, argv, SafeMPI::COMM_WORLD, false)) {}
 
-Runtime::Runtime(int& argc, char**& argv) :
-  Runtime(argc, argv, SafeMPI::COMM_WORLD) {}
+Runtime::Runtime(const MPI_Comm& comm) : Runtime(SafeMPI::Intracomm(comm)) {}
 
-Runtime::Runtime(int& argc, char**& argv, const MPI_Comm& comm) :
-  Runtime(argc, argv, SafeMPI::Intracomm(comm)) {}
-
-Runtime::Runtime(int& argc, char**& argv, const SafeMPI::Intracomm& comm) :
-  madness_world(isInitialized() ? madness::initialize(argc, argv, comm, false) :
-                                  *madness::World::find_instance(comm)) {
-    initialized    = true;
-    num_partitions = 1;
-}
+Runtime::Runtime(const SafeMPI::Intracomm& comm) :
+  initialized(false),
+  num_partitions(1),
+  madness_world(*madness::World::find_instance(comm)) {}
 
 Runtime::~Runtime() {
-    initialized = false;
+    if(!initialized) return;
     madness::finalize();
 }
 

@@ -10,31 +10,28 @@ namespace parallelzone {
 
 class Runtime {
 public:
-    enum class Circumstances { NormalShutdown, Abort };
+    /// @return MPI Communicator, associated with MADWorld
+    MPI_Comm& mpi_comm() { return madness_world.mpi.comm().Get_mpi_comm(); }
 
-    /// Gets the type-erased MPI Communicator
-    std::any mpi_comm();
-
-    inline int getNumPartitions() { return num_partitions; }
-
-    inline void setNumPartitions(int num) { num_partitions = num; }
+    /// @return int, number of partitions; Defaults to 1
+    constexpr int get_num_partitions() const noexcept { return num_partitions; }
 
     /// @return true, if Runtime (and, necessarily, MADWorld runtime) is in an
     /// initialized state
-    inline bool isInitialized() { return initialized; }
+    constexpr bool is_initialized() const noexcept { return initialized; }
 
 private:
     Runtime();
-    Runtime(int& argc, char**& argv);
-    Runtime(int& argc, char**& argv, const MPI_Comm& comm);
-    Runtime(int& argc, char**& argv, const SafeMPI::Intracomm& comm);
+    Runtime(int argc, char** argv);
+    Runtime(const MPI_Comm& comm);
+    Runtime(const SafeMPI::Intracomm& comm);
 
     ~Runtime();
 
-    Runtime(const Runtime&) = delete;
+    Runtime(const Runtime&)            = delete;
     Runtime& operator=(const Runtime&) = delete;
     Runtime(Runtime&&)                 = delete;
-    Runtime& operator=(Runtime&&) = delete;
+    Runtime& operator=(Runtime&&)      = delete;
 
     bool initialized;
     int num_partitions;

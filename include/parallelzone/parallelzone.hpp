@@ -8,4 +8,6 @@
  */
 
 #include <madness/world/world.h>
-namespace pz {} // namespace pz
+//#include <mpi4py/mpi4py.h>
+
+namespace parallelzone {} // namespace parallelzone

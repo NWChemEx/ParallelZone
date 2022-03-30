@@ -298,7 +298,7 @@ Matureness
 
    The library should be mature (e.g. have a stable API, decent adoption, well
    documented). Without actually using all of the libraries, consulting their
-   communities, this is admittedly a judgement call based off of first
+   communities, this is admittedly a judgment call based off of first
    impressions and GitHub metrics (we were looking for more than 500 stars) than
    anything else.
 
@@ -380,6 +380,8 @@ simplicity the table does not include libraries which are deemed to fail the
    differ from those shown above based on the accuracy/completeness of its
    documentation.
 
+.. _serialization_strategy::
+
 **********************
 Serialization Strategy
 **********************
@@ -400,3 +402,7 @@ of arbitrary type. The former means the class must have the API the
 serialization library expects, whereas the latter means the serialization
 function must be templated (and thus can't be virtual). It's worth noting that
 hashing runs into the same problems, for the same reason.
+
+Section :ref:`reflection_design` explores the possibility of adding reflection
+to our classes. The verdict there is that Boost::Describe looks promising in
+this regard.

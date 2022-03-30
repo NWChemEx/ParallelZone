@@ -38,6 +38,23 @@ solution is to hard-code the list of attributes into each operation. This works,
 but it makes switching say hashing or serialization libraries a pain.
 With reflection, we can keep interactions with such libraries in a single place.
 
+*************************
+Reflection Considerations
+*************************
+
+- Need to reflect polymorphic classes
+
+   - Solution must be aware that a given object may actually have been declared
+     as a more derived class than how it presently is being viewed, e.g., the
+     function may be given a reference/pointer to a base class of the object
+
+- Need to reflect classes that use PIMPL
+
+   - Only some of the state of a class is visible from the API exposed in the
+     declaration.
+   - Reflection of the PIMPL will still occur, but it will only be visible from
+     source files.
+
 **************************
 Reflection Implementations
 **************************
@@ -88,3 +105,57 @@ such as schemas or code generation.
    - MIT License
    - Likely abandoned (Last commit Dec 2020).
    - 519 stars and 31 watchers
+
+.. note::
+
+   Statistics and assessments were accurate as of March 2022. The author does
+   not have any experience with any of these libraries and notes are based off
+   quickly perusing documentation and source code.
+
+*******************
+Reflection Strategy
+*******************
+
+Of the available libraries only Boost Describe and RTTR are currently supported.
+In our opinion Boost Describe has the upper hand since its reflection is
+accessible at compile time and runtime. The disadvantage of Boost Describe is
+that you can only loop over base classes of the current class, not derived
+classes; however, it should be possible to overcome this by using a virtual
+function and wrapping the reflection algorithm in an object. A serialization
+example, to make this more clear:
+
+.. code-block:: c++
+
+   class Serializer{
+   public:
+       template<typename Type2Serialize>
+       void serialize(Type2Serialize&& obj2serialize) {
+           /*
+            * reflection of Type2Serialize is used here to implement
+            * serialization
+            */
+       }
+   };
+
+   class BaseClass {
+   public:
+       virtual void serialize(Serializer& s) { s.serialize(*this); }
+   };
+
+   class DerivedClass : public BaseClass {
+   public:
+       virtual void serialize(Serializer& s) { s.serializer(*this); }
+   };
+
+   DerivedClass foo;
+   BaseClass bar;
+   BaseClass* pfoo = &foo;
+
+   Serializer s;
+   foo.serialize(s);   // Calls DerivedClass::serialize
+   pfoo->serialize(s); // Calls DerivedClass::serialize
+   bar.serialize(s);   // Calls BaseClass::serialize
+
+Basically the ``Serializer`` instance wraps the actual serialization process for
+an arbitrary type. We then rely on the virtual override to pass the most derived
+type of the instance to the ``Serializer``.

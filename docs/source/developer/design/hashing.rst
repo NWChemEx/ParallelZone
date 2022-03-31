@@ -150,6 +150,4 @@ Hashing Strategy
 
 None of our current hashing use cases seem to justify using hashing beyond that
 afforded by the C++ standard library. So for now we simply rely on the hashing
-capabilities of the C++ standard library, extending it to our custom types. The
-actual automation of hashing is done analogous to serialization (see
-:ref:`serialization_strategy`).
+capabilities of the C++ standard library, extending it to our custom types.

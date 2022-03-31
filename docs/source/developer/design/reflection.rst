@@ -55,6 +55,15 @@ Reflection Considerations
    - Reflection of the PIMPL will still occur, but it will only be visible from
      source files.
 
+- Need to reflect classes we don't control the source for
+
+   - Third-party classes, such as those in the STL will need to have
+     reflection added to them from outside of their definitions
+
+- Need to reflect constructors
+
+   - Notable because constructors behave differently than other member functions
+
 **************************
 Reflection Implementations
 **************************
@@ -116,46 +125,13 @@ such as schemas or code generation.
 Reflection Strategy
 *******************
 
-Of the available libraries only Boost Describe and RTTR are currently supported.
-In our opinion Boost Describe has the upper hand since its reflection is
-accessible at compile time and runtime. The disadvantage of Boost Describe is
-that you can only loop over base classes of the current class, not derived
-classes; however, it should be possible to overcome this by using a virtual
-function and wrapping the reflection algorithm in an object. A serialization
-example, to make this more clear:
-
-.. code-block:: c++
-
-   class Serializer{
-   public:
-       template<typename Type2Serialize>
-       void serialize(Type2Serialize&& obj2serialize) {
-           /*
-            * reflection of Type2Serialize is used here to implement
-            * serialization
-            */
-       }
-   };
-
-   class BaseClass {
-   public:
-       virtual void serialize(Serializer& s) { s.serialize(*this); }
-   };
-
-   class DerivedClass : public BaseClass {
-   public:
-       virtual void serialize(Serializer& s) { s.serializer(*this); }
-   };
-
-   DerivedClass foo;
-   BaseClass bar;
-   BaseClass* pfoo = &foo;
-
-   Serializer s;
-   foo.serialize(s);   // Calls DerivedClass::serialize
-   pfoo->serialize(s); // Calls DerivedClass::serialize
-   bar.serialize(s);   // Calls BaseClass::serialize
-
-Basically the ``Serializer`` instance wraps the actual serialization process for
-an arbitrary type. We then rely on the virtual override to pass the most derived
-type of the instance to the ``Serializer``.
+Of the available libraries only Boost::Describe and RTTR are currently
+supported. AFAIK, RTTR is only runtime reflection. This is a notable problem as
+many applications of reflection (e.g., hashing and serialization) will require
+us to actually access the values in their native forms, which in turn means we
+need the types. Unfortunately, Boost::Describe lacks the ability to reflect
+constructors, and can not access attributes through getters/setters (needed for
+reflecting third party classes). There are open issues on Boost::Describe's
+GitHub page for both of these issues, but it's not clear if they are being
+worked on at the moment. Ultimately, this means that if we want reflection we
+have to roll our own solution.

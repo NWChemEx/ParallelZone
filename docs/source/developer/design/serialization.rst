@@ -100,6 +100,12 @@ serialization solution.
      whereas in other cases we'll want to serialize all of the state
    - Serialization libraries are unlikely to help with this aspect
 
+- Serializing objects with special save/load requirements
+
+   - Sometimes there's more to serialization than just serializing the
+     attributes of an object (e.g., needing to redistribute the data in a
+     distributed object)
+
 *****************************
 Serialization Implementations
 *****************************
@@ -404,5 +410,51 @@ function must be templated (and thus can't be virtual). It's worth noting that
 hashing runs into the same problems, for the same reason.
 
 Section :ref:`reflection_design` explores the possibility of adding reflection
-to our classes. The verdict there is that Boost::Describe looks promising in
-this regard.
+to our classes. The verdict there is that there does not appear to be any
+existing solution which meets our needs. This means we would have to write our
+own reflection library if we want to use it. While having reflection at our
+disposable would be extremely useful, adding it in a robust manner will likely
+require much more time than simply using Cereal directly. Our solution is thus
+to require that each object is serializable with Cereal directly.
+
+Cereal by itself already covers most of our considerations. The notable
+exception is the treatment of distributed objects. In particular we need a
+mechanism to be able to distinguish between when we want to serialize only the
+local state and when we want to serialize all of the state. For now our
+opinion is that serialization should by default only be the local state. When we
+need to serialize all of the state we will create a new Cereal archive and
+classes can dispatch based on whether they get that new archive or an already
+existing one.
+
+Below we briefly summarize how our solution addresses the considerations raised
+above.
+
+- Support for C++ standard library types
+
+   - Handled by Cereal
+
+- Need to serialize ``std::shared_ptr``
+
+   - Handled by Cereal
+
+- Need to serialize polymorphic types
+
+   - Handled by Cereal
+
+- Multiple serialization formats
+
+   - Cereal allows us to write new archives
+
+- Need to perform serialization on objects we do not control the source code for
+
+   - Handled by Cereal
+
+- Serializing distributed objects
+
+   - For now serialization should only be the local piece of the object. A
+     special archive will be written for when the entire state should be
+     written to the archive. Classes can dispatch based on archive type.
+
+- Serializing objects with special save/load requirements
+
+   - Handled by Cereal

@@ -16,9 +16,6 @@
 .idea/
 .vscode/
 
-# This where VSCode stores its workspace settings
-*.code-workspace
-
 # These are common Python virtual enviornment directory names
 venv/
 docs/venv/

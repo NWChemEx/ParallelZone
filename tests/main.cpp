@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_RUNNER
-#include "parallelzone/Runtime.hpp"
+#include "parallelzone/parallelzone.hpp"
 #include <catch2/catch.hpp>
 
 int main(int argc, char* argv[]) {

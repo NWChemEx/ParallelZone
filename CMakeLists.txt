@@ -55,8 +55,38 @@ cpp_find_or_build_dependency(
     BRANCH master
     CMAKE_ARGS BUILD_TESTING=OFF
 )
+
+include(ExternalProject)
+ExternalProject_Add(papi
+  UPDATE_DISCONNECTED True
+  SOURCE_DIR _deps/papi-src
+  INSTALL_DIR _deps/papi-build
+  SOURCE_SUBDIR "src"
+  GIT_REPOSITORY https://bitbucket.org/icl/papi.git
+  GIT_TAG master
+  UPDATE_COMMAND ""
+  PATCH_COMMAND ""
+  CONFIGURE_COMMAND ./configure --with-components=sysdetect --prefix=<INSTALL_DIR>
+  BUILD_COMMAND     ${CMAKE_MAKE_PROGRAM}
+  INSTALL_COMMAND   ${CMAKE_MAKE_PROGRAM} install
+  BUILD_IN_SOURCE True
+  LOG_DOWNLOAD OFF
+  LOG_BUILD OFF
+)
+# Prepare PAPI
+ExternalProject_Get_Property(papi install_dir)
+set(PAPI_INCLUDE_DIR ${install_dir}/include)
+set(PAPI_LIBRARY_PATH ${install_dir}/lib/libpapi.a)
+file(MAKE_DIRECTORY ${PAPI_INCLUDE_DIR})
+#add_library(papi STATIC IMPORTED)
+include_directories(${PAPI_INCLUDE_DIR})
+set_property(TARGET papi PROPERTY IMPORTED_LOCATION ${PAPI_LIBRARY_PATH})
+set_property(TARGET papi APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${PAPI_INCLUDE_DIR})
+# Dependencies
+add_dependencies(papi papi)
+
 # Note that hashes may differ with different compilers when typeid is used.
-# Comment below to disable using typeid for hashes. 
+# Comment below to disable using typeid for hashes.
 target_compile_definitions(bphash PUBLIC BPHASH_USE_TYPEID)
 
 cpp_find_or_build_dependency(
@@ -93,4 +123,3 @@ if("${BUILD_TESTING}")
         DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
     )
 endif()
-

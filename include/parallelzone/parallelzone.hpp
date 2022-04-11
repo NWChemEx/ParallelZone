@@ -9,6 +9,6 @@
 
 #include "parallelzone/hasher.hpp"
 #include "parallelzone/serialization.hpp"
-#include <madness/world/world.h>
+#include "parallelzone/runtime.hpp"
 
 namespace parallelzone {} // namespace parallelzone

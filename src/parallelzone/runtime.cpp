@@ -17,15 +17,17 @@ Runtime::Runtime(const MPI_Comm& comm) : Runtime(SafeMPI::Intracomm(comm)) {}
 Runtime::Runtime(const SafeMPI::Intracomm& comm) :
   initialized(false),
   num_partitions(1),
-  mad_world(*madness::World::find_instance(comm)) { resource_sets.reserve(num_partitions); }
+  mad_world(*madness::World::find_instance(comm)) {
+    resource_sets.reserve(num_partitions);
+}
 
 Runtime::~Runtime() {
     if(!initialized) return;
     madness::finalize();
 }
 
-  void Runtime::partition() {
-    //resource_sets.reserve(num_partitions);
-  }
-  
+void Runtime::partition() {
+    // resource_sets.reserve(num_partitions);
+}
+
 } // namespace parallelzone

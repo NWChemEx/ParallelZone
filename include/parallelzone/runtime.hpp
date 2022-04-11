@@ -1,10 +1,10 @@
 #pragma once
 
-#include <madness/world/world.h>
 #include <madness/world/MADworld.h>
 #include <madness/world/safempi.h>
-#include <vector>
+#include <madness/world/world.h>
 #include <parallelzone/resourceset.hpp>
+#include <vector>
 
 namespace parallelzone {
 
@@ -51,18 +51,23 @@ public:
     /// initialized state
     constexpr bool is_initialized() const noexcept { return initialized; }
 
-  /// @return size_t, number of resourceset instances in this Runtime
-  std::size_t size() const noexcept { return resource_sets.size(); }
+    /// @return size_t, number of resourceset instances in this Runtime
+    std::size_t size() const noexcept { return resource_sets.size(); }
 
-  /// @return resourceset, returns a reference to the resourceset at position n among the list of several resourceset instances.
-  Resourceset& operator[] (std::size_t n) {return resource_sets[n];};
+    /// @return resourceset, returns a reference to the resourceset at position
+    /// n among the list of several resourceset instances.
+    Resourceset& operator[](std::size_t n) { return resource_sets[n]; };
 
-  /// @return resourceset, returns a const reference to the resourceset at position n among the list of several resourceset instances.
-  const Resourceset& operator[] (std::size_t n) const {return resource_sets[n];};
+    /// @return resourceset, returns a const reference to the resourceset at
+    /// position n among the list of several resourceset instances.
+    const Resourceset& operator[](std::size_t n) const {
+        return resource_sets[n];
+    };
 
-  /// @return void, partitions the given runtime instance to several smaller resourceset instances. Default: partitions to 1 resourceset instance
-  void partition();
-  
+    /// @return void, partitions the given runtime instance to several smaller
+    /// resourceset instances. Default: partitions to 1 resourceset instance
+    void partition();
+
     /**
      * @brief destructor
      * @details Destructs the MADness runtime appropriately, if Runtime is

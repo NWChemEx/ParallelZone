@@ -11,10 +11,10 @@ public:
      * @details Worker instance initializes MADness runtime, sets partitions
      * to 1.
      */
-  Worker();
+    Worker();
 
 private:
-  Hardware& hardware;
+    Hardware& hardware;
 };
 
 } // End namespace parallelzone

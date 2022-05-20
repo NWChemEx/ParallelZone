@@ -49,7 +49,7 @@ public:
 
     /**
      * @brief destructor
-     * @details Destructs the MADness runtime appropriately, if Runtime 
+     * @details Destructs the MADness runtime appropriately, if Runtime
      * initialized MADness.
      */
     ~Runtime();

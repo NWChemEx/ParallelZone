@@ -1,16 +1,16 @@
-#include <parallelzone/runtime.hpp>
+#include <parallelzone/Runtime.hpp>
 
 namespace parallelzone {
 
 /// Determines if the default ctor with initialize madness
 bool starts_madness_() {
-    if(!madness::initialized) return true;
+    if(!madness::initialized()) return true;
     return false;
 }
 
 /// Either initializes madness or returns the default world
 madness::World& default_world_() {
-    if(!madness::initialized) {
+    if(!madness::initialized()) {
         int c    = 1;
         char** v = nullptr; // As of MPI-2 you can actually pass null pointers
         return madness::initialize(c, v, SafeMPI::COMM_WORLD, false);

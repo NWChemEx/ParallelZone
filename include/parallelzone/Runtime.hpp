@@ -35,6 +35,13 @@ public:
      */
     Runtime(const SafeMPI::Intracomm& comm);
 
+    /**
+     * @brief constructor
+     * @details Starts MADness using a SafeMPI Communicator. Runtime instance
+     * doesn't explicitly start MADness
+     */
+    Runtime(int argc, char** argv, const SafeMPI::Intracomm& comm);
+
     /// @return MPI Communicator, associated with MADWorld
     MPI_Comm& mpi_comm() { return m_world_.mpi.comm().Get_mpi_comm(); }
 

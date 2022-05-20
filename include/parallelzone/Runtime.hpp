@@ -9,8 +9,8 @@ class Runtime {
 public:
     /**
      * @brief Default constructor
-     * @details Runtime instance initializes MADness runtime, sets partitions
-     * to 1.
+     * @details If madness isn't initialized, initializes madness and sets
+     * partitions to 1. Otherwise, references the madness default world.
      */
     Runtime();
 
@@ -36,22 +36,21 @@ public:
     Runtime(const SafeMPI::Intracomm& comm);
 
     /// @return MPI Communicator, associated with MADWorld
-    MPI_Comm& mpi_comm() { return mad_world.mpi.comm().Get_mpi_comm(); }
+    MPI_Comm& mpi_comm() { return m_world_.mpi.comm().Get_mpi_comm(); }
 
     /// @return MADWorld, ref handle to madness::World
-    madness::World& madness_world() { return mad_world; }
+    madness::World& madness_world() { return m_world_; }
 
     /// @return int, number of partitions; Defaults to 1
-    constexpr int get_num_partitions() const noexcept { return num_partitions; }
+    constexpr int num_partitions() const noexcept { return m_num_partitions_; }
 
-    /// @return true, if Runtime (and, necessarily, MADWorld runtime) is in an
-    /// initialized state
-    constexpr bool is_initialized() const noexcept { return initialized; }
+    /// @return true if this instance initialized madness.
+    constexpr bool started_madness() const noexcept { return m_init_madness_; }
 
     /**
      * @brief destructor
-     * @details Destructs the MADness runtime appropriately, if Runtime is
-     * initialized
+     * @details Destructs the MADness runtime appropriately, if Runtime 
+     * initialized MADness.
      */
     ~Runtime();
 
@@ -61,9 +60,14 @@ public:
     Runtime& operator=(Runtime&&) = delete;
 
 private:
-    bool initialized;
-    int num_partitions;
-    madness::World& mad_world;
+    /// Tracks if this instance initialized madness
+    bool m_init_madness_;
+
+    /// The number of partitions
+    int m_num_partitions_;
+
+    /// Reference to the madness world this instance wraps
+    madness::World& m_world_;
 };
 
 } // End namespace parallelzone

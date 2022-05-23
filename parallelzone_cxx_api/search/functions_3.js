@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['madness_5fworld_18',['madness_world',['../classparallelzone_1_1Runtime.html#ade821480ac0a09823b7bcae73ada4e86',1,'parallelzone::Runtime']]],
-  ['mpi_5fcomm_19',['mpi_comm',['../classparallelzone_1_1Runtime.html#af74d9cf2dbd7254b87b4eec65a9ec6c2',1,'parallelzone::Runtime']]]
+  ['runtime_19',['Runtime',['../classparallelzone_1_1Runtime.html#a707fb1ae25b48355f7d15deb575edd34',1,'parallelzone::Runtime::Runtime()'],['../classparallelzone_1_1Runtime.html#aa11bd8a548b6d29d92f620fe9849a15c',1,'parallelzone::Runtime::Runtime(int argc, char **argv)'],['../classparallelzone_1_1Runtime.html#a72474763743396e278bc0fc00b8cc385',1,'parallelzone::Runtime::Runtime(const MPI_Comm &amp;comm)'],['../classparallelzone_1_1Runtime.html#aeda79208100cee85410f54e3994074c0',1,'parallelzone::Runtime::Runtime(const SafeMPI::Intracomm &amp;comm)'],['../classparallelzone_1_1Runtime.html#a2aa3004a919b4a743ee12c40f5283a29',1,'parallelzone::Runtime::Runtime(int argc, char **argv, const SafeMPI::Intracomm &amp;comm)']]]
 ];

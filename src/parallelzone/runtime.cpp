@@ -35,8 +35,8 @@ Runtime::~Runtime() {
     madness::finalize();
 }
 
-  void Runtime::partition() {
-    //resource_sets.reserve(num_partitions);
-  }
-  
+void Runtime::partition() {
+    // resource_sets.reserve(num_partitions);
+}
+
 } // namespace parallelzone

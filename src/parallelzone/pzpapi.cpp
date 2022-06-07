@@ -62,7 +62,7 @@ namespace parallelzone {
     PAPI_shutdown();
   }
 
-  void  void Papi::start_papi_measurement() {
+  void Papi::start_papi_measurement() {
     int retVal = PAPI_start(m_eventset_);
     if( retVal != PAPI_OK ) {
       throw std::runtime_error("Papi::start_papi_measurement() failed!");

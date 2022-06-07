@@ -18,6 +18,8 @@ option(
 )
 
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
+option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
+option(BUILD_HIP_BINDINGS "Enable HIP Bindings" OFF )
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
@@ -56,6 +58,35 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=OFF
 )
 
+if( BUILD_CUDA_BINDINGS OR BUILD_HIP_BINDINGS )
+  set( BUILD_DEVICE TRUE CACHE BOOL "Enable Device Code" )
+else()
+  set( BUILD_DEVICE FALSE CACHE BOOL "Enable Device Code" )
+endif()
+
+
+if( BUILD_CUDA_BINDINGS )
+  enable_language( CUDA )
+
+  find_package( CUDAToolkit REQUIRED )
+
+  if(NOT DEFINED CMAKE_CUDA_STANDARD)
+    set(CMAKE_CUDA_STANDARD 11)
+    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+  endif()
+
+  set(PAPI_COMPONENTS cuda)
+  set(ENV{PAPI_CUDA_ROOT} ${CUDAToolkit_LIBRARY_ROOT})
+endif( BUILD_CUDA_BINDINGS )
+
+if( BUILD_HIP_BINDINGS )
+  set(GPU_TARGETS "gfx906,gfx908,gfx90a" CACHE STRING "GPU targets to compile for")
+  enable_language( HIP )
+
+  set(PAPI_COMPONENTS rocm)
+  set(ENV{PAPI_ROCM_ROOT} ${ROCM_PATH})
+endif( BUILD_HIP_BINDINGS )
+
 include(ExternalProject)
 ExternalProject_Add(papi
   UPDATE_DISCONNECTED True
@@ -66,13 +97,14 @@ ExternalProject_Add(papi
   GIT_TAG master
   UPDATE_COMMAND ""
   PATCH_COMMAND ""
-  CONFIGURE_COMMAND ./configure --with-components=sysdetect --prefix=<INSTALL_DIR>
+  CONFIGURE_COMMAND ./configure --with-components=${PAPI_COMPONENTS} --prefix=<INSTALL_DIR>
   BUILD_COMMAND     ${CMAKE_MAKE_PROGRAM}
   INSTALL_COMMAND   ${CMAKE_MAKE_PROGRAM} install
   BUILD_IN_SOURCE True
   LOG_DOWNLOAD OFF
   LOG_BUILD OFF
 )
+
 # Prepare PAPI
 ExternalProject_Get_Property(papi install_dir)
 set(PAPI_INCLUDE_DIR ${install_dir}/include)

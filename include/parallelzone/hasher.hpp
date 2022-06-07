@@ -8,6 +8,7 @@
 #include <bphash/Hasher.hpp>
 #include <bphash/types/All.hpp>
 #include <functional>
+#include <optional>
 #include <typeindex>
 #include <typeinfo>
 namespace parallelzone {
@@ -57,9 +58,6 @@ template<typename T>
 using disable_if_hash_t = std::enable_if_t<!is_hash_v<T>>;
 
 } // namespace parallelzone
-
-// Can be removed once the other codes ares updated
-namespace pz = parallelzone;
 
 namespace std {
 // Free function to make std::reference_wrapper hashable

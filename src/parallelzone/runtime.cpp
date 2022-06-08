@@ -1,4 +1,4 @@
-#include <parallelzone/Runtime.hpp>
+#include <parallelzone/runtime.hpp>
 
 namespace parallelzone {
 

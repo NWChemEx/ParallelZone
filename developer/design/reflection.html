@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Reflection Design &mdash; parallelzone 1.0.0 documentation</title>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -86,11 +87,11 @@
            <div itemprop="articleBody">
              
   <section id="reflection-design">
-<span id="id1"></span><h1>Reflection Design<a class="headerlink" href="#reflection-design" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1>Reflection Design<a class="headerlink" href="#reflection-design" title="Permalink to this heading"></a></h1>
 <p>This page describes the considerations that went into the reflection API
 ParallelZone relies on.</p>
 <section id="what-is-reflection">
-<h2>What is Reflection?<a class="headerlink" href="#what-is-reflection" title="Permalink to this headline"></a></h2>
+<h2>What is Reflection?<a class="headerlink" href="#what-is-reflection" title="Permalink to this heading"></a></h2>
 <p>In object-oriented languages one distinguishes between the object’s type and the
 object’s state (i.e., class vs. instance of a class). While most coding
 scenarios focus on inspecting and manipulating an object’s state, there are
@@ -106,7 +107,7 @@ reflection would be the one after C++23 (C++26?). Point being, reflection as
 part of the C++ language is a ways away.</p>
 </section>
 <section id="why-do-we-need-reflection">
-<h2>Why Do We Need Reflection?<a class="headerlink" href="#why-do-we-need-reflection" title="Permalink to this headline"></a></h2>
+<h2>Why Do We Need Reflection?<a class="headerlink" href="#why-do-we-need-reflection" title="Permalink to this heading"></a></h2>
 <p>Strictly speaking we don’t need reflection, but the lack of reflection leads to
 a lot of boilerplate when adding meta-operations (e.g. printing, value
 comparison, hashing, and serialization). These operations all involve some form
@@ -116,7 +117,7 @@ but it makes switching say hashing or serialization libraries a pain.
 With reflection, we can keep interactions with such libraries in a single place.</p>
 </section>
 <section id="reflection-considerations">
-<h2>Reflection Considerations<a class="headerlink" href="#reflection-considerations" title="Permalink to this headline"></a></h2>
+<h2>Reflection Considerations<a class="headerlink" href="#reflection-considerations" title="Permalink to this heading"></a></h2>
 <ul>
 <li><p>Need to reflect polymorphic classes</p>
 <blockquote>
@@ -155,7 +156,7 @@ reflection added to them from outside of their definitions</p></li>
 </ul>
 </section>
 <section id="reflection-implementations">
-<h2>Reflection Implementations<a class="headerlink" href="#reflection-implementations" title="Permalink to this headline"></a></h2>
+<h2>Reflection Implementations<a class="headerlink" href="#reflection-implementations" title="Permalink to this heading"></a></h2>
 <p>Below is a list of C++ libraries implementing reflection without outside tools
 such as schemas or code generation.</p>
 <ul>
@@ -225,7 +226,7 @@ quickly perusing documentation and source code.</p>
 </div>
 </section>
 <section id="reflection-strategy">
-<h2>Reflection Strategy<a class="headerlink" href="#reflection-strategy" title="Permalink to this headline"></a></h2>
+<h2>Reflection Strategy<a class="headerlink" href="#reflection-strategy" title="Permalink to this heading"></a></h2>
 <p>Of the available libraries only Boost::Describe and RTTR are currently
 supported. AFAIK, RTTR is only runtime reflection. This is a notable problem as
 many applications of reflection (e.g., hashing and serialization) will require

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Hashing Design &mdash; parallelzone 1.0.0 documentation</title>
@@ -14,6 +14,7 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -87,7 +88,7 @@
            <div itemprop="articleBody">
              
   <section id="hashing-design">
-<span id="id1"></span><h1>Hashing Design<a class="headerlink" href="#hashing-design" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1>Hashing Design<a class="headerlink" href="#hashing-design" title="Permalink to this heading"></a></h1>
 <p>At the moment hashing is not needed by ParallelZone, but will be needed
 downstream. Ultimately our recommendation is to use the hash function built into
 C++. This page exists mainly to document the considerations that went into this
@@ -97,7 +98,7 @@ serialization is implemented (i.e., registering a class’s attributes) and our
 hope is that by considering it here we can reduce boilerplate between hashing
 and serialization.</p>
 <section id="what-is-hashing">
-<h2>What is Hashing?<a class="headerlink" href="#what-is-hashing" title="Permalink to this headline"></a></h2>
+<h2>What is Hashing?<a class="headerlink" href="#what-is-hashing" title="Permalink to this heading"></a></h2>
 <p>Hashing is the process of mapping an arbitrarily large data object to a
 relatively small, fixed-size data object. The fixed-size data object is known as
 a “hash value” or just “hash”. In practice, hashes are usually 32 byte integers
@@ -138,7 +139,7 @@ applications.</p></li>
 </ul>
 </section>
 <section id="why-do-we-need-hashing">
-<h2>Why Do We Need Hashing?<a class="headerlink" href="#why-do-we-need-hashing" title="Permalink to this headline"></a></h2>
+<h2>Why Do We Need Hashing?<a class="headerlink" href="#why-do-we-need-hashing" title="Permalink to this heading"></a></h2>
 <p>We need hashing primarily as a means of quickly comparing instances of the
 same class. If applying a hash function to two objects of that class results in
 two different hashes, then the objects are guaranteed to be different. If
@@ -153,7 +154,7 @@ object than the value the hash maps to. Hash tables are typically used to speed
 up value look up or when  storing the actual keys is expensive.</p>
 </section>
 <section id="hashing-considerations">
-<h2>Hashing Considerations<a class="headerlink" href="#hashing-considerations" title="Permalink to this headline"></a></h2>
+<h2>Hashing Considerations<a class="headerlink" href="#hashing-considerations" title="Permalink to this heading"></a></h2>
 <ul>
 <li><p>Approximately injective hash function</p>
 <blockquote>
@@ -198,7 +199,7 @@ state in classes derived from the current type)</p></li>
 </ul>
 </section>
 <section id="hashing-implementations">
-<h2>Hashing Implementations<a class="headerlink" href="#hashing-implementations" title="Permalink to this headline"></a></h2>
+<h2>Hashing Implementations<a class="headerlink" href="#hashing-implementations" title="Permalink to this heading"></a></h2>
 <p>Since C++11, the C++ standard libraries come with hash support. This section
 lists external C++ hashing implementations.</p>
 <ul>
@@ -252,7 +253,7 @@ and should be revisited at some to make it more exhaustive.</p>
 </div>
 </section>
 <section id="hashing-strategy">
-<h2>Hashing Strategy<a class="headerlink" href="#hashing-strategy" title="Permalink to this headline"></a></h2>
+<h2>Hashing Strategy<a class="headerlink" href="#hashing-strategy" title="Permalink to this heading"></a></h2>
 <p>None of our current hashing use cases seem to justify using hashing beyond that
 afforded by the C++ standard library. So for now we simply rely on the hashing
 capabilities of the C++ standard library, extending it to our custom types.</p>

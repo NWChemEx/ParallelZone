@@ -1,30 +1,24 @@
 #pragma once
 
-#include <papi.h>
+#include <array>
+#include <memory>
 
 namespace parallelzone {
 
-const int MAX_NUM_EVENTS = 32;
-
+  namespace detail_ {
+    template <size_t N>
+    class PapiPIMPL;
+  } // namespace detail_
+  
 /**
  * @brief Class Papi
  * @details Supports as a convinence wrapper around PAPI
  */
 class Papi {
-private:
-    int m_eventset_{PAPI_NULL};
-    long long m_values_[MAX_NUM_EVENTS] = {0};
-
-    PAPI_event_info_t m_event_info_;
-
-    // (non-owning) papi CPU device info
-    PAPI_cpu_info_t* m_papi_cpu_info_{nullptr};
-
-    // (non-owning) papi GPU device info
-    // Limitation: currently supports only Nvidia, AMD
-    PAPI_gpu_info_u* m_papi_gpu_info_{nullptr};
-
 public:
+    /// Type of the PIMPL associated with this instance
+    using pimpl_type = detail_::PapiPIMPL<32>;
+  
     /**
      * @brief Default constructor
      * @details Initializes PAPI and sets up Event sets
@@ -38,26 +32,28 @@ public:
     ~Papi();
 
     /**
-     * @details Start PAPI event measurement
+     * @details Start event measurement
      */
-    void start_papi_measurement();
+    void start_measurement();
 
     /**
-     * @details Stop PAPI event measurement
+     * @details Stop event measurement
      */
-    void stop_papi_measurement();
+    void stop_measurement();
 
     /**
-     * @details resets PAPI event set measurement
+     * @details resets event set measurement
      */
-    void reset_papi_measurement() noexcept {
-        for(int i = 0; i < MAX_NUM_EVENTS; ++i) m_values_[i] = 0;
-    }
+    void reset_measurement() noexcept;
 
     Papi(const Papi&) = delete;
     Papi& operator=(const Papi&) = delete;
     Papi(Papi&&)                 = delete;
     Papi& operator=(Papi&&) = delete;
+
+private:
+    using pimpl_pointer = std::unique_ptr<pimpl_type>;
+    pimpl_pointer m_pimpl_;
 };
 
 } // namespace parallelzone

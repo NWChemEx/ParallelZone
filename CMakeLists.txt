@@ -20,6 +20,7 @@ option(
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
 option(BUILD_HIP_BINDINGS "Enable HIP Bindings" OFF )
+option(BUILD_PAPI_BINDINGS "Enable PAPI Bindings" OFF )
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
@@ -49,6 +50,11 @@ cpp_find_or_build_dependency(
                BUILD_TESTING=OFF
 )
 
+# PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
+if("${BUILD_PAPI_BINDINGS}")
+    include(build_papi)
+endif ()
+
 cpp_find_or_build_dependency(
     bphash
     URL github.com/ryanmrichard/BPHash
@@ -57,65 +63,6 @@ cpp_find_or_build_dependency(
     BRANCH master
     CMAKE_ARGS BUILD_TESTING=OFF
 )
-
-if( BUILD_CUDA_BINDINGS OR BUILD_HIP_BINDINGS )
-  set( BUILD_DEVICE TRUE CACHE BOOL "Enable Device Code" )
-else()
-  set( BUILD_DEVICE FALSE CACHE BOOL "Enable Device Code" )
-endif()
-
-
-if( BUILD_CUDA_BINDINGS )
-  enable_language( CUDA )
-
-  find_package( CUDAToolkit REQUIRED )
-
-  if(NOT DEFINED CMAKE_CUDA_STANDARD)
-    set(CMAKE_CUDA_STANDARD 11)
-    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
-  endif()
-
-  set(PAPI_COMPONENTS cuda)
-  set(ENV{PAPI_CUDA_ROOT} ${CUDAToolkit_LIBRARY_ROOT})
-endif( BUILD_CUDA_BINDINGS )
-
-if( BUILD_HIP_BINDINGS )
-  set(GPU_TARGETS "gfx906,gfx908,gfx90a" CACHE STRING "GPU targets to compile for")
-  enable_language( HIP )
-
-  set(PAPI_COMPONENTS rocm)
-  set(ENV{PAPI_ROCM_ROOT} ${ROCM_PATH})
-endif( BUILD_HIP_BINDINGS )
-
-include(ExternalProject)
-ExternalProject_Add(papi
-  UPDATE_DISCONNECTED True
-  SOURCE_DIR _deps/papi-src
-  INSTALL_DIR _deps/papi-build
-  SOURCE_SUBDIR "src"
-  GIT_REPOSITORY https://bitbucket.org/icl/papi.git
-  GIT_TAG master
-  UPDATE_COMMAND ""
-  PATCH_COMMAND ""
-  CONFIGURE_COMMAND ./configure --with-components=${PAPI_COMPONENTS} --prefix=<INSTALL_DIR>
-  BUILD_COMMAND     ${CMAKE_MAKE_PROGRAM}
-  INSTALL_COMMAND   ${CMAKE_MAKE_PROGRAM} install
-  BUILD_IN_SOURCE True
-  LOG_DOWNLOAD OFF
-  LOG_BUILD OFF
-)
-
-# Prepare PAPI
-ExternalProject_Get_Property(papi install_dir)
-set(PAPI_INCLUDE_DIR ${install_dir}/include)
-set(PAPI_LIBRARY_PATH ${install_dir}/lib/libpapi.a)
-file(MAKE_DIRECTORY ${PAPI_INCLUDE_DIR})
-#add_library(papi STATIC IMPORTED)
-include_directories(${PAPI_INCLUDE_DIR})
-set_property(TARGET papi PROPERTY IMPORTED_LOCATION ${PAPI_LIBRARY_PATH})
-set_property(TARGET papi APPEND PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${PAPI_INCLUDE_DIR})
-# Dependencies
-add_dependencies(papi papi)
 
 # Note that hashes may differ with different compilers when typeid is used.
 # Comment below to disable using typeid for hashes.

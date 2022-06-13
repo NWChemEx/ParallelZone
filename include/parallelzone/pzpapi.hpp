@@ -5,11 +5,11 @@
 
 namespace parallelzone {
 
-  namespace detail_ {
-    template <size_t N>
-    class PapiPIMPL;
-  } // namespace detail_
-  
+namespace detail_ {
+template<size_t N>
+class PapiPIMPL;
+} // namespace detail_
+
 /**
  * @brief Class Papi
  * @details Supports as a convinence wrapper around PAPI
@@ -18,7 +18,7 @@ class Papi {
 public:
     /// Type of the PIMPL associated with this instance
     using pimpl_type = detail_::PapiPIMPL<32>;
-  
+
     /**
      * @brief Default constructor
      * @details Initializes PAPI and sets up Event sets

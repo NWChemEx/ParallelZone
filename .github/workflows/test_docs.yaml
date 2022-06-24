@@ -3,10 +3,13 @@ on:
   pull_request:
     branches:
       - master
+  push:
+    branches:
+      - dev-quazi
 
 jobs:
   Build-Documentation:
     uses: NWChemEx-Project/.github/.github/workflows/test_docs_tmpl.yml@master
     with:
-      repoName: parallelzone_cxx_api
+      target: parallelzone_cxx_api
       dependencies: cmake doxygen sphinx

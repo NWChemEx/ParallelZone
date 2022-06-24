@@ -8,7 +8,7 @@ on:
 
 jobs:
   Build-Documentation:
-    uses: NWChemEx-Project/.github/.github/workflows/deploy_docs_tmpl.yml@main
+    uses: NWChemEx-Project/.github/.github/workflows/deploy_docs_tmpl.yml@master
     with: 
       reponame_cxx_api: parallelzone_cxx_api
       dependencies: cmake doxygen sphinx

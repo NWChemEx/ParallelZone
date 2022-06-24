@@ -1,5 +1,4 @@
 name: C_C++_CI
-
 on:
   pull_request:
     branches:
@@ -7,7 +6,6 @@ on:
   push:
     branches:
       - dev-quazi
-
 jobs:
   build:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yml@master

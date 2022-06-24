@@ -4,8 +4,8 @@
 
 namespace parallelzone::detail_ {
 
-  template <size_t EventSize>
-  PapiPIMPL<EventSize>::PapiPIMPL() : m_eventset_(PAPI_NULL) {
+template<size_t EventSize>
+PapiPIMPL<EventSize>::PapiPIMPL() : m_eventset_(PAPI_NULL) {
     int retVal;
     retVal = PAPI_library_init(static_cast<int>(PAPI_VER_CURRENT));
     if(retVal != PAPI_VER_CURRENT) {
@@ -36,21 +36,22 @@ namespace parallelzone::detail_ {
 
     int cid = -1;
     // Find cuda,rocm,intel component index (get number of components)
-    for(int i = 0; i < PAPI_num_components() && cid < 0; i++) { // while not found,
-      // get the component info
-      PAPI_component_info_t* aComponent =
-	(PAPI_component_info_t*)PAPI_get_component_info(i);
-      if(aComponent == nullptr) {
-	throw std::runtime_error(
-	  "PAPI_get_component_info failed, returned NULL!");
-      }
+    for(int i = 0; i < PAPI_num_components() && cid < 0;
+        i++) { // while not found,
+        // get the component info
+        PAPI_component_info_t* aComponent =
+          (PAPI_component_info_t*)PAPI_get_component_info(i);
+        if(aComponent == nullptr) {
+            throw std::runtime_error(
+              "PAPI_get_component_info failed, returned NULL!");
+        }
 
-      // If we found our match, record it.
-      if((strcmp("cuda", aComponent->name) == 0) ||
-	 (strcmp("rocm", aComponent->name) == 0) ||
-	 (strcmp("intel_gpu", aComponent->name) == 0)) {
-	cid = i;
-      }
+        // If we found our match, record it.
+        if((strcmp("cuda", aComponent->name) == 0) ||
+           (strcmp("rocm", aComponent->name) == 0) ||
+           (strcmp("intel_gpu", aComponent->name) == 0)) {
+            cid = i;
+        }
     } // end search components.
 
     if(cid < 0) { // if no PCP component found,
@@ -61,16 +62,16 @@ namespace parallelzone::detail_ {
     PAPI_assign_eventset_component(m_eventset_, cid);
 }
 
-  template <size_t EventSize>  
-  void PapiPIMPL<EventSize>::start_papi_measurement() {
+template<size_t EventSize>
+void PapiPIMPL<EventSize>::start_papi_measurement() {
     int retVal = PAPI_start(m_eventset_);
     if(retVal != PAPI_OK) {
         throw std::runtime_error("Papi::start_papi_measurement() failed!");
     }
 }
 
-  template <size_t EventSize>
-  void PapiPIMPL<EventSize>::stop_papi_measurement() {
+template<size_t EventSize>
+void PapiPIMPL<EventSize>::stop_papi_measurement() {
     long long values[N];
     int retVal = PAPI_stop(m_eventset_, values);
     if(retVal != PAPI_OK) {
@@ -80,8 +81,8 @@ namespace parallelzone::detail_ {
     for(int i = 0; i < N; ++i) { m_values_[i] += values[i]; }
 }
 
-  template <size_t EventSize>  
-  void PapiPIMPL<EventSize>::reset_papi_measurement() {
+template<size_t EventSize>
+void PapiPIMPL<EventSize>::reset_papi_measurement() {
     m_values_.fill(0);
 }
 

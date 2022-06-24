@@ -5,10 +5,10 @@
 
 namespace parallelzone {
 
-  namespace detail_ {
-    template <size_t EventSize=32>
-    class PapiPIMPL;
-  } // namespace detail_
+namespace detail_ {
+template<size_t EventSize = 32>
+class PapiPIMPL;
+} // namespace detail_
 
 namespace detail_ {
 template<size_t N>

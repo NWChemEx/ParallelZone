@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - dev-quazi
   workflow_dispatch:
 
 jobs:

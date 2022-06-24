@@ -5,7 +5,7 @@
 
 namespace parallelzone::detail_ {
 
-  template <size_t N>
+  template <size_t EventSize>
   class PapiPIMPL {
   public:
     PapiPIMPL();
@@ -26,7 +26,7 @@ namespace parallelzone::detail_ {
     void reset_papi_measurement();
     
   private:
-    std::array<long long, N> m_values_{0};
+    std::array<long long, EventSize> m_values_{0};
 
     int m_eventset_;
     

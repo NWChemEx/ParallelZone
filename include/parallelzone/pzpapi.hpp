@@ -6,7 +6,7 @@
 namespace parallelzone {
 
   namespace detail_ {
-    template <size_t N>
+    template <size_t EventSize=32>
     class PapiPIMPL;
   } // namespace detail_
   
@@ -17,7 +17,7 @@ namespace parallelzone {
 class Papi {
 public:
     /// Type of the PIMPL associated with this instance
-    using pimpl_type = detail_::PapiPIMPL<32>;
+    using pimpl_type = detail_::PapiPIMPL<>;
   
     /**
      * @brief Default constructor

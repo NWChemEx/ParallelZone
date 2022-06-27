@@ -70,8 +70,8 @@ void PapiPIMPL<EventSize>::start_papi_measurement() {
     }
 }
 
-  template <size_t EventSize>
-  void PapiPIMPL<EventSize>::stop_papi_measurement() {
+template<size_t EventSize>
+void PapiPIMPL<EventSize>::stop_papi_measurement() {
     long long values[EventSize];
     int retVal = PAPI_stop(m_eventset_, values);
     if(retVal != PAPI_OK) {

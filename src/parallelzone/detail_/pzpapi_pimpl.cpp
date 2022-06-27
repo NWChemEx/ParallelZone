@@ -71,13 +71,13 @@ namespace parallelzone::detail_ {
 
   template <size_t EventSize>
   void PapiPIMPL<EventSize>::stop_papi_measurement() {
-    long long values[N];
+    long long values[EventSize];
     int retVal = PAPI_stop(m_eventset_, values);
     if(retVal != PAPI_OK) {
         throw std::runtime_error("Papi::stop_papi_measurement() failed!");
     }
 
-    for(int i = 0; i < N; ++i) { m_values_[i] += values[i]; }
+    for(int i = 0; i < EventSize; ++i) { m_values_[i] += values[i]; }
 }
 
   template <size_t EventSize>  

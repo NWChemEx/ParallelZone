@@ -10,12 +10,6 @@ namespace parallelzone {
     class PapiPIMPL;
   } // namespace detail_
 
-namespace detail_ {
-template<size_t N>
-class PapiPIMPL;
-} // namespace detail_
-
->>>>>>> 737e9a8252d005164c561ff5ef38103ce8115a7b
 /**
  * @brief Class Papi
  * @details Supports as a convinence wrapper around PAPI

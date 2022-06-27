@@ -20,15 +20,6 @@ function(build_papi)
        endif()
 
        if( BUILD_CUDA_BINDINGS )
-         enable_language( CUDA )
-
-         find_package( CUDAToolkit REQUIRED )
-
-         if(NOT DEFINED CMAKE_CUDA_STANDARD)
-           set(CMAKE_CUDA_STANDARD 11)
-           set(CMAKE_CUDA_STANDARD_REQUIRED ON)
-         endif()
-
          set(PAPI_COMPONENTS cuda)
          set(ENV{PAPI_CUDA_ROOT} "${CUDAToolkit_LIBRARY_ROOT}")
          set(ENV{PAPI_CUDA_CUPTI} "${CUDAToolkit_LIBRARY_ROOT}/extras/CUPTI/lib64/libcupti.so")
@@ -36,7 +27,6 @@ function(build_papi)
 
        if( BUILD_HIP_BINDINGS )
          set(GPU_TARGETS "gfx906,gfx908,gfx90a" CACHE STRING "GPU targets to compile for")
-         enable_language( HIP )
 
          set(PAPI_COMPONENTS rocm)
          set(ENV{PAPI_ROCM_ROOT} ${ROCM_PATH})

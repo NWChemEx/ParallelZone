@@ -9,3 +9,5 @@ jobs:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yml@master
     with: 
       dependencies: 'gcc gcovr cmake openmpi'
+    secrets:
+      CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}

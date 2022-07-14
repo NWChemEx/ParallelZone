@@ -6,9 +6,10 @@
 
 // XXX This Leaks MPI!!
 #include <mpi.h>
-#define ROOT_ONLY(c) \
-int rank; MPI_Comm_rank(c, &rank); \
-if(!rank) return;
+#define ROOT_ONLY(c)         \
+    int rank;                \
+    MPI_Comm_rank(c, &rank); \
+    if(!rank) return;
 
 TEST_CASE("STDOUT Logger", "[logger][stdout]") {
     ROOT_ONLY(MPI_COMM_WORLD);

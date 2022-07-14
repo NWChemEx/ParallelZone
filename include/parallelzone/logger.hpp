@@ -7,7 +7,7 @@ namespace parallelzone {
 namespace detail_ {
 /// Logger Implemenetation Class
 class LoggerPIMPL;
-}
+} // namespace detail_
 
 /**
  *  A class to manage various stream loggers under a unified API
@@ -34,7 +34,7 @@ public:
     /**
      * @brief Construct Logger instance via copy.
      *
-     * @param[in] other Logger instance from which to construct 
+     * @param[in] other Logger instance from which to construct
      *                  this instance.
      */
     Logger(const Logger& other);
@@ -42,7 +42,7 @@ public:
     /**
      * @brief Construct Logger instance via move.
      *
-     * @param[in] other Logger instance from which to construct 
+     * @param[in] other Logger instance from which to construct
      *                  this instance.
      */
     Logger(Logger&& other) noexcept;

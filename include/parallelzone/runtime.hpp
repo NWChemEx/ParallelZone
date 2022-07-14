@@ -60,7 +60,7 @@ public:
     /**
      * @brief Get progress logger
      *
-     * This logger is intended to print progress information to a specified 
+     * This logger is intended to print progress information to a specified
      * output. Typically only useful on root process.
      *
      * @returns Logger instance intended for progress output.
@@ -70,7 +70,7 @@ public:
     /**
      * @brief Get debug logger
      *
-     * This logger is intended to print debug information to a specified 
+     * This logger is intended to print debug information to a specified
      * output. Typically should be rank-specific
      *
      * @returns Logger instance intended for debug output for current rank.

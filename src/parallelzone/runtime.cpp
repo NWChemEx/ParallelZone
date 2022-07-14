@@ -29,13 +29,11 @@ Runtime::Runtime(int argc, char** argv, const SafeMPI::Intracomm& comm) :
   m_init_madness_(!madness::initialized()),
   m_num_partitions_(1),
   m_world_(start_madness(m_init_madness_, argc, argv, comm)) {
-  
-      m_progress_logger_ = comm.Get_rank() ?  
-        std::make_unique<Logger>(make_null_logger()) :
-	std::make_unique<Logger>(make_stdout_logger());
+    m_progress_logger_ = comm.Get_rank() ?
+                           std::make_unique<Logger>(make_null_logger()) :
+                           std::make_unique<Logger>(make_stdout_logger());
 
-      m_debug_logger_ =
-        std::make_unique<Logger>(make_stderr_logger());
+    m_debug_logger_ = std::make_unique<Logger>(make_stderr_logger());
 }
 
 Runtime::~Runtime() {
@@ -43,13 +41,8 @@ Runtime::~Runtime() {
     madness::finalize();
 }
 
+Logger& Runtime::progress_logger() { return *m_progress_logger_; }
 
-Logger& Runtime::progress_logger() {
-    return *m_progress_logger_;
-}
-
-Logger& Runtime::debug_logger() {
-    return *m_debug_logger_;
-}
+Logger& Runtime::debug_logger() { return *m_debug_logger_; }
 
 } // namespace parallelzone

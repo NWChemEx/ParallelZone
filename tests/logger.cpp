@@ -4,7 +4,14 @@
 #include <iostream>
 #include <sstream>
 
+// XXX This Leaks MPI!!
+#include <mpi.h>
+#define ROOT_ONLY(c) \
+int rank; MPI_Comm_rank(c, &rank); \
+if(!rank) return;
+
 TEST_CASE("STDOUT Logger", "[logger][stdout]") {
+    ROOT_ONLY(MPI_COMM_WORLD);
     auto logger = parallelzone::make_stdout_logger();
 
     // Redirect STDOUT to string
@@ -18,6 +25,7 @@ TEST_CASE("STDOUT Logger", "[logger][stdout]") {
 }
 
 TEST_CASE("STDERR Logger", "[logger][stderr]") {
+    ROOT_ONLY(MPI_COMM_WORLD);
     auto logger = parallelzone::make_stderr_logger();
 
     // Redirect STDOUT to string
@@ -31,6 +39,7 @@ TEST_CASE("STDERR Logger", "[logger][stderr]") {
 }
 
 TEST_CASE("File Logger", "[logger][file]") {
+    ROOT_ONLY(MPI_COMM_WORLD);
     SECTION("with file") {
         // Ensure file close before check
         {
@@ -56,12 +65,14 @@ TEST_CASE("File Logger", "[logger][file]") {
 }
 
 TEST_CASE("Null Logger", "[logger][null]") {
+    ROOT_ONLY(MPI_COMM_WORLD);
     // Just check that we're calling into the void?
     auto logger = parallelzone::make_null_logger();
     logger.stream() << "IF YOU'RE SEEING THIS, ITS WRONG" << std::flush;
 }
 
 TEST_CASE("Stream Logger", "[logger][stream]") {
+    ROOT_ONLY(MPI_COMM_WORLD);
     SECTION("String Stream") {
         std::stringstream ss;
         auto logger = parallelzone::make_stream_logger(&ss);

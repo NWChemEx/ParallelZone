@@ -2,11 +2,15 @@
 
 #include <madness/world/MADworld.h>
 #include <madness/world/safempi.h>
+#include <parallelzone/logger.hpp>
 
 namespace parallelzone {
 
 class Runtime {
 public:
+
+    using logger_type = Logger;
+    using logger_ptr  = std::unique_ptr<logger_type>;
     /**
      * @brief Default constructor
      * @details If madness isn't initialized, initializes madness and sets
@@ -54,6 +58,19 @@ public:
     /// @return true if this instance initialized madness.
     constexpr bool started_madness() const noexcept { return m_init_madness_; }
 
+    Logger& progress_logger();
+    Logger& debug_logger();
+
+    inline void set_progress_logger(Logger&& l) {
+        m_progress_logger_ = 
+          std::make_unique<Logger>(std::move(l));
+    }
+
+    inline void set_debug_logger(Logger&& l) {
+        m_debug_logger_ = 
+          std::make_unique<Logger>(std::move(l));
+    }
+
     /**
      * @brief destructor
      * @details Destructs the MADness runtime appropriately, if Runtime
@@ -75,6 +92,12 @@ private:
 
     /// Reference to the madness world this instance wraps
     madness::World& m_world_;
+
+    /// Progress Logger
+    logger_ptr m_progress_logger_;
+
+    /// Debug Logger
+    logger_ptr m_debug_logger_;
 };
 
 } // End namespace parallelzone

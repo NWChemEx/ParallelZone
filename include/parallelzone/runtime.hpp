@@ -57,13 +57,32 @@ public:
     /// @return true if this instance initialized madness.
     constexpr bool started_madness() const noexcept { return m_init_madness_; }
 
+    /**
+     * @brief Get progress logger
+     *
+     * This logger is intended to print progress information to a specified 
+     * output. Typically only useful on root process.
+     *
+     * @returns Logger instance intended for progress output.
+     */
     Logger& progress_logger();
+
+    /**
+     * @brief Get debug logger
+     *
+     * This logger is intended to print debug information to a specified 
+     * output. Typically should be rank-specific
+     *
+     * @returns Logger instance intended for debug output for current rank.
+     */
     Logger& debug_logger();
 
+    /// Set progress logger
     inline void set_progress_logger(Logger&& l) {
         m_progress_logger_ = std::make_unique<Logger>(std::move(l));
     }
 
+    /// Set debug logger
     inline void set_debug_logger(Logger&& l) {
         m_debug_logger_ = std::make_unique<Logger>(std::move(l));
     }

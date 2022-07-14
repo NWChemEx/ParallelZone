@@ -122,6 +122,9 @@ Logger make_file_logger(std::string fname) {
     return Logger(std::make_unique<FileLogger>(fname));
 }
 
+// TODO: This can probbaly be made more performance by adding
+// a custom extension of std::streambuf that has a nullcall in
+// xputs / overflow
 class NullLogger : public FileLogger {
     using my_type = NullLogger;
 

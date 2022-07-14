@@ -1,15 +1,15 @@
 #include "parallelzone/logger.hpp"
 #include <catch2/catch.hpp>
-#include <sstream>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 TEST_CASE("STDOUT Logger", "[logger][stdout]") {
     auto logger = parallelzone::make_stdout_logger();
 
     // Redirect STDOUT to string
     std::stringstream str;
-    auto cout_rdbuf = std::cout.rdbuf( str.rdbuf() );
+    auto cout_rdbuf = std::cout.rdbuf(str.rdbuf());
     logger.stream() << "Hello world" << std::endl;
 
     // Reser STDOUT
@@ -22,7 +22,7 @@ TEST_CASE("STDERR Logger", "[logger][stderr]") {
 
     // Redirect STDOUT to string
     std::stringstream str;
-    auto cerr_rdbuf = std::cerr.rdbuf( str.rdbuf() );
+    auto cerr_rdbuf = std::cerr.rdbuf(str.rdbuf());
     logger.stream() << "Hello world" << std::endl;
 
     // Reser STDOUT
@@ -34,24 +34,23 @@ TEST_CASE("File Logger", "[logger][file]") {
     SECTION("with file") {
         // Ensure file close before check
         {
-        auto logger = 
-            parallelzone::make_file_logger("my_test.txt");
-        logger.stream() << "Hello world" << std::endl;
+            auto logger = parallelzone::make_file_logger("my_test.txt");
+            logger.stream() << "Hello world" << std::endl;
         }
 
         {
-        std::ifstream file("my_test.txt");
-        std::stringstream buff; buff << file.rdbuf();
-        REQUIRE( buff.str() == "Hello world\n" );
+            std::ifstream file("my_test.txt");
+            std::stringstream buff;
+            buff << file.rdbuf();
+            REQUIRE(buff.str() == "Hello world\n");
         }
 
         std::remove("my_test.txt");
     }
 
     SECTION("no copy") {
-        auto logger = 
-          parallelzone::make_file_logger("my_test.txt");
-        REQUIRE_THROWS_AS(parallelzone::Logger(logger),std::runtime_error);
+        auto logger = parallelzone::make_file_logger("my_test.txt");
+        REQUIRE_THROWS_AS(parallelzone::Logger(logger), std::runtime_error);
         std::remove("my_test.txt");
     }
 }
@@ -59,8 +58,7 @@ TEST_CASE("File Logger", "[logger][file]") {
 TEST_CASE("Null Logger", "[logger][null]") {
     // Just check that we're calling into the void?
     auto logger = parallelzone::make_null_logger();
-    logger.stream() << "IF YOU'RE SEEING THIS, ITS WRONG"
-	    << std::flush;
+    logger.stream() << "IF YOU'RE SEEING THIS, ITS WRONG" << std::flush;
 }
 
 TEST_CASE("Stream Logger", "[logger][stream]") {
@@ -73,6 +71,6 @@ TEST_CASE("Stream Logger", "[logger][stream]") {
 
     SECTION("Null") {
         auto logger = parallelzone::make_stream_logger(nullptr);
-	REQUIRE_THROWS_AS(logger.stream(), std::runtime_error);
+        REQUIRE_THROWS_AS(logger.stream(), std::runtime_error);
     }
 }

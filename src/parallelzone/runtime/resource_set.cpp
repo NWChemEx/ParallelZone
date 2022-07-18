@@ -1,8 +1,8 @@
-#include <parallelzone/resource_set.hpp>
+#include <parallelzone/runtime/resource_set.hpp>
 #include <vector>
 
-namespace parallelzone {
-namespace detail_{
+namespace parallelzone::runtime {
+namespace detail_ {
 
 struct ResourceSetPIMPL {
     using parent_type = ResourceSet;
@@ -20,26 +20,24 @@ struct ResourceSetPIMPL {
     }
 };
 
-}
+} // namespace detail_
 
 ResourceSet::ResourceSet() noexcept = default;
 
 ResourceSet::ResourceSet(pimpl_pointer pimpl) noexcept :
-    m_pimpl_(std::move(pimpl)) {}
+  m_pimpl_(std::move(pimpl)) {}
 
 ResourceSet::ResourceSet(const ResourceSet& other) :
-    m_pimpl_(other.m_pimpl_ ? other.m_pimpl_->clone() : nullptr) {}
+  m_pimpl_(other.m_pimpl_ ? other.m_pimpl_->clone() : nullptr) {}
 
 ResourceSet::ResourceSet(ResourceSet&& other) noexcept = default;
 
 ResourceSet& ResourceSet::operator=(const ResourceSet& rhs) {
-    if(this != &rhs){
-        ResourceSet(rhs).swap(*this);
-    }
+    if(this != &rhs) { ResourceSet(rhs).swap(*this); }
     return *this;
 }
 
-ResourceSet& ResourceSet::operator=(ResourceSet&& rhs)noexcept = default;
+ResourceSet& ResourceSet::operator=(ResourceSet&& rhs) noexcept = default;
 
 ResourceSet::~ResourceSet() noexcept = default;
 
@@ -60,7 +58,7 @@ bool ResourceSet::operator==(const ResourceSet& rhs) const noexcept {
     if(empty() != rhs.empty()) return false;
 
     // Both are empty, or both are non-empty, if empty return
-    if(empty())return true;
+    if(empty()) return true;
 
     return m_pimpl_->m_workers == rhs.m_pimpl_->m_workers;
 }
@@ -69,4 +67,4 @@ bool ResourceSet::operator!=(const ResourceSet& rhs) const noexcept {
     return !(*this == rhs);
 }
 
-}
+} // namespace parallelzone::runtime

@@ -8,7 +8,7 @@
  */
 
 #include "parallelzone/hasher.hpp"
-#include "parallelzone/runtime.hpp"
 #include "parallelzone/serialization.hpp"
+#include <parallelzone/runtime/runtime.hpp>
 
 namespace parallelzone {} // namespace parallelzone

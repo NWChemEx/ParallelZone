@@ -56,7 +56,7 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS BUILD_TESTING=OFF
 )
 # Note that hashes may differ with different compilers when typeid is used.
-# Comment below to disable using typeid for hashes. 
+# Comment below to disable using typeid for hashes.
 target_compile_definitions(bphash PUBLIC BPHASH_USE_TYPEID)
 
 cpp_find_or_build_dependency(
@@ -89,8 +89,7 @@ if("${BUILD_TESTING}")
     cpp_add_tests(
         test_parallelzone
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
-        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/parallelzone"
+        INCLUDE_DIR "${project_src_dir}"
         DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
     )
 endif()
-

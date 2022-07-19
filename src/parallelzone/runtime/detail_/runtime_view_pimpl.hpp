@@ -4,6 +4,7 @@
 namespace parallelzone::runtime::detail_ {
 
 struct RuntimeViewPIMPL {
+    /// Type of the class this PIMPL implements
     using parent_type = RuntimeView;
 
     /// Ultimately a typedef of RuntimeView::resource_set_type
@@ -36,15 +37,15 @@ struct RuntimeViewPIMPL {
     resource_set_container m_resource_sets;
 };
 
-RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
-                                   madness_world_reference world) :
+inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
+                                          madness_world_reference world) :
   m_did_i_start_madness(did_i_start_madness),
   m_world(world),
-  m_resource_sets{} {
-    // TODO: Fill in resource sets
+  m_resource_sets{resource_set_type()} {
+    // TODO: Actually fill in the resource set
 }
 
-RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
+inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
     if(!m_did_i_start_madness) return;
     madness::finalize();
 }

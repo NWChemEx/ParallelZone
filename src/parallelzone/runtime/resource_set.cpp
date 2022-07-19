@@ -22,6 +22,10 @@ struct ResourceSetPIMPL {
 
 } // namespace detail_
 
+// -----------------------------------------------------------------------------
+// -- Ctors, assignment, and dtor
+// -----------------------------------------------------------------------------
+
 ResourceSet::ResourceSet() noexcept = default;
 
 ResourceSet::ResourceSet(pimpl_pointer pimpl) noexcept :
@@ -41,9 +45,21 @@ ResourceSet& ResourceSet::operator=(ResourceSet&& rhs) noexcept = default;
 
 ResourceSet::~ResourceSet() noexcept = default;
 
+// -----------------------------------------------------------------------------
+// -- Getters
+// -----------------------------------------------------------------------------
+
 ResourceSet::size_type ResourceSet::n_workers() const noexcept {
     return !empty() ? m_pimpl_->m_workers.size() : 0;
 }
+
+bool ResourceSet::has_me() const { throw std::runtime_error("NYI"); }
+
+ResourceSet::worker_type ResourceSet::me() { throw std::runtime_error("NYI"); }
+
+// -----------------------------------------------------------------------------
+// -- Utility methods
+// -----------------------------------------------------------------------------
 
 bool ResourceSet::empty() const noexcept {
     return !static_cast<bool>(m_pimpl_);

@@ -3,6 +3,7 @@
 
 using namespace parallelzone::runtime;
 
+// TODO: Tests for non-defaulted resource sets
 TEST_CASE("ResourceSet") {
     ResourceSet defaulted;
 
@@ -38,7 +39,17 @@ TEST_CASE("ResourceSet") {
 
     SECTION("n_workers") { REQUIRE(defaulted.n_workers() == 0); }
 
+    SECTION("has_me") {
+        REQUIRE_THROWS_AS(defaulted.has_me(), std::runtime_error);
+    }
+
+    SECTION("me") { REQUIRE_THROWS_AS(defaulted.me(), std::runtime_error); }
+
     SECTION("empty") { REQUIRE(defaulted.empty()); }
+
+    SECTION("swap") {
+        // TODO: test when we have ResourceSets with different state
+    }
 
     SECTION("operator==/operator!=") {
         ResourceSet other_defaulted;

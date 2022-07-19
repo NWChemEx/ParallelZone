@@ -56,7 +56,14 @@ public:
     /// Type used to pass the program's arguments (i.e., "argv")
     using argv_type = char**;
 
+    /// Type of a set of resources
     using resource_set_type = ResourceSet;
+
+    /// Type of a read/write reference to a resource_set_type object
+    using resource_set_reference = resource_set_type&;
+
+    /// Type of a read-only reference to a resource_set_type object
+    using const_resource_set_reference = const resource_set_type&;
 
     /// Type of the class managing the state of this class
     using pimpl_type = detail_::RuntimeViewPIMPL;
@@ -139,10 +146,42 @@ public:
      */
     RuntimeView(argc_type argc, argv_type argv, const_mpi_comm_reference comm);
 
-    RuntimeView(const RuntimeView&);
-    RuntimeView& operator=(const RuntimeView&);
-    RuntimeView(RuntimeView&&) noexcept;
-    RuntimeView& operator=(RuntimeView&&) noexcept;
+    /** @brief Make a new RuntimeView which aliases the same resources as *this
+     *
+     *  RuntimeView instances behave a bit like a shared_ptr. The copy ctor is
+     *  deep in the sense that the new instance is not an alias of the original
+     *  RuntimeView, but shallow in the sense that the new RuntimeView aliases
+     *  the same resources as the original.
+     *
+     *  @param[in] other The RuntimeView we are copying.
+     *
+     *  @throw None No throw guarantee.
+     */
+    RuntimeView(const RuntimeView& other) noexcept;
+
+    /** @brief Makes *this alias the same resources as @p rhs
+     *
+     *  This method will set the internal state so that it aliases the same
+     *  resources as @p rhs. This will decrement the reference count to the
+     *  resources *this holds before the operation and increase the reference
+     *  count to the resources in @p rhs. If the reference count to the
+     *  resources in *this reaches 0 as a result of the aforementioned
+     *  decrement, they will be released (possibly finalizing MADNESS/MPI).
+     *
+     *  @param[in] rhs The RuntimeView whose resources we want *this to alias
+     *
+     *  @return *this after making *this point to the same resources as @p rhs.
+     *
+     *  @throw None No throw guarantee.
+     */
+    RuntimeView& operator=(const RuntimeView&) noexcept;
+
+    /// Move has basically no performance benefit over copy and is deleted to
+    /// ensure reference counting happens as intended
+    ///@{
+    RuntimeView(RuntimeView&&) noexcept            = delete;
+    RuntimeView& operator=(RuntimeView&&) noexcept = delete;
+    ///@}
 
     /** @brief Releases the present RuntimeView instance
      *
@@ -156,10 +195,28 @@ public:
      */
     ~RuntimeView() noexcept;
 
-    /// @return MPI Communicator, associated with MADWorld
+    // -------------------------------------------------------------------------
+    // -- Getters
+    // -------------------------------------------------------------------------
+
+    /** @brief Returns the MPI communicator powering *this
+     *
+     *  ParallelZone assumes that MPI is powering the runtime. This method is
+     *  used to retrieve the MPI communicator which is managing the resources
+     *  in this RuntimeView.
+     *
+     *  @return A read-only reference to the MPI communicator in *this.
+     *
+     *  @throw None No throw guarantee.
+     */
     const_mpi_comm_reference mpi_comm() const;
 
-    /// @return MADWorld, ref handle to madness::World
+    /** @brief Returns the MADNESS world powering *this
+     *
+     *  @return A read/write reference to the MADNESS world
+     *
+     *  @throw None No throw guarantee.
+     */
     madness_world_reference madness_world() const;
 
     /** @brief The number of resource sets in this instance.
@@ -170,13 +227,74 @@ public:
      */
     size_type size() const noexcept;
 
+    /** @brief Used to determine if this RuntimeView aliases the resources that
+     *         started MADNESS.
+     *
+     *  If a RuntimeView starts MADNESS it's responsible for making sure MADNESS
+     *  is finalized. The finalization happens in the dtor when all references
+     *  to the original resources are out of scope. This method can be used to
+     *  determine if letting the current RuntimeView go out of scope will
+     *  decrement the reference count (if the return is true) or not (if the
+     *  return is false).
+     *
+     *  @return True if the aliased resources started MADNESS and false
+     *          otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool did_i_start_madness() const noexcept;
+
+    /** @brief Returns the @p i-th resource set in a read/write state.
+     *
+     *  This method is used to retrieve a resource set by offset.
+     *
+     *  @param[in] i The 0-based offset of the desired resource set. @p i is
+     *               expected to be in the range [0, size()).
+     *
+     *  @return A read/write reference to the requested resource set.
+     *
+     *  @throw std::out_of_range if @p i is not in the range [0, size()).
+     *                           Strong throw guarantee.
+     */
+    resource_set_reference at(size_type i);
+
+    /** @brief Returns the @p i-th resource set in a read-only state.
+     *
+     *  This method behaves identical to the non-const version, except that the
+     *  resulting resource set is read-only.
+     *
+     *  @param[in] i The 0-based offset of the desired resource set. @p i is
+     *               expected to be in the range [0, size()).
+     *
+     *  @return A read-only reference to the requested resource set.
+     *
+     *  @throw std::out_of_range if @p i is not in the range [0, size()).
+     *                           Strong throw guarantee.
+     */
+    const_resource_set_reference at(size_type i) const;
+
+    // TODO: Add noexcept after implementing
     /** @brief Used to determine if the current process is part of *this
      *
-     *  If *this is wrapping MPI_COMM_WORLD than the current process is always
-     *  part of *this. However, for other MPI intracomms this need not be the
-     *  case. This method
+     *  Each RuntimeView is meant to be treated as the "full" set of resources
+     *  available. In practice, it need not actually be the full set, hence the
+     *  quotes. After partitioning a RuntimeView into sub-views, each process
+     *  can only directly see the resources in the sub-view it was assigned to.
+     *  This method is used to determine if the current process was assigned to
+     *  *this.
+     *
+     *  In MPI terms, if *this is wrapping MPI_COMM_WORLD than the current
+     *  process is always part of *this. However, for MPI intra-comms which are
+     *  proper subsets of MPI_COMM_WORLD, a particular process need not be in
+     *  the intra-comm (and by definition at least one is not). This method
+     *  tells you if the current process is in the wrapped MPI_Comm or not.
+     *
+     *  @return True if the current process is in the communicator and false
+     *          otherwise.
+     *
+     *  @throw None No throw guarantee.
      */
-    bool has_me() const noexcept;
+    bool has_me() const;
 
     /** @brief Swaps the state of *this with @p other.
      *
@@ -190,9 +308,49 @@ public:
      */
     void swap(RuntimeView& other) noexcept;
 
+    // TODO: Add noexcept after implementing
+    /** @brief Determines if @p rhs is value equal to *this.
+     *
+     *  Two RuntimeView instances are value equal if they wrap the same
+     *  MPI_Comm and have the same resources.
+     *
+     *  @param[in] rhs The RuntimeView we are comparing to.
+     *
+     *  @return True if *this is value equal to @p rhs and false otherwise.
+     *
+     *  @throw None No Throw guarantee.
+     */
+    bool operator==(const RuntimeView& rhs) const;
+
 private:
+    /** @brief Code factorization for ensuring @p i is in the range [0, size())
+     *
+     *  @param[in] i The index to bounds check.
+     *
+     *  @throw std::out_of_range if @p i is not in the range [0, size()).
+     */
+    void bounds_check_(size_type i) const;
+
     /// Holds the actual state of the Runtime
     pimpl_pointer m_pimpl_;
 };
+
+// TODO: Add noexcept when implemented
+/** @brief Determines if two RuntimeView instances are different.
+ *  @relates RuntimeView
+ *
+ *  Two RuntimeView instances are different if they are not value equal. See
+ *  operator== for the definition of value equal.
+ *
+ *  @param[in] lhs The RuntimeView instance on the left of the operator.
+ *  @param[in] rhs The RuntimeView instance on the right of the operator.
+ *
+ *  @return False if @p lhs is value equal to @p rhs and true otherwise.
+ *
+ *  @throw None No throw guarantee.
+ */
+inline bool operator!=(const RuntimeView& lhs, const RuntimeView& rhs) {
+    return !(lhs == rhs);
+}
 
 } // namespace parallelzone::runtime

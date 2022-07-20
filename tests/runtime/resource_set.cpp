@@ -8,7 +8,7 @@ TEST_CASE("ResourceSet") {
     ResourceSet defaulted;
 
     SECTION("Ctors and assignment") {
-        SECTION("Default") { REQUIRE(defaulted.n_workers() == 0); }
+        SECTION("Default") {}
 
         SECTION("Copy") {
             ResourceSet defaulted_copy(defaulted);
@@ -37,13 +37,13 @@ TEST_CASE("ResourceSet") {
         }
     }
 
-    SECTION("n_workers") { REQUIRE(defaulted.n_workers() == 0); }
-
-    SECTION("has_me") {
-        REQUIRE_THROWS_AS(defaulted.has_me(), std::runtime_error);
+    SECTION("mpi_rank") {
+        REQUIRE_THROWS_AS(defaulted.mpi_rank(), std::runtime_error);
     }
 
-    SECTION("me") { REQUIRE_THROWS_AS(defaulted.me(), std::runtime_error); }
+    SECTION("is_mine") {
+        REQUIRE_THROWS_AS(defaulted.is_mine(), std::runtime_error);
+    }
 
     SECTION("empty") { REQUIRE(defaulted.empty()); }
 
@@ -55,5 +55,7 @@ TEST_CASE("ResourceSet") {
         ResourceSet other_defaulted;
         REQUIRE(defaulted == other_defaulted);
         REQUIRE_FALSE(defaulted != other_defaulted);
+
+        // TODO: Test non-empty
     }
 }

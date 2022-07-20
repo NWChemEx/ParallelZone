@@ -1,26 +1,6 @@
-#include <parallelzone/runtime/resource_set.hpp>
-#include <vector>
+#include "detail_/resource_set_pimpl.hpp"
 
 namespace parallelzone::runtime {
-namespace detail_ {
-
-struct ResourceSetPIMPL {
-    using parent_type = ResourceSet;
-
-    using worker_type = parent_type::worker_type;
-
-    using worker_container = std::vector<worker_type>;
-
-    using pimpl_pointer = parent_type::pimpl_pointer;
-
-    worker_container m_workers;
-
-    pimpl_pointer clone() const {
-        return std::make_unique<ResourceSetPIMPL>(*this);
-    }
-};
-
-} // namespace detail_
 
 // -----------------------------------------------------------------------------
 // -- Ctors, assignment, and dtor
@@ -49,13 +29,12 @@ ResourceSet::~ResourceSet() noexcept = default;
 // -- Getters
 // -----------------------------------------------------------------------------
 
-ResourceSet::size_type ResourceSet::n_workers() const noexcept {
-    return !empty() ? m_pimpl_->m_workers.size() : 0;
+ResourceSet::size_type ResourceSet::mpi_rank() const {
+    assert_pimpl_();
+    return m_pimpl_->m_rank;
 }
 
-bool ResourceSet::has_me() const { throw std::runtime_error("NYI"); }
-
-ResourceSet::worker_type ResourceSet::me() { throw std::runtime_error("NYI"); }
+bool ResourceSet::is_mine() const { throw std::runtime_error("NYI"); }
 
 // -----------------------------------------------------------------------------
 // -- Utility methods
@@ -69,18 +48,29 @@ void ResourceSet::swap(ResourceSet& other) noexcept {
     m_pimpl_.swap(other.m_pimpl_);
 }
 
-bool ResourceSet::operator==(const ResourceSet& rhs) const noexcept {
+bool ResourceSet::operator==(const ResourceSet& rhs) const {
     // Check if one is empty and other isn't
     if(empty() != rhs.empty()) return false;
 
     // Both are empty, or both are non-empty, if empty return
     if(empty()) return true;
 
-    return m_pimpl_->m_workers == rhs.m_pimpl_->m_workers;
+    // TODO: Implement once we can compare RuntimeView instances
+    throw std::runtime_error("NYI");
 }
 
-bool ResourceSet::operator!=(const ResourceSet& rhs) const noexcept {
+bool ResourceSet::operator!=(const ResourceSet& rhs) const {
     return !(*this == rhs);
+}
+
+bool ResourceSet::has_pimpl_() const noexcept {
+    return static_cast<bool>(m_pimpl_);
+}
+
+void ResourceSet::assert_pimpl_() const {
+    if(has_pimpl_()) return;
+    throw std::runtime_error(
+      "ResourceSet has no PIMPL. Was it default constructed or moved from?");
 }
 
 } // namespace parallelzone::runtime

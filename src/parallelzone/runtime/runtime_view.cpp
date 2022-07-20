@@ -1,3 +1,4 @@
+#include "detail_/resource_set_pimpl.hpp"
 #include "detail_/runtime_view_pimpl.hpp"
 
 // N.B. AFAIK the only way a RuntimeView can have no PIMPL is if an exception is
@@ -29,6 +30,11 @@ auto start_madness(int argc, char** argv, const MPI_Comm& comm) {
     return std::make_shared<detail_::RuntimeViewPIMPL>(initialize, *pworld);
 }
 
+ResourceSet make_resource_set(std::size_t rank, madness::World& world) {
+    auto p = std::make_unique<detail_::ResourceSetPIMPL>(rank, world);
+    return ResourceSet(std::move(p));
+}
+
 } // namespace
 
 // -----------------------------------------------------------------------------
@@ -47,7 +53,12 @@ RuntimeView::RuntimeView(madness_world_reference world) :
   RuntimeView(0, nullptr, world.mpi.comm().Get_mpi_comm()) {}
 
 RuntimeView::RuntimeView(int argc, char** argv, const_mpi_comm_reference comm) :
-  m_pimpl_(start_madness(argc, argv, comm)) {}
+  m_pimpl_(start_madness(argc, argv, comm)) {
+    // This should be okay because it's just incrementing the shared_ptr
+    auto my_rank = m_pimpl_->m_world.rank();
+    auto rs      = make_resource_set(my_rank, m_pimpl_->m_world);
+    m_pimpl_->m_resource_sets.emplace(my_rank, std::move(rs));
+}
 
 RuntimeView::RuntimeView(const RuntimeView& other) noexcept = default;
 
@@ -68,7 +79,7 @@ RuntimeView::madness_world_reference RuntimeView::madness_world() const {
 }
 
 RuntimeView::size_type RuntimeView::size() const noexcept {
-    return m_pimpl_->m_resource_sets.size();
+    return madness_world().size();
 }
 
 bool RuntimeView::did_i_start_madness() const noexcept {
@@ -77,12 +88,12 @@ bool RuntimeView::did_i_start_madness() const noexcept {
 
 RuntimeView::resource_set_reference RuntimeView::at(size_type i) {
     bounds_check_(i);
-    return m_pimpl_->m_resource_sets[i];
+    return m_pimpl_->m_resource_sets.at(i);
 }
 
 RuntimeView::const_resource_set_reference RuntimeView::at(size_type i) const {
     bounds_check_(i);
-    return m_pimpl_->m_resource_sets[i];
+    return m_pimpl_->m_resource_sets.at(i);
 }
 
 bool RuntimeView::has_me() const { throw std::runtime_error("NYI"); }

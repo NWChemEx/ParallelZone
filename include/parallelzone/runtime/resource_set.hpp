@@ -16,8 +16,8 @@ class ResourceSetPIMPL;
  *  is a runtime abstraction for interacting with one of these sets of
  *  resources.
  *
- *  In MPI terms, a ResourceSet maps to an MPI group. That is it is a set of
- *  resources and Workers (ranks, in MPI terms) which can see those resources.
+ *
+ *  In MPI terms, a ResourceSet maps to an MPI rank.
  *  There may be some resources that every Worker can see (think a
  *  parallel filesystem), but in general each Worker can only see a subset of
  *  the resources in the ResourceSet (the ResourceSet class internally knows
@@ -28,9 +28,6 @@ class ResourceSet {
 public:
     /// Unsigned type used for offsets and indexing
     using size_type = std::size_t;
-
-    /// TODO: Set to WorkerView when class exists
-    using worker_type = int;
 
     /// TODO: Set to Storage type when class exists
     using storage_type = int;
@@ -126,7 +123,8 @@ public:
     // -- Getters
     // -------------------------------------------------------------------------
 
-    /** @brief The number of Workers in *this
+    // TODO: Make noexcept?
+    /** @brief The MPI rank of the current process
      *
      *  ResourceSets are usually shared by multiple workers. This method is used
      *  to determine how many workers have access to this resource set.
@@ -138,44 +136,28 @@ public:
      *
      *  @throw None No throw guarantee.
      */
-    size_type n_workers() const noexcept;
+    size_type mpi_rank() const;
 
     // TODO: Make noexcept
-    /** @brief Determines if the current process is in *this
+    /** @brief Determines if the resource set is owned by the current process
      *
-     *  Each ResourceSet is associated with a set of processes. This method can
-     *  be used to determine if the current process is assocaited with *this.
+     *  Each ResourceSet is associated with a processes. This method can
+     *  be used to determine if the current process owns *this.
      *
-     *  @return True if the current process is in *this and false otherwise.
-     *
-     *  @throw None No throw guarantee.
-     */
-    bool has_me() const;
-
-    // TODO: Make no throw (return an empty set if not in the ResourceSet)
-    /** @brief Returns a view of the ResourceSet, as seen by the current
-     *         process.
-     *
-     *  While each process in a resource set can see all of the resources in the
-     *  set, each process can not in general access all of those resources
-     *  directly. This method returns a view of the ResourceSet which only
-     *  includes the resources directly accessible to the current process.
-     *
-     *  @return A view of *this with only the resources directly accessible to
-     *          the current process.
+     *  @return True if the current process owns *this and false otherwise.
      *
      *  @throw None No throw guarantee.
      */
-    worker_type me();
+    bool is_mine() const;
 
     // -------------------------------------------------------------------------
     // -- Utility methods
     // -------------------------------------------------------------------------
 
-    /** @brief True if *this contains no Workers and no resources
+    /** @brief True if *this contains no resources
      *
-     *  @return True if this ResourceSet is empty (has no workers and no
-     *          resources) and false otherwise.
+     *  @return True if this ResourceSet is empty (has no resources) and false
+     *          otherwise.
      *
      *  @throw None No throw guarantee.
      */
@@ -194,18 +176,19 @@ public:
      */
     void swap(ResourceSet& other) noexcept;
 
+    // TODO: Make noexcept
     /** @brief Determines if *this is value equal to @p rhs.
      *
-     *  Two ResourceSets are value equal if they contain the same resources,
-     *  the same number of workers, and the workers are mapped to the
-     *  resources in the same manner.
+     *  Two ResourceSets are value equal if they contain the same resources
+     *  and belong to the same process.
      *
      *  @return True if *this is value equal to @p rhs, and false otherwise.
      *
      *  @throw None No throw guarantee.
      */
-    bool operator==(const ResourceSet& rhs) const noexcept;
+    bool operator==(const ResourceSet& rhs) const;
 
+    // TODO: Make noexcept
     /** @brief Determines if *this is different from @p rhs
      *
      *  This function simply negates a value equality comparison. See the
@@ -213,9 +196,15 @@ public:
      *
      *  @return False if *this is value equal to @p rhs, and true otherwise.
      */
-    bool operator!=(const ResourceSet& rhs) const noexcept;
+    bool operator!=(const ResourceSet& rhs) const;
 
 private:
+    /// True if this instance has a PIMPL, and false otherwise
+    bool has_pimpl_() const noexcept;
+
+    /// Factorization for asserting the instance has a PIMPL
+    void assert_pimpl_() const;
+
     /// The object actually implementing the ResourceSet
     pimpl_pointer m_pimpl_;
 };

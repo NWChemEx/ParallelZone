@@ -22,6 +22,11 @@ class RuntimeViewPIMPL;
  *  In MPI terms think of RuntimeView as an intra-communicator paralleling
  *  MPI_COMM_WORLD; however, the underlying MPI_Comm need not be MPI_COMM_WORLD.
  *
+ *  TODO: Like the RAM class the MPI methods are stubs. In practice they should
+ *        be templated on the data type coming in, and the return type should
+ *        be worked out via template meta programming. For now we just do double
+ *        in, double out. Calling the ops will raise an exception.
+ *
  *  @note RuntimeView uses RAII (resource acquisition is initialization) to
  *        manage MADNESS/MPI. This means that if you do supply a handle to an
  *        already initialized MADNESS/MPI runtime, then RuntimeView will assume
@@ -64,6 +69,19 @@ public:
 
     /// Type of a read-only reference to a resource_set_type object
     using const_resource_set_reference = const resource_set_type&;
+
+    // TODO: Write an iterator class
+    /// Type of an interator over a range of resource_set_type instances
+    using const_iterator = int;
+
+    /// Pair of iterators to a read-only range of resource_set_type
+    using const_range = std::pair<const_iterator, const_iterator>;
+
+    /// Type of the RAM class, ultimately set by ResourceSet::ram_type
+    using ram_type = resource_set_type::ram_type;
+
+    /// Ultimately a typedef of ResourceSet::const_ram_reference
+    using const_ram_reference = resource_set_type::const_ram_reference;
 
     /// Type of the class managing the state of this class
     using pimpl_type = detail_::RuntimeViewPIMPL;
@@ -179,7 +197,7 @@ public:
     /// Move has basically no performance benefit over copy and is deleted to
     /// ensure reference counting happens as intended
     ///@{
-    RuntimeView(RuntimeView&&) noexcept = delete;
+    RuntimeView(RuntimeView&&) noexcept            = delete;
     RuntimeView& operator=(RuntimeView&&) noexcept = delete;
     ///@}
 
@@ -295,6 +313,74 @@ public:
      *  @throw None No throw guarantee.
      */
     bool has_me() const;
+
+    /** @brief Finds the resource set for the current process.
+     *
+     *  @throw std::out_of_range if the current process is not part of *this.
+     *                           Strong throw guarantee.
+     */
+    const_resource_set_reference my_resource_set() const;
+
+    // TODO: Make noexcept
+    /** @brief Determines the number of ResourceSets a specific RAM instance
+     *         belongs to.
+     *
+     *  ResourceSet instances need not be disjoint. In turn RAM may be locally
+     *  accessible to more than one ResourceSet. This method allows you to
+     *  determine how many of the ResourceSets in *this have access to the
+     *  specified RAM instance.
+     *
+     *  @param[in] ram The chunk of RAM we are looking for. @p ram may be local
+     *                 or remote relative to my_resource_set().
+     *
+     *  @throw None No throw guarantee.
+     */
+    size_type count(const_ram_reference ram) const;
+
+    // TODO: Make no except after implementing
+    /** @brief Returns a range of ResourceSets that contain @p ram.
+     *
+     *  ResourceSet instances need not be disjoint. This method finds the
+     *  ResourceSets that contain @p ram and returns a pair of iterators to
+     *  this set.
+     *
+     *  @return A pair whose first element is an iterator pointing to the
+     *          first ResourceSet containing @p ram and whose second element is
+     *          an iterator pointing to just past the last ResourceSet
+     *          containing @p ram. The elements of the return are equal if
+     *          @p ram is not in *this.
+     *
+     *  @throw None No throw guarantee.
+     */
+    const_range equal_range(const_ram_reference ram) const;
+
+    // -------------------------------------------------------------------------
+    // -- MPI all-to-all methods
+    // -------------------------------------------------------------------------
+
+    /** @brief Performs an all gather on the data.
+     *
+     *  This operation is assumed to involve RAM only.
+     *
+     *  @param[in] input The data local to the current ResourceSet.
+     *
+     *  @return A local copy of the gathered data.
+     */
+    double gather(double input) const;
+
+    /** @brief Performs a reduction on the data.
+     *
+     *  @param[in] input The data local to the current ResourceSet.
+     *  @param[in] op    The functor being used to reduce the data.
+     *
+     *  @return A local copy of the result of the reduction.
+     *
+     */
+    double reduce(double input, double op) const;
+
+    // -------------------------------------------------------------------------
+    // -- Utility methods
+    // -------------------------------------------------------------------------
 
     /** @brief Swaps the state of *this with @p other.
      *

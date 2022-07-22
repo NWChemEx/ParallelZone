@@ -127,6 +127,28 @@ TEST_CASE("RuntimeView") {
         REQUIRE_THROWS_AS(defaulted.has_me(), std::runtime_error);
     }
 
+    SECTION("my_resource_set") {
+        REQUIRE_THROWS_AS(defaulted.my_resource_set(), std::runtime_error);
+    }
+
+    SECTION("count(RAM)") {
+        RuntimeView::ram_type ram;
+        REQUIRE_THROWS_AS(defaulted.count(ram), std::runtime_error);
+    }
+
+    SECTION("equal_range") {
+        RuntimeView::ram_type ram;
+        REQUIRE_THROWS_AS(defaulted.equal_range(ram), std::runtime_error);
+    }
+
+    SECTION("gather") {
+        REQUIRE_THROWS_AS(defaulted.gather(1.23), std::runtime_error);
+    }
+
+    SECTION("reduce") {
+        REQUIRE_THROWS_AS(defaulted.reduce(1.23, 2.34), std::runtime_error);
+    }
+
     SECTION("swap") {
         RuntimeView defaulted_copy(defaulted);
         RuntimeView argc_argv_copy(argc_argv);

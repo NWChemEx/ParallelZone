@@ -1,5 +1,6 @@
 #pragma once
 #include <memory>
+#include <parallelzone/hardware/ram.hpp>
 
 namespace parallelzone::runtime {
 
@@ -29,8 +30,11 @@ public:
     /// Unsigned type used for offsets and indexing
     using size_type = std::size_t;
 
-    /// TODO: Set to Storage type when class exists
-    using storage_type = int;
+    /// Type of the object representing RAM
+    using ram_type = hardware::RAM;
+
+    /// Type of a read-only reference to the RAM
+    using const_ram_reference = const ram_type&;
 
     /// The type of the class implementing the ResourceSet
     using pimpl_type = detail_::ResourceSetPIMPL;
@@ -149,6 +153,35 @@ public:
      *  @throw None No throw guarantee.
      */
     bool is_mine() const;
+
+    /** @brief Does this ResourceSet have RAM?
+     *
+     *  This method is used to determine if *this has RAM associated with it.
+     *  As a caveat, this method indicates whether calling `ram()` will throw
+     *  or not (it will throw if *this has no RAM instance); this method
+     *  returning true does not guarantee that the RAM instance returned by
+     *  `ram()` is non-empty.
+     *
+     *  @return True if this ResourceSet has RAM and false otherwise.
+     *
+     *  @throw None No throw gurantee.
+     */
+    bool has_ram() const noexcept;
+
+    /** @brief Retrieves the RAM for this resource set.
+     *
+     *  From the perspective of the user of this class all of the RAM accessible
+     *  to it is local, so there's only one RAM object. If under the hood this
+     *  is not the case (e.g., we're treating RAM spread across nodes as a
+     *  single entitiy) it's up to the RAM class to make that work with the
+     *  specified API.
+     *
+     *  @return A read-only reference to the RAM.
+     *
+     *  @throw std::out_of_range if the instance does not have RAM. Strong
+     *                           throw guarantee.
+     */
+    const_ram_reference ram() const;
 
     // -------------------------------------------------------------------------
     // -- Utility methods

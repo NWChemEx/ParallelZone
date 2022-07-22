@@ -56,7 +56,7 @@ RAM::size_type RAM::total_space() const noexcept {
 }
 
 // -----------------------------------------------------------------------------
-// -- MPI Operations
+// -- MPI all-to-one operations
 // -----------------------------------------------------------------------------
 
 RAM::gather_return_type<double> RAM::gather(double input) const {

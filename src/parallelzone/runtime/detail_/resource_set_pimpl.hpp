@@ -9,6 +9,8 @@ struct ResourceSetPIMPL {
 
     using madness_world_reference = RuntimeView::madness_world_reference;
 
+    using ram_type = resource_set_type::ram_type;
+
     using size_type = resource_set_type::size_type;
 
     using pimpl_pointer = resource_set_type::pimpl_pointer;
@@ -22,6 +24,9 @@ struct ResourceSetPIMPL {
 
     /// The rank of this process
     size_type m_rank;
+
+    /// The RAM accessible to this process
+    ram_type m_ram;
 
     madness_world_reference m_world;
 };

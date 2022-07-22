@@ -98,6 +98,32 @@ RuntimeView::const_resource_set_reference RuntimeView::at(size_type i) const {
 
 bool RuntimeView::has_me() const { throw std::runtime_error("NYI"); }
 
+RuntimeView::const_resource_set_reference RuntimeView::my_resource_set() const {
+    throw std::runtime_error("NYI");
+}
+
+RuntimeView::size_type RuntimeView::count(const_ram_reference ram) const {
+    // TODO: implement me!
+    throw std::runtime_error("NYI");
+}
+
+RuntimeView::const_range RuntimeView::equal_range(
+  const_ram_reference ram) const {
+    throw std::runtime_error("NYI");
+}
+
+// -----------------------------------------------------------------------------
+// -- MPI all-to-all methods
+// -----------------------------------------------------------------------------
+
+double RuntimeView::gather(double input) const {
+    throw std::runtime_error("NYI");
+}
+
+double RuntimeView::reduce(double input, double op) const {
+    throw std::runtime_error("NYI");
+}
+
 // -----------------------------------------------------------------------------
 // -- Utility methods
 // -----------------------------------------------------------------------------

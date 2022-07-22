@@ -1,8 +1,10 @@
 #pragma once
 #include <memory>
 #include <optional>
+#include <vector>
 
 namespace parallelzone::hardware {
+
 namespace detail_ {
 
 class RAMPIMPL;
@@ -127,7 +129,7 @@ public:
     size_type total_space() const noexcept;
 
     // -------------------------------------------------------------------------
-    // -- MPI Operations
+    // -- MPI all-to-one operations
     // -------------------------------------------------------------------------
 
     /** @brief Given the type of the input, @p InputType, this will be the type

@@ -197,7 +197,7 @@ public:
     /// Move has basically no performance benefit over copy and is deleted to
     /// ensure reference counting happens as intended
     ///@{
-    RuntimeView(RuntimeView&&) noexcept            = delete;
+    RuntimeView(RuntimeView&&) noexcept = delete;
     RuntimeView& operator=(RuntimeView&&) noexcept = delete;
     ///@}
 

@@ -18,6 +18,14 @@ option(
 )
 
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
+option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
+option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF )
+option(BUILD_SYCL_BINDINGS "Enable SYCL Bindings" OFF )
+option(BUILD_PAPI_BINDINGS "Enable PAPI Bindings" OFF )
+
+if (BUILD_CUDA_BINDING OR BUILD_HIP_BINDINGS OR BUILD_SYCL_BINDING)
+  include(build_device)
+endif()
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
@@ -46,6 +54,11 @@ cpp_find_or_build_dependency(
                ENABLE_ACML=OFF
                BUILD_TESTING=OFF
 )
+
+# PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
+if("${BUILD_PAPI_BINDINGS}")
+    include(build_papi)
+endif ()
 
 cpp_find_or_build_dependency(
     bphash

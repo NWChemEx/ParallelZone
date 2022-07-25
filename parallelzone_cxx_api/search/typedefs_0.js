@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['disable_5fif_5fhash_5ft_22',['disable_if_hash_t',['../hasher_8hpp.html#a6fc727ae773313aa52d1a4fd0c0d2f5b',1,'parallelzone']]]
+  ['argc_5ftype_60',['argc_type',['../classparallelzone_1_1runtime_1_1RuntimeView.html#a465e869cbe8eebaf084c6df8636c9889',1,'parallelzone::runtime::RuntimeView']]],
+  ['argv_5ftype_61',['argv_type',['../classparallelzone_1_1runtime_1_1RuntimeView.html#af941c5b949749cf3d5e283c94c56d092',1,'parallelzone::runtime::RuntimeView']]]
 ];

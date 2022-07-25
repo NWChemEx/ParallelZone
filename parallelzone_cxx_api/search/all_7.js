@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['started_5fmadness_9',['started_madness',['../classparallelzone_1_1Runtime.html#a4a51b69e44d397bb715b9945b747a554',1,'parallelzone::Runtime']]]
+  ['operator_21_3d_19',['operator!=',['../classparallelzone_1_1runtime_1_1ResourceSet.html#aceaa0c680376452c2ea19f62312af388',1,'parallelzone::runtime::ResourceSet::operator!=()'],['../classparallelzone_1_1runtime_1_1RuntimeView.html#aab1663be4841dae1432f2ed351a76eaf',1,'parallelzone::runtime::RuntimeView::operator!=()']]],
+  ['operator_3d_20',['operator=',['../classparallelzone_1_1runtime_1_1ResourceSet.html#a85bb8be3e9f3d3450c5bfddc6a4437dd',1,'parallelzone::runtime::ResourceSet::operator=(const ResourceSet &amp;rhs)'],['../classparallelzone_1_1runtime_1_1ResourceSet.html#aad250a7bc09388fb6dfcfc35823bdd42',1,'parallelzone::runtime::ResourceSet::operator=(ResourceSet &amp;&amp;rhs) noexcept'],['../classparallelzone_1_1runtime_1_1RuntimeView.html#a802983498019cede6ea645a269a7ff39',1,'parallelzone::runtime::RuntimeView::operator=()']]],
+  ['operator_3d_3d_21',['operator==',['../classparallelzone_1_1runtime_1_1ResourceSet.html#afd350cec9532059bae1941b4716fc53e',1,'parallelzone::runtime::ResourceSet::operator==()'],['../classparallelzone_1_1runtime_1_1RuntimeView.html#a00e3a5845d983dd15b6acc2337447bdc',1,'parallelzone::runtime::RuntimeView::operator==()']]]
 ];

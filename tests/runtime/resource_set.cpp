@@ -45,6 +45,10 @@ TEST_CASE("ResourceSet") {
         REQUIRE_THROWS_AS(defaulted.is_mine(), std::runtime_error);
     }
 
+    SECTION("has_ram") { REQUIRE_FALSE(defaulted.has_ram()); }
+
+    SECTION("ram") { REQUIRE_THROWS_AS(defaulted.ram(), std::out_of_range); }
+
     SECTION("empty") { REQUIRE(defaulted.empty()); }
 
     SECTION("swap") {

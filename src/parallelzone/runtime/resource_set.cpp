@@ -36,6 +36,13 @@ ResourceSet::size_type ResourceSet::mpi_rank() const {
 
 bool ResourceSet::is_mine() const { throw std::runtime_error("NYI"); }
 
+bool ResourceSet::has_ram() const noexcept { return has_pimpl_(); }
+
+ResourceSet::const_ram_reference ResourceSet::ram() const {
+    if(has_ram()) return m_pimpl_->m_ram;
+    throw std::out_of_range("ResourceSet has no RAM");
+}
+
 // -----------------------------------------------------------------------------
 // -- Utility methods
 // -----------------------------------------------------------------------------

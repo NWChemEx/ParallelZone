@@ -9,6 +9,7 @@ developing ParallelZone.
    :maxdepth: 2
    :caption: Contents:
 
+   mpi
    hashing
    serialization
    reflection

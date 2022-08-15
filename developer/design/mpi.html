@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParallelZone’s MPI API Design &mdash; parallelzone 1.0.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Hashing Design" href="hashing.html" />
+    <link rel="prev" title="Design Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> parallelzone
+          </a>
+              <div class="version">
+                1.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Documentation</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ParallelZone’s MPI API Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashing.html">Hashing Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="serialization.html">Serialization Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reflection.html">Reflection Design</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">parallelzone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Developer Documentation</a> &raquo;</li>
+          <li><a href="index.html">Design Documentation</a> &raquo;</li>
+      <li>ParallelZone’s MPI API Design</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/mpi.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="parallelzone-s-mpi-api-design">
+<span id="mpi-api-design"></span><h1>ParallelZone’s MPI API Design<a class="headerlink" href="#parallelzone-s-mpi-api-design" title="Permalink to this heading"></a></h1>
+<p>The examples on this page show the target syntax for basic MPI operations using
+ParallelZone. There’s a couple of design notes:</p>
+<ul>
+<li><p>These are parallelism “primitives”. In practice these primitives are used to
+implement parallel classes. Users of the classes should rarely (ideally
+never) need to deal with these primitives directly.
+- As an example think about how TA tensors work</p></li>
+<li><p>We strive to make the MPI code look SIMD as much as possible
+- <code class="docutils literal notranslate"><span class="pre">std::optional</span></code> on returns makes it easier to figure out who has the</p>
+<blockquote>
+<div><p>data without knowing the distribution</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>Each rank passes in the same information (aside from the data)</p></li>
+</ul>
+</li>
+<li><p>Template meta-programming can be used to distinguish between passing in single
+values (say a <code class="docutils literal notranslate"><span class="pre">double</span></code>) and a container of <code class="docutils literal notranslate"><span class="pre">double``s</span> <span class="pre">(say</span>
+<span class="pre">``std::vector&lt;double&gt;</span></code>)
+- Use a single binary-based API to go from template function to PIMPL</p></li>
+<li><p>By default other types need to be serialized before sending
+- Serialization/deserialization can be expensive for communication
+- Creative PIMPLs (say ones that allocate state in an arena) can be used to</p>
+<blockquote>
+<div><p>dramatically speed up serialization (actually makes it trivial)</p>
+</div></blockquote>
+</li>
+</ul>
+<p>Examples of all-to-one communication with ParallelZone.</p>
+<div class="highlight-.cpp notranslate"><div class="highlight"><pre><span></span>auto rt = get_runtime();
+auto me = rt.my_resource_set();
+
+// Each resource set generates some data
+auto data = generate_data(me.mpi_rank());
+
+// This gathers the data from all members of the rt to rank 0
+// Type U is deducible from type of data w/ template meta-programming
+std::optional&lt;U&gt; output = rt.at(0).ram().gather(data);
+
+if(output.has_value()){
+    // This only gets run on rank 0
+    // Do stuff with output
+}
+
+// Reductions are similar, but take an op to apply
+auto op = get_op_to_apply();
+
+// Similar to gather, this reduces the data down to rank 0&#39;s RAM
+// Type V is deducible from type of op w/ template meta-programming
+std::optional&lt;V&gt; output2 = rt.at(0).ram().reduce(data, op);
+
+if(output2.has_value()){
+    // This only gets run on rank 0
+    // Do stuff with output2
+}
+</pre></div>
+</div>
+<p>Examples of one-to-all communications</p>
+<div class="highlight-.cpp notranslate"><div class="highlight"><pre><span></span>auto rt = get_runtime();
+auto me = rt.my_resource_set();
+
+auto data;
+if(me == rt.at(0)){
+    data = fill_in_data();
+}
+
+// Value of data is ignored for ranks not equal to 0
+auto output = rt.at(0).ram().scatter(data);
+</pre></div>
+</div>
+<p>Examples of one-to-one communications</p>
+<div class="highlight-.cpp notranslate"><div class="highlight"><pre><span></span>auto rt = get_runtime();
+auto me = rt.get_resource_set();
+
+auto data;
+if(me == rt.at(0)){
+    data = fill_in_data();
+}
+
+// Sends the data to rank 1, type U determined by template meta-programming
+std::optional&lt;U&gt; output = me.ram().send(data, rt.at(1));
+
+if(output.has_value()){
+    // This part is only run by rank 1
+    // Do stuff with output
+}
+</pre></div>
+</div>
+<p>Examples of all-to-all communications</p>
+<div class="highlight-.cpp notranslate"><div class="highlight"><pre><span></span>auto rt = get_runtime();
+
+auto data = generate_data(rt.my_resource_set().mpi_rank());
+
+// This is an all gather
+auto output = rt.gather&lt;RAM&gt;(data);
+
+// This is an all reduce
+auto output2 = rt.reduce&lt;RAM&gt;(data, op);
+</pre></div>
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Design Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hashing.html" class="btn btn-neutral float-right" title="Hashing Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

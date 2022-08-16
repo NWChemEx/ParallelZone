@@ -42,7 +42,8 @@ struct ResourceSetPIMPL {
     logger_pointer m_debug_logger_pointer;
 
     Logger& progress_logger() {
-        if(!m_progress_logger_pointer) throw std::runtime_error("No Progress Logger");
+        if(!m_progress_logger_pointer)
+            throw std::runtime_error("No Progress Logger");
         return *m_progress_logger_pointer;
     }
 

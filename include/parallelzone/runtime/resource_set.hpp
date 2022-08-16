@@ -232,7 +232,6 @@ public:
      */
     bool operator!=(const ResourceSet& rhs) const;
 
-
     /**
      * @brief Get progress logger for this ResourceSet
      *
@@ -255,7 +254,7 @@ public:
      */
     Logger& debug_logger();
 
-    /** 
+    /**
      * @brief Set progress logger for this ResourceSet
      *
      * @param[in] l Logger instance to override the current progress logger
@@ -263,7 +262,7 @@ public:
      */
     void set_progress_logger(Logger&& l);
 
-    /** 
+    /**
      * @brief Set debug logger for this ResourceSet
      *
      * @param[in] l Logger instance to override the current debug logger

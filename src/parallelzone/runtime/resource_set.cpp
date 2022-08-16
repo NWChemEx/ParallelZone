@@ -59,14 +59,13 @@ Logger& ResourceSet::debug_logger() {
 
 void ResourceSet::set_progress_logger(Logger&& l) {
     assert_pimpl_();
-    m_pimpl_->m_progress_logger_pointer = 
+    m_pimpl_->m_progress_logger_pointer =
       std::make_unique<Logger>(std::move(l));
 }
 
 void ResourceSet::set_debug_logger(Logger&& l) {
     assert_pimpl_();
-    m_pimpl_->m_debug_logger_pointer = 
-      std::make_unique<Logger>(std::move(l));
+    m_pimpl_->m_debug_logger_pointer = std::make_unique<Logger>(std::move(l));
 }
 
 // -----------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <parallelzone/hardware/ram.hpp>
+#include <parallelzone/logger.hpp>
 
 namespace parallelzone::runtime {
 
@@ -230,6 +231,45 @@ public:
      *  @return False if *this is value equal to @p rhs, and true otherwise.
      */
     bool operator!=(const ResourceSet& rhs) const;
+
+
+    /**
+     * @brief Get progress logger for this ResourceSet
+     *
+     * This logger is intended to print progress information to a specified
+     * output associated with this ResourceSet.
+     *
+     * @returns Logger instance intended for progress output associated with
+     *          this resource set.
+     */
+    Logger& progress_logger();
+
+    /**
+     * @brief Get debug logger for this ResourceSet
+     *
+     * This logger is intended to print debug information to a specified
+     * output associated with this ResourceSet.
+     *
+     * @returns Logger instance intended for debug output associated with
+     *          this resource set.
+     */
+    Logger& debug_logger();
+
+    /** 
+     * @brief Set progress logger for this ResourceSet
+     *
+     * @param[in] l Logger instance to override the current progress logger
+     *              for this instance.
+     */
+    void set_progress_logger(Logger&& l);
+
+    /** 
+     * @brief Set debug logger for this ResourceSet
+     *
+     * @param[in] l Logger instance to override the current debug logger
+     *              for this instance.
+     */
+    void set_debug_logger(Logger&& l);
 
 private:
     /// True if this instance has a PIMPL, and false otherwise

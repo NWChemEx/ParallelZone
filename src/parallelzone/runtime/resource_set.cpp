@@ -43,6 +43,32 @@ ResourceSet::const_ram_reference ResourceSet::ram() const {
     throw std::out_of_range("ResourceSet has no RAM");
 }
 
+Logger& ResourceSet::progress_logger() {
+    assert_pimpl_();
+    return m_pimpl_->progress_logger();
+}
+
+Logger& ResourceSet::debug_logger() {
+    assert_pimpl_();
+    return m_pimpl_->debug_logger();
+}
+
+// -----------------------------------------------------------------------------
+// -- Setters
+// -----------------------------------------------------------------------------
+
+void ResourceSet::set_progress_logger(Logger&& l) {
+    assert_pimpl_();
+    m_pimpl_->m_progress_logger_pointer = 
+      std::make_unique<Logger>(std::move(l));
+}
+
+void ResourceSet::set_debug_logger(Logger&& l) {
+    assert_pimpl_();
+    m_pimpl_->m_debug_logger_pointer = 
+      std::make_unique<Logger>(std::move(l));
+}
+
 // -----------------------------------------------------------------------------
 // -- Utility methods
 // -----------------------------------------------------------------------------

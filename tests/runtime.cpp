@@ -1,3 +1,4 @@
+#if 0
 #include <catch2/catch.hpp>
 #include <parallelzone/runtime.hpp>
 
@@ -28,3 +29,4 @@ TEST_CASE("Runtime Logger", "[runtime][logger]") {
         REQUIRE(ss.str() == ref_msg);
     }
 }
+#endif

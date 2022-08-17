@@ -15,7 +15,9 @@ struct ResourceSetPIMPL {
 
     using pimpl_pointer = resource_set_type::pimpl_pointer;
 
-    using logger_type = Logger;
+    using logger_type = resource_set_type::logger_type;
+
+    using logger_reference = resource_set_type::logger_reference;
 
     using logger_pointer = std::shared_ptr<logger_type>;
 
@@ -41,13 +43,13 @@ struct ResourceSetPIMPL {
     /// Debug Logger
     logger_pointer m_debug_logger_pointer;
 
-    Logger& progress_logger() {
+    logger_reference progress_logger() {
         if(!m_progress_logger_pointer)
             throw std::runtime_error("No Progress Logger");
         return *m_progress_logger_pointer;
     }
 
-    Logger& debug_logger() {
+    logger_reference debug_logger() {
         if(!m_debug_logger_pointer) throw std::runtime_error("No Debug Logger");
         return *m_debug_logger_pointer;
     }

@@ -43,6 +43,12 @@ public:
     /// The type of a pointer to the PIMPL
     using pimpl_pointer = std::unique_ptr<pimpl_type>;
 
+    /// Type of a Logger
+    using logger_type = Logger;
+
+    /// Type of a read/write reference to a logger_type object
+    using logger_reference = logger_type&;
+
     /** @brief Creates an empty ResourceSet
      *
      *  The ResourceSet created by this ctor has no workers and
@@ -241,7 +247,7 @@ public:
      * @returns Logger instance intended for progress output associated with
      *          this resource set.
      */
-    Logger& progress_logger();
+    logger_reference progress_logger();
 
     /**
      * @brief Get debug logger for this ResourceSet
@@ -252,7 +258,7 @@ public:
      * @returns Logger instance intended for debug output associated with
      *          this resource set.
      */
-    Logger& debug_logger();
+    logger_reference debug_logger();
 
     /**
      * @brief Set progress logger for this ResourceSet
@@ -260,7 +266,7 @@ public:
      * @param[in] l Logger instance to override the current progress logger
      *              for this instance.
      */
-    void set_progress_logger(Logger&& l);
+    void set_progress_logger(logger_type&& l);
 
     /**
      * @brief Set debug logger for this ResourceSet
@@ -268,7 +274,7 @@ public:
      * @param[in] l Logger instance to override the current debug logger
      *              for this instance.
      */
-    void set_debug_logger(Logger&& l);
+    void set_debug_logger(logger_type&& l);
 
 private:
     /// True if this instance has a PIMPL, and false otherwise

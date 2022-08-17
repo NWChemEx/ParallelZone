@@ -130,7 +130,7 @@ void RuntimeView::set_progress_logger(logger_type&& l) {
 }
 
 void RuntimeView::set_debug_logger(logger_type&& l) {
-    m_pimpl_->m_debug_logger_pointer = 
+    m_pimpl_->m_debug_logger_pointer =
       std::make_unique<logger_type>(std::move(l));
 }
 

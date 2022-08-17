@@ -4,15 +4,13 @@
 namespace parallelzone::runtime::detail_ {
 
 inline std::shared_ptr<Logger> make_default_stdout_logger(madness::World& w) {
-    return w.rank() ? 
-      std::make_shared<Logger>(make_null_logger()) :
-      std::make_shared<Logger>(make_stdout_logger());
+    return w.rank() ? std::make_shared<Logger>(make_null_logger()) :
+                      std::make_shared<Logger>(make_stdout_logger());
 }
 
 inline std::shared_ptr<Logger> make_default_stderr_logger(madness::World& w) {
-    return w.rank() ? 
-      std::make_shared<Logger>(make_null_logger()) :
-      std::make_shared<Logger>(make_stderr_logger());
+    return w.rank() ? std::make_shared<Logger>(make_null_logger()) :
+                      std::make_shared<Logger>(make_stderr_logger());
 }
 
 struct RuntimeViewPIMPL {
@@ -65,7 +63,6 @@ struct RuntimeViewPIMPL {
      *  return m_resource_sets[r] for rank r.
      */
     resource_set_container m_resource_sets;
-
 
     /// Progress Logger
     logger_pointer m_progress_logger_pointer;

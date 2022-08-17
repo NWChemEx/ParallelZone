@@ -65,7 +65,7 @@ void ResourceSet::set_progress_logger(logger_type&& l) {
 
 void ResourceSet::set_debug_logger(logger_type&& l) {
     assert_pimpl_();
-    m_pimpl_->m_debug_logger_pointer = 
+    m_pimpl_->m_debug_logger_pointer =
       std::make_unique<logger_type>(std::move(l));
 }
 

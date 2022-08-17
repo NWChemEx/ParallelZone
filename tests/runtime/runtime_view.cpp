@@ -168,8 +168,8 @@ TEST_CASE("RuntimeView") {
         auto cout_rdbuf = std::cout.rdbuf(str.rdbuf());
 
         // Print something to progress logger
-        argc_argv.progress_logger().stream() << "Hello from " 
-          << argc_argv.madness_world().rank() << std::flush;
+        argc_argv.progress_logger().stream()
+          << "Hello from " << argc_argv.madness_world().rank() << std::flush;
 
         // Reset STDOUT
         std::cout.rdbuf(cout_rdbuf);
@@ -184,8 +184,8 @@ TEST_CASE("RuntimeView") {
         auto cerr_rdbuf = std::cerr.rdbuf(str.rdbuf());
 
         // Print something to debug logger
-        argc_argv.debug_logger().stream() << "Hello from " 
-          << argc_argv.madness_world().rank() << std::flush;
+        argc_argv.debug_logger().stream()
+          << "Hello from " << argc_argv.madness_world().rank() << std::flush;
 
         // Reset STDERR
         std::cerr.rdbuf(cerr_rdbuf);

@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <optional>
-#include <vector>
+#include <parallelzone/serialization/binary.hpp>
 
 namespace parallelzone::hardware {
 
@@ -48,16 +48,12 @@ public:
      */
     RAM() noexcept;
 
-    /** @brief Creates a RAM instance with the provided maximum size
-     *
-     *  @param[in] total_size How much memory is *this managing.
-     *
-     *  @throw std::bad_alloc if there is a problem allocating the PIMPL. Strong
-     *                        throw guarantee.
-     */
-    explicit RAM(size_type total_size);
-
     /** @brief Creates a new RAM instance with the provided state.
+     *
+     *  RAM instances are usually created by ResourceSet instances when the
+     *  ResourceSet is being populated. The ResourceSet is capable of creating
+     *  a RAMPIMPL and does so directly. Once the RAMPIMPL is created the RAM
+     *  instance is initialized via this ctor.
      *
      *  @param[in] pimpl The state for the new RAM instance.
      *
@@ -138,8 +134,8 @@ public:
      *  @tparam InputType The type of the object being gathered.
      *
      */
-    template<typename InputType>
-    using gather_return_type = std::optional<InputType>;
+    template<typename T>
+    using gather_return_type = std::optional < std::vector<std::decay_t<T>>;
 
     /** @brief Sends data from all members of the RuntimeView to the
      *         ResourceSet which owns *this.
@@ -153,7 +149,8 @@ public:
      *          std::optional returned to the ResourceSet which owns *this has
      *          a value.
      */
-    gather_return_type<double> gather(double input) const;
+    template<typename InputType>
+    gather_return_type<InputType> gather(InputType&& input) const;
 
     /** @brief Given the type of the input, @p InputType, and the type of the
      *         reduction functor, @p FxnType, this will be the type of the
@@ -220,9 +217,42 @@ private:
     /// Code factorization for checking if the PIMPL is non-null
     bool has_pimpl_() const noexcept;
 
+    /// Code factorization for asserting that the PIMPL is non-null
+    void assert_pimpl_() const;
+
+    using binary_data = serialization::binary_data;
+
+    using binary_return_type = gather_return_type<binary_data>
+
+      binary_return_type gather_(std::byte* data, size_type n) const;
+
     /// The object actually implementing *this
     pimpl_pointer m_pimpl_;
 };
+
+template<typename InputType>
+gather_return_type<InputType> RAM::gather(InputType&& input) const {
+    // TODO: don't assume a string
+    auto n               = input.size();
+    auto serialized_data = gather_(input.data(), n);
+
+    gather_return_type<InputType> rv;
+
+    // Early out for everybody, but the root
+    if(!serialized_data.has_value()) return rv;
+
+    auto& wrapped_value = serialized_data.value();
+
+    // Wrapped_value contains (# of ranks)*n bytes
+    auto size_type = wrapped_value.size() / n;
+    typename decltype(rv)::value_type buffer(n);
+    for(std::size_t i = 0; i < n; ++i) {
+        auto* const auto& std::string x(wrapped_value.begin(),
+                                        wrapped_value.end());
+        rv.emplace(std::move(x));
+    }
+    return rv;
+}
 
 /** @brief Determines if two RAM instances are different.
  *  @relates RAM

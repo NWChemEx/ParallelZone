@@ -1,12 +1,23 @@
-#include <catch2/catch.hpp>
+#include "../test_parallelzone.hpp"
 #include <parallelzone/hardware/ram.hpp>
 
 using namespace parallelzone::hardware;
 
+/* Testing Strategy:
+ *
+ * RAM instances with value are really meant to be created by resource sets.
+ *
+ */
+
 TEST_CASE("RAM") {
-    RAM::size_type zero(0), max_size(100);
+    using ram_type  = RAM;
+    using size_type = ram_type::size_type;
+    const auto& rs  = testing::PZEnvironment::comm_world().my_resource_set();
+
     RAM defaulted;
-    RAM has_size(max_size);
+    RAM has_value = rs.ram();
+
+    size_type zero(0);
 
     SECTION("Ctors") {
         SECTION("Default") {
@@ -14,17 +25,17 @@ TEST_CASE("RAM") {
             REQUIRE(defaulted.total_space() == zero);
         }
 
-        SECTION("total_size") {
-            REQUIRE_FALSE(has_size.empty());
-            REQUIRE(has_size.total_space() == max_size);
+        SECTION("Value") {
+            REQUIRE_FALSE(has_value.empty());
+            REQUIRE(has_value.total_space() > 0);
         }
 
         SECTION("copy") {
             RAM defaulted_copy(defaulted);
             REQUIRE(defaulted_copy == defaulted);
 
-            RAM has_size_copy(has_size);
-            REQUIRE(has_size_copy == has_size);
+            RAM has_value_copy(has_value);
+            REQUIRE(has_value_copy == has_value);
         }
 
         SECTION("move") {
@@ -32,9 +43,9 @@ TEST_CASE("RAM") {
             RAM defaulted_move(std::move(defaulted));
             REQUIRE(defaulted_copy == defaulted_move);
 
-            RAM has_size_copy(has_size);
-            RAM has_size_move(std::move(has_size));
-            REQUIRE(has_size_copy == has_size_move);
+            RAM has_value_copy(has_value);
+            RAM has_value_move(std::move(has_value));
+            REQUIRE(has_value_copy == has_value_move);
         }
 
         SECTION("copy assignment") {
@@ -43,10 +54,10 @@ TEST_CASE("RAM") {
             REQUIRE(pdefaulted_copy == &defaulted_copy);
             REQUIRE(defaulted_copy == defaulted);
 
-            RAM has_size_copy;
-            auto phas_size_copy = &(has_size_copy = has_size);
-            REQUIRE(phas_size_copy == &has_size_copy);
-            REQUIRE(has_size_copy == has_size);
+            RAM has_value_copy;
+            auto phas_value_copy = &(has_value_copy = has_value);
+            REQUIRE(phas_value_copy == &has_value_copy);
+            REQUIRE(has_value_copy == has_value);
         }
 
         SECTION("move assignment") {
@@ -56,17 +67,17 @@ TEST_CASE("RAM") {
             REQUIRE(pdefaulted_move == &defaulted_move);
             REQUIRE(defaulted_copy == defaulted_move);
 
-            RAM has_size_copy(has_size);
-            RAM has_size_move;
-            auto phas_size_move = &(has_size_move = std::move(has_size));
-            REQUIRE(phas_size_move == &has_size_move);
-            REQUIRE(has_size_copy == has_size_move);
+            RAM has_value_copy(has_value);
+            RAM has_value_move;
+            auto phas_value_move = &(has_value_move = std::move(has_value));
+            REQUIRE(phas_value_move == &has_value_move);
+            REQUIRE(has_value_copy == has_value_move);
         }
     }
 
     SECTION("total_space") {
         REQUIRE(defaulted.total_space() == zero);
-        REQUIRE(has_size.total_space() == max_size);
+        REQUIRE(has_value.total_space() > 0);
     }
 
     SECTION("gather") {
@@ -79,16 +90,16 @@ TEST_CASE("RAM") {
 
     SECTION("empty") {
         REQUIRE(defaulted.empty());
-        REQUIRE_FALSE(has_size.empty());
+        REQUIRE_FALSE(has_value.empty());
     }
 
     SECTION("swap") {
         RAM defaulted_copy(defaulted);
-        RAM has_size_copy(has_size);
+        RAM has_value_copy(has_value);
 
-        defaulted.swap(has_size);
-        REQUIRE(defaulted == has_size_copy);
-        REQUIRE(has_size == defaulted_copy);
+        defaulted.swap(has_value);
+        REQUIRE(defaulted == has_value_copy);
+        REQUIRE(has_value == defaulted_copy);
     }
 
     SECTION("operator==/operator!=") {
@@ -96,20 +107,8 @@ TEST_CASE("RAM") {
         REQUIRE(defaulted == RAM());
         REQUIRE_FALSE(defaulted != RAM());
 
-        // Defaulted is same as 0 memory
-        REQUIRE(defaulted == RAM(0));
-        REQUIRE_FALSE(defaulted != RAM(0));
-
         // Defaulted != non-default
-        REQUIRE(defaulted != has_size);
-        REQUIRE_FALSE(defaulted == has_size);
-
-        // Same sizes
-        REQUIRE(has_size == RAM(max_size));
-        REQUIRE_FALSE(has_size != RAM(max_size));
-
-        // Different sizes
-        REQUIRE(has_size != RAM(zero));
-        REQUIRE_FALSE(has_size == RAM(zero));
+        REQUIRE(defaulted != has_value);
+        REQUIRE_FALSE(defaulted == has_value);
     }
 }

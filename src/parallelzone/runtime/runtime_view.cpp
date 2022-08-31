@@ -30,8 +30,8 @@ auto start_madness(int argc, char** argv, const MPI_Comm& comm) {
     return std::make_shared<detail_::RuntimeViewPIMPL>(initialize, *pworld);
 }
 
-ResourceSet make_resource_set(std::size_t rank, madness::World& world) {
-    auto p = std::make_unique<detail_::ResourceSetPIMPL>(rank, world);
+ResourceSet make_resource_set(std::size_t rank, RuntimeView r) {
+    auto p = std::make_unique<detail_::ResourceSetPIMPL>(rank, r.mpi_comm());
     return ResourceSet(std::move(p));
 }
 
@@ -41,22 +41,20 @@ ResourceSet make_resource_set(std::size_t rank, madness::World& world) {
 // -- Ctors, Assignment, Dtor
 // -----------------------------------------------------------------------------
 
-RuntimeView::RuntimeView() : RuntimeView(0, nullptr) {}
+RuntimeView::RuntimeView() noexcept = default;
 
 RuntimeView::RuntimeView(argc_type argc, argv_type argv) :
   RuntimeView(argc, argv, MPI_COMM_WORLD) {}
 
-RuntimeView::RuntimeView(const_mpi_comm_reference comm) :
-  RuntimeView(0, nullptr, comm) {}
+RuntimeView::RuntimeView(mpi_comm_type comm) : RuntimeView(0, nullptr, comm) {}
 
 RuntimeView::RuntimeView(madness_world_reference world) :
   RuntimeView(0, nullptr, world.mpi.comm().Get_mpi_comm()) {}
 
-RuntimeView::RuntimeView(int argc, char** argv, const_mpi_comm_reference comm) :
+RuntimeView::RuntimeView(int argc, char** argv, mpi_comm_type comm) :
   m_pimpl_(start_madness(argc, argv, comm)) {
-    // This should be okay because it's just incrementing the shared_ptr
     auto my_rank = m_pimpl_->m_world.rank();
-    auto rs      = make_resource_set(my_rank, m_pimpl_->m_world);
+    auto rs      = make_resource_set(my_rank, *this);
     m_pimpl_->m_resource_sets.emplace(my_rank, std::move(rs));
 }
 
@@ -64,26 +62,33 @@ RuntimeView::RuntimeView(const RuntimeView& other) noexcept = default;
 
 RuntimeView& RuntimeView::operator=(const RuntimeView& rhs) noexcept = default;
 
+RuntimeView::RuntimeView(RuntimeView&& other) noexcept = default;
+
+RuntimeView& RuntimeView::operator=(RuntimeView&& rhs) noexcept = default;
+
 RuntimeView::~RuntimeView() noexcept = default;
 
 // -----------------------------------------------------------------------------
 // -- Getters
 // -----------------------------------------------------------------------------
 
-RuntimeView::const_mpi_comm_reference RuntimeView::mpi_comm() const {
+RuntimeView::mpi_comm_type RuntimeView::mpi_comm() const noexcept {
+    if(null()) return MPI_COMM_NULL;
     return m_pimpl_->m_world.mpi.comm().Get_mpi_comm();
 }
 
 RuntimeView::madness_world_reference RuntimeView::madness_world() const {
-    return m_pimpl_->m_world;
+    return pimpl_().m_world;
 }
 
 RuntimeView::size_type RuntimeView::size() const noexcept {
-    return madness_world().size();
+    return !null() ? madness_world().size() : 0;
 }
 
+bool RuntimeView::null() const noexcept { return !static_cast<bool>(m_pimpl_); }
+
 bool RuntimeView::did_i_start_madness() const noexcept {
-    return m_pimpl_->m_did_i_start_madness;
+    return !null() ? m_pimpl_->m_did_i_start_madness : false;
 }
 
 RuntimeView::resource_set_reference RuntimeView::at(size_type i) {
@@ -96,28 +101,33 @@ RuntimeView::const_resource_set_reference RuntimeView::at(size_type i) const {
     return m_pimpl_->m_resource_sets.at(i);
 }
 
-bool RuntimeView::has_me() const { throw std::runtime_error("NYI"); }
-
-RuntimeView::const_resource_set_reference RuntimeView::my_resource_set() const {
+bool RuntimeView::has_me() const {
+    if(null()) return false;
     throw std::runtime_error("NYI");
 }
 
+RuntimeView::const_resource_set_reference RuntimeView::my_resource_set() const {
+    return pimpl_().m_resource_sets.at(m_pimpl_->m_my_rank);
+}
+
 RuntimeView::size_type RuntimeView::count(const_ram_reference ram) const {
+    if(null()) return 0;
     // TODO: implement me!
     throw std::runtime_error("NYI");
 }
 
 RuntimeView::const_range RuntimeView::equal_range(
   const_ram_reference ram) const {
+    if(null()) return const_range{0, 0};
     throw std::runtime_error("NYI");
 }
 
 RuntimeView::logger_reference RuntimeView::progress_logger() {
-    return m_pimpl_->progress_logger();
+    return pimpl_().progress_logger();
 }
 
 RuntimeView::logger_reference RuntimeView::debug_logger() {
-    return m_pimpl_->debug_logger();
+    return pimpl_().debug_logger();
 }
 
 // -----------------------------------------------------------------------------
@@ -125,12 +135,12 @@ RuntimeView::logger_reference RuntimeView::debug_logger() {
 // -----------------------------------------------------------------------------
 
 void RuntimeView::set_progress_logger(logger_type&& l) {
-    m_pimpl_->m_progress_logger_pointer =
+    pimpl_().m_progress_logger_pointer =
       std::make_unique<logger_type>(std::move(l));
 }
 
 void RuntimeView::set_debug_logger(logger_type&& l) {
-    m_pimpl_->m_debug_logger_pointer =
+    pimpl_().m_debug_logger_pointer =
       std::make_unique<logger_type>(std::move(l));
 }
 
@@ -162,10 +172,26 @@ bool RuntimeView::operator==(const RuntimeView& rhs) const {
 // -- Private methods
 // -----------------------------------------------------------------------------
 
+void RuntimeView::not_null_() const {
+    if(!null()) return;
+    throw std::runtime_error("RuntimeView is null. Was it default initialized "
+                             "or moved from?");
+}
+
 void RuntimeView::bounds_check_(size_type i) const {
     if(i < size()) return;
     throw std::out_of_range(std::to_string(i) + " is not in the range [0, " +
                             std::to_string(size()) + ").");
+}
+
+RuntimeView::pimpl_reference RuntimeView::pimpl_() {
+    not_null_();
+    return *m_pimpl_;
+}
+
+RuntimeView::const_pimpl_reference RuntimeView::pimpl_() const {
+    not_null_();
+    return *m_pimpl_;
 }
 
 } // namespace parallelzone::runtime

@@ -46,9 +46,6 @@ public:
     /// Type Runtime uses for handles to MPI communicators
     using mpi_comm_type = MPI_Comm;
 
-    /// Type of a read-only reference to a mpi_comm_type object
-    using const_mpi_comm_reference = const mpi_comm_type&;
-
     /// Type of a MADNESS world (sort of it's MPI_Comm)
     using madness_world_type = madness::World;
 
@@ -99,14 +96,16 @@ public:
     // -- Ctors, Assignment, Dtor
     // -------------------------------------------------------------------------
 
-    /** @brief Automatically starts MADNESS (and MPI) if not started
+    /** @brief Creates a view of the null Rutnime.
      *
-     *  This ctor calls the primary ctor passing in `argc = 0`,
-     *  `argv = nullptr`, and `comm = MPI_COMM_WORLD`. See the primary ctor's
-     *  description for more details.
+     *  This ctor is used primarily for creating place holder instances. The
+     *  resulting instance is not a view of any existing Runtime and can only
+     *  be turned into a view by assignment.
+     *
+     *  @throw None No throw guarantee.
      *
      */
-    RuntimeView();
+    RuntimeView() noexcept;
 
     /** @brief Initializes the runtime given the arguments to `main`
      *
@@ -133,7 +132,7 @@ public:
      *
      *  @param[in] comm The MPI_Comm this RuntimeView should alias.
      */
-    explicit RuntimeView(const_mpi_comm_reference comm);
+    explicit RuntimeView(mpi_comm_type comm);
 
     /** @brief Creates a RuntimeView which aliases the provided MADNESS runtime.
      *
@@ -168,7 +167,7 @@ public:
      *
      *  // TODO: Document throws
      */
-    RuntimeView(argc_type argc, argv_type argv, const_mpi_comm_reference comm);
+    RuntimeView(argc_type argc, argv_type argv, mpi_comm_type comm);
 
     /** @brief Make a new RuntimeView which aliases the same resources as *this
      *
@@ -198,14 +197,33 @@ public:
      *
      *  @throw None No throw guarantee.
      */
-    RuntimeView& operator=(const RuntimeView&) noexcept;
+    RuntimeView& operator=(const RuntimeView& rhs) noexcept;
 
-    /// Move has basically no performance benefit over copy and is deleted to
-    /// ensure reference counting happens as intended
-    ///@{
-    RuntimeView(RuntimeView&&) noexcept = delete;
-    RuntimeView& operator=(RuntimeView&&) noexcept = delete;
-    ///@}
+    /** @brief Transfers ownership of state in @p other to *this.
+     *
+     *  @param[in,out] other The instance whose state is being taken. After this
+     *                 operation @p other will be a state consistent with
+     *                 default initialization.
+     *
+     *  @throw None No throw guarantee.
+     */
+    RuntimeView(RuntimeView&& other) noexcept;
+
+    /** @brief Overwrites the state in *this with the state in @p rhs.
+     *
+     *  This method will release the internal state held by *this and replace
+     *  it with the state help in @p rhs.
+     *
+     *  @param[in,out] rhs The instance whose state is being takne. After this
+     *                 operation @p rhs will be in a state consistent with
+     *                 default initialization.
+     *
+     *  @return The current instance after *this takes ownwerhsip of the state
+     *          in @p rhs.
+     *
+     *  @throw None No throw guarantee.
+     */
+    RuntimeView& operator=(RuntimeView&& rhs) noexcept;
 
     /** @brief Releases the present RuntimeView instance
      *
@@ -229,27 +247,45 @@ public:
      *  used to retrieve the MPI communicator which is managing the resources
      *  in this RuntimeView.
      *
-     *  @return A read-only reference to the MPI communicator in *this.
+     *  @note A view of the null runtime returns `MPI_COMM_NULL`.
+     *
+     *  @return An object identifying which MPI communicator powers *this.
      *
      *  @throw None No throw guarantee.
      */
-    const_mpi_comm_reference mpi_comm() const;
+    mpi_comm_type mpi_comm() const noexcept;
 
     /** @brief Returns the MADNESS world powering *this
      *
      *  @return A read/write reference to the MADNESS world
      *
-     *  @throw None No throw guarantee.
+     *  @todo Can we make this no throw?
+     *
+     *  @throw std::runtime_error if *this is a view of the null runtime. Strong
+     *         throw guarantee.
      */
     madness_world_reference madness_world() const;
 
     /** @brief The number of resource sets in this instance.
+     *
+     *  @note A view of the null runtime contains 0 resource sets; however, it
+     *        is also possible for a non-null runtime to have 0 resource sets
+     *        so `size() == 0` is not a sufficient check for null-ness. Use
+     *        `null()` instead.
      *
      *  @return The number of resource sets in this view.
      *
      *  @throw None No throw guarantee.
      */
     size_type size() const noexcept;
+
+    /** @brief Determines if *this is a view of the null runtime.
+     *
+     *  @return True if *this is a view of the null runtime and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool null() const noexcept;
 
     /** @brief Used to determine if this RuntimeView aliases the resources that
      *         started MADNESS.
@@ -260,6 +296,8 @@ public:
      *  determine if letting the current RuntimeView go out of scope will
      *  decrement the reference count (if the return is true) or not (if the
      *  return is false).
+     *
+     *  @note A null runtime did not start MADNESS and will return false.
      *
      *  @return True if the aliased resources started MADNESS and false
      *          otherwise.
@@ -369,6 +407,8 @@ public:
      *
      * @returns Logger instance intended for progress output associated with
      *          this runtime view.
+     * @throw std::runtime_error if *this is a view of the null runtime. Strong
+     *                           throw guarantee.
      */
     logger_reference progress_logger();
 
@@ -381,22 +421,37 @@ public:
      *
      * @returns Logger instance intended for debug output associated with
      *          this runtime view.
+     *
+     * @throw std::runtime_error if *this is a view of the null runtime. Strong
+     *                           throw guarantee.
      */
     logger_reference debug_logger();
+
+    // -------------------------------------------------------------------------
+    // -- Setters
+    // -------------------------------------------------------------------------
 
     /**
      * @brief Set progress logger for this RuntimeView
      *
-     * @param[in] l Logger instance to override the current progress logger
-     *              for this instance.
+     * @param[in,out] l Logger instance to override the current progress logger
+     *                for this instance. After this operation @p l is in a
+     *                valid but otherwise undefined state.
+     *
+     * @throw std::runtime_error if *this is a view of the null runtime. Strong
+     *                           throw guarantee.
      */
     void set_progress_logger(logger_type&& l);
 
     /**
      * @brief Set debug logger for this RuntimeView
      *
-     * @param[in] l Logger instance to override the current debug logger
-     *              for this instance.
+     * @param[in,out] l Logger instance to override the current debug logger
+     *                for this instance. After this operation @p l is in a
+     *                valid but otherwise undefined state.
+     *
+     * @throw std::runtime_error if *this is a view of the null runtime. Strong
+     *                           throw guarantee.
      */
     void set_debug_logger(logger_type&& l);
 
@@ -455,6 +510,13 @@ public:
     bool operator==(const RuntimeView& rhs) const;
 
 private:
+    /** @brief Code factorization for ensuring *this is not null.
+     *
+     *  @throw std::runtime_error if *this is a view of the null runtime. Strong
+     *         throw guarantee.
+     */
+    void not_null_() const;
+
     /** @brief Code factorization for ensuring @p i is in the range [0, size())
      *
      *  @param[in] i The index to bounds check.
@@ -462,6 +524,30 @@ private:
      *  @throw std::out_of_range if @p i is not in the range [0, size()).
      */
     void bounds_check_(size_type i) const;
+
+    /// Type of a modifiable reference to the PIMPL
+    using pimpl_reference = pimpl_type&;
+
+    /// Type of a read-only reference to the PIMPL
+    using const_pimpl_reference = const pimpl_type&;
+
+    /** @brief Calls not_null_() and returns the PIMPL.
+     *
+     *  @return A modifiable reference to the PIMPL.
+     *
+     *  @throw std::runtime_error if *this is a view of the null runtime.
+     *         Strong throw guarantee.
+     */
+    pimpl_reference pimpl_();
+
+    /** @brief Calls not_null_() and returns the PIMPL.
+     *
+     *  @return A read-only reference to the PIMPL implementing *this.
+     *
+     *  @throw std::runtime_error if *this is a view of the null runtime.
+     *         Strong throw guarantee.
+     */
+    const_pimpl_reference pimpl_() const;
 
     /// Holds the actual state of the Runtime
     pimpl_pointer m_pimpl_;

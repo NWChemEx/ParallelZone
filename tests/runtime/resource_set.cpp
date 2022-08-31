@@ -1,10 +1,16 @@
-#include <catch2/catch.hpp>
+#include "../test_parallelzone.hpp"
 #include <parallelzone/runtime/resource_set.hpp>
 
 using namespace parallelzone::runtime;
 
-// TODO: Tests for non-defaulted resource sets
+/* Testing Notes:
+ *
+ * In practice ResourceSets are always affiliated with a RuntimeView. Thus to
+ * get a filled in ResourceSet it's easiest to grab one from the current
+ * RuntimeView.
+ */
 TEST_CASE("ResourceSet") {
+    const auto& rs = testing::PZEnvironment::comm_world().my_resource_set();
     ResourceSet defaulted;
 
     SECTION("Ctors and assignment") {

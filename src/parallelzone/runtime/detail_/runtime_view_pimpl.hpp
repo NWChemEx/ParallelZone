@@ -49,11 +49,25 @@ struct RuntimeViewPIMPL {
     /// Tears down MADNESS, when all references are gone (and if we started it)
     ~RuntimeViewPIMPL() noexcept;
 
+    logger_reference progress_logger() {
+        if(!m_progress_logger_pointer)
+            throw std::runtime_error("No Progress Logger");
+        return *m_progress_logger_pointer;
+    }
+
+    logger_reference debug_logger() {
+        if(!m_debug_logger_pointer) throw std::runtime_error("No Debug Logger");
+        return *m_debug_logger_pointer;
+    }
+
     /// Did this PIMPL start MADNESS?
     bool m_did_i_start_madness;
 
     /// Reference to the madness world this instance wraps
     madness_world_reference m_world;
+
+    /// Rank of the current process
+    size_type m_my_rank = 0;
 
     /** @brief The ResourceSets known to this RuntimeView
      *
@@ -69,23 +83,13 @@ struct RuntimeViewPIMPL {
 
     /// Debug Logger
     logger_pointer m_debug_logger_pointer;
-
-    logger_reference progress_logger() {
-        if(!m_progress_logger_pointer)
-            throw std::runtime_error("No Progress Logger");
-        return *m_progress_logger_pointer;
-    }
-
-    logger_reference debug_logger() {
-        if(!m_debug_logger_pointer) throw std::runtime_error("No Debug Logger");
-        return *m_debug_logger_pointer;
-    }
 };
 
 inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
                                           madness_world_reference world) :
   m_did_i_start_madness(did_i_start_madness),
   m_world(world),
+  m_my_rank(world.rank()),
   m_resource_sets(),
   m_progress_logger_pointer(make_default_stdout_logger(world)),
   m_debug_logger_pointer(make_default_stderr_logger(world)) {}

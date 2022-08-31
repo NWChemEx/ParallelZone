@@ -1,36 +1,13 @@
-#include <parallelzone/hardware/ram.hpp>
+#include "detail_/ram_pimpl.hpp"
 #include <stdexcept>
 
 namespace parallelzone::hardware {
-namespace detail_ {
-
-struct RAMPIMPL {
-    using parent_type = RAM;
-
-    /// Ultimately a typedef of RAM::size_type
-    using size_type = parent_type::size_type;
-
-    /// Ultimately a typedef of RAM::pimpl_pointer
-    using pimpl_pointer = parent_type::pimpl_pointer;
-
-    explicit RAMPIMPL(size_type size) : m_size(size) {}
-
-    pimpl_pointer clone() const { return std::make_unique<RAMPIMPL>(*this); }
-
-    /// Total size of the RAM
-    size_type m_size = 0;
-};
-
-} // namespace detail_
 
 // -----------------------------------------------------------------------------
 // -- Ctors, Assignment, Dtor
 // -----------------------------------------------------------------------------
 
 RAM::RAM() noexcept = default;
-
-RAM::RAM(size_type total_size) :
-  RAM(std::make_unique<pimpl_type>(total_size)) {}
 
 RAM::RAM(pimpl_pointer pimpl) noexcept : m_pimpl_(std::move(pimpl)) {}
 
@@ -95,5 +72,41 @@ bool RAM::operator==(const RAM& rhs) const noexcept {
 // -----------------------------------------------------------------------------
 
 bool RAM::has_pimpl_() const noexcept { return static_cast<bool>(m_pimpl_); }
+
+void RAM::assert_pimpl_() const {
+    if(has_pimpl_) return;
+    throw std::runtime_error("The current RAM instance is null. Was it default "
+                             "constructed or moved from?");
+}
+
+RAM::binary_return_type RAM::gather_(std::byte* data, size_type n) const {
+    assert_pimpl_();
+
+    // Get the MPI communicator, the comm's size, and the current rank
+    int me, comm_size;
+    auto comm = m_pimpl_->m_mpi_comm;
+    MPI_Comm_rank(comm, &me);
+    MPI_Comm_size(comm, &comm_size);
+
+    // MPI expects integers so convert size_type objects to ints
+    int n_int(n);
+    int root(m_pimpl_->m_rank);
+
+    // Each rank sends n bytes, so if I'm root I get comm_size * n bytes.
+    // All other ranks get nothing
+    bool am_i_root = me == root;
+    int recv_size  = !am_i_root ? 0 : comm_size * n_int;
+
+    // Allocate buffer, and get a pointer to it
+    binary_data buffer(recv_size);
+    auto pbuffer = buffer.data();
+
+    MPI_Gather(data, n_int, MPI_BYTE, pbuffer, n_int, MPI_BYTE, root, comm);
+
+    // Prepare and return the result
+    binary_return_type rv;
+    if(am_i_root) rv.emplace(std::move(buffer));
+    return rv;
+}
 
 } // namespace parallelzone::hardware

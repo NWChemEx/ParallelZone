@@ -37,10 +37,6 @@ RAM::size_type RAM::total_space() const noexcept {
 // -- MPI all-to-one operations
 // -----------------------------------------------------------------------------
 
-RAM::gather_return_type<double> RAM::gather(double input) const {
-    throw std::runtime_error("NYI");
-}
-
 RAM::reduce_return_type<double, double> RAM::reduce(double input,
                                                     double fxn) const {
     throw std::runtime_error("NYI");
@@ -74,12 +70,12 @@ bool RAM::operator==(const RAM& rhs) const noexcept {
 bool RAM::has_pimpl_() const noexcept { return static_cast<bool>(m_pimpl_); }
 
 void RAM::assert_pimpl_() const {
-    if(has_pimpl_) return;
+    if(has_pimpl_()) return;
     throw std::runtime_error("The current RAM instance is null. Was it default "
                              "constructed or moved from?");
 }
 
-RAM::binary_return_type RAM::gather_(std::byte* data, size_type n) const {
+RAM::binary_return_type RAM::gather_(const std::byte* data, size_type n) const {
     assert_pimpl_();
 
     // Get the MPI communicator, the comm's size, and the current rank

@@ -135,7 +135,7 @@ public:
      *
      */
     template<typename T>
-    using gather_return_type = std::optional < std::vector<std::decay_t<T>>;
+    using gather_return_type = std::optional<std::vector<std::decay_t<T>>>;
 
     /** @brief Sends data from all members of the RuntimeView to the
      *         ResourceSet which owns *this.
@@ -151,6 +151,9 @@ public:
      */
     template<typename InputType>
     gather_return_type<InputType> gather(InputType&& input) const;
+
+    template<typename InputType>
+    gather_return_type<InputType> gather(const InputType* p, size_type n) const;
 
     /** @brief Given the type of the input, @p InputType, and the type of the
      *         reduction functor, @p FxnType, this will be the type of the
@@ -222,19 +225,27 @@ private:
 
     using binary_data = serialization::binary_data;
 
-    using binary_return_type = gather_return_type<binary_data>
+    using binary_return_type = std::optional<binary_data>;
 
-      binary_return_type gather_(std::byte* data, size_type n) const;
+    binary_return_type gather_(const std::byte* data, size_type n) const;
 
     /// The object actually implementing *this
     pimpl_pointer m_pimpl_;
 };
 
 template<typename InputType>
-gather_return_type<InputType> RAM::gather(InputType&& input) const {
-    // TODO: don't assume a string
-    auto n               = input.size();
-    auto serialized_data = gather_(input.data(), n);
+RAM::gather_return_type<InputType> RAM::gather(InputType&& input) const {
+    serializer s;
+    s << std::forward<InputType>(input);
+}
+
+template<typename InputType>
+RAM::gather_return_type<InputType> RAM::gather(const InputType* p,
+                                               size_type n) const {
+    const auto* as_bytes = reinterpret_cast<const std::byte*>(p);
+    size_type n_bytes    = n * sizeof(InputType);
+
+    auto serialized_data = gather_(as_bytes, n_bytes);
 
     gather_return_type<InputType> rv;
 
@@ -244,13 +255,17 @@ gather_return_type<InputType> RAM::gather(InputType&& input) const {
     auto& wrapped_value = serialized_data.value();
 
     // Wrapped_value contains (# of ranks)*n bytes
-    auto size_type = wrapped_value.size() / n;
-    typename decltype(rv)::value_type buffer(n);
-    for(std::size_t i = 0; i < n; ++i) {
-        auto* const auto& std::string x(wrapped_value.begin(),
-                                        wrapped_value.end());
-        rv.emplace(std::move(x));
+    auto n_ranks = wrapped_value.size() / n;
+    typename decltype(rv)::value_type buffer(n_ranks);
+    for(std::size_t i = 0; i < n_ranks; ++i) {
+        const auto* b      = wrapped_value.data() + i * n;
+        const auto* e      = wrapped_value.data() + (i + 1) * n;
+        const auto* b_char = reinterpret_cast<const char*>(b);
+        const auto* e_char = reinterpret_cast<const char*>(e);
+        std::string x(b_char, e_char);
+        buffer[i] = std::move(x);
     }
+    rv.emplace(std::move(buffer));
     return rv;
 }
 

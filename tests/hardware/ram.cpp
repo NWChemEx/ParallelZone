@@ -13,6 +13,7 @@ TEST_CASE("RAM") {
     using ram_type  = RAM;
     using size_type = ram_type::size_type;
     const auto& rs  = testing::PZEnvironment::comm_world().my_resource_set();
+    auto my_rank    = rs.mpi_rank();
 
     RAM defaulted;
     RAM has_value = rs.ram();
@@ -81,7 +82,17 @@ TEST_CASE("RAM") {
     }
 
     SECTION("gather") {
-        REQUIRE_THROWS_AS(defaulted.gather(1.23), std::runtime_error);
+        // N.B. elements need to be same length (in bytes)
+        std::vector<std::string> strs{"cat", "dog", "bee", "rat"};
+
+        auto my_rv = has_value.gather(strs[my_rank]);
+        if(my_rank == 0) {
+            REQUIRE(my_rv.has_value());
+            for(std::size_t i = 0; i < my_rv.value().size(); ++i)
+                REQUIRE(my_rv.value()[i] == strs[i]);
+        } else {
+            REQUIRE_FALSE(my_rv.has_value());
+        }
     }
 
     SECTION("reduce") {

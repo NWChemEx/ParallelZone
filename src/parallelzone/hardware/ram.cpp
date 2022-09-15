@@ -37,6 +37,13 @@ RAM::size_type RAM::total_space() const noexcept {
 // -- MPI all-to-one operations
 // -----------------------------------------------------------------------------
 
+RAM::gather_return_type<RAM::binary_type> RAM::gather(
+  const_binary_reference input) const {
+    // assert_pimpl_();
+    // auto root = m_pimpl_->m_rank;
+    // return m_pimpl_->m_mpi_comm.gather(input.data(), input.size(), root);
+}
+
 RAM::reduce_return_type<double, double> RAM::reduce(double input,
                                                     double fxn) const {
     throw std::runtime_error("NYI");
@@ -73,36 +80,6 @@ void RAM::assert_pimpl_() const {
     if(has_pimpl_()) return;
     throw std::runtime_error("The current RAM instance is null. Was it default "
                              "constructed or moved from?");
-}
-
-RAM::binary_return_type RAM::gather_(const std::byte* data, size_type n) const {
-    assert_pimpl_();
-
-    // Get the MPI communicator, the comm's size, and the current rank
-    int me, comm_size;
-    auto comm = m_pimpl_->m_mpi_comm;
-    MPI_Comm_rank(comm, &me);
-    MPI_Comm_size(comm, &comm_size);
-
-    // MPI expects integers so convert size_type objects to ints
-    int n_int(n);
-    int root(m_pimpl_->m_rank);
-
-    // Each rank sends n bytes, so if I'm root I get comm_size * n bytes.
-    // All other ranks get nothing
-    bool am_i_root = me == root;
-    int recv_size  = !am_i_root ? 0 : comm_size * n_int;
-
-    // Allocate buffer, and get a pointer to it
-    binary_data buffer(recv_size);
-    auto pbuffer = buffer.data();
-
-    MPI_Gather(data, n_int, MPI_BYTE, pbuffer, n_int, MPI_BYTE, root, comm);
-
-    // Prepare and return the result
-    binary_return_type rv;
-    if(am_i_root) rv.emplace(std::move(buffer));
-    return rv;
 }
 
 } // namespace parallelzone::hardware

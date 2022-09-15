@@ -1,7 +1,8 @@
 #pragma once
 #include <memory>
 #include <optional>
-#include <parallelzone/serialization/binary.hpp>
+#include <parallelzone/mpi_helpers/binary_buffer/binary_view.hpp>
+#include <vector>
 
 namespace parallelzone::hardware {
 
@@ -37,6 +38,11 @@ public:
 
     /// Type of the pointer holding the PIMPL
     using pimpl_pointer = std::unique_ptr<pimpl_type>;
+
+    /// Since BinaryViews can be owning we use them for the actual binary type
+    using binary_type = std::byte;
+
+    using const_binary_reference = mpi_helpers::BinaryView;
 
     // -------------------------------------------------------------------------
     // -- Ctors, Assignment, Dtor
@@ -135,7 +141,7 @@ public:
      *
      */
     template<typename T>
-    using gather_return_type = std::optional<std::vector<std::decay_t<T>>>;
+    using gather_return_type = std::optional<std::vector<T>>;
 
     /** @brief Sends data from all members of the RuntimeView to the
      *         ResourceSet which owns *this.
@@ -149,11 +155,10 @@ public:
      *          std::optional returned to the ResourceSet which owns *this has
      *          a value.
      */
-    template<typename InputType>
-    gather_return_type<InputType> gather(InputType&& input) const;
+    template<typename T>
+    gather_return_type<std::decay_t<T>> gather(T&& input) const;
 
-    template<typename InputType>
-    gather_return_type<InputType> gather(const InputType* p, size_type n) const;
+    gather_return_type<binary_type> gather(const_binary_reference input) const;
 
     /** @brief Given the type of the input, @p InputType, and the type of the
      *         reduction functor, @p FxnType, this will be the type of the
@@ -223,51 +228,9 @@ private:
     /// Code factorization for asserting that the PIMPL is non-null
     void assert_pimpl_() const;
 
-    using binary_data = serialization::binary_data;
-
-    using binary_return_type = std::optional<binary_data>;
-
-    binary_return_type gather_(const std::byte* data, size_type n) const;
-
     /// The object actually implementing *this
     pimpl_pointer m_pimpl_;
 };
-
-template<typename InputType>
-RAM::gather_return_type<InputType> RAM::gather(InputType&& input) const {
-    serializer s;
-    s << std::forward<InputType>(input);
-}
-
-template<typename InputType>
-RAM::gather_return_type<InputType> RAM::gather(const InputType* p,
-                                               size_type n) const {
-    const auto* as_bytes = reinterpret_cast<const std::byte*>(p);
-    size_type n_bytes    = n * sizeof(InputType);
-
-    auto serialized_data = gather_(as_bytes, n_bytes);
-
-    gather_return_type<InputType> rv;
-
-    // Early out for everybody, but the root
-    if(!serialized_data.has_value()) return rv;
-
-    auto& wrapped_value = serialized_data.value();
-
-    // Wrapped_value contains (# of ranks)*n bytes
-    auto n_ranks = wrapped_value.size() / n;
-    typename decltype(rv)::value_type buffer(n_ranks);
-    for(std::size_t i = 0; i < n_ranks; ++i) {
-        const auto* b      = wrapped_value.data() + i * n;
-        const auto* e      = wrapped_value.data() + (i + 1) * n;
-        const auto* b_char = reinterpret_cast<const char*>(b);
-        const auto* e_char = reinterpret_cast<const char*>(e);
-        std::string x(b_char, e_char);
-        buffer[i] = std::move(x);
-    }
-    rv.emplace(std::move(buffer));
-    return rv;
-}
 
 /** @brief Determines if two RAM instances are different.
  *  @relates RAM

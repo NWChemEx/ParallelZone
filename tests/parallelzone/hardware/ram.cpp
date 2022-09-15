@@ -82,17 +82,17 @@ TEST_CASE("RAM") {
     }
 
     SECTION("gather") {
-        // N.B. elements need to be same length (in bytes)
-        std::vector<std::string> strs{"cat", "dog", "bee", "rat"};
+        // // N.B. elements need to be same length (in bytes)
+        // std::vector<std::string> strs{"cat", "dog", "bee", "rat"};
 
-        auto my_rv = has_value.gather(strs[my_rank]);
-        if(my_rank == 0) {
-            REQUIRE(my_rv.has_value());
-            for(std::size_t i = 0; i < my_rv.value().size(); ++i)
-                REQUIRE(my_rv.value()[i] == strs[i]);
-        } else {
-            REQUIRE_FALSE(my_rv.has_value());
-        }
+        // auto my_rv = has_value.gather(strs[my_rank]);
+        // if(my_rank == 0) {
+        //     REQUIRE(my_rv.has_value());
+        //     for(std::size_t i = 0; i < my_rv.value().size(); ++i)
+        //         REQUIRE(my_rv.value()[i] == strs[i]);
+        // } else {
+        //     REQUIRE_FALSE(my_rv.has_value());
+        // }
     }
 
     SECTION("reduce") {

@@ -73,6 +73,9 @@ TEMPLATE_LIST_TEST_CASE("BinaryView", "", test_types) {
             REQUIRE(vec_empty.size() == 0);
             REQUIRE(vec_full.data() == p_vec1);
             REQUIRE(vec_full.size() == n_vec1);
+
+            double* p = nullptr;
+            REQUIRE_THROWS_AS(test_type(p, 1), std::runtime_error);
         }
 
         SECTION("Implicit Conversion BinaryView->ConstBinaryView") {

@@ -5,8 +5,55 @@ using namespace parallelzone::mpi_helpers;
 
 namespace {
 
-// In these tests we declare an object "data: which holds some data to
-// gather from (it's conveniently also the answer).
+template<typename T>
+auto make_data(std::size_t chunk_size, CommPP& comm) {
+    auto max_elems = comm.size() * chunk_size;
+
+    std::vector<T> data;
+    for(std::size_t i = 0; i < max_elems; ++i) data.push_back((T)(i + 1));
+
+    return data;
+}
+
+/** This kernel tests gathering chunks of size @p chunk_size to process @p root
+ *  without a buffer.
+ *
+ *  The kernel first creates a std::vector<T> `v` with
+ *  `chunk_size * comm.size()` elements (unimaginatively the `i`-th element of
+ *  `v` is just `i+1`). Next we have rank `r` send elements `v[r*chunk_size]`
+ *  through `v[(r+1) * chunk_size - 1]` to rank @p root. Consequently @p root
+ *  should get back `v`.
+ */
+template<typename T>
+void gather_kernel(std::size_t chunk_size, std::size_t root, CommPP& comm) {
+    using reference       = CommPP::binary_reference;
+    using const_reference = CommPP::const_binary_reference;
+    using size_type       = std::size_t;
+
+    auto data = make_data<T>(chunk_size, comm);
+
+    auto begin_offset = comm.me() * chunk_size;
+    const_reference data_in(data.data() + begin_offset, chunk_size);
+
+    auto rv = comm.gather(data_in, root);
+
+    if(comm.me() == root) {
+        REQUIRE(rv.has_value());
+        const_reference binary_data(data.data(), data.size());
+        REQUIRE(rv->size() == binary_data.size());
+        REQUIRE(std::equal(rv->begin(), rv->end(), binary_data.begin()));
+    } else {
+        REQUIRE_FALSE(rv.has_value());
+    }
+}
+
+/** This kernel tests gathering chunks of size @p chunk_size to process @p root
+ *  when the user supplies a buffer.
+ *
+ *  This kernel works very similar to gather_kernel except that: we need to
+ *  make an output buffer, pass the output buffer, and test that gather
+ *  correctly avoided the copy.
+ */
 template<typename T>
 void gather_buffer_kernel(std::size_t chunk_size, std::size_t root,
                           CommPP& comm) {
@@ -14,16 +61,15 @@ void gather_buffer_kernel(std::size_t chunk_size, std::size_t root,
     using const_reference = CommPP::const_binary_reference;
     using size_type       = std::size_t;
 
-    size_type max_elems    = comm.size() * chunk_size;
-    size_type begin_offset = comm.me() * chunk_size;
-    std::vector<T> data;
-    std::vector<T> out_buffer(max_elems);
-    for(std::size_t i = 0; i < max_elems; ++i) data.push_back(T{i + 1});
+    auto data = make_data<T>(chunk_size, comm);
 
+    std::vector<T> out_buffer(comm.size() * chunk_size);
     auto p = out_buffer.data();
-
-    const_reference data_in(data.data() + begin_offset, chunk_size);
     reference buffer_in(out_buffer.data(), out_buffer.size());
+
+    auto begin_offset = comm.me() * chunk_size;
+    const_reference data_in(data.data() + begin_offset, chunk_size);
+
     comm.gather(data_in, buffer_in, root);
 
     if(comm.me() == root) {
@@ -35,7 +81,7 @@ void gather_buffer_kernel(std::size_t chunk_size, std::size_t root,
         REQUIRE(std::equal(data.begin(), data.end(), out_begin));
         REQUIRE(p == out_buffer.data());
     } else {
-        std::vector<T> corr(max_elems);
+        std::vector<T> corr(comm.size() * chunk_size);
         REQUIRE(out_buffer.size() == corr.size());
         REQUIRE(std::equal(out_buffer.begin(), out_buffer.end(), corr.begin()));
     }
@@ -57,6 +103,13 @@ TEST_CASE("CommPP") {
         auto root_str = " root = " + std::to_string(root);
         for(std::size_t chunk_size = 1; chunk_size < 5; ++chunk_size) {
             auto chunk_str = " chunk = " + std::to_string(chunk_size);
+
+            SECTION("gather" + root_str + chunk_str) {
+                gather_kernel<std::byte>(chunk_size, root, comm);
+
+                gather_kernel<double>(chunk_size, root, comm);
+            }
+
             SECTION("gather(buffer)" + root_str + chunk_str) {
                 // Checks when elements are byte-sized
                 gather_buffer_kernel<std::byte>(chunk_size, root, comm);

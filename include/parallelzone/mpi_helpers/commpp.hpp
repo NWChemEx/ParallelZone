@@ -47,8 +47,10 @@ public:
 
     /** @brief Slightly less user-friendly gather call, but can avoid copies.
      *
-     *  This call will gather directly into the provided buffer.
-     *
+     *  This call will gather directly into the provided buffer. By making
+     *  @p out_buffer alias the byte representation of an object it is possible
+     *  to directly gather into an object. This only works if you do not need
+     *  to deserialize the object you receive.
      */
     void gather(const_binary_reference in_data, binary_reference out_buffer,
                 size_type root) const;

@@ -56,6 +56,15 @@ public:
      */
     BinaryBuffer() noexcept = default;
 
+    /** @brief Creates a BinaryBuffer capable of holding @p n bytes.
+     *
+     *  This ctor initializes *this to an @p n byte buffer. Each byte is set
+     *  to 0.
+     *
+     *  @param[in] n The size of the buffer.
+     *
+     *  @throw std::bad_alloc if there is a problem allocating the memory.
+     */
     BinaryBuffer(size_type n);
 
     /** @brief Creates a BinaryBuffer with the provided state.
@@ -274,7 +283,7 @@ private:
 
 /** @brief Wraps the process of creating a binary view of an object of type @p T
  *
- *  @relates BinaryView
+ *  @relates BinaryBuffer
  *
  *  This function will create a BinaryView of @p input in an intelligent manner.
  *  By intelligent we mean that it will try to avoid serializing @p input if
@@ -300,29 +309,14 @@ private:
  *
  */
 template<typename T>
-BinaryBuffer make_binary_buffer(T&& input) {
-    using clean_type = std::decay_t<T>;
-    if constexpr(needs_serialized_v<clean_type>) {
-        using pimpl_type = detail_::BinaryBufferPIMPL<std::string>;
-        // TODO: Put directly into a string
-        std::stringstream ss;
-        {
-            cereal::BinaryOutputArchive ar(ss);
-            ar << std::forward<T>(input);
-        }
-        auto pimpl = std::make_unique<pimpl_type>(ss.str());
-        return BinaryBuffer(std::move(pimpl));
-    } else {
-        using pimpl_type = detail_::BinaryBufferPIMPL<clean_type>;
-        auto pimpl       = std::make_unique<pimpl_type>(std::forward<T>(input));
-        return BinaryBuffer(std::move(pimpl));
-    }
-}
+BinaryBuffer make_binary_buffer(T&& input);
 
-/** @brief Wraps the process of going from a BinaryView back to an object.
+/** @brief Wraps the process of going from a BinaryBuffer back to an object.
  *
- *  This function is a conenience function for creating an object from a view
- *  of contiguous binary data. The BinaryView is assumed to contain the
+ *  @relates BinaryBuffer
+ *
+ *  This function is a convenience function for creating an object from an array
+ *  of contiguous binary data. The BinaryBuffer is assumed to contain the
  *  serialized form of an object of type @p T if `NeedsSerialized<T>::value`
  *  is true. Otherwise it is assumed that @p T can be created by copying the
  *  data out of @p view.
@@ -330,7 +324,9 @@ BinaryBuffer make_binary_buffer(T&& input) {
  *  @tparam T The type we want to convert the binary data to. @p T is an
  *          explicit template type parameter and must be specified by the
  *          user. @p T should be an unqualified type (*i.e.*, no const,
- *          references, or the like).
+ *          references, or the like). If needs_serialized<T> is false we assume
+ *          that T has a range ctor that can be used to fill in a new @p T
+ *          instance.
  *
  *  @param[in] view The contiguous binary buffer we are making the object from.
  *
@@ -338,54 +334,9 @@ BinaryBuffer make_binary_buffer(T&& input) {
  *          @p view.
  *
  */
-// template<typename T>
-// T from_binary_buffer(const BinaryView&) {
-//     // I think we will always need to copy out of a view, so there's no
-//     // reason to allow cv qualifiers or references.
-//     static_assert(std::is_same_v<T, std::decay_t<T>>);
-
-//     if constexpr(needs_serialized_v<T>) {
-//         using size_type = BinaryView::size_type;
-//         // TODO: use boost::iostreams to avoid copy into stringstream.
-//         std::stringstream ss;
-//         const auto* p = reinterpret_cast<const char*>(view.data());
-//         for(size_type i = 0; i < view.size(); ++i) ss << view.data() + i;
-//         T rv;
-//         {
-//             cereal::BinaryInputArchive ar(ss);
-//             ar >> rv;
-//         }
-//         return rv;
-//     } else {
-//         // Since we didn't need to serialize the T object going in, it must
-//         be
-//         // the case that T is basically a contiguous array of some type U. We
-//         // assume that U is given by T::value_type and that T has a range
-//         ctor
-//         // which takes two iterators.
-//         using value_type = typename T::value_type;
-//         const auto* p    = reinterpret_cast<const value_type*>(view.data());
-//         auto n           = view.size() / sizeof(value_type);
-//         return T(p, p + n);
-//     }
-// }
-
-// -----------------------------------------------------------------------------
-// -- Inline BinaryBuffer Method Implementations
-// -----------------------------------------------------------------------------
-
-inline BinaryBuffer::BinaryBuffer(size_type n) :
-  BinaryBuffer([&]() {
-      using internal_buffer = std::vector<value_type>;
-      using pimpl_type      = detail_::BinaryBufferPIMPL<internal_buffer>;
-      internal_buffer buffer(n);
-      return std::make_unique<pimpl_type>(std::move(buffer));
-  }()) {}
-
-inline bool BinaryBuffer::operator==(const BinaryBuffer& rhs) const noexcept {
-    if(size() != rhs.size()) return false;
-    if(size() == 0) return true;
-    return std::equal(begin(), end(), rhs.begin());
-}
+template<typename T>
+T from_binary_buffer(const BinaryBuffer&);
 
 } // namespace parallelzone::mpi_helpers
+
+#include "binary_buffer.ipp"

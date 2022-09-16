@@ -31,6 +31,13 @@ TEST_CASE("BinaryBuffer") {
             REQUIRE(defaulted.size() == 0);
         }
 
+        SECTION("size") {
+            buffer_type corr(10);
+            BinaryBuffer bb(10);
+            REQUIRE(corr.size() == 10);
+            REQUIRE(std::equal(bb.begin(), bb.end(), corr.begin()));
+        }
+
         SECTION("PIMPL") {
             REQUIRE(empty.data() == nullptr);
             REQUIRE(empty.size() == 0);
@@ -243,5 +250,23 @@ TEST_CASE("make_binary_buffer") {
         auto bb = make_binary_buffer(std::move(vec_d));
         REQUIRE(bb.size() == corr_n);
         REQUIRE(bb.data() == pvec_d);
+    }
+}
+
+TEST_CASE("from_binary_buffer") {
+    SECTION("Need to serialize") {
+        using type = std::vector<std::string>;
+        type vec_string{"Hello", "World"};
+        auto binary_copy = make_binary_buffer(vec_string);
+        auto copy        = from_binary_buffer<type>(binary_copy);
+        REQUIRE(copy == vec_string);
+    }
+
+    SECTION("Don't need to serialize") {
+        using type = std::vector<double>;
+        type vec{1.1, 1.2, 1.3};
+        auto binary_copy(make_binary_buffer(vec));
+        auto copy = from_binary_buffer<type>(binary_copy);
+        REQUIRE(copy == vec);
     }
 }

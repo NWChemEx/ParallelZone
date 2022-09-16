@@ -54,6 +54,7 @@ RAM::size_type RAM::total_space() const noexcept {
 
 RAM::gather_return_type<RAM::binary_type> RAM::gather(
   const_binary_reference input) const {
+    throw std::runtime_error("NYI");
     // assert_pimpl_();
     // auto root = m_pimpl_->m_rank;
     // return m_pimpl_->m_mpi_comm.gather(input.data(), input.size(), root);

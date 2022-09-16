@@ -30,13 +30,13 @@ CommPP::gather_return CommPP::gather(const_binary_reference data,
 
 void CommPP::gather(const_binary_reference data, binary_reference out_buffer,
                     size_type root) const {
-    auto p       = data.data();
-    auto n       = data.size();
-    auto pbuffer = out_buffer.data();
-    if(me() == root && out_buffer.size() < n * size())
+    auto p_in  = data.data();
+    auto n_in  = data.size();
+    auto p_out = out_buffer.data();
+    if(me() == root && out_buffer.size() < n_in * size())
         throw std::runtime_error("The provided buffer is not large enough...");
 
-    MPI_Gather(p, n, MPI_BYTE, pbuffer, n, MPI_BYTE, root, m_comm_);
+    MPI_Gather(p_in, n_in, MPI_BYTE, p_out, n_in, MPI_BYTE, root, m_comm_);
 }
 
 } // namespace parallelzone::mpi_helpers

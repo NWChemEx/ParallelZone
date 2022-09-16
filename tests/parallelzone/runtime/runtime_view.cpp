@@ -212,7 +212,11 @@ TEST_CASE("RuntimeView") {
         std::cout.rdbuf(cout_rdbuf);
 
         // Check output was only on root rank
-        REQUIRE(str.str() == "Hello from 0");
+        if(argc_argv.madness_world().rank() == 0) {
+            REQUIRE(str.str() == "Hello from 0");
+        } else {
+            REQUIRE(str.str() == "");
+        }
     }
 
     SECTION("debug_logger") {
@@ -229,7 +233,11 @@ TEST_CASE("RuntimeView") {
         std::cerr.rdbuf(cerr_rdbuf);
 
         // Check output was only on root rank
-        REQUIRE(str.str() == "Hello from 0");
+        if(argc_argv.madness_world().rank() == 0) {
+            REQUIRE(str.str() == "Hello from 0");
+        } else {
+            REQUIRE(str.str() == "");
+        }
     }
 
     SECTION("operator==/operator!=") {

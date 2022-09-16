@@ -44,7 +44,7 @@ endif()
 cpp_find_or_build_dependency(
     MADworld
     URL github.com/m-a-d-n-e-s-s/madness
-    #VERSION 20d4d7cffbbc98dd7b7d6a5feb7d68f1df067cd6 
+    #VERSION 20d4d7cffbbc98dd7b7d6a5feb7d68f1df067cd6
     VERSION 997e8b458c4234fb6c8c2781a5df59cb14b7e700
     BUILD_TARGET MADworld
     FIND_TARGET MADworld
@@ -105,5 +105,12 @@ if("${BUILD_TESTING}")
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
         INCLUDE_DIR "${project_src_dir}"
         DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
+    )
+    find_package(MPI REQUIRED)
+    add_test(
+        NAME "test_pz_under_mpi"
+        COMMAND ${MPIEXEC_EXECUTABLE} "${MPIEXEC_NUMPROC_FLAG}" "2"
+                "${MPIEXEC_PREFLAGS}" "test_parallelzone" "${MPIEXEC_POSTFLAGS}"
+        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
     )
 endif()

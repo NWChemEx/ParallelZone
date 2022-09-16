@@ -18,13 +18,13 @@ void gather_buffer_kernel(std::size_t chunk_size, std::size_t root,
     size_type begin_offset = comm.me() * chunk_size;
     std::vector<T> data;
     std::vector<T> out_buffer(max_elems);
-    for(std::size_t i = 0; i < max_elems; ++i) data.push_back(T{i});
+    for(std::size_t i = 0; i < max_elems; ++i) data.push_back(T{i + 1});
 
     auto p = out_buffer.data();
 
     const_reference data_in(data.data() + begin_offset, chunk_size);
     reference buffer_in(out_buffer.data(), out_buffer.size());
-    comm.gather(data_in, buffer_in, 0);
+    comm.gather(data_in, buffer_in, root);
 
     if(comm.me() == root) {
         // We need to check that the root process has the correct value
@@ -35,8 +35,8 @@ void gather_buffer_kernel(std::size_t chunk_size, std::size_t root,
         REQUIRE(std::equal(data.begin(), data.end(), out_begin));
         REQUIRE(p == out_buffer.data());
     } else {
-        // out_buffer should be unchanged
         std::vector<T> corr(max_elems);
+        REQUIRE(out_buffer.size() == corr.size());
         REQUIRE(std::equal(out_buffer.begin(), out_buffer.end(), corr.begin()));
     }
 }
@@ -53,9 +53,9 @@ TEST_CASE("CommPP") {
     auto n_ranks = comm.size();
     auto me      = comm.me();
 
-    for(std::size_t root = 0; root < std::min(n_ranks, 3); ++root) {
+    for(std::size_t root = 0; root < std::min(n_ranks, 5); ++root) {
         auto root_str = " root = " + std::to_string(root);
-        for(std::size_t chunk_size = 1; chunk_size < 3; ++chunk_size) {
+        for(std::size_t chunk_size = 1; chunk_size < 5; ++chunk_size) {
             auto chunk_str = " chunk = " + std::to_string(chunk_size);
             SECTION("gather(buffer)" + root_str + chunk_str) {
                 // Checks when elements are byte-sized

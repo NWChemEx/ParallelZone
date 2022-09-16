@@ -4,21 +4,24 @@
 // /* Testing Strategy:
 //  *
 //  * At the moment, we are primarily targeting std::string as a binary buffer.
-//  * So these tests only focus on it. If additional binary buffers are used they
+//  * So these tests only focus on it. If additional binary buffers are used
+//  they
 //  * should be tested here too.
 //  */
 
 // template<typename T>
-// using pimpl_type = parallelzone::mpi_helpers::detail_::OwningBinaryViewPIMPL<T>;
+// using pimpl_type =
+// parallelzone::mpi_helpers::detail_::OwningBinaryViewPIMPL<T>;
 
 // namespace {
 
 // template<typename T>
 // auto corr(T&& input) {
 //     using clean_t            = std::decay_t<T>;
-//     using const_byte_pointer = typename pimpl_type<clean_t>::const_byte_pointer;
-//     using size_type          = typename pimpl_type<clean_t>::size_type;
-//     using value_type         = typename clean_t::value_type;
+//     using const_byte_pointer = typename
+//     pimpl_type<clean_t>::const_byte_pointer; using size_type          =
+//     typename pimpl_type<clean_t>::size_type; using value_type         =
+//     typename clean_t::value_type;
 
 //     const auto* p = reinterpret_cast<const_byte_pointer>(input.data());
 //     const auto n  = input.size() * sizeof(value_type);

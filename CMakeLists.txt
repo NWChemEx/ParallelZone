@@ -106,11 +106,11 @@ if("${BUILD_TESTING}")
         INCLUDE_DIR "${project_src_dir}"
         DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
     )
-    find_package(MPI REQUIRED)
-    add_test(
-        NAME "test_pz_under_mpi"
-        COMMAND ${MPIEXEC_EXECUTABLE} "${MPIEXEC_NUMPROC_FLAG}" "2"
-                "${MPIEXEC_PREFLAGS}" "test_parallelzone" "${MPIEXEC_POSTFLAGS}"
-        WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-    )
+    #find_package(MPI REQUIRED)
+    #add_test(
+    #    NAME "test_pz_under_mpi"
+    #    COMMAND ${MPIEXEC_EXECUTABLE} "${MPIEXEC_NUMPROC_FLAG}" "2"
+    #            "${MPIEXEC_PREFLAGS}" "test_parallelzone" "${MPIEXEC_POSTFLAGS}"
+    #    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+    #)
 endif()

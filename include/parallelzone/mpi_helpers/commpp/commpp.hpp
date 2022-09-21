@@ -72,6 +72,10 @@ public:
     /// Type returned by the binary version of gatherv
     using binary_gatherv_return = std::optional<gatherv_pair>;
 
+    // -------------------------------------------------------------------------
+    // -- CTors, Assignment, and Dtor
+    // -------------------------------------------------------------------------
+
     /** @brief Creates a null communicator.
      *
      *  The instance resulting from this ctor wraps the MPI_COMM_NULL instance.
@@ -80,7 +84,7 @@ public:
      *
      *  @throw None No throw guarantee.
      */
-    CommPP() const noexcept;
+    CommPP() noexcept;
 
     /** @brief Creates a communicator which wraps @p comm.
      *

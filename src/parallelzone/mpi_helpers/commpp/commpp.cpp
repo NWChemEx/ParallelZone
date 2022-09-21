@@ -20,6 +20,12 @@
 
 namespace parallelzone::mpi_helpers {
 
+// -----------------------------------------------------------------------------
+// -- CTors, Assignment, and Dtor
+// -----------------------------------------------------------------------------
+
+CommPP::CommPP() noexcept = default;
+
 CommPP::CommPP(mpi_comm_type comm) :
   m_pimpl_(std::make_unique<pimpl_type>(comm)) {}
 
@@ -67,12 +73,12 @@ const CommPP::pimpl_type& CommPP::pimpl_() const {
 
 CommPP::binary_gather_return CommPP::gather_(const_binary_reference data,
                                              opt_root_t root) const {
-    return pimpl_().gatherv(data, root);
+    return pimpl_().gather(data, root);
 }
 
 void CommPP::gather_(const_binary_reference data, binary_reference out_buffer,
                      opt_root_t root) const {
-    pimpl_().gatherv(data, out_buffer, root);
+    pimpl_().gather(data, out_buffer, root);
 }
 
 // CommPP::binary_gatherv_return CommPP::gatherv_binary(

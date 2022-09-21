@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include "../../hardware/detail_/ram_pimpl.hpp"
+#include "../../hardware/ram/detail_/ram_pimpl.hpp"
 #include <parallelzone/runtime/resource_set.hpp>
 #include <parallelzone/runtime/runtime_view.hpp>
 
@@ -83,7 +83,9 @@ inline ResourceSetPIMPL::ResourceSetPIMPL(size_type rank,
 
     // TODO: Find this out somehow
     size_type max_ram_size = 10;
-    auto pram = std::make_unique<ram_pimpl>(max_ram_size, rank, my_mpi);
+    mpi_helpers::CommPP comm(my_mpi);
+    auto pram =
+      std::make_unique<ram_pimpl>(max_ram_size, rank, std::move(comm));
     ram_type(std::move(pram)).swap(m_ram);
 }
 

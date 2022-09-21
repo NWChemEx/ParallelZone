@@ -240,6 +240,28 @@ TEST_CASE("BinaryBuffer") {
         // just need to check one != comparison
         REQUIRE(empty != non_empty);
     }
+
+    SECTION("BinaryView Conversion") {
+        BinaryView defaulted_corr;
+        REQUIRE(defaulted_corr == BinaryView(defaulted));
+
+        BinaryView empty_corr(empty.data(), empty.size());
+        REQUIRE(empty_corr == BinaryView(empty));
+
+        BinaryView non_empty_corr(non_empty.data(), non_empty.size());
+        REQUIRE(non_empty_corr == BinaryView(non_empty));
+    }
+
+    SECTION("ConstBinaryView Conversion") {
+        ConstBinaryView defaulted_corr;
+        REQUIRE(defaulted_corr == ConstBinaryView(defaulted));
+
+        ConstBinaryView empty_corr(empty.data(), empty.size());
+        REQUIRE(empty_corr == ConstBinaryView(empty));
+
+        ConstBinaryView non_empty_corr(non_empty.data(), non_empty.size());
+        REQUIRE(non_empty_corr == ConstBinaryView(non_empty));
+    }
 }
 
 TEST_CASE("make_binary_buffer") {

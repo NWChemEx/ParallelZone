@@ -15,6 +15,9 @@
  */
 
 #pragma once
+#include <parallelzone/mpi_helpers/traits/traits.hpp>
+#include <parallelzone/serialization.hpp>
+#include <sstream>
 
 /** @file binary_view.ipp
  *
@@ -22,7 +25,12 @@
  *  class. This file is meant only for inclusion from binary_view.hpp
  */
 
-namespace parallelzone::mpi_helpers::detail_ {
+namespace parallelzone::mpi_helpers {
+namespace detail_ {
+
+// -----------------------------------------------------------------------------
+// -- BinaryViewBase Methods
+// -----------------------------------------------------------------------------
 
 template<bool IsConst>
 template<typename T>
@@ -48,4 +56,41 @@ bool BinaryViewBase<IsConst>::operator!=(
     return !(*this == rhs);
 }
 
-} // namespace parallelzone::mpi_helpers::detail_
+} // namespace detail_
+
+// -----------------------------------------------------------------------------
+// -- Inline Free Functions
+// -----------------------------------------------------------------------------
+
+template<typename T>
+T from_binary_view(const ConstBinaryView& view) {
+    // I think we will always need to copy out of a view, so there's no
+    // reason to allow cv qualifiers or references.
+
+    static_assert(std::is_same_v<T, std::decay_t<T>>);
+    if constexpr(needs_serialized_v<T>) {
+        using size_type = ConstBinaryView::size_type;
+        // TODO: use boost::iostreams to avoid copy into stringstream.
+        std::stringstream ss;
+        for(size_type i = 0; i < view.size(); ++i)
+            ss << *reinterpret_cast<const char*>(view.data() + i);
+
+        T rv;
+        {
+            cereal::BinaryInputArchive ar(ss);
+            ar >> rv;
+        }
+        return rv;
+    } else {
+        // Since we didn't need to serialize the T object going in, it must be
+        // the case that T is basically a contiguous array of some type U. We
+        // assume that U is given by T::value_type and that T has a range ctor
+        // which takes two iterators.
+        using value_type = typename T::value_type;
+        const auto* p    = reinterpret_cast<const value_type*>(view.data());
+        auto n           = view.size() / sizeof(value_type);
+        return T(p, p + n);
+    }
+}
+
+} // namespace parallelzone::mpi_helpers

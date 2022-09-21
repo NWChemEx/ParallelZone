@@ -18,6 +18,7 @@
 #include <memory>
 #include <optional>
 #include <parallelzone/mpi_helpers/binary_buffer/binary_view.hpp>
+#include <parallelzone/mpi_helpers/commpp/commpp.hpp>
 #include <vector>
 
 namespace parallelzone::hardware {
@@ -29,7 +30,7 @@ class RAMPIMPL;
 
 /** @brief Provides a runtime API for interacting with memory
  *
- *  The RAM class is envisoned as being the primary vessel for tracking memory
+ *  The RAM class is envisioned as being the primary vessel for tracking memory
  *  usage, and for facilitating getting/setting data from/to remote RAM objects
  *  (i.e., RAM-based one-to-one-, one-to-all, and all-to-one MPI calls).
  *
@@ -150,15 +151,6 @@ public:
     // -- MPI all-to-one operations
     // -------------------------------------------------------------------------
 
-    /** @brief Given the type of the input, @p InputType, this will be the type
-     *         of the result from calling gather.
-     *
-     *  @tparam InputType The type of the object being gathered.
-     *
-     */
-    template<typename T>
-    using gather_return_type = std::optional<std::vector<T>>;
-
     /** @brief Sends data from all members of the RuntimeView to the
      *         ResourceSet which owns *this.
      *
@@ -171,10 +163,10 @@ public:
      *          std::optional returned to the ResourceSet which owns *this has
      *          a value.
      */
-    template<typename T>
-    gather_return_type<std::decay_t<T>> gather(T&& input) const;
-
-    gather_return_type<binary_type> gather(const_binary_reference input) const;
+    // template<typename T>
+    // auto gather(T&& input) const {
+    //     return comm_().gather(std::forward<T>(input));
+    // }
 
     /** @brief Given the type of the input, @p InputType, and the type of the
      *         reduction functor, @p FxnType, this will be the type of the
@@ -238,6 +230,12 @@ public:
     bool operator==(const RAM& rhs) const noexcept;
 
 private:
+    using comm_type = mpi_helpers::CommPP;
+
+    using const_comm_reference = const comm_type&;
+
+    const_comm_reference comm_() const;
+
     /// Code factorization for checking if the PIMPL is non-null
     bool has_pimpl_() const noexcept;
 

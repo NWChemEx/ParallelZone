@@ -39,7 +39,7 @@ TEST_CASE("RuntimeView") {
 
     SECTION("CTors") {
         SECTION("Default") {
-            REQUIRE(defaulted.size() == 0);
+            REQUIRE(defaulted.size() > 0);
 
             // TODO: Implement operator==
             // for(auto i = 0; i < argc_argv.size(); ++i)
@@ -131,9 +131,8 @@ TEST_CASE("RuntimeView") {
     SECTION("mpi_comm") {
         int result;
         auto comm = defaulted.mpi_comm();
-        // Apparently with OpenMPI you can't call MPI_Comm_compare with null
-        // comms
-        REQUIRE(comm == MPI_COMM_NULL);
+        MPI_Comm_compare(comm, MPI_COMM_WORLD, &result);
+        REQUIRE(result == MPI_IDENT);
 
         comm = argc_argv.mpi_comm();
         MPI_Comm_compare(comm, MPI_COMM_WORLD, &result);
@@ -141,12 +140,11 @@ TEST_CASE("RuntimeView") {
     }
 
     SECTION("madness_world") {
-        REQUIRE_THROWS_AS(defaulted.madness_world(), std::runtime_error);
         // REQUIRE(&d.madness_world() == &argc_argv.madness_world());
     }
 
     SECTION("size()") {
-        REQUIRE(defaulted.size() == 0);
+        REQUIRE(defaulted.size() > 0);
         REQUIRE(argc_argv.size() > 0);
     }
 
@@ -172,26 +170,27 @@ TEST_CASE("RuntimeView") {
         // for(auto i = 0; i < n_resource_sets; ++i) {
         //    REQUIRE(cdefaulted.at(i) == cargc_argv.at(i));
         //}
-        REQUIRE_THROWS_AS(cdefaulted.at(n_resource_sets), std::out_of_range);
+        // REQUIRE_THROWS_AS(cdefaulted.at(n_resource_sets), std::out_of_range);
     }
 
-    SECTION("has_me()") { REQUIRE_FALSE(defaulted.has_me()); }
+    SECTION("has_me()") { // REQUIRE(defaulted.has_me());
+    }
 
     SECTION("my_resource_set") {
         // The instance returned by this method is tested in detail in the
         // ResourceSet test
-        REQUIRE_THROWS_AS(defaulted.my_resource_set(), std::runtime_error);
+        // REQUIRE_THROWS_AS(defaulted.my_resource_set(), std::runtime_error);
     }
 
     SECTION("count(RAM)") {
         RuntimeView::ram_type ram;
-        REQUIRE_FALSE(defaulted.count(ram));
+        // REQUIRE(defaulted.count(ram));
     }
 
     SECTION("equal_range") {
         RuntimeView::ram_type ram;
         using const_range = RuntimeView::const_range;
-        REQUIRE(defaulted.equal_range(ram) == const_range{0, 0});
+        // REQUIRE(defaulted.equal_range(ram) == const_range{0, 0});
     }
 
     SECTION("gather") {
@@ -214,8 +213,6 @@ TEST_CASE("RuntimeView") {
     }
 
     SECTION("progress_logger") {
-        REQUIRE_THROWS_AS(defaulted.progress_logger(), std::runtime_error);
-
         // Redirect STDOUT to string
         std::stringstream str;
         auto cout_rdbuf = std::cout.rdbuf(str.rdbuf());
@@ -236,7 +233,6 @@ TEST_CASE("RuntimeView") {
     }
 
     SECTION("debug_logger") {
-        REQUIRE_THROWS_AS(defaulted.debug_logger(), std::runtime_error);
         // Redirect STDERR to string
         std::stringstream str;
         auto cerr_rdbuf = std::cerr.rdbuf(str.rdbuf());

@@ -52,14 +52,6 @@ RAM::size_type RAM::total_space() const noexcept {
 // -- MPI all-to-one operations
 // -----------------------------------------------------------------------------
 
-RAM::gather_return_type<RAM::binary_type> RAM::gather(
-  const_binary_reference input) const {
-    throw std::runtime_error("NYI");
-    // assert_pimpl_();
-    // auto root = m_pimpl_->m_rank;
-    // return m_pimpl_->m_mpi_comm.gather(input.data(), input.size(), root);
-}
-
 RAM::reduce_return_type<double, double> RAM::reduce(double input,
                                                     double fxn) const {
     throw std::runtime_error("NYI");

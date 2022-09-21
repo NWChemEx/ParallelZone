@@ -15,8 +15,9 @@
  */
 
 #pragma once
+#include <parallelzone/mpi_helpers/binary_buffer/binary_view.hpp>
 #include <parallelzone/mpi_helpers/binary_buffer/detail_/binary_buffer_pimpl.hpp>
-#include <parallelzone/mpi_helpers/traits.hpp>
+#include <parallelzone/mpi_helpers/traits/traits.hpp>
 #include <parallelzone/serialization.hpp>
 
 namespace parallelzone::mpi_helpers {
@@ -289,6 +290,34 @@ public:
         return !(*this == rhs);
     }
 
+    /** @brief Allows implicit conversion to BinaryView
+     *
+     *  BinaryView objects are used as read/write references to BinaryBuffer
+     *  instances. This method allows BinaryView instances to be implicitly
+     *  constructed from BinaryBuffer objects, analogous to how references are
+     *  implicitly constructed for normal types.
+     *
+     *  @return A BinaryView instance aliasing the binary buffer in *this.
+     *
+     *  @throw None No throw guarantee.
+     */
+    operator BinaryView() noexcept { return BinaryView(data(), size()); }
+
+    /** @brief Allows implicit conversion to ConstBinaryView
+     *
+     *  ConstBinaryView objects are used as read-only references to BinaryBuffer
+     *  instances. This method allows ConstBinaryView instances to be implicitly
+     *  constructed from BinaryBuffer objects, analogous to how const references
+     *  are implicitly constructed for normal types.
+     *
+     *  @return A ConstBinaryView instance aliasing the binary buffer in *this.
+     *
+     *  @throw None No throw guarantee.
+     */
+    operator ConstBinaryView() const noexcept {
+        return ConstBinaryView(data(), size());
+    }
+
 private:
     /// Code factorization for determining if m_pimpl_ holds a value
     bool has_pimpl_() const noexcept { return static_cast<bool>(m_pimpl_); }
@@ -335,7 +364,7 @@ BinaryBuffer make_binary_buffer(T&& input);
  *  of contiguous binary data. The BinaryBuffer is assumed to contain the
  *  serialized form of an object of type @p T if `NeedsSerialized<T>::value`
  *  is true. Otherwise it is assumed that @p T can be created by copying the
- *  data out of @p view.
+ *  data out of @p buffer.
  *
  *  @tparam T The type we want to convert the binary data to. @p T is an
  *          explicit template type parameter and must be specified by the
@@ -344,14 +373,15 @@ BinaryBuffer make_binary_buffer(T&& input);
  *          that T has a range ctor that can be used to fill in a new @p T
  *          instance.
  *
- *  @param[in] view The contiguous binary buffer we are making the object from.
+ *  @param[in] buffer The contiguous binary buffer we are making the object
+ * from.
  *
  *  @return An instance of type @p T initialized from the binary data in
- *          @p view.
+ *          @p buffer.
  *
  */
 template<typename T>
-T from_binary_buffer(const BinaryBuffer&);
+T from_binary_buffer(const BinaryBuffer& buffer);
 
 } // namespace parallelzone::mpi_helpers
 

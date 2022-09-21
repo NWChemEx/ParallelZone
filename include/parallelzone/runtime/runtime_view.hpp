@@ -112,16 +112,10 @@ public:
     // -- Ctors, Assignment, Dtor
     // -------------------------------------------------------------------------
 
-    /** @brief Creates a view of the null Rutnime.
-     *
-     *  This ctor is used primarily for creating place holder instances. The
-     *  resulting instance is not a view of any existing Runtime and can only
-     *  be turned into a view by assignment.
-     *
-     *  @throw None No throw guarantee.
+    /** @brief
      *
      */
-    RuntimeView() noexcept;
+    RuntimeView();
 
     /** @brief Initializes the runtime given the arguments to `main`
      *

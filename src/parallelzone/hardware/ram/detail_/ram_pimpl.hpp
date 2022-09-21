@@ -15,8 +15,8 @@
  */
 
 #pragma once
-#include <parallelzone/hardware/ram.hpp>
-#include <parallelzone/mpi_helpers/commpp.hpp>
+#include <parallelzone/hardware/ram/ram.hpp>
+#include <parallelzone/mpi_helpers/commpp/commpp.hpp>
 
 namespace parallelzone::hardware::detail_ {
 

@@ -15,6 +15,7 @@
  */
 
 #include <catch2/catch.hpp>
+#include <parallelzone/mpi_helpers/binary_buffer/binary_buffer.hpp>
 #include <parallelzone/mpi_helpers/binary_buffer/binary_view.hpp>
 
 /* Testing Strategy
@@ -344,5 +345,23 @@ TEMPLATE_LIST_TEST_CASE("BinaryView", "", test_types) {
         // should be true and one that should be false
         REQUIRE_FALSE(vec_empty != defaulted);
         REQUIRE(vec_full != defaulted);
+    }
+}
+
+TEST_CASE("from_binary_view") {
+    SECTION("Need to serialize") {
+        using type = std::vector<std::string>;
+        type vec_string{"Hello", "World"};
+        auto binary_copy = make_binary_buffer(vec_string);
+        auto copy        = from_binary_view<type>(binary_copy);
+        REQUIRE(copy == vec_string);
+    }
+
+    SECTION("Don't need to serialize") {
+        using type = std::vector<double>;
+        type vec{1.1, 1.2, 1.3};
+        auto binary_copy(make_binary_buffer(vec));
+        auto copy = from_binary_view<type>(binary_copy);
+        REQUIRE(copy == vec);
     }
 }

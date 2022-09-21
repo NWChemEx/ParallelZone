@@ -230,6 +230,37 @@ public:
       ConstBinaryView(other.data(), other.size()) {}
 };
 
+/** @brief Wraps the process of going from a BinaryView back to an object.
+ *
+ *  @relates ConstBinaryView
+ *
+ *  This function is a convenience function for creating an object from a view
+ *  of contiguous binary data. The ConstBinaryView is assumed to point to the
+ *  serialized form of an object of type @p T if `NeedsSerialized<T>::value`
+ *  is true. Otherwise it is assumed that @p T can be created by copying the
+ *  data out of @p view.
+ *
+ *  @note When @p T does not need to be serialized, you often do not need to
+ *        call this function. Instead consider having the BinaryView directly
+ *        alias the memory where you want to create the @p T object.
+ *
+ *  @tparam T The type we want to convert the binary data to. @p T is an
+ *          explicit template type parameter and must be specified by the
+ *          user. @p T should be an unqualified type (*i.e.*, no const,
+ *          references, or the like). If needs_serialized<T> is false we assume
+ *          that T has a range ctor that can be used to fill in a new @p T
+ *          instance.
+ *
+ *  @param[in] view An alias of contiguous binary data, from which we will make
+ *                  the object.
+ *
+ *  @return An instance of type @p T initialized from the binary data aliased
+ *          by @p view.
+ *
+ */
+template<typename T>
+T from_binary_view(const ConstBinaryView& view);
+
 } // namespace parallelzone::mpi_helpers
 
 #include "binary_view.ipp"

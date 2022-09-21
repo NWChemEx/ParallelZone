@@ -57,7 +57,7 @@ ResourceSet make_resource_set(std::size_t rank, RuntimeView r) {
 // -- Ctors, Assignment, Dtor
 // -----------------------------------------------------------------------------
 
-RuntimeView::RuntimeView() noexcept = default;
+RuntimeView::RuntimeView() : RuntimeView(0, nullptr) {}
 
 RuntimeView::RuntimeView(argc_type argc, argv_type argv) :
   RuntimeView(argc, argv, MPI_COMM_WORLD) {}

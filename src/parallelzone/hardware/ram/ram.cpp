@@ -13,40 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include <parallelzone/hardware/ram.hpp>
+#include "detail_/ram_pimpl.hpp"
 #include <stdexcept>
 
 namespace parallelzone::hardware {
-namespace detail_ {
-
-struct RAMPIMPL {
-    using parent_type = RAM;
-
-    /// Ultimately a typedef of RAM::size_type
-    using size_type = parent_type::size_type;
-
-    /// Ultimately a typedef of RAM::pimpl_pointer
-    using pimpl_pointer = parent_type::pimpl_pointer;
-
-    explicit RAMPIMPL(size_type size) : m_size(size) {}
-
-    pimpl_pointer clone() const { return std::make_unique<RAMPIMPL>(*this); }
-
-    /// Total size of the RAM
-    size_type m_size = 0;
-};
-
-} // namespace detail_
 
 // -----------------------------------------------------------------------------
 // -- Ctors, Assignment, Dtor
 // -----------------------------------------------------------------------------
 
 RAM::RAM() noexcept = default;
-
-RAM::RAM(size_type total_size) :
-  RAM(std::make_unique<pimpl_type>(total_size)) {}
 
 RAM::RAM(pimpl_pointer pimpl) noexcept : m_pimpl_(std::move(pimpl)) {}
 
@@ -75,10 +51,6 @@ RAM::size_type RAM::total_space() const noexcept {
 // -----------------------------------------------------------------------------
 // -- MPI all-to-one operations
 // -----------------------------------------------------------------------------
-
-RAM::gather_return_type<double> RAM::gather(double input) const {
-    throw std::runtime_error("NYI");
-}
 
 RAM::reduce_return_type<double, double> RAM::reduce(double input,
                                                     double fxn) const {
@@ -110,6 +82,22 @@ bool RAM::operator==(const RAM& rhs) const noexcept {
 // -- Private methods
 // -----------------------------------------------------------------------------
 
+RAM::size_type RAM::my_rank_() const {
+    assert_pimpl_();
+    return m_pimpl_->m_rank;
+}
+
+RAM::const_comm_reference RAM::comm_() const {
+    assert_pimpl_();
+    return m_pimpl_->m_mpi_comm;
+}
+
 bool RAM::has_pimpl_() const noexcept { return static_cast<bool>(m_pimpl_); }
+
+void RAM::assert_pimpl_() const {
+    if(has_pimpl_()) return;
+    throw std::runtime_error("The current RAM instance is null. Was it default "
+                             "constructed or moved from?");
+}
 
 } // namespace parallelzone::hardware

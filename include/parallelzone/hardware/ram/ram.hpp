@@ -17,6 +17,8 @@
 #pragma once
 #include <memory>
 #include <optional>
+#include <parallelzone/mpi_helpers/binary_buffer/binary_view.hpp>
+#include <parallelzone/mpi_helpers/commpp/commpp.hpp>
 #include <vector>
 
 namespace parallelzone::hardware {
@@ -28,7 +30,7 @@ class RAMPIMPL;
 
 /** @brief Provides a runtime API for interacting with memory
  *
- *  The RAM class is envisoned as being the primary vessel for tracking memory
+ *  The RAM class is envisioned as being the primary vessel for tracking memory
  *  usage, and for facilitating getting/setting data from/to remote RAM objects
  *  (i.e., RAM-based one-to-one-, one-to-all, and all-to-one MPI calls).
  *
@@ -54,6 +56,11 @@ public:
     /// Type of the pointer holding the PIMPL
     using pimpl_pointer = std::unique_ptr<pimpl_type>;
 
+    /// Since BinaryViews can be owning we use them for the actual binary type
+    using binary_type = std::byte;
+
+    using const_binary_reference = mpi_helpers::BinaryView;
+
     // -------------------------------------------------------------------------
     // -- Ctors, Assignment, Dtor
     // -------------------------------------------------------------------------
@@ -64,16 +71,12 @@ public:
      */
     RAM() noexcept;
 
-    /** @brief Creates a RAM instance with the provided maximum size
-     *
-     *  @param[in] total_size How much memory is *this managing.
-     *
-     *  @throw std::bad_alloc if there is a problem allocating the PIMPL. Strong
-     *                        throw guarantee.
-     */
-    explicit RAM(size_type total_size);
-
     /** @brief Creates a new RAM instance with the provided state.
+     *
+     *  RAM instances are usually created by ResourceSet instances when the
+     *  ResourceSet is being populated. The ResourceSet is capable of creating
+     *  a RAMPIMPL and does so directly. Once the RAMPIMPL is created the RAM
+     *  instance is initialized via this ctor.
      *
      *  @param[in] pimpl The state for the new RAM instance.
      *
@@ -148,15 +151,6 @@ public:
     // -- MPI all-to-one operations
     // -------------------------------------------------------------------------
 
-    /** @brief Given the type of the input, @p InputType, this will be the type
-     *         of the result from calling gather.
-     *
-     *  @tparam InputType The type of the object being gathered.
-     *
-     */
-    template<typename InputType>
-    using gather_return_type = std::optional<InputType>;
-
     /** @brief Sends data from all members of the RuntimeView to the
      *         ResourceSet which owns *this.
      *
@@ -169,7 +163,10 @@ public:
      *          std::optional returned to the ResourceSet which owns *this has
      *          a value.
      */
-    gather_return_type<double> gather(double input) const;
+    template<typename T>
+    auto gather(T&& input) const {
+        return comm_().gather(std::forward<T>(input), my_rank_());
+    }
 
     /** @brief Given the type of the input, @p InputType, and the type of the
      *         reduction functor, @p FxnType, this will be the type of the
@@ -233,8 +230,23 @@ public:
     bool operator==(const RAM& rhs) const noexcept;
 
 private:
+    /// Type of a C++ aware MPI communicator
+    using comm_type = mpi_helpers::CommPP;
+
+    /// Read-only reference to an object of type comm_type
+    using const_comm_reference = const comm_type&;
+
+    /// Returns the MPI rank which owns *this
+    size_type my_rank_() const;
+
+    /// Returns the MPI communicator managing communication for *this
+    const_comm_reference comm_() const;
+
     /// Code factorization for checking if the PIMPL is non-null
     bool has_pimpl_() const noexcept;
+
+    /// Code factorization for asserting that the PIMPL is non-null
+    void assert_pimpl_() const;
 
     /// The object actually implementing *this
     pimpl_pointer m_pimpl_;

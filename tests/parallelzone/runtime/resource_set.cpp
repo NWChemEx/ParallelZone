@@ -13,14 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include <catch2/catch.hpp>
+#include "../test_parallelzone.hpp"
 #include <parallelzone/runtime/resource_set.hpp>
 
 using namespace parallelzone::runtime;
 
-// TODO: Tests for non-defaulted resource sets
+/* Testing Notes:
+ *
+ * In practice ResourceSets are always affiliated with a RuntimeView. Thus to
+ * get a filled in ResourceSet it's easiest to grab one from the current
+ * RuntimeView.
+ */
 TEST_CASE("ResourceSet") {
+    const auto& rs = testing::PZEnvironment::comm_world().my_resource_set();
     ResourceSet defaulted;
 
     SECTION("Ctors and assignment") {
@@ -58,7 +63,8 @@ TEST_CASE("ResourceSet") {
     }
 
     SECTION("is_mine") {
-        REQUIRE_THROWS_AS(defaulted.is_mine(), std::runtime_error);
+        REQUIRE_FALSE(defaulted.is_mine());
+        REQUIRE(rs.is_mine());
     }
 
     SECTION("has_ram") { REQUIRE_FALSE(defaulted.has_ram()); }

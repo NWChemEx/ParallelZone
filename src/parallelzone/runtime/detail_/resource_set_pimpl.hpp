@@ -15,15 +15,22 @@
  */
 
 #pragma once
+#include "../../hardware/ram/detail_/ram_pimpl.hpp"
+#include <parallelzone/mpi_helpers/commpp/commpp.hpp>
 #include <parallelzone/runtime/resource_set.hpp>
 #include <parallelzone/runtime/runtime_view.hpp>
 
 namespace parallelzone::runtime::detail_ {
 
 struct ResourceSetPIMPL {
+    /// Type *this implements, typedef of ResourceSet
     using resource_set_type = ResourceSet;
 
-    using madness_world_reference = RuntimeView::madness_world_reference;
+    /// Type of the RuntimeView we're part of
+    using runtime_view = RuntimeView;
+
+    /// How the RuntimeView accesses MPI
+    using mpi_comm_type = mpi_helpers::CommPP;
 
     using ram_type = resource_set_type::ram_type;
 
@@ -37,27 +44,11 @@ struct ResourceSetPIMPL {
 
     using logger_pointer = std::shared_ptr<logger_type>;
 
-    ResourceSetPIMPL(size_type rank, madness_world_reference world) :
-      m_rank(rank), m_world(world) {}
+    ResourceSetPIMPL(size_type rank, mpi_comm_type my_mpi);
 
     pimpl_pointer clone() const {
         return std::make_unique<ResourceSetPIMPL>(*this);
     }
-
-    /// The rank of this process
-    size_type m_rank;
-
-    /// The RAM accessible to this process
-    ram_type m_ram;
-
-    /// MADNESS World Instance
-    madness_world_reference m_world;
-
-    /// Progress Logger
-    logger_pointer m_progress_logger_pointer;
-
-    /// Debug Logger
-    logger_pointer m_debug_logger_pointer;
 
     logger_reference progress_logger() {
         if(!m_progress_logger_pointer)
@@ -69,6 +60,34 @@ struct ResourceSetPIMPL {
         if(!m_debug_logger_pointer) throw std::runtime_error("No Debug Logger");
         return *m_debug_logger_pointer;
     }
+
+    /// The rank of this process
+    size_type m_rank;
+
+    /// The RAM accessible to this process
+    ram_type m_ram;
+
+    /// The Runtime this resource set belongs to.
+    mpi_comm_type m_my_mpi;
+
+    /// Progress Logger
+    logger_pointer m_progress_logger_pointer;
+
+    /// Debug Logger
+    logger_pointer m_debug_logger_pointer;
 };
+
+inline ResourceSetPIMPL::ResourceSetPIMPL(size_type rank,
+                                          mpi_comm_type my_mpi) :
+  m_rank(rank), m_my_mpi(my_mpi) {
+    using ram_pimpl = hardware::detail_::RAMPIMPL;
+
+    // TODO: Find this out somehow
+    size_type max_ram_size = 10;
+    mpi_helpers::CommPP comm(my_mpi);
+    auto pram =
+      std::make_unique<ram_pimpl>(max_ram_size, rank, std::move(comm));
+    ram_type(std::move(pram)).swap(m_ram);
+}
 
 } // namespace parallelzone::runtime::detail_

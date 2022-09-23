@@ -27,12 +27,26 @@ namespace parallelzone::mpi_helpers {
 CommPP::CommPP() noexcept = default;
 
 CommPP::CommPP(mpi_comm_type comm) :
-  m_pimpl_(std::make_unique<pimpl_type>(comm)) {}
+  m_pimpl_(comm != MPI_COMM_NULL ? std::make_unique<pimpl_type>(comm) :
+                                   nullptr) {}
 
 CommPP::CommPP(const CommPP& other) :
   m_pimpl_(other.has_pimpl_() ? other.m_pimpl_->clone() : nullptr) {}
 
+CommPP::CommPP(CommPP&& other) noexcept = default;
+
+CommPP& CommPP::operator=(const CommPP& rhs) {
+    if(this != &rhs) CommPP(rhs).swap(*this);
+    return *this;
+}
+
+CommPP& CommPP::operator=(CommPP&& rhs) noexcept = default;
+
 CommPP::~CommPP() noexcept = default;
+
+// -----------------------------------------------------------------------------
+// -- Accessors
+// -----------------------------------------------------------------------------
 
 CommPP::mpi_comm_type CommPP::comm() const noexcept {
     return has_pimpl_() ? m_pimpl_->comm() : MPI_COMM_NULL;
@@ -50,9 +64,11 @@ CommPP::size_type CommPP::me() const noexcept {
 // -- Utility Methods
 // -----------------------------------------------------------------------------
 
+void CommPP::swap(CommPP& other) noexcept { m_pimpl_.swap(other.m_pimpl_); }
+
 bool CommPP::operator==(const CommPP& rhs) const noexcept {
     if(has_pimpl_() != rhs.has_pimpl_()) return false;
-    if(!has_pimpl_()) return true; // Both Null comm
+    if(!has_pimpl_()) return true; // Both Null
     return *m_pimpl_ == *rhs.m_pimpl_;
 }
 
@@ -81,9 +97,9 @@ void CommPP::gather_(const_binary_reference data, binary_reference out_buffer,
     pimpl_().gather(data, out_buffer, root);
 }
 
-// CommPP::binary_gatherv_return CommPP::gatherv_binary(
-//   const_binary_reference data, size_type root) const {
-//     return pimpl_().gatherv(data, root);
-// }
+CommPP::binary_gatherv_return CommPP::gatherv_(const_binary_reference data,
+                                               opt_root_t root) const {
+    return pimpl_().gatherv(data, root);
+}
 
 } // namespace parallelzone::mpi_helpers

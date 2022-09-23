@@ -16,6 +16,7 @@
 
 #pragma once
 #include "../../hardware/ram/detail_/ram_pimpl.hpp"
+#include <parallelzone/mpi_helpers/commpp/commpp.hpp>
 #include <parallelzone/runtime/resource_set.hpp>
 #include <parallelzone/runtime/runtime_view.hpp>
 
@@ -29,7 +30,7 @@ struct ResourceSetPIMPL {
     using runtime_view = RuntimeView;
 
     /// How the RuntimeView accesses MPI
-    using mpi_comm_type = runtime_view::mpi_comm_type;
+    using mpi_comm_type = mpi_helpers::CommPP;
 
     using ram_type = resource_set_type::ram_type;
 

@@ -50,7 +50,10 @@ ResourceSet::size_type ResourceSet::mpi_rank() const {
     return m_pimpl_->m_rank;
 }
 
-bool ResourceSet::is_mine() const { throw std::runtime_error("NYI"); }
+bool ResourceSet::is_mine() const {
+    if(!has_pimpl_()) return false;
+    return m_pimpl_->m_my_mpi.me() == mpi_rank();
+}
 
 bool ResourceSet::has_ram() const noexcept { return has_pimpl_(); }
 

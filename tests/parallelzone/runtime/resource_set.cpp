@@ -63,7 +63,8 @@ TEST_CASE("ResourceSet") {
     }
 
     SECTION("is_mine") {
-        REQUIRE_THROWS_AS(defaulted.is_mine(), std::runtime_error);
+        REQUIRE_FALSE(defaulted.is_mine());
+        REQUIRE(rs.is_mine());
     }
 
     SECTION("has_ram") { REQUIRE_FALSE(defaulted.has_ram()); }

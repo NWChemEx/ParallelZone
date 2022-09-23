@@ -194,7 +194,11 @@ TEST_CASE("RuntimeView") {
     }
 
     SECTION("gather") {
-        REQUIRE_THROWS_AS(defaulted.gather(1.23), std::runtime_error);
+        using data_type = std::vector<std::string>;
+        data_type local_data(3, "Hello");
+        auto rv = defaulted.gather(local_data);
+        std::vector<data_type> corr(defaulted.size(), local_data);
+        REQUIRE(rv == corr);
     }
 
     SECTION("reduce") {

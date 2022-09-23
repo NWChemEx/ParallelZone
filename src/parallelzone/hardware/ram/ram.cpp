@@ -82,6 +82,16 @@ bool RAM::operator==(const RAM& rhs) const noexcept {
 // -- Private methods
 // -----------------------------------------------------------------------------
 
+RAM::size_type RAM::my_rank_() const {
+    assert_pimpl_();
+    return m_pimpl_->m_rank;
+}
+
+RAM::const_comm_reference RAM::comm_() const {
+    assert_pimpl_();
+    return m_pimpl_->m_mpi_comm;
+}
+
 bool RAM::has_pimpl_() const noexcept { return static_cast<bool>(m_pimpl_); }
 
 void RAM::assert_pimpl_() const {

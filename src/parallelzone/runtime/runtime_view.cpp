@@ -46,8 +46,9 @@ auto start_madness(int argc, char** argv, const MPI_Comm& comm) {
     return std::make_shared<detail_::RuntimeViewPIMPL>(initialize, *pworld);
 }
 
-ResourceSet make_resource_set(std::size_t rank, RuntimeView r) {
-    auto p = std::make_unique<detail_::ResourceSetPIMPL>(rank, r.mpi_comm());
+ResourceSet make_resource_set(std::size_t rank, const RuntimeView& r) {
+    mpi_helpers::CommPP c(r.mpi_comm());
+    auto p = std::make_unique<detail_::ResourceSetPIMPL>(rank, c);
     return ResourceSet(std::move(p));
 }
 
@@ -109,11 +110,15 @@ bool RuntimeView::did_i_start_madness() const noexcept {
 
 RuntimeView::resource_set_reference RuntimeView::at(size_type i) {
     bounds_check_(i);
+    if(!m_pimpl_->m_resource_sets.count(i))
+        m_pimpl_->m_resource_sets[i] = make_resource_set(i, *this);
     return m_pimpl_->m_resource_sets.at(i);
 }
 
 RuntimeView::const_resource_set_reference RuntimeView::at(size_type i) const {
     bounds_check_(i);
+    if(!m_pimpl_->m_resource_sets.count(i))
+        m_pimpl_->m_resource_sets[i] = make_resource_set(i, *this);
     return m_pimpl_->m_resource_sets.at(i);
 }
 
@@ -164,10 +169,6 @@ void RuntimeView::set_debug_logger(logger_type&& l) {
 // -- MPI all-to-all methods
 // -----------------------------------------------------------------------------
 
-double RuntimeView::gather(double input) const {
-    throw std::runtime_error("NYI");
-}
-
 double RuntimeView::reduce(double input, double op) const {
     throw std::runtime_error("NYI");
 }
@@ -187,6 +188,10 @@ bool RuntimeView::operator==(const RuntimeView& rhs) const {
 // -----------------------------------------------------------------------------
 // -- Private methods
 // -----------------------------------------------------------------------------
+
+mpi_helpers::CommPP RuntimeView::comm_() const {
+    return mpi_helpers::CommPP(mpi_comm());
+}
 
 void RuntimeView::not_null_() const {
     if(!null()) return;

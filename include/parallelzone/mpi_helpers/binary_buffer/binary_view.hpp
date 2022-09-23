@@ -15,7 +15,8 @@
  */
 
 #pragma once
-#include <cstddef>   // std::byte
+#include <cstddef> // std::byte
+#include <iostream>
 #include <stdexcept> // std::runtime_error
 
 namespace parallelzone::mpi_helpers {
@@ -260,6 +261,11 @@ public:
  */
 template<typename T>
 T from_binary_view(const ConstBinaryView& view);
+
+inline std::ostream& operator<<(std::ostream& os, const ConstBinaryView& view) {
+    for(const auto& x : view) os << int(x) << " ";
+    return os;
+}
 
 } // namespace parallelzone::mpi_helpers
 

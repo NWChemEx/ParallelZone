@@ -28,7 +28,8 @@ using namespace parallelzone::hardware;
 TEST_CASE("RAM") {
     using ram_type  = RAM;
     using size_type = ram_type::size_type;
-    const auto& rs  = testing::PZEnvironment::comm_world().my_resource_set();
+    const auto& run = testing::PZEnvironment::comm_world();
+    const auto& rs  = run.my_resource_set();
     auto my_rank    = rs.mpi_rank();
 
     RAM defaulted;
@@ -98,6 +99,16 @@ TEST_CASE("RAM") {
     }
 
     SECTION("gather") {
+        using data_type = std::vector<std::string>;
+        data_type local_data(3, "Hello");
+        auto rv = run.at(0).ram().gather(local_data);
+        if(run.at(0).is_mine()) {
+            std::vector<data_type> corr(run.size(), local_data);
+            REQUIRE(rv.has_value());
+            REQUIRE(*rv == corr);
+        } else {
+            REQUIRE_FALSE(rv.has_value());
+        }
     }
 
     SECTION("reduce") {

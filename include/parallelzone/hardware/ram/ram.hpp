@@ -163,10 +163,10 @@ public:
      *          std::optional returned to the ResourceSet which owns *this has
      *          a value.
      */
-    // template<typename T>
-    // auto gather(T&& input) const {
-    //     return comm_().gather(std::forward<T>(input));
-    // }
+    template<typename T>
+    auto gather(T&& input) const {
+        return comm_().gather(std::forward<T>(input), my_rank_());
+    }
 
     /** @brief Given the type of the input, @p InputType, and the type of the
      *         reduction functor, @p FxnType, this will be the type of the
@@ -230,10 +230,16 @@ public:
     bool operator==(const RAM& rhs) const noexcept;
 
 private:
+    /// Type of a C++ aware MPI communicator
     using comm_type = mpi_helpers::CommPP;
 
+    /// Read-only reference to an object of type comm_type
     using const_comm_reference = const comm_type&;
 
+    /// Returns the MPI rank which owns *this
+    size_type my_rank_() const;
+
+    /// Returns the MPI communicator managing communication for *this
     const_comm_reference comm_() const;
 
     /// Code factorization for checking if the PIMPL is non-null

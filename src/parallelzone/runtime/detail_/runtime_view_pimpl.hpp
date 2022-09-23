@@ -92,7 +92,7 @@ struct RuntimeViewPIMPL {
      *  avoid having to create a ResourceSet for each rank, just to be able to
      *  return m_resource_sets[r] for rank r.
      */
-    resource_set_container m_resource_sets;
+    mutable resource_set_container m_resource_sets;
 
     /// Progress Logger
     logger_pointer m_progress_logger_pointer;

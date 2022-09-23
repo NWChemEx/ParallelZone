@@ -28,17 +28,15 @@ class CommPPPIMPL;
 /** @brief A little wrapper around an MPI communicator to make it more C++
  *         friendly.
  *
- *  MPI has a C interface. At one point the standard defined an MPI API, but it
- *  was deprecated (and it didn't do much over the C interface anyways). This
- *  class is meant to provide an object-oriented API to MPI and takes care
+ *  This class is meant to provide an object-oriented API to MPI and takes care
  *  of many of the annoying things one may need to do in order to use an
  *  arbitrary C++ object with MPI. Users of parallelzone should consider this
  *  the absolute lowest level API and should not have to ever interact with MPI
  *  directly. The guts of this class are such that they should be able to take
  *  care of every optimization which is possible without the user needing to
- *  break API. That said the underlying implementations are not fully optimized,
- *  so if you see opportunities for optimization please do so under the hood
- *  instead of breaking API.
+ *  break API. That said the underlying implementations are probably not fully
+ *  optimized so if you see opportunities for optimization please do so under
+ *  the hood instead of breaking API.
  */
 class CommPP {
 public:
@@ -91,6 +89,12 @@ public:
      *  MPI groups processes into communicators. This ctor will initialize *this
      *  so that it wraps the MPI communicator identified by the handle @p comm.
      *
+     *  Under the hood this will call MPI_Comm_size and MPI_Comm_rank on the
+     *  provided communicator and cache the results. If the user frees the
+     *  communicator wrapped by *this and still tries to access state of *this
+     *  bad things will happen, but I don't know any way of causing *this to
+     *  own a copy of @p comm to prevent that from happening.
+     *
      *  @param[in] comm The handle of the MPI communicator to initialize *this
      *                  from.
      */
@@ -98,19 +102,85 @@ public:
 
     /** @brief Creates a new CommPP instance which is a "deep" copy of @p other.
      *
-     *  This ctor initializes *this as a deep copy of @p other.
+     *  This ctor initializes *this as a deep copy of @p other. In practice this
+     *  means that *this will contain a copy of the MPI handle so that changing
+     *  the communicator of @p other will not affect *this; however, since the
+     *  MPI communicators are just handles actually modifying the underlying
+     *  MPI communicator will affect *this.
+     *
+     *  @param[in] other The communicator we are copying.
      */
     CommPP(const CommPP& other);
 
+    /** @brief Creates a new CommPP by taking ownership of the state in @p other
+     *
+     *  This ctor initializes *this by taking ownership of the state in
+     *  @p other.
+     *
+     *  @param[in,out] other The object whose state is being taken. After this
+     *                       operation @p other is in a state analogous to
+     *                       default initialization.
+     *
+     *  @throw None No throw guarantee.
+     */
+    CommPP(CommPP&& other) noexcept;
+
+    /** @brief Makes *this a deep copy of @p other.
+     *
+     *  This operation will replace the contents of *this (freeing the current
+     *  state up in the process) with a deep copy of the state in @p other.
+     *  See the copy ctor for details pertaining to what a deep copy entails.
+     *
+     *  @param[in] rhs The object to copy.
+     *
+     *  @return *this after replacing its state with a copy of @p rhs.
+     *
+     */
+    CommPP& operator=(const CommPP& rhs);
+
+    /** @brief Transfers the state in @p other to *this.
+     *
+     *  This operation will move the state in @p other to *this. In the process
+     *  the current state of *this will be released.
+     *
+     *  @param[in,out] other The object whose state is being taken. After this
+     *                       operation @p other is in a state analogous to
+     *                       default initialization.
+     *
+     *  @return *this after replacing its state with the state in @p rhs.
+     *
+     *  @throw None No throw guarantee.
+     */
+    CommPP& operator=(CommPP&& other) noexcept;
+
+    /// Default dtor
     ~CommPP() noexcept;
 
+    // -------------------------------------------------------------------------
+    // -- Accessors
+    // -------------------------------------------------------------------------
+
+    /** @brief Returns a handle to the underlying MPI communicator
+     *
+     *  *this ultimately wraps an MPI communicator. This method will return a
+     *  handle to the underlying MPI communicator. If *this has is a null
+     *  communicator, either because it was default initialized or initialized
+     *  to a null communicator, the result will be MPI_COMM_NULL.
+     *
+     *  @return A handle to the undelrying MPI communicato or MPI_COMM_NULL if
+     *          there is no underlying communicator.
+     *
+     *  @throw None no throw guarantee.
+     */
     mpi_comm_type comm() const noexcept;
 
     /** @brief Returns the number of ranks manged by comm()
      *
      *  In MPI, processes are grouped into communicators. This method is used
      *  to determine how many processes are associated with the communicator
-     *  held by *this.
+     *  held by *this. If *this is a null communicator, either because it was
+     *  default initialized or because it was initialized to a null
+     *  communicator, the size will be 0.
      *
      *  Calling this method is logically the same as calling MPI_Comm_size.
      *  The actual call is only done during construction and the result is
@@ -127,8 +197,10 @@ public:
      *
      *  In MPI processes are grouped into communicators. Each process in the
      *  communicator has a unique ID ranging from 0 to the size of the
-     *  communicator.This method is used to retrieve the rank of the current
-     *  process.
+     *  communicator. This method is used to retrieve the rank of the current
+     *  process. If this communicator is null, either because it was default
+     *  initialized or because it was set to null, then the result will be
+     *  MPI_PROC_NULL.
      *
      *  Calling this method is logically the same as calling MPI_Comm_rank. The
      *  actual call is only done during construction and the result is cached
@@ -141,18 +213,167 @@ public:
      */
     size_type me() const noexcept;
 
-    /** @brief Gathers arbitrary data to MPI process @p root.
+    // -------------------------------------------------------------------------
+    // -- Utility
+    // -------------------------------------------------------------------------
+
+    /** @brief Exchanges the state in *this with that in @p other.
      *
-     *  In a gather operation involving `N` processes, each process `i` starts
-     *  with a piece of data `d_i`. After the call the root process holds `N`
-     *  pieces of data such that `i`-th data piece,  is `d_i` which was sent by
-     *  process `i`. Only the root process gets data in a traditional gather
-     *  call. To give every process a copy of the data one uses an "all gather"
-     *  operation.
+     *  This method is used to exchange the stat of *this with the state in
+     *  another CommPP object. After this operation *this will contain the
+     *  state which was originally in @p other and @p other will contain the
+     *  state which was originally in *this.
      *
-     *  Users are encouraged to go through this method for all of their gather
-     *  needs. This method will auto-magically take care of optimizations using
-     *  template meta programming.
+     *  @param[in, out] other The object whose state will be exchanged with
+     *                        *this. After the operation @p other will contain
+     *                        the state which was in *this before the operation.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void swap(CommPP& other) noexcept;
+
+    /** @brief Determines if *this is value equal to @p rhs.
+     *
+     *  *this is value equal to @p rhs if both *this and @p rhs are null
+     *  communicators, either by being default constructed or by being set to
+     *  MPI_COMM_NULL, or if both *this and @p rhs wrap handles to the same
+     *  MPI communicator (as determined by MPI_Comm_compare).
+     *
+     *  @param[in] rhs The object being compared to *this.
+     *
+     *  @return True if *this is value equal to @p rhs and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+
+    bool operator==(const CommPP& rhs) const noexcept;
+
+    /** @brief Determines if *this is different from @p rhs.
+     *
+     *  This method simply negates value equality. See the description of
+     *  operator== for more information on how value equality is determined.
+     *
+     *  @param[in] rhs The object being compared to *this.
+     *
+     *  @return False if *this is value equal to @p rhs and true otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool operator!=(const CommPP& rhs) const noexcept;
+
+    // -------------------------------------------------------------------------
+    // -- Gather
+    // -------------------------------------------------------------------------
+
+    /// Type returned by gather (and gatherv) given an object of type @p T
+    template<typename T>
+    using gather_return_type = gather_return_t<std::decay_t<T>>;
+
+    /// Result type from all gather (and all gatherv) given object of type @p T
+    template<typename T>
+    using all_gather_return_type = typename gather_return_type<T>::value_type;
+
+    /** @brief Gathers consistently sized, but otherwise arbitrary data to a
+     *         MPI process @p root.
+     *
+     *  In a gather operation involving `N` processes, the data from each
+     *  process will be concatenated into an `N` element array such that the
+     *  `i`-th piece of data came from the process with rank `i`. It should be
+     *  noted that the data sent from each process needs to be a single object,
+     *  but that object can contain multiple elements. For example,
+     *  `T == std::vector<double>` sends a single `std::vector` instance which
+     *  (may) contains multiple `double` values.
+     *
+     *  This gather call will only collect the result on the process whose rank
+     *  is @p root. All other processes send data, but do not end up with the
+     *  result. To give every process a copy of the data use an "all gather"
+     *  operation (the overload of `gather` which does not take a root process).
+     *
+     *  This method honors the type traits stated in the (TODO: Add link when
+     *  the documentation is done) section.
+     *
+     *  This call is ultimately equivalent to calling MPI_Gather.
+     *
+     *  @warning This method is only suitable for use when the size of @p input
+     *  (in bytes) is the same on all ranks. If the size is not the same on all
+     *  ranks (or you can't guarantee that it is) you need to use gatherv.
+     *
+     *
+     *  @tparam T The qualified type of the data to gather.
+     *
+     *  @param[in] input This process's contribution to the gather operation.
+     *                   The size of input (in bytes) must be the same on all
+     *                   ranks for this method to work.
+     *
+     *  @param[in] root The rank of the process which will get all of the data.
+     *
+     *  @return A std::optional which has a value on process @p root and no
+     *          value on all other processes. If @p T needs serialized the
+     *          optional holds a `std::vector<T>`; if @p T does not need
+     *          serialized the optional holds an object of type @p T.
+     */
+    template<typename T>
+    gather_return_type<T> gather(T&& input, size_type root) const;
+
+    /** @brief Gathers consistently sized, but otherwise arbitrary data to each
+     *         MPI process.
+     *
+     *  In a gather operation involving `N` processes, the data from each
+     *  process will be concatenated into an `N` element array such that the
+     *  `i`-th piece of data came from the process with rank `i`. It should be
+     *  noted that the data sent from each process needs to be a single object,
+     *  but that object can contain multiple elements. For example,
+     *  `T == std::vector<double>` sends a single `std::vector` instance which
+     *  (may) contains multiple `double` values.
+     *
+     *  This gather call will provide each process with a copy of the gathered
+     *  data. If only one process needs a copy of the data consider the overload
+     *  of `gather` which does takes a root process.
+     *
+     *  This method honors the type traits stated in the (TODO: Add link when
+     *  the documentation is done) section.
+     *
+     *  This call is ultimately equivalent to calling MPI_Allgather.
+     *
+     *  @warning This method is only suitable for use when the size of @p input
+     *  (in bytes) is the same on all ranks. If the size is not the same on all
+     *  ranks (or you can't guarantee that it is) you need to use gatherv.
+     *
+     *  @tparam T The qualified type of the data to gather.
+     *
+     *  @param[in] input This process's contribution to the gather operation.
+     *                   The size of input (in bytes) must be the same on all
+     *                   ranks for this method to work..
+     *
+     *  @return The gathered data. If @p T needs to be serialized the result
+     *          is a std::vector<T>, otherwise it's an object of type @p T.
+     */
+    template<typename T>
+    all_gather_return_type<T> gather(T&& input) const;
+
+    /** @brief Gathers arbitrary data to a MPI process @p root.
+     *
+     *  In a gather operation involving `N` processes, the data from each
+     *  process will be concatenated into an `N` element array such that the
+     *  `i`-th piece of data came from the process with rank `i`. It should be
+     *  noted that the data sent from each process needs to be a single object,
+     *  but that object can contain multiple elements. For example,
+     *  `T == std::vector<double>` sends a single `std::vector` instance which
+     *  (may) contains multiple `double` values.
+     *
+     *  This gather call will only collect the result on the process whose rank
+     *  is @p root. All other processes send data, but do not end up with the
+     *  result. To give every process a copy of the data use an "all gatherv"
+     *  operation (the overload of `gatherv` which does not take a root
+     *  process). Unlike gather, gatherv allows the size of @p input (in bytes)
+     *  to be different on different ranks. This has additional communication
+     *  overhead relative to the normal gather call, so use gather if you can
+     *  guarantee that your data's size is consistent.
+     *
+     *  This method honors the type traits stated in the (TODO: Add link when
+     *  the documentation is done) section.
+     *
+     *  This call is ultimately equivalent to calling MPI_Gatherv.
      *
      *  @tparam T The qualified type of the data to gather.
      *
@@ -160,76 +381,93 @@ public:
      *
      *  @param[in] root The rank of the process which will get all of the data.
      *
-     *  @return A std::optional which has a value on process @p root an no value
-     *          on all other processes. The value depends on @p T. See the
-     *          documentation for gather_return_t for more details.
+     *  @return A std::optional which has a value on process @p root and no
+     *          value on all other processes. If @p T needs serialized the
+     *          optional holds a `std::vector<T>`; if @p T does not need
+     *          serialized the optional holds an object of type @p T.
      */
     template<typename T>
-    gather_return_t<std::decay_t<T>> gather(T&& input, size_type root) const;
+    gather_return_type<T> gatherv(T&& input, size_type root) const;
 
+    /** @brief Gathers arbitrary data to each MPI process.
+     *
+     *  In a gather operation involving `N` processes, the data from each
+     *  process will be concatenated into an `N` element array such that the
+     *  `i`-th piece of data came from the process with rank `i`. It should be
+     *  noted that the data sent from each process needs to be a single object,
+     *  but that object can contain multiple elements. For example,
+     *  `T == std::vector<double>` sends a single `std::vector` instance which
+     *  (may) contains multiple `double` values.
+     *
+     *  This gather call will provide each process with a copy of the gathered
+     *  data. If only one process needs a copy of the data consider the overload
+     *  of `gather` which does takes a root process. Unlike gather, gatherv
+     *  allows the size of @p input (in bytes) to be different on different
+     *  ranks. This has additional communication overhead relative to the normal
+     *  gather call, so use gather if you can guarantee that your data's size
+     *  is consistent.
+     *
+     *  This method honors the type traits stated in the (TODO: Add link when
+     *  the documentation is done) section.
+     *
+     *  This call is ultimately equivalent to calling MPI_Allgatherv.
+     *
+     *  @tparam T The qualified type of the data to gather.
+     *
+     *  @param[in] input This process's contribution to the gather operation.
+     *                   The size of input (in bytes) can vary from rank to
+     *                   rank.
+     *
+     *  @return The gathered data. If @p T needs to be serialized the result
+     *          is a std::vector<T>, otherwise it's an object of type @p T.
+     */
     template<typename T>
-    std::decay_t<T> gather(T&& input) const;
-
-    bool operator==(const CommPP& rhs) const noexcept;
-
-    bool operator!=(const CommPP& rhs) const noexcept;
+    all_gather_return_type<T> gatherv(T&& input) const;
 
 private:
+    /// Code factorization for determining if m_pimpl_ is not null
+    bool has_pimpl_() const noexcept;
+
+    /// if has_pimpl_() then returns the PIMPL, otherwise throws.
+    const pimpl_type& pimpl_() const;
+
+    /// Type used to make passing the root parameter optional
     using opt_root_t = std::optional<size_type>;
 
     /** @brief Code factorization for the two public templated gather methods.
      *
      * The "_t_" prevents this from getting called recursively when it tries to
-     * call  the binary version.
+     * call  the binary versions.
+     *
+     * @tparam T The type we are gathering.
+     *
+     * @param[in] input The object being sent from this process.
+     * @param[in] r     An optional optionally containing the rank of the root
+     *                  process. @p r should be set for normal gather calls and
+     *                  unset for all gather calls.
      */
     template<typename T>
-    gather_return_t<std::decay_t<T>> gather_t_(T&& input, opt_root_t r) const;
+    gather_return_type<T> gather_t_(T&& input, opt_root_t r) const;
 
-    bool has_pimpl_() const noexcept;
-
-    const pimpl_type& pimpl_() const;
+    /// @brief Code factorization for the two public templated gatherv methods.
+    template<typename T>
+    gather_return_type<T> gatherv_t_(T&& input, opt_root_t r) const;
 
     // -------------------------------------------------------------------------
     // -- Binary-Based MPI Operations
     // -------------------------------------------------------------------------
 
-    /** @brief Binary-based gather call which creates a buffer for the result.
-     *
-     *  This method is similar to the normal gather call except that it only
-     *  works on binary data. This call is most suitable for use when data
-     *  needs to be serialized as it will allocate a buffer for the result
-     *  which will need to be copied into the final object.
-     *
-     *  @param[in] data The local bytes to send.
-     *
-     *  @param[in] root The rank of the process which will get the data.
-     *
-     *  @return A std::optional which has a value only on the root process. On
-     *          the root process this contains the bytes from each process
-     *          concatenated together.
-     *
-     */
+    /// Wraps a call to m_pimpl_->gather(data, root)
     binary_gather_return gather_(const_binary_reference data,
                                  opt_root_t root) const;
 
-    /** @brief Binary-based gather call that can avoid copies.
-     *
-     *  This call will gather directly into the provided buffer. By making
-     *  @p out_buffer alias the byte representation of an object it is possible
-     *  to directly gather into an object. This only works if you do not need
-     *  to deserialize the object you receive.
-     *
-     *  @param[in] in_data The local bytes to send.
-     *
-     *  @param[in] out_buffer A pre-allocated buffer to put the received bytes
-     *                        into. Ignored by every process, but the root.
-     *  @param[in] root The rank of the root process.
-     */
+    /// Wraps a call to m_pimpl_->gather(in_data, out_buffer, root)
     void gather_(const_binary_reference in_data, binary_reference out_buffer,
                  opt_root_t root) const;
 
-    // binary_gatherv_return gatherv_(const_binary_reference data,
-    //                                      size_type root);
+    /// Wraps a call to m_pimpl_->gatherv(in_data, root);
+    binary_gatherv_return gatherv_(const_binary_reference data,
+                                   opt_root_t root) const;
 
     /// The object actually implementing *this
     pimpl_pointer m_pimpl_;

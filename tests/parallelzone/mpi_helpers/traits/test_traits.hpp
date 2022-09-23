@@ -29,6 +29,7 @@ using false_list =
              parallelzone::mpi_helpers::ConstBinaryView>;
 
 // List of types we haven't been told not to serialize
-using true_list = std::tuple<std::map<int, int>, std::vector<std::string>>;
+using true_list = std::tuple<std::map<int, int>, std::vector<std::string>,
+                             std::vector<std::vector<int>>>;
 
 } // namespace testing

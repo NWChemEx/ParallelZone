@@ -17,6 +17,7 @@
 #pragma once
 
 #include <madness/world/MADworld.h>
+#include <parallelzone/mpi_helpers/commpp/commpp.hpp>
 #include <parallelzone/runtime/resource_set.hpp>
 
 namespace parallelzone::runtime {
@@ -477,7 +478,10 @@ public:
      *
      *  @return A local copy of the gathered data.
      */
-    double gather(double input) const;
+    template<typename T>
+    auto gather(T&& input) const {
+        return comm_().gather(std::forward<T>(input));
+    }
 
     /** @brief Performs a reduction on the data.
      *
@@ -520,6 +524,8 @@ public:
     bool operator==(const RuntimeView& rhs) const;
 
 private:
+    mpi_helpers::CommPP comm_() const;
+
     /** @brief Code factorization for ensuring *this is not null.
      *
      *  @throw std::runtime_error if *this is a view of the null runtime. Strong

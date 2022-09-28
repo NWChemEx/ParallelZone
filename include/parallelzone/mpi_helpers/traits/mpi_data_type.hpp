@@ -64,4 +64,19 @@ static constexpr bool has_mpi_data_type_v = MPIDataType<T>::value;
 template<typename T>
 static constexpr auto mpi_data_type_v = MPIDataType<T>::type();
 
+/** @brief Facilitates using SFINAE based on whether or not @p T has an MPI data
+ *         type associated with it.
+ *
+ *  This template type is useful for SFINAE purposes, whereby this type can be
+ *  used enable/disable an option based on whether or not @p T has a
+ *  corresponding MPI type.
+ *
+ *  @tparam T The type we are dispatching on.
+ *  @tparam U If has_mpi_data_type<T> is true, enable_if_mpi_data_type_t will be
+ *            a typedef of @p U. By default U is `void`.
+ */
+template<typename T, typename U = void>
+using enable_if_has_mpi_data_type_t =
+  std::enable_if_t<has_mpi_data_type_v<T>, U>;
+
 } // namespace parallelzone::mpi_helpers

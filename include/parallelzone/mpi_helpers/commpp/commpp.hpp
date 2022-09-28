@@ -424,6 +424,128 @@ public:
     template<typename T>
     all_gather_return_type<T> gatherv(T&& input) const;
 
+    // -------------------------------------------------------------------------
+    // -- Reduce
+    // -------------------------------------------------------------------------
+
+    /// Type returned by rooted reduce
+    template<typename T>
+    using reduce_return_type = std::optional<std::decay_t<T>>;
+
+    /// Type returned by all reduce
+    template<typename T>
+    using all_reduce_return_type = typename reduce_return_type<T>::value_type;
+
+    /** @brief Reduces an array, and collects the result on a root process
+     *
+     *  In a reduction operation involving @f$P@f$ processes, process @f$i@f$
+     *  starts with an @f$N@f$-element array @f$A_i@f$. The result, @f$R@f$, is
+     *  also an @f$N@f$-element array. The @f$j@f$-th element or @f$R@f$ is
+     *  given by:
+     *
+     *  @f[
+     *    R[j] = \bigotimes_{i=1}^P A_i[j],
+     *  @f]
+     *
+     *  where @f$\bigotimes@f$ is a stand in for whatever reduction operation
+     *  was specified, *e.g.*, if the reduction operation was summation, @f$R@f$
+     *  is given by:
+     *
+     *  @f[
+     *    R[j] = \sum_{i=1}^P A_i[j],
+     *  @f]
+     *
+     *  Note that the reduction occurs across the process index and NOT across
+     *  the element index. If the goal is to, for example, sum all of the
+     *  @f$N@f$ elements in the @f$P@f$ arrays to get a single element, then one
+     *  must either sum the @f$N@f$ elements together prior to the reduction or
+     *  one must sum the resulting @f$N@f$ elements together after the
+     *  reduction.
+     *
+     *  This overload of reduce will only collect the result to process @p root.
+     *  See the other overload of reduce if you want all processes to have a
+     *  copy.
+     *
+     *  @tparam T The qualified type of the array being reduced. @p T is assumed
+     *            to possibly be a cv-qualified and/or reference to an object of
+     *            type U. U is assumed to be a contiguous container whose
+     *            elements map to a known MPI data type. If the elements are not
+     *            a known MPI data type, or if @p U needs to be serialized, a
+     *            static assert will be tripped.
+     *
+     *  @tparam Fxn The qualified type of the reduction functor. @p Fxn is
+     *              assumed to possibly be a cv-qualified and/or reference to a
+     *              functor. The functor is assumed to be an instantiation of
+     *              a functor in the C++ standard library that maps to a known
+     *              MPI operation, *e.g.*, std::plus. A static assert will be
+     *              raised if the functor does not map to a known MPI operation.
+     *
+     *  @param[in] input The array we are reducing.
+     *  @param[in] fxn   The functor to use for the reduction.
+     *  @param[in] root  The zero-based rank of the process to collect the
+     *                   result on.
+     *
+     *  @return On the root process the result will be a std::optional which
+     *          holds an array whose elements are obtained by applying @p fxn
+     *          across the process index (see description). On all other
+     *          processes the resulting std::optional will be empty.
+     */
+    template<typename T, typename Fxn>
+    reduce_return_type<T> reduce(T&& input, Fxn&& fxn, size_type root) const;
+
+    /** @brief Reduces an array, and collects the result on each process.
+     *
+     *  In a reduction operation involving @f$P@f$ processes, process @f$i@f$
+     *  starts with an @f$N@f$-element array @f$A_i@f$. The result, @f$R@f$, is
+     *  also an @f$N@f$-element array. The @f$j@f$-th element or @f$R@f$ is
+     *  given by:
+     *
+     *  @f[
+     *    R[j] = \bigotimes_{i=1}^P A_i[j],
+     *  @f]
+     *
+     *  where @f$\bigotimes@f$ is a stand in for whatever reduction operation
+     *  was specified, *e.g.*, if the reduction operation was summation, @f$R@f$
+     *  is given by:
+     *
+     *  @f[
+     *    R[j] = \sum_{i=1}^P A_i[j],
+     *  @f]
+     *
+     *  Note that the reduction occurs across the process index and NOT across
+     *  the element index. If the goal is to, for example, sum all of the
+     *  @f$N@f$ elements in the @f$P@f$ arrays to get a single element, then one
+     *  must either sum the @f$N@f$ elements together prior to the reduction or
+     *  one must sum the resulting @f$N@f$ elements together after the
+     *  reduction.
+     *
+     *  This overload of reduce will collect the result to every process. See
+     *  the other overload of reduce if you only need the result on one process.
+     *
+     *  @tparam T The qualified type of the array being reduced. @p T is assumed
+     *            to possibly be a cv-qualified and/or reference to an object of
+     *            type U. U is assumed to be a contiguous container whose
+     *            elements map to a known MPI data type. If the elements are not
+     *            a known MPI data type, or if @p U needs to be serialized, a
+     *            static assert will be tripped.
+     *
+     *  @tparam Fxn The qualified type of the reduction functor. @p Fxn is
+     *              assumed to possibly be a cv-qualified and/or reference to a
+     *              functor. The functor is assumed to be an instantiation of
+     *              a functor in the C++ standard library that maps to a known
+     *              MPI operation, *e.g.*, std::plus. A static assert will be
+     *              raised if the functor does not map to a known MPI operation.
+     *
+     *  @param[in] input The array we are reducing.
+     *  @param[in] fxn   The functor to use for the reduction.
+     *
+     *  @return On all processes the result will be an array whose elements are
+     *          obtained by applying @p fxn across the process index (see
+     *          description).
+     */
+    template<typename T, typename Fxn>
+    all_reduce_return_type<T> reduce(T&& input, Fxn&& fxn) const;
+
 private:
     /// Code factorization for determining if m_pimpl_ is not null
     bool has_pimpl_() const noexcept;
@@ -449,9 +571,14 @@ private:
     template<typename T>
     gather_return_type<T> gather_t_(T&& input, opt_root_t r) const;
 
-    /// @brief Code factorization for the two public templated gatherv methods.
+    /// Code factorization for the two public templated gatherv methods.
     template<typename T>
     gather_return_type<T> gatherv_t_(T&& input, opt_root_t r) const;
+
+    /// Code factorization for the two public template reduce methods
+    template<typename T, typename Fxn>
+    reduce_return_type<T> reduce_t_(T&& input, Fxn&& fxn,
+                                    opt_root_t root) const;
 
     // -------------------------------------------------------------------------
     // -- Binary-Based MPI Operations

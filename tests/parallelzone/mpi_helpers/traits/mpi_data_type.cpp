@@ -3,8 +3,10 @@
 
 using namespace parallelzone::mpi_helpers;
 
-#define REGISTER_TYPE(cxx_type, mpi_type)                  \
-    STATIC_REQUIRE(mpi_data_type_v<cxx_type> == mpi_type); \
+#define REGISTER_TYPE(cxx_type, mpi_type)                                 \
+    STATIC_REQUIRE(mpi_data_type_v<cxx_type> == mpi_type);                \
+    STATIC_REQUIRE(                                                       \
+      std::is_same_v<enable_if_has_mpi_data_type_t<cxx_type, int>, int>); \
     STATIC_REQUIRE(has_mpi_data_type_v<cxx_type>)
 
 TEST_CASE("MPIDataType") {
@@ -26,3 +28,5 @@ TEST_CASE("MPIDataType") {
     REGISTER_TYPE(std::complex<long double>, MPI_C_LONG_DOUBLE_COMPLEX);
     REGISTER_TYPE(std::byte, MPI_BYTE);
 }
+
+#undef REGISTER_TYPE

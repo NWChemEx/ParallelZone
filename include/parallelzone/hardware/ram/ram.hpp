@@ -154,7 +154,7 @@ public:
     /** @brief Sends data from all members of the RuntimeView to the
      *         ResourceSet which owns *this.
      *
-     *  @tparam InputType The type of the data being gathered.
+     *  @tparam T The type of the data being gathered.
      *
      *  @param[in] input The local data to send to the ResourceSet which owns
      *                   *this.
@@ -168,29 +168,26 @@ public:
         return comm_().gather(std::forward<T>(input), my_rank_());
     }
 
-    /** @brief Given the type of the input, @p InputType, and the type of the
-     *         reduction functor, @p FxnType, this will be the type of the
-     *         result from calling reduce.
+    /** @brief Reduces the input, using the provided functor, to the resource
+     *         set which owns *this.
      *
-     *  @tparam InputType The type of the object being reduced.
-     *  @tparam FxnType Type type of the functor doing the reduction.
+     *  See CommPP::reduce for a more thorough description of this operation.
      *
+     *  @tparam T The type of the array to reduce.
+     *  @tparam FxnType The type of the functor.
+     *
+     *  @param[in] input The array to reduce.
+     *  @param[in] fxn   The functor to use for the reduction.
+     *
+     *  @return A std::optional containing the reduced data. Only the
+     *          std::optional returned to the ResourceSet which owns *this has
+     *          a value.
      */
-    template<typename InputType, typename FxnType>
-    using reduce_return_type = std::optional<InputType>;
-
-    /** @brief Collects data from all members of the RuntimeView and reduces it
-     *         to the ResourceSet which owns *this.
-     *
-     *
-     *  @tparam InputType The type of the data being reduced.
-     *  @tparam FxnType   The type of the functor doing the reduction.
-     *
-     *  @return The result of the reduction. Only the ResourceSet which owns
-     *          *this has a value. All other ResourceSet instances get back an
-     *          empty `std::optional`
-     */
-    reduce_return_type<double, double> reduce(double input, double fxn) const;
+    template<typename T, typename FxnType>
+    auto reduce(T&& input, FxnType&& fxn) const {
+        return comm_().reduce(std::forward<T>(input),
+                              std::forward<FxnType>(fxn), my_rank_());
+    }
 
     // -------------------------------------------------------------------------
     // -- Utility methods

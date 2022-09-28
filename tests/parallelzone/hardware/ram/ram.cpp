@@ -112,7 +112,18 @@ TEST_CASE("RAM") {
     }
 
     SECTION("reduce") {
-        REQUIRE_THROWS_AS(defaulted.reduce(1.23, 2.34), std::runtime_error);
+        using data_type = std::vector<double>;
+        data_type local_data(3, 1.0);
+        auto op = std::plus<double>();
+        auto rv = run.at(0).ram().reduce(local_data, op);
+
+        if(run.at(0).is_mine()) {
+            data_type corr(3, run.size());
+            REQUIRE(rv.has_value());
+            REQUIRE(*rv == corr);
+        } else {
+            REQUIRE_FALSE(rv.has_value());
+        }
     }
 
     SECTION("empty") {

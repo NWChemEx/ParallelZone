@@ -16,4 +16,6 @@
 
 #pragma once
 #include <parallelzone/mpi_helpers/traits/gather.hpp>
+#include <parallelzone/mpi_helpers/traits/mpi_data_type.hpp>
+#include <parallelzone/mpi_helpers/traits/mpi_op.hpp>
 #include <parallelzone/mpi_helpers/traits/needs_serialized.hpp>

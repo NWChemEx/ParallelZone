@@ -15,6 +15,7 @@
  */
 
 #pragma once
+#include <parallelzone/mpi_helpers/traits/mpi_data_type.hpp>
 #include <type_traits>
 #include <vector>
 

@@ -32,4 +32,11 @@ using false_list =
 using true_list = std::tuple<std::map<int, int>, std::vector<std::string>,
                              std::vector<std::vector<int>>>;
 
+using have_mpi_data_type_list =
+  std::tuple<char, signed short, short, signed int, int, signed long, long,
+             signed char, char, unsigned char, unsigned short, unsigned int,
+             unsigned long int, float, double, long double, bool,
+             std::complex<float>, std::complex<double>,
+             std::complex<long double>>;
+
 } // namespace testing

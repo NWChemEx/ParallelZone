@@ -170,7 +170,7 @@ TEST_CASE("CommPP") {
 
     // All of these types must be constructible given a single std::size_t
     const int max_ranks              = 5;
-    const std::size_t max_chunk_size = 2;
+    const std::size_t max_chunk_size = 5;
     using needs_serialized           = std::string;
     using no_serialization           = double;
 
@@ -224,6 +224,20 @@ TEST_CASE("CommPP") {
                 }
                 REQUIRE(rv == corr);
             }
+        }
+
+        SECTION("all reduce" + chunk_str) {
+            using data_type = std::vector<no_serialization>;
+            data_type local_data(chunk_size);
+            std::iota(local_data.begin(), local_data.end(), begin);
+            auto rv = comm.reduce(local_data, std::plus<no_serialization>());
+
+            data_type corr(chunk_size);
+            for(size_type i = 0; i < n_ranks; ++i) {
+                auto begin = i * chunk_size;
+                for(size_type j = 0; j < chunk_size; ++j) corr[j] += begin + j;
+            }
+            REQUIRE(rv == corr);
         }
 
         for(std::size_t root = 0; root < std::min(n_ranks, max_ranks); ++root) {
@@ -294,6 +308,26 @@ TEST_CASE("CommPP") {
                     } else {
                         REQUIRE_FALSE(rv.has_value());
                     }
+                }
+            }
+            SECTION("reduce" + root_str + chunk_str) {
+                using data_type = std::vector<no_serialization>;
+                data_type local_data(chunk_size);
+                std::iota(local_data.begin(), local_data.end(), begin);
+                auto op = std::plus<no_serialization>();
+                auto rv = comm.reduce(local_data, op, root);
+
+                if(me == root) {
+                    data_type corr(chunk_size);
+                    for(size_type i = 0; i < n_ranks; ++i) {
+                        auto begin = i * chunk_size;
+                        for(size_type j = 0; j < chunk_size; ++j)
+                            corr[j] += begin + j;
+                    }
+                    REQUIRE(rv.has_value());
+                    REQUIRE(*rv == corr);
+                } else {
+                    REQUIRE_FALSE(rv.has_value());
                 }
             }
         }

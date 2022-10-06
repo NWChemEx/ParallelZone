@@ -15,6 +15,8 @@
  */
 
 #pragma once
+#include <parallelzone/mpi_helpers/traits/mpi_data_type.hpp>
+#include <parallelzone/mpi_helpers/traits/mpi_op.hpp>
 
 /** @file commpp.ipp
  *
@@ -45,6 +47,23 @@ template<typename T>
 typename CommPP::all_gather_return_type<T> CommPP::gatherv(T&& input) const {
     return *gatherv_t_(std::forward<T>(input), std::nullopt);
 }
+
+template<typename T, typename Fxn>
+typename CommPP::reduce_return_type<T> CommPP::reduce(T&& input, Fxn&& fxn,
+                                                      size_type root) const {
+    return reduce_t_(std::forward<T>(input), std::forward<Fxn>(fxn), root);
+}
+
+template<typename T, typename Fxn>
+typename CommPP::all_reduce_return_type<T> CommPP::reduce(T&& input,
+                                                          Fxn&& fxn) const {
+    return *reduce_t_(std::forward<T>(input), std::forward<Fxn>(fxn),
+                      std::nullopt);
+}
+
+// -----------------------------------------------------------------------------
+// -- Private Methods
+// -----------------------------------------------------------------------------
 
 template<typename T>
 typename CommPP::gather_return_type<T> CommPP::gather_t_(
@@ -147,13 +166,46 @@ typename CommPP::gather_return_type<T> CommPP::gatherv_t_(
 
         value_type vec;
         auto n_elements = buffer.size() / t_size;
-        for(size_type i = 0; i < n_elements; i += t_size) {
+        for(size_type i = 0; i < buffer.size(); i += t_size) {
             const_binary_reference view(buffer.data() + i, t_size);
             vec.emplace_back(std::move(from_binary_view<element_type>(view)));
         }
         rv.emplace(std::move(vec));
         return rv;
     }
+}
+
+template<typename T, typename Fxn>
+typename CommPP::reduce_return_type<T> CommPP::reduce_t_(
+  T&& input, Fxn&& fxn, opt_root_t root) const {
+    // Assumed to be a container
+    using clean_type = std::decay_t<T>;
+    using value_type = typename clean_type::value_type;
+    using clean_fxn  = std::decay_t<Fxn>;
+
+    static_assert(!needs_serialized_v<clean_type>, "Doesn't needs serialized?");
+    static_assert(has_mpi_data_type_v<value_type>, "Is a recognized MPI type?");
+    static_assert(has_mpi_op_v<clean_fxn>, "Is a recognized MPI Operation?");
+
+    const auto am_i_root = root.has_value() ? me() == *root : true;
+    const auto n_elems   = input.size();
+    auto type            = mpi_data_type_v<value_type>;
+    auto op              = mpi_op_v<clean_fxn>;
+
+    std::vector<value_type> temp;
+    if(am_i_root) std::vector<value_type>(n_elems).swap(temp);
+
+    const auto send = input.data();
+    const auto recv = temp.data();
+
+    if(root.has_value()) {
+        MPI_Reduce(send, recv, n_elems, type, op, *root, comm());
+    } else {
+        MPI_Allreduce(send, recv, n_elems, type, op, comm());
+    }
+    reduce_return_type<T> rv;
+    if(am_i_root) rv.emplace(std::move(temp));
+    return rv;
 }
 
 } // namespace parallelzone::mpi_helpers

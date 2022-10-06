@@ -39,10 +39,10 @@ template<typename T>
 struct MPIDataType : std::false_type {};
 
 /// Facilitates mapping C++ type @p cxx_type to MPI enumeration @p mpi_type
-#define REGISTER_TYPE(cxx_type, mpi_type)                 \
-    template<>                                            \
-    struct MPIDataType<cxx_type> : std::true_type {       \
-        static auto type() { return mpi_type; } \
+#define REGISTER_TYPE(cxx_type, mpi_type)           \
+    template<>                                      \
+    struct MPIDataType<cxx_type> : std::true_type { \
+        static auto type() { return mpi_type; }     \
     }
 
 REGISTER_TYPE(char, MPI_CHAR);

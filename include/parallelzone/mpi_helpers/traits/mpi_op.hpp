@@ -41,10 +41,10 @@ struct MPIOp : std::false_type {};
 
 /// Wraps the process of associating functor @p cxx_op with the MPI operation
 /// @p mpi_op. @p cxx_op is just the name of the functor (no template params)
-#define REGISTER_OP(cxx_op, mpi_op)                   \
-    template<typename T>                              \
-    struct MPIOp<cxx_op<T>> : std::true_type {        \
-        static auto op() { return mpi_op; } \
+#define REGISTER_OP(cxx_op, mpi_op)            \
+    template<typename T>                       \
+    struct MPIOp<cxx_op<T>> : std::true_type { \
+        static auto op() { return mpi_op; }    \
     }
 
 REGISTER_OP(std::plus, MPI_SUM);

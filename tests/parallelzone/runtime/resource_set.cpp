@@ -22,7 +22,7 @@ using namespace parallelzone::runtime;
  *
  * In practice ResourceSets are always affiliated with a RuntimeView. Thus to
  * get a filled in ResourceSet it's easiest to grab one from the current
- * RuntimeView.
+ * RuntimeView. This admittedly makes it hard to do some of the comparisons.
  */
 TEST_CASE("ResourceSet") {
     const auto& rs = testing::PZEnvironment::comm_world().my_resource_set();

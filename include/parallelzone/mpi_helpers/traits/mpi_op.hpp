@@ -44,7 +44,7 @@ struct MPIOp : std::false_type {};
 #define REGISTER_OP(cxx_op, mpi_op)                   \
     template<typename T>                              \
     struct MPIOp<cxx_op<T>> : std::true_type {        \
-        static constexpr auto op() { return mpi_op; } \
+        static auto op() { return mpi_op; } \
     }
 
 REGISTER_OP(std::plus, MPI_SUM);
@@ -77,6 +77,6 @@ constexpr auto has_mpi_op_v = MPIOp<T>::value;
  *  @tparam T The type we want to map to an MPI_Op
  */
 template<typename T>
-constexpr auto mpi_op_v = MPIOp<T>::op();
+static auto mpi_op_v = MPIOp<T>::op();
 
 } // namespace parallelzone::mpi_helpers

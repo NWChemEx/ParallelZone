@@ -42,7 +42,7 @@ struct MPIDataType : std::false_type {};
 #define REGISTER_TYPE(cxx_type, mpi_type)                 \
     template<>                                            \
     struct MPIDataType<cxx_type> : std::true_type {       \
-        static constexpr auto type() { return mpi_type; } \
+        static auto type() { return mpi_type; } \
     }
 
 REGISTER_TYPE(char, MPI_CHAR);
@@ -78,7 +78,7 @@ static constexpr bool has_mpi_data_type_v = MPIDataType<T>::value;
  *  @tparam T The type to map to its MPI data type.
  */
 template<typename T>
-static constexpr auto mpi_data_type_v = MPIDataType<T>::type();
+static inline auto mpi_data_type_v = MPIDataType<T>::type();
 
 /** @brief Facilitates using SFINAE based on whether or not @p T has an MPI data
  *         type associated with it.

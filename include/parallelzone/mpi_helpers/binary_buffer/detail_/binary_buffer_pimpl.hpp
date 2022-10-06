@@ -61,6 +61,8 @@ public:
     /// Deleted to avoid slicing
     BinaryBufferPIMPLBase& operator=(BinaryBufferPIMPLBase&&) = delete;
 
+    virtual ~BinaryBufferPIMPLBase() noexcept = default;
+
     /** @brief Makes a deep polymorphic copy of *this.
      *
      *  When invoked this method will have the most derived class make a deep

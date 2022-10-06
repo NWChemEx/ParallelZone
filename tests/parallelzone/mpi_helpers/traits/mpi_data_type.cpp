@@ -20,7 +20,7 @@
 using namespace parallelzone::mpi_helpers;
 
 #define REGISTER_TYPE(cxx_type, mpi_type)                                 \
-    STATIC_REQUIRE(mpi_data_type_v<cxx_type> == mpi_type);                \
+    REQUIRE(mpi_data_type_v<cxx_type> == mpi_type);                       \
     STATIC_REQUIRE(                                                       \
       std::is_same_v<enable_if_has_mpi_data_type_t<cxx_type, int>, int>); \
     STATIC_REQUIRE(has_mpi_data_type_v<cxx_type>)

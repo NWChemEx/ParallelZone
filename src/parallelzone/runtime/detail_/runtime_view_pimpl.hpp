@@ -29,6 +29,15 @@ inline std::shared_ptr<Logger> make_default_stderr_logger(madness::World& w) {
                       std::make_shared<Logger>(make_stderr_logger());
 }
 
+/** @brief Holds the state for the RuntimeView class
+ *
+ *  Right now this class assumes MADNESS is managing MPI, so it holds a MADNESS
+ *  world; however, no part of ParallelZone actually uses the MADNESS world
+ *  and it is entirely possible to just power this class off of the CommPP
+ *  object.
+ *
+ *
+ */
 struct RuntimeViewPIMPL {
     /// Type of the class this PIMPL implements
     using parent_type = RuntimeView;
@@ -39,11 +48,20 @@ struct RuntimeViewPIMPL {
     /// Ultimately a typedef of RuntimeView::resource_set_type
     using resource_set_type = parent_type::resource_set_type;
 
+    /// Ultimately a typedef of RuntimeView::resource_set_reference
+    using resource_set_reference = parent_type::resource_set_reference;
+
+    /// Ultimately a typedef of RuntimeView::const_resource_set_reference
+    using const_resource_set_reference = parent_type::const_resource_reference;
+
     /// Type of the conatiner holding resource_set_type objects
     using resource_set_container = std::map<size_type, resource_set_type>;
 
     /// Ultimately a typedef of RuntimeView::madness_world_reference
     using madness_world_reference = parent_type::madness_world_reference;
+
+    /// The type of our MPI Comm wrapper
+    using comm_type = mpi_helpers::CommPP;
 
     /// Logger type
     using logger_type = parent_type::logger_type;
@@ -65,6 +83,21 @@ struct RuntimeViewPIMPL {
     /// Tears down MADNESS, when all references are gone (and if we started it)
     ~RuntimeViewPIMPL() noexcept;
 
+    /** @brief Wraps retrieving a ResourceSet
+     *
+     *  Behind the scenes there's a bit of redirection involved in the storage
+     *  of ResourceSet instances. This function hides that from the caller.
+     *
+     *  @param[in] rank The rank whose resource set is wanted.
+     *
+     *  @return A read-only reference to the requested ResourceSet.
+     *
+     *  @throw std::bad_alloc if the ResourceSet has not been instantiated
+     *                        prior to this call and there's a problem
+     *                        allocating it.
+     */
+    const_resource_set_reference at(size_type rank) const;
+
     logger_reference progress_logger() {
         if(!m_progress_logger_pointer)
             throw std::runtime_error("No Progress Logger");
@@ -76,43 +109,57 @@ struct RuntimeViewPIMPL {
         return *m_debug_logger_pointer;
     }
 
+    bool operator==(const RuntimeViewPIMPL& rhs) const noexcept;
+
     /// Did this PIMPL start MADNESS?
     bool m_did_i_start_madness;
 
     /// Reference to the madness world this instance wraps
     madness_world_reference m_world;
 
-    /// Rank of the current process
-    size_type m_my_rank = 0;
-
-    /** @brief The ResourceSets known to this RuntimeView
-     *
-     *  In practice most MPI ranks are only going to care about their
-     *  ResourceSet, so we store them in a map from MPI rank to ResourceSet to
-     *  avoid having to create a ResourceSet for each rank, just to be able to
-     *  return m_resource_sets[r] for rank r.
-     */
-    mutable resource_set_container m_resource_sets;
+    /// The MPI communicator we're built around
+    comm_type m_comm;
 
     /// Progress Logger
     logger_pointer m_progress_logger_pointer;
 
     /// Debug Logger
     logger_pointer m_debug_logger_pointer;
+
+private:
+    /** @brief Wraps the process of instantiating a ResourceSet.
+     *
+     *  When a user requests a ResourceSet they get a reference to it. This
+     *  method will ensure that there is an instance to return by reference.
+     *  This function is a no-op if the requested ResourceSet has already been
+     *  instantiated.
+     *
+     *  N.B. This function does not perform a bounds check and defers that to
+     *  the RuntimeView class.
+     *
+     *  @param[in] rank The rank whose resource set is needed.
+     *
+     *  @throw std::bad_alloc if a new ResourceSet instance is needed and there
+     *                        is a problem creating that instance.
+     */
+    void instantiate_resource_set_(size_type rank) const;
+
+    /** @brief The ResourceSets known to this RuntimeView
+     *
+     *  In practice most MPI ranks are only going to care about their
+     *  ResourceSet. So instead of making an `n`-element vector where
+     *  element `i` is the resource set for rank `i` (`n` is the number of
+     *  ranks), we instead store them in a map. Conceptually, we think of the
+     *  map as storing all `n` resource sets, but some of them are stored
+     *  implicitly. By default we only populate the resource set for the
+     *  current rank.
+     *
+     *  This member is mutable so that if we need to explicitly instantiate a
+     *  ResourceSet in a const function we can do that.
+     */
+    mutable resource_set_container m_resource_sets_;
 };
 
-inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
-                                          madness_world_reference world) :
-  m_did_i_start_madness(did_i_start_madness),
-  m_world(world),
-  m_my_rank(world.rank()),
-  m_resource_sets(),
-  m_progress_logger_pointer(make_default_stdout_logger(world)),
-  m_debug_logger_pointer(make_default_stderr_logger(world)) {}
-
-inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
-    if(!m_did_i_start_madness) return;
-    madness::finalize();
-}
-
 } // namespace parallelzone::runtime::detail_
+
+#include "runtime_view_pimpl.ipp"

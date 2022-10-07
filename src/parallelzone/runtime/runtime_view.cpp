@@ -108,18 +108,9 @@ bool RuntimeView::did_i_start_madness() const noexcept {
     return !null() ? m_pimpl_->m_did_i_start_madness : false;
 }
 
-RuntimeView::resource_set_reference RuntimeView::at(size_type i) {
-    bounds_check_(i);
-    if(!m_pimpl_->m_resource_sets.count(i))
-        m_pimpl_->m_resource_sets[i] = make_resource_set(i, *this);
-    return m_pimpl_->m_resource_sets.at(i);
-}
-
 RuntimeView::const_resource_set_reference RuntimeView::at(size_type i) const {
     bounds_check_(i);
-    if(!m_pimpl_->m_resource_sets.count(i))
-        m_pimpl_->m_resource_sets[i] = make_resource_set(i, *this);
-    return m_pimpl_->m_resource_sets.at(i);
+    return m_pimpl_->at(i);
 }
 
 bool RuntimeView::has_me() const {

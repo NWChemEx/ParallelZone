@@ -317,20 +317,6 @@ public:
      */
     bool did_i_start_madness() const noexcept;
 
-    /** @brief Returns the @p i-th resource set in a read/write state.
-     *
-     *  This method is used to retrieve a resource set by offset.
-     *
-     *  @param[in] i The 0-based offset of the desired resource set. @p i is
-     *               expected to be in the range [0, size()).
-     *
-     *  @return A read/write reference to the requested resource set.
-     *
-     *  @throw std::out_of_range if @p i is not in the range [0, size()).
-     *                           Strong throw guarantee.
-     */
-    resource_set_reference at(size_type i);
-
     /** @brief Returns the @p i-th resource set in a read-only state.
      *
      *  This method behaves identical to the non-const version, except that the
@@ -346,7 +332,6 @@ public:
      */
     const_resource_set_reference at(size_type i) const;
 
-    // TODO: Add noexcept after implementing
     /** @brief Used to determine if the current process is part of *this
      *
      *  Each RuntimeView is meant to be treated as the "full" set of resources
@@ -367,7 +352,7 @@ public:
      *
      *  @throw None No throw guarantee.
      */
-    bool has_me() const;
+    bool has_me() const noexcept;
 
     /** @brief Finds the resource set for the current process.
      *

@@ -69,11 +69,7 @@ RuntimeView::RuntimeView(madness_world_reference world) :
   RuntimeView(0, nullptr, world.mpi.comm().Get_mpi_comm()) {}
 
 RuntimeView::RuntimeView(int argc, char** argv, mpi_comm_type comm) :
-  m_pimpl_(start_madness(argc, argv, comm)) {
-    auto my_rank = m_pimpl_->m_world.rank();
-    auto rs      = make_resource_set(my_rank, *this);
-    m_pimpl_->m_resource_sets.emplace(my_rank, std::move(rs));
-}
+  m_pimpl_(start_madness(argc, argv, comm)) {}
 
 RuntimeView::RuntimeView(const RuntimeView& other) noexcept = default;
 
@@ -113,13 +109,13 @@ RuntimeView::const_resource_set_reference RuntimeView::at(size_type i) const {
     return m_pimpl_->at(i);
 }
 
-bool RuntimeView::has_me() const {
+bool RuntimeView::has_me() const noexcept {
     if(null()) return false;
-    throw std::runtime_error("NYI");
+    return m_pimpl_->m_comm.me() != MPI_PROC_NULL;
 }
 
 RuntimeView::const_resource_set_reference RuntimeView::my_resource_set() const {
-    return pimpl_().m_resource_sets.at(m_pimpl_->m_my_rank);
+    return pimpl_().at(m_pimpl_->m_comm.me());
 }
 
 RuntimeView::size_type RuntimeView::count(const_ram_reference ram) const {

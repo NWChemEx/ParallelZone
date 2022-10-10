@@ -17,6 +17,7 @@
 #include "../../test_parallelzone.hpp"
 #include <parallelzone/runtime/detail_/runtime_view_pimpl.hpp>
 
+using namespace parallelzone::runtime;
 using namespace parallelzone::runtime::detail_;
 
 /* Testing Notes
@@ -31,8 +32,9 @@ using namespace parallelzone::runtime::detail_;
  */
 
 TEST_CASE("RuntimeViewPIMPL") {
-    auto& rt = testing::PZEnvironment::comm_world();
-    RuntimeViewPIMPL::comm_type comm(rt.madness_world().mpi.comm());
+    auto& rt    = testing::PZEnvironment::comm_world();
+    auto& world = rt.madness_world();
+    RuntimeViewPIMPL::comm_type comm(world.mpi.comm().Get_mpi_comm());
     RuntimeViewPIMPL::comm_type null_comm;
     RuntimeViewPIMPL pimpl(false, rt.madness_world());
 
@@ -42,12 +44,20 @@ TEST_CASE("RuntimeViewPIMPL") {
     }
 
     SECTION("at") {
-        auto p = std::make_unique<detail_::ResourceSetPIMPL>(0, comm);
-        REQUIRE(did_not_start.at(0) == ResourceSet(std::move(p)));
+        auto p = std::make_unique<ResourceSetPIMPL>(0, comm);
+        REQUIRE(pimpl.at(0) == ResourceSet(std::move(p)));
+
+        if(comm.size() > 1) {
+            auto p2 = std::make_unique<ResourceSetPIMPL>(1, comm);
+            REQUIRE(pimpl.at(1) == ResourceSet(std::move(p2)));
+        }
     }
 
     SECTION("operator==") {
         RuntimeViewPIMPL other(false, rt.madness_world());
         REQUIRE(pimpl == other);
+
+        other.m_comm = RuntimeViewPIMPL::comm_type{};
+        REQUIRE_FALSE(pimpl == other);
     }
 }

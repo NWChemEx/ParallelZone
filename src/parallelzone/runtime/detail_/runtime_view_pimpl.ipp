@@ -1,4 +1,5 @@
 #pragma once
+#include "resource_set_pimpl.hpp"
 
 /** @file runtime_view_pimpl.ipp
  *
@@ -12,10 +13,13 @@ inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
                                           madness_world_reference world) :
   m_did_i_start_madness(did_i_start_madness),
   m_world(world),
-  m_comm(world.mpi.comm()),
+  m_comm(world.mpi.comm().Get_mpi_comm()),
   m_progress_logger_pointer(make_default_stdout_logger(world)),
   m_debug_logger_pointer(make_default_stderr_logger(world)),
-  m_resource_sets_() {}
+  m_resource_sets_() {
+    // Pre-populate the current rank's resource set.
+    instantiate_resource_set_(m_comm.me());
+}
 
 inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
     if(!m_did_i_start_madness) return;
@@ -25,7 +29,7 @@ inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
 inline RuntimeViewPIMPL::const_resource_set_reference RuntimeViewPIMPL::at(
   size_type rank) const {
     instantiate_resource_set_(rank);
-    return m_resource_set.at(rank);
+    return m_resource_sets_.at(rank);
 }
 
 inline bool RuntimeViewPIMPL::operator==(
@@ -37,9 +41,9 @@ inline bool RuntimeViewPIMPL::operator==(
 }
 
 void RuntimeViewPIMPL::instantiate_resource_set_(size_type rank) const {
-    if(m_resource_sets.count(rank)) return;
+    if(m_resource_sets_.count(rank)) return;
     auto p = std::make_unique<detail_::ResourceSetPIMPL>(rank, m_comm);
-    m_resource_sets.emplace(rank, ResourceSet(std::move(p)));
+    m_resource_sets_.emplace(rank, ResourceSet(std::move(p)));
 }
 
 } // namespace parallelzone::runtime::detail_

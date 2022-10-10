@@ -36,6 +36,10 @@ inline std::shared_ptr<Logger> make_default_stderr_logger(madness::World& w) {
  *  and it is entirely possible to just power this class off of the CommPP
  *  object.
  *
+ *  One option going forward would be to make this class polymorphic and have
+ *  the derived classes power the RuntimeView based on the runtime the user
+ *  wants to use (e.g., one derived class if we want to use MADNESS, another
+ *  derived class for CommPP).
  *
  */
 struct RuntimeViewPIMPL {
@@ -52,7 +56,8 @@ struct RuntimeViewPIMPL {
     using resource_set_reference = parent_type::resource_set_reference;
 
     /// Ultimately a typedef of RuntimeView::const_resource_set_reference
-    using const_resource_set_reference = parent_type::const_resource_reference;
+    using const_resource_set_reference =
+      parent_type::const_resource_set_reference;
 
     /// Type of the conatiner holding resource_set_type objects
     using resource_set_container = std::map<size_type, resource_set_type>;
@@ -78,6 +83,20 @@ struct RuntimeViewPIMPL {
     /// Ultimately a typedef of RuntimeView::argv_type
     using argv_type = parent_type::argv_type;
 
+    /** @brief Initializes *this from the provided MADNESS world.
+     *
+     *  This ctor will strip the relevant information off of the MADNESS world
+     *  to initialize *this (e.g., the rank of the current process, and the MPI
+     *  communicator). It also records whether or no *this is responsible for
+     *  tearing down MADNESS when it goes out of scope (if *this started
+     *  MADNESS then it is responsible for tearing it down).
+     *
+     *  @param[in] did_i_start_madness True if *this should be responsible for
+     *                                 the lifetime of MADNESS and false
+     *                                 otherwise.
+     *  @param[in] world The MADNESS world *this wraps.
+     *
+     */
     RuntimeViewPIMPL(bool did_i_start_madness, madness_world_reference world);
 
     /// Tears down MADNESS, when all references are gone (and if we started it)
@@ -109,6 +128,25 @@ struct RuntimeViewPIMPL {
         return *m_debug_logger_pointer;
     }
 
+    /** @brief Determines if *this is value equal to @p rhs.
+     *
+     *  Two RuntimeViewPIMPL instances are value equal if they both wrap the
+     *  same MPI communicator and if they both have access to the same resource
+     *  sets. At the moment the content of the resource sets is populated off
+     *  of the MPI communicator so we only compare the MPI communicators.
+     *
+     *  Eventually the user will be able to logically partition the RuntimeView
+     *  and at this time operator== will need revisited.
+     *
+     *  N.B. This class only defines operator== because that is all that is
+     *  needed for RuntimeView to define both operator== and operator!=.
+     *
+     *  @param[in] rhs The RuntimeView we are comparing to.
+     *
+     *  @return True if *this is value equal to @p rhs and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
     bool operator==(const RuntimeViewPIMPL& rhs) const noexcept;
 
     /// Did this PIMPL start MADNESS?

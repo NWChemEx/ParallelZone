@@ -21,6 +21,7 @@
 # http://www.sphinx-doc.org/en/master/config
 
 import os
+import subprocess
 
 # -- Project information -----------------------------------------------------
 
@@ -28,11 +29,12 @@ project = u'parallelzone'
 copyright = u'2021, NWChemEx Team'
 author = u'NWChemEx Team'
 
-# Get the version from version.txt
-with open('../../version.txt', 'r') as file:
-    version = file.read().replace('\n', '')
-# The full version, including alpha/beta/rc tags
-release = version
+# Get the version from the git tag
+git_cmd = ['git', 'describe', '--tags', '--abbrev=0']
+
+# N.B. release includes alpha, beta, rc, etc.; version is pure numeric
+release = subprocess.check_output(git_cmd).strip().decode()
+version = release[1:]
 
 ##############################################################################
 #           Shouldn't need to change anything below this point               #
@@ -48,12 +50,8 @@ release = version
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
+    'sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx',
+    'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.mathjax',
     'sphinx.ext.githubpages'
 ]
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -87,7 +85,6 @@ exclude_patterns = []
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -116,12 +113,10 @@ html_theme = 'sphinx_rtd_theme'
 #
 # html_sidebars = {}
 
-
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = project + 'doc'
-
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -147,18 +142,16 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, project + '.tex',project + ' Documentation', author, 'manual'),
+    (master_doc, project + '.tex', project + ' Documentation', author,
+     'manual'),
 ]
-
 
 # -- Options for manual page output ------------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    (master_doc, project.lower(), project + ' Documentation', [author], 1)
-]
-
+man_pages = [(master_doc, project.lower(), project + ' Documentation',
+              [author], 1)]
 
 # -- Options for Texinfo output ----------------------------------------------
 
@@ -166,10 +159,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, project, project + ' Documentation',
-     author, project, 'One line description of project.', 'Miscellaneous'),
+    (master_doc, project, project + ' Documentation', author, project,
+     'One line description of project.', 'Miscellaneous'),
 ]
-
 
 # -- Extension configuration -------------------------------------------------
 

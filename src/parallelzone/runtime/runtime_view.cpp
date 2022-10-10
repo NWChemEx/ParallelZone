@@ -69,7 +69,10 @@ RuntimeView::RuntimeView(madness_world_reference world) :
   RuntimeView(0, nullptr, world.mpi.comm().Get_mpi_comm()) {}
 
 RuntimeView::RuntimeView(int argc, char** argv, mpi_comm_type comm) :
-  m_pimpl_(start_madness(argc, argv, comm)) {}
+  RuntimeView(start_madness(argc, argv, comm)) {}
+
+RuntimeView::RuntimeView(pimpl_pointer pimpl) noexcept :
+  m_pimpl_(std::move(pimpl)) {}
 
 RuntimeView::RuntimeView(const RuntimeView& other) noexcept = default;
 
@@ -119,15 +122,11 @@ RuntimeView::const_resource_set_reference RuntimeView::my_resource_set() const {
 }
 
 RuntimeView::size_type RuntimeView::count(const_ram_reference ram) const {
-    if(null()) return 0;
-    // TODO: implement me!
-    throw std::runtime_error("NYI");
-}
-
-RuntimeView::const_range RuntimeView::equal_range(
-  const_ram_reference ram) const {
-    if(null()) return const_range{0, 0};
-    throw std::runtime_error("NYI");
+    size_type count = 0;
+    for(size_type i = 0; i < size(); ++i) {
+        if(at(i).ram() == ram) ++count;
+    }
+    return count;
 }
 
 RuntimeView::logger_reference RuntimeView::progress_logger() {
@@ -153,14 +152,6 @@ void RuntimeView::set_debug_logger(logger_type&& l) {
 }
 
 // -----------------------------------------------------------------------------
-// -- MPI all-to-all methods
-// -----------------------------------------------------------------------------
-
-double RuntimeView::reduce(double input, double op) const {
-    throw std::runtime_error("NYI");
-}
-
-// -----------------------------------------------------------------------------
 // -- Utility methods
 // -----------------------------------------------------------------------------
 
@@ -169,7 +160,9 @@ void RuntimeView::swap(RuntimeView& other) noexcept {
 }
 
 bool RuntimeView::operator==(const RuntimeView& rhs) const {
-    throw std::runtime_error("NYI");
+    if(null() != rhs.null()) return false;
+    if(null()) return true;
+    return *m_pimpl_ == *rhs.m_pimpl_;
 }
 
 // -----------------------------------------------------------------------------

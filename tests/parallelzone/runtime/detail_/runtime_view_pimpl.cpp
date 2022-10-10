@@ -44,12 +44,10 @@ TEST_CASE("RuntimeViewPIMPL") {
     }
 
     SECTION("at") {
-        auto p = std::make_unique<ResourceSetPIMPL>(0, comm);
-        REQUIRE(pimpl.at(0) == ResourceSet(std::move(p)));
+        REQUIRE(pimpl.at(0) == make_resource_set(0, comm));
 
         if(comm.size() > 1) {
-            auto p2 = std::make_unique<ResourceSetPIMPL>(1, comm);
-            REQUIRE(pimpl.at(1) == ResourceSet(std::move(p2)));
+            REQUIRE(pimpl.at(1) == make_resource_set(1, comm));
         }
     }
 

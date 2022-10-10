@@ -17,6 +17,7 @@
 #include <catch2/catch.hpp>
 #include <parallelzone/runtime/detail_/resource_set_pimpl.hpp>
 
+using namespace parallelzone::runtime;
 using namespace parallelzone::runtime::detail_;
 
 TEST_CASE("ResourceSetPIMPL") {
@@ -81,3 +82,10 @@ TEST_CASE("ResourceSetPIMPL") {
 }
 
 TEST_CASE("get_ram_size") { REQUIRE(get_ram_size() == 10); }
+
+TEST_CASE("make_resource_set") {
+    using comm_type = ResourceSetPIMPL::mpi_comm_type;
+    comm_type comm(MPI_COMM_WORLD);
+    auto p = std::make_unique<ResourceSetPIMPL>(0, comm);
+    REQUIRE(make_resource_set(0, comm) == ResourceSet(std::move(p)));
+}

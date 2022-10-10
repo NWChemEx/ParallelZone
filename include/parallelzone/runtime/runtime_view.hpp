@@ -39,11 +39,6 @@ class RuntimeViewPIMPL;
  *  In MPI terms think of RuntimeView as an intra-communicator paralleling
  *  MPI_COMM_WORLD; however, the underlying MPI_Comm need not be MPI_COMM_WORLD.
  *
- *  TODO: Like the RAM class the MPI methods are stubs. In practice they should
- *        be templated on the data type coming in, and the return type should
- *        be worked out via template meta programming. For now we just do double
- *        in, double out. Calling the ops will raise an exception.
- *
  *  @note RuntimeView uses RAII (resource acquisition is initialization) to
  *        manage MADNESS/MPI. This means that if you do supply a handle to an
  *        already initialized MADNESS/MPI runtime, then RuntimeView will assume
@@ -113,7 +108,11 @@ public:
     // -- Ctors, Assignment, Dtor
     // -------------------------------------------------------------------------
 
-    /** @brief
+    /** @brief Creates a RuntimeView which wraps MPI_COMM_WORLD.
+     *
+     *  The default ctor is a special case of the argc/argv ctor which assumes
+     *  that argc is 0 and argv is a nullptr. See the argc/argv ctor's
+     *  description for more details.
      *
      */
     RuntimeView();
@@ -176,9 +175,23 @@ public:
      *                  may be a nullptr if @p argc is 0.
      *  @param[in] comm The MPI_Comm this RuntimeView should alias.
      *
-     *  // TODO: Document throws
+     *  @throw std::bad_alloc if there is a problem allocating the PIMPL. Strong
+     *                        throw guarantee (not actually sure this is the
+     *                        case if we also initialized MPI).
      */
     RuntimeView(argc_type argc, argv_type argv, mpi_comm_type comm);
+
+    /** @brief Ctor for explicitly setting the state of the RuntimeView.
+     *
+     *  This ctor is primarily exposed for unit testing purposes. Users of
+     *  ParallelZone do not have access to the PIMPL's API and thus can not
+     *  actually create a PIMPL instance in order to call this ctor.
+     *
+     *  @param[in] pimpl The state for the RuntimeView.
+     *
+     *  @throw None No throw guarantee.
+     */
+    RuntimeView(pimpl_pointer pimpl) noexcept;
 
     /** @brief Make a new RuntimeView which aliases the same resources as *this
      *
@@ -212,6 +225,9 @@ public:
 
     /** @brief Transfers ownership of state in @p other to *this.
      *
+     *  This ctor will initialize *this with the state that is in @p other. The
+     *  state will be taken by move semantics.
+     *
      *  @param[in,out] other The instance whose state is being taken. After this
      *                 operation @p other will be a state consistent with
      *                 default initialization.
@@ -223,7 +239,8 @@ public:
     /** @brief Overwrites the state in *this with the state in @p rhs.
      *
      *  This method will release the internal state held by *this and replace
-     *  it with the state help in @p rhs.
+     *  it with the state help in @p rhs. Otherwise this method behaves
+     *  analogous to the move ctor.
      *
      *  @param[in,out] rhs The instance whose state is being takne. After this
      *                 operation @p rhs will be in a state consistent with
@@ -278,6 +295,11 @@ public:
     madness_world_reference madness_world() const;
 
     /** @brief The number of resource sets in this instance.
+     *
+     *  The resources available to the runtime are divvied up into resource
+     *  sets. This method will return the number of resource sets in the
+     *  runtime. It should be noted that resource sets need not be orthogonal.
+     *  That is to say, a resource may be shared among more than one set.
      *
      *  @note A view of the null runtime contains 0 resource sets; however, it
      *        is also possible for a non-null runtime to have 0 resource sets
@@ -356,12 +378,17 @@ public:
 
     /** @brief Finds the resource set for the current process.
      *
+     *  Typically a process can only directly access some of the total resources
+     *  available. This method returns the resource set the current process has
+     *  direct access to.
+     *
+     *  @return The resource set the current process has direct access to.
+     *
      *  @throw std::out_of_range if the current process is not part of *this.
      *                           Strong throw guarantee.
      */
     const_resource_set_reference my_resource_set() const;
 
-    // TODO: Make noexcept
     /** @brief Determines the number of ResourceSets a specific RAM instance
      *         belongs to.
      *
@@ -373,26 +400,13 @@ public:
      *  @param[in] ram The chunk of RAM we are looking for. @p ram may be local
      *                 or remote relative to my_resource_set().
      *
-     *  @throw None No throw guarantee.
+     *  @throw std::bad_alloc Looking for the RAM instance requires us to check
+     *                        each ResourceSet. At the moment this requires us
+     *                        to create ResourceSets for each rank. An exception
+     *                        may be raised if the creation of a ResourceSet
+     *                        fails. Strong throw guarantee.
      */
     size_type count(const_ram_reference ram) const;
-
-    // TODO: Make no except after implementing
-    /** @brief Returns a range of ResourceSets that contain @p ram.
-     *
-     *  ResourceSet instances need not be disjoint. This method finds the
-     *  ResourceSets that contain @p ram and returns a pair of iterators to
-     *  this set.
-     *
-     *  @return A pair whose first element is an iterator pointing to the
-     *          first ResourceSet containing @p ram and whose second element is
-     *          an iterator pointing to just past the last ResourceSet
-     *          containing @p ram. The elements of the return are equal if
-     *          @p ram is not in *this.
-     *
-     *  @throw None No throw guarantee.
-     */
-    const_range equal_range(const_ram_reference ram) const;
 
     /**
      * @brief Get progress logger for this RuntimeView
@@ -455,9 +469,25 @@ public:
     // -- MPI all-to-all methods
     // -------------------------------------------------------------------------
 
-    /** @brief Performs an all gather on the data.
+    /** @brief Performs an all gather on the provided data.
      *
-     *  This operation is assumed to involve RAM only.
+     *  In a gather operation involving `N` processes, the data from each
+     *  process will be concatenated into an `N` element array such that the
+     *  `i`-th piece of data came from the process with rank `i`. It should be
+     *  noted that the data sent from each process needs to be a single object,
+     *  but that object can contain multiple elements. For example,
+     *  `T == std::vector<double>` sends a single `std::vector` instance which
+     *  (may) contains multiple `double` values.
+     *
+     *  N.B. To use this method each process must send the same number of bytes
+     *  (not just objects). If you can not guarantee that use gatherv, which
+     *  will work properly when each process may send a different amount of
+     *  data.
+     *
+     *  This call is ultimately equivalent to calling MPI_Allgather.
+     *
+     *  @tparam T The qualified (cv and/or reference) type of @p input. @p T
+     *            will be deduced by the compiler and need not be specified.
      *
      *  @param[in] input The data local to the current ResourceSet.
      *
@@ -468,7 +498,57 @@ public:
         return comm_().gather(std::forward<T>(input));
     }
 
-    /** @brief Performs a reduction on the data.
+    /** @brief Performs an all gatherv on the provided data.
+     *
+     *  This method behaves identically to gather except that each process may
+     *  send a different number of bytes. There is a slight overhead
+     *  associated with gatherv vs. gather, so if you can guarantee that each
+     *  process sends the same number of bytes use gather.
+     *
+     *  This call is ultimately equivalent to calling MPI_Allgatherv
+     *
+     *  @tparam T The qualified (cv and/or reference) type of @p input. @p T
+     *            will be deduced by the compiler and need not be specified.
+     *
+     *  @param[in] input The local data being sent by the current process.
+     *
+     *  @return A local copy of the gathered data.
+     */
+    template<typename T>
+    auto gatherv(T&& input) const {
+        return comm_().gatherv(std::forward<T>(input));
+    }
+
+    /** @brief Performs an all reduce on the data.
+     *
+     * In a reduction operation involving @f$P@f$ processes, process
+     * @f$i@f$ starts with an @f$N@f$-element array @f$A_i@f$. The result,
+     * @f$R@f$, is also an @f$N@f$-element array. The @f$j@f$-th element or
+     * @f$R@f$ is given by:
+     *
+     *  @f[
+     *    R[j] = \bigotimes_{i=1}^P A_i[j],
+     *  @f]
+     *
+     *  where @f$\bigotimes@f$ is a stand in for whatever reduction operation
+     *  was specified, *e.g.*, if the reduction operation was summation, @f$R@f$
+     *  is given by:
+     *
+     *  @f[
+     *    R[j] = \sum_{i=1}^P A_i[j],
+     *  @f]
+     *
+     *  Note that the reduction occurs across the process index and NOT across
+     *  the element index. If the goal is to, for example, sum all of the
+     *  @f$N@f$ elements in the @f$P@f$ arrays to get a single element, then one
+     *  must either sum the @f$N@f$ elements together prior to the reduction or
+     *  one must sum the resulting @f$N@f$ elements together after the
+     *  reduction.
+     *
+     *  N.B. This method assumes that each process sends the same number of
+     *  bytes.
+     *
+     *  This method is equivalent to MPI_Allreduce.
      *
      *  @param[in] input The data local to the current ResourceSet.
      *  @param[in] op    The functor being used to reduce the data.
@@ -476,7 +556,10 @@ public:
      *  @return A local copy of the result of the reduction.
      *
      */
-    double reduce(double input, double op) const;
+    template<typename T, typename Fxn>
+    auto reduce(T&& input, Fxn&& op) const {
+        return comm_().reduce(std::forward<T>(input), std::forward<Fxn>(op));
+    }
 
     // -------------------------------------------------------------------------
     // -- Utility methods
@@ -494,7 +577,6 @@ public:
      */
     void swap(RuntimeView& other) noexcept;
 
-    // TODO: Add noexcept after implementing
     /** @brief Determines if @p rhs is value equal to *this.
      *
      *  Two RuntimeView instances are value equal if they wrap the same
@@ -509,6 +591,7 @@ public:
     bool operator==(const RuntimeView& rhs) const;
 
 private:
+    /// Returns the MPI communicator as our internal CommPP object
     mpi_helpers::CommPP comm_() const;
 
     /** @brief Code factorization for ensuring *this is not null.
@@ -554,7 +637,6 @@ private:
     pimpl_pointer m_pimpl_;
 };
 
-// TODO: Add noexcept when implemented
 /** @brief Determines if two RuntimeView instances are different.
  *  @relates RuntimeView
  *

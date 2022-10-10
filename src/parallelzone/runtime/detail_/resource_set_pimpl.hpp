@@ -144,6 +144,28 @@ inline auto get_ram_size() {
     return ResourceSetPIMPL::size_type(10);
 }
 
+/** @brief Convenience function for creating a ResourceSet with the PIMPL's ctor
+ *
+ *  This function wraps the process of allocating a ResourceSetPIMPL and then
+ *  moving it into a new ResourceSet. This method is used internally when we
+ *  want to prepare a ResourceSet with a specified state. This function is not
+ *  exposed because the user shouldn't ever have to make a ResourceSet.
+ *
+ *  @param[in] rank The MPI rank of the process which owns this resource set.
+ *  @param[in] my_mpi The MPI communicator used to move data to/from the
+ *                    resource set.
+ *
+ *  @return The ResourceSet for the requested process.
+ *
+ *  @throw std::bad_alloc if there's a problem allocating the ResourceSetPIMPL
+ *                        strong throw guarantee.
+ */
+inline auto make_resource_set(ResourceSetPIMPL::size_type rank,
+                              ResourceSetPIMPL::mpi_comm_type my_mpi) {
+    auto p = std::make_unique<ResourceSetPIMPL>(rank, my_mpi);
+    return ResourceSet(std::move(p));
+}
+
 // -----------------------------------------------------------------------------
 // -- Inline Implementations
 // -----------------------------------------------------------------------------

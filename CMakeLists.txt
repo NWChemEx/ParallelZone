@@ -106,6 +106,8 @@ cpp_add_library(
 include(nwx_python_mods)
 cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone )
 
+
+set(TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests")
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(
         Catch2
@@ -115,15 +117,41 @@ if("${BUILD_TESTING}")
 		VERSION v2.13.9
     )
     cpp_add_tests(
-        test_parallelzone
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
+        parallelzone_cxx_unit_tests
+        SOURCE_DIR "${TEST_DIR}/cxx_unit_tests"
         INCLUDE_DIR "${project_src_dir}"
         DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
     )
     find_package(MPI REQUIRED)
     add_test(
-        NAME "test_pz_under_mpi"
+        NAME "parallelzone_mpi_cxx_unit_tests"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
-               "${CMAKE_BINARY_DIR}/test_parallelzone"
+               "${CMAKE_BINARY_DIR}/parallelzone_cxx_unit_tests"
     )
+    if("${BUILD_PYBINDINGS}")
+        find_package(Python3 REQUIRED)
+        add_test(
+            NAME parallelzone_py_unit_tests
+            COMMAND Python3::Interpreter "-m" "unittest"
+            WORKING_DIRECTORY "${TEST_DIR}/py_unit_tests"
+        )
+        # N.B. It appears targets have to be the first argument to COMMAND,
+        #      i.e.,  trying to use Python3::Interpreter, instead of
+        #      ${Python3_EXECUTABLE}, causes CMake to treat Python3::Interpreter
+        #      as a string and not a target.
+        add_test(
+            NAME parallelzone_mpi_py_unit_tests
+            COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
+                    "${Python3_EXECUTABLE}" "-m" "unittest"
+            WORKING_DIRECTORY "${TEST_DIR}/py_unit_tests"
+        )
+        set_property(
+            TEST parallelzone_py_unit_tests
+            PROPERTY ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}/Python"
+        )
+        set_property(
+            TEST parallelzone_mpi_py_unit_tests
+            PROPERTY ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}/Python"
+        )
+    endif()
 endif()

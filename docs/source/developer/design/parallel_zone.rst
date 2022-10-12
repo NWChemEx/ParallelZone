@@ -61,7 +61,15 @@ What is the Scope of the ParallelZone?
 **************************************
 
 ParallelZone will ultimately be a C++ library used by most pieces of our
-software stack.
+software stack. While we could roll all of our stack's dependencies into
+ParallelZone, our preference is to delimit between dependencies needed by
+most of the stack vs. just a couple pieces. We also want ParallelZone to be
+potentially useful to developers/projects outside the NWChemEx-Project
+organization and in turn we want to limit bloat.
+
+To that end we limit ParallelZone to low-level, very general C++ operations
+focused on parallelism and supporting that parallelism. Notably this excludes
+linear algebra.
 
 
 *********************
@@ -163,3 +171,65 @@ serialization) can be largely automated if reflection exists.
 
 Parallelization
 ===============
+
+The heart of ParallelZone is parallelization. We want ParallelZone to facilitate
+writing multi-process, multi-thread, and/or multi-GPU code. We are particularly
+interested in task-based parallelism models and SIMD APIs.
+
+*************************
+ParallelZone Architecture
+*************************
+
+ParallelZone has the following pieces:
+
+- Parallel Runtime
+- Hardware
+- Logger
+- Utilities
+
+Parallel Runtime
+================
+
+This is the biggest piece of ParallelZone. It is envisioned as containing the
+routines and infrastructure needed to support task-based parallelism with SIMD
+APIs. Infrastructure wise it should be capable of scheduling (including load
+balancing) tasks on a wide variety of hardware. Under the hood it can accomplish
+this by dispatching to other runtimes if it wants. The important part from the
+perspective of the remainder of the stack is that the APIs remain consistent
+and that they support whatever we need.
+
+Hardware
+========
+
+This piece is made up of classes representing hardware components (CPU, RAM,
+GPU, etc.). Like the parallel runtime, the classes in this piece are responsible
+for providing the remainder of the stack with consistent stable APIs. Under the
+hood the classes can be implemented by calling other libraries or via system
+calls.
+
+Logger
+======
+
+To a certain extent the logger is just a special case of a hardware element
+(typically it's either redirected to standard out or a file). However, since
+logging plays such a crucial role in debugging, profiling, and monitoring
+program behavior it makes sense to call this component out specifically.
+
+Utilities
+=========
+
+This is basically a grab bag of functionality needed to support the other
+pieces. The primary piece is serialization.
+
+*****************
+Existing Runtimes
+*****************
+
+Depending on the definition of runtime there are a lot of possible choices
+out there. In this section, we limit ourselves to runtimes that support
+distributed parallelism.
+
+HPX
+===
+
+URL: `<https://github.com/STEllAR-GROUP/hpx>`_

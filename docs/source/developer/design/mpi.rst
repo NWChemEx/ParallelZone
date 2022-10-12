@@ -49,7 +49,7 @@ ParallelZone. There's a couple of design notes:
 
 Examples of all-to-one communication with ParallelZone.
 
-.. code-block:: cxx
+.. code-block:: cpp
 
    auto rt = get_runtime();
    auto me = rt.my_resource_set();

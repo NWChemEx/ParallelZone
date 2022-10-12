@@ -12,26 +12,8 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-############
-ParallelZone
-############
+#######################
+Installing ParallelZone
+#######################
 
-Welcome to the ParallelZone.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   about
-   install
-   quickstart
-   user/index
-   developer/index
-
-`C++ API <parallelzone_cxx_api/index.html>`_
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
+TODO: Write me!!!

@@ -12,26 +12,9 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-############
-ParallelZone
-############
+#####################
+The RuntimeView Class
+#####################
 
-Welcome to the ParallelZone.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   about
-   install
-   quickstart
-   user/index
-   developer/index
-
-`C++ API <parallelzone_cxx_api/index.html>`_
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
+The ``RuntimeView`` is the top-level class of ParallelZone and is the first
+ParallelZone object most users will interact with.

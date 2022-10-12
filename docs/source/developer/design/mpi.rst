@@ -24,23 +24,32 @@ ParallelZone. There's a couple of design notes:
 - These are parallelism "primitives". In practice these primitives are used to
   implement parallel classes. Users of the classes should rarely (ideally
   never) need to deal with these primitives directly.
-  - As an example think about how TA tensors work
+
+   - As an example think about how TA tensors work
+
 - We strive to make the MPI code look SIMD as much as possible
+
   - ``std::optional`` on returns makes it easier to figure out who has the
     data without knowing the distribution
+
   - Each rank passes in the same information (aside from the data)
+
 - Template meta-programming can be used to distinguish between passing in single
   values (say a ``double``) and a container of ``double``s (say
   ``std::vector<double>``)
+
   - Use a single binary-based API to go from template function to PIMPL
+
 - By default other types need to be serialized before sending
+
   - Serialization/deserialization can be expensive for communication
+
   - Creative PIMPLs (say ones that allocate state in an arena) can be used to
     dramatically speed up serialization (actually makes it trivial)
 
 Examples of all-to-one communication with ParallelZone.
 
-.. code-block:: .cpp
+.. code-block:: cxx
 
    auto rt = get_runtime();
    auto me = rt.my_resource_set();
@@ -71,7 +80,7 @@ Examples of all-to-one communication with ParallelZone.
 
 Examples of one-to-all communications
 
-.. code-block:: .cpp
+.. code-block:: c++
 
    auto rt = get_runtime();
    auto me = rt.my_resource_set();
@@ -87,7 +96,7 @@ Examples of one-to-all communications
 
 Examples of one-to-one communications
 
-.. code-block:: .cpp
+.. code-block:: c++
 
    auto rt = get_runtime();
    auto me = rt.get_resource_set();
@@ -108,7 +117,7 @@ Examples of one-to-one communications
 Examples of all-to-all communications
 
 
-.. code-block:: .cpp
+.. code-block:: c++
 
    auto rt = get_runtime();
 

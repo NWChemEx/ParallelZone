@@ -30,11 +30,11 @@ copyright = u'2021, NWChemEx Team'
 author = u'NWChemEx Team'
 
 # Get the version from the git tag
-git_cmd = ['git', 'describe', '--tags', '--abbrev=0']
+# git_cmd = ['git', 'describe', '--tags', '--abbrev=0']
 
-# N.B. release includes alpha, beta, rc, etc.; version is pure numeric
-release = subprocess.check_output(git_cmd).strip().decode()
-version = release[1:]
+# # N.B. release includes alpha, beta, rc, etc.; version is pure numeric
+# release = subprocess.check_output(git_cmd).strip().decode()
+# version = release[1:]
 
 ##############################################################################
 #           Shouldn't need to change anything below this point               #
@@ -75,7 +75,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

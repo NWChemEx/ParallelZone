@@ -23,7 +23,10 @@ developing ParallelZone.
    :maxdepth: 2
    :caption: Contents:
 
+   parallel_zone
+   parallel_runtime
    mpi
+   mpi_and_custom_types
    hashing
    serialization
    reflection

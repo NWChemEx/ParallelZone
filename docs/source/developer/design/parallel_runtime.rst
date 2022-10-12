@@ -12,26 +12,10 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-############
-ParallelZone
-############
+.. _parallel_runtime_design:
 
-Welcome to the ParallelZone.
+#########################################
+Designing ParallelZone's Parallel Runtime
+#########################################
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   about
-   install
-   quickstart
-   user/index
-   developer/index
-
-`C++ API <parallelzone_cxx_api/index.html>`_
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
+ParallelZone (PZ), is envisioned as

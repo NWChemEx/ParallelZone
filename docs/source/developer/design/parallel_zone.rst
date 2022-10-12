@@ -233,3 +233,23 @@ HPX
 ===
 
 URL: `<https://github.com/STEllAR-GROUP/hpx>`_
+
+Features:
+- Cross-platform
+- C++ and Boost Standards compliant
+- Active devlopment
+- Looks like C++11 threads
+
+Cons:
+- No GPU support?
+- No MPI support?
+
+MADNESS
+=======
+
+URL: `<https://github.com/m-a-d-n-e-s-s/madness>`_
+
+Features:
+- Under TiledArray already
+
+

@@ -45,17 +45,17 @@ ResourceSet::~ResourceSet() noexcept = default;
 // -- Getters
 // -----------------------------------------------------------------------------
 
-ResourceSet::size_type ResourceSet::mpi_rank() const {
-    assert_pimpl_();
-    return m_pimpl_->m_rank;
+ResourceSet::size_type ResourceSet::mpi_rank() const noexcept {
+    return has_pimpl_() ? m_pimpl_->m_rank : MPI_PROC_NULL;
 }
 
-bool ResourceSet::is_mine() const {
+bool ResourceSet::is_mine() const noexcept {
     if(!has_pimpl_()) return false;
+    if(mpi_rank() == MPI_PROC_NULL) return false;
     return m_pimpl_->m_my_mpi.me() == mpi_rank();
 }
 
-bool ResourceSet::has_ram() const noexcept { return has_pimpl_(); }
+bool ResourceSet::has_ram() const noexcept { return has_pimpl_() && !null(); }
 
 ResourceSet::const_ram_reference ResourceSet::ram() const {
     if(has_ram()) return m_pimpl_->m_ram;
@@ -92,28 +92,34 @@ void ResourceSet::set_debug_logger(logger_type&& l) {
 // -- Utility methods
 // -----------------------------------------------------------------------------
 
+bool ResourceSet::null() const noexcept { return mpi_rank() == MPI_PROC_NULL; }
+
 bool ResourceSet::empty() const noexcept {
-    return !static_cast<bool>(m_pimpl_);
+    // TODO: Need to check for loggers
+    return null() || !has_ram();
 }
 
 void ResourceSet::swap(ResourceSet& other) noexcept {
     m_pimpl_.swap(other.m_pimpl_);
 }
 
-bool ResourceSet::operator==(const ResourceSet& rhs) const {
-    // Check if one is empty and other isn't
-    if(empty() != rhs.empty()) return false;
+bool ResourceSet::operator==(const ResourceSet& rhs) const noexcept {
+    // Check if one is null and other isn't
+    if(null() != rhs.null()) return false;
 
-    // Both are empty, or both are non-empty, if empty return
-    if(empty()) return true;
+    // Both are null, or both are non-null, if null return
+    if(null()) return true;
 
-    // TODO: Implement once we can compare RuntimeView instances
-    throw std::runtime_error("NYI");
+    return *m_pimpl_ == *rhs.m_pimpl_;
 }
 
-bool ResourceSet::operator!=(const ResourceSet& rhs) const {
+bool ResourceSet::operator!=(const ResourceSet& rhs) const noexcept {
     return !(*this == rhs);
 }
+
+// -----------------------------------------------------------------------------
+// -- Protected/Private methods
+// -----------------------------------------------------------------------------
 
 bool ResourceSet::has_pimpl_() const noexcept {
     return static_cast<bool>(m_pimpl_);

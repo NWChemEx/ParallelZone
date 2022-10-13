@@ -54,7 +54,9 @@ Why Do We Need a Runtime?
 By its very nature, high-performance computing is focused on maximizing the
 performance of software. Inevitably, this requires knowledge of the runtime
 environment and the ability to effectively parallelize over the existing
-hardware.
+hardware. C++'s runtime system provides some CPU thread support, but does not
+provide support for other parallelism types (notably distributed and GPU)
+directly.
 
 **************************************
 What is the Scope of the ParallelZone?
@@ -88,8 +90,15 @@ Object-oriented C++17
 Our software stack is object-oriented and written in C++17. The runtime must
 thus support object-oriented C++17 if we are to call it.
 
-Message Passing Interface (MPI)
-===============================
+Parallelization
+===============
+
+The heart of ParallelZone is parallelization. We want ParallelZone to facilitate
+writing multi-process, multi-thread, and/or multi-GPU code. We are particularly
+interested in task-based parallelism models and SIMD APIs.
+
+Message Passing Interface (MPI) Support
+=======================================
 
 For better or for worse MPI is widely used for process parallelism. If our
 software is going to play well with others, the process parallelism aspect of
@@ -98,12 +107,13 @@ our runtime needs to be built on MPI.
 Hardware Introspection
 ======================
 
-Different machines have different numbers of cores, GPUs, etc. We need to be
-able to query this information. Furthermore, new hardware will emerge and become
-relevant. The hardware detection of the runtime will need to grow as the
-list of available hardware grows. Thus the runtime must not limit itself to
-a particular set of hardware. At this point in time we foresee our algorithms
-needing knowledge (both globally and process local) of:
+The most effective parallelization strategy for a given computer is going to
+depend on the runtime environment of that computer. Notably we need a way to
+query hardware information for scheduling. Furthermore, new hardware will
+emerge and become relevant. The hardware detection of the runtime will need to
+grow as the list of available hardware grows. Thus the runtime must not limit
+itself to a particular set of hardware. At this point in time we foresee our
+algorithms needing knowledge (both globally and process local) of:
 
 Central Processing Unit (CPU)
 -----------------------------
@@ -169,12 +179,138 @@ At the moment, C++ lacks reflection (the ability to introspect and modify a
 program). Many generic programming tasks (for example hashing and
 serialization) can be largely automated if reflection exists.
 
-Parallelization
-===============
+*****************
+Existing Runtimes
+*****************
 
-The heart of ParallelZone is parallelization. We want ParallelZone to facilitate
-writing multi-process, multi-thread, and/or multi-GPU code. We are particularly
-interested in task-based parallelism models and SIMD APIs.
+Depending on the definition of runtime there are a lot of possible choices
+out there. In this section, we limit ourselves to runtimes that support
+distributed parallelism. As a disclaimer, the information here is primarily
+gleaned from skimming documentation and code, it may not reflect the actual
+state of the codes. If there is an egregious error please open a PR with a fix.
+Runtimes are listed in alphabetical order.
+
+
+HPX
+===
+
+URL: `<https://github.com/STEllAR-GROUP/hpx>`_
+
+First implementation of the ParalleleX programming model, which is notably an
+alternative parallel programming model to message passing. In this analogy, HPX
+is to ParalleleX as OpenMPI, MVAPICH, etc. are to message passing. The actual
+runtime borrows heavily from C++ threading API, but extends it to distributed
+computing. Based on the provided examples, programs are written in a SIMD-like
+fashion relying on task-based parallelism.
+
+Pros:
+- Cross-platform
+- C++ and Boost Standards compliant
+- Active development
+
+Cons:
+- No GPU support?
+- No MPI support?
+- No hardware introspection
+
+Legion
+======
+
+URL: `<https://github.com/StanfordLegion/legion>`_
+
+Legion is another task-based runtime. One of the more unique features of Legion
+is the scheduler. From the examples, it seems that the scheduler is capable of
+optimizing how the tasks are run based on the available hardware.
+
+Pros:
+- Active development
+- MPI support
+- GPU support
+
+Cons:
+- API is very verbose, even for simple use cases
+- Documentation is written at an expert level and hard to follow
+
+MADNESS
+=======
+
+URL: `<https://github.com/m-a-d-n-e-s-s/madness>`_
+
+MADNESS is a somewhat monolithic project containing:
+
+- a parallel runtime system,
+- a mathematics suite focusing on using multi-resolution analysis to solve
+  integral and differential equations, and
+- quantum chemistry methods
+
+The parallel runtime system is SIMD-like and relies on object- and/or task-
+based parallel programming models. The runtime relies on futures for
+asynchronous operations and provides task schedulers.
+
+Pros:
+- Under TiledArray already
+- Includes schedulers
+- Support for GPUs
+- Support for MPI
+
+Cons:
+- Relatively poor documentation
+- Very heavy dependency
+- More-or-less a single developer
+- No hardware introspection
+
+PaRSEC
+======
+
+URL: `<https://github.com/ICLDisco/parsec>`_
+
+PaRSEC provides architecture aware scheduling and management of micro-tasks.
+PaRSEC accomplishes this by modeling the algorithm as a directed acyclic task
+graph where the nodes are tasks and edges represent data dependencies. PaRSEC
+assumes the user will write the high-performance serial tasks and the runtime
+concerns itself with scheduling these tasks, taking into account available
+hardware and its current loads.
+
+Pros:
+- Support for GPUs
+- Support for MPI
+
+Cons:
+- Relatively poor documentation
+
+UPC++
+=====
+
+URL: `<https://bitbucket.org/berkeleylab/upcxx/wiki/Home>`_
+
+UPC++ is a partitioned global address space programming model designed to be
+interoperable with MPI and most threading runtimes (including those for GPUs).
+UPC++ is designed for an SPMD model of execution. The API relies heavily on
+futures, puts, and gets (the put/get calls can be for data or functions).
+
+Pros:
+- Support for a number of parallel runtimes
+- Active development
+
+Cons:
+- Relatively low-level (i.e., still need to build infrastructure)
+- Documentation is somewhat dense and difficult to use
+- No hardware introspection
+
+*********************
+ParallelZone Strategy
+*********************
+
+Ultimately we couldn't find any runtime library out there which does everything
+we want. However, just about every piece of functionality we want can be found
+in an existing library. Writing a runtime system is a lengthy endeavor and we
+do not want to do it. Thus our strategy is to design the runtime system API we
+want and under the hood hook up as many libraries as we need to make that API
+work. Given that there are a number of competing parallel runtimes currently
+under heavy development, we anticipate that the innards of ParallelZone may be
+somewhat turbulent. However, since the APIs of ParallelZone are meant to be
+stable, ParallelZone represents a hedge meant to insulate downstream repos from
+this turbulence.
 
 *************************
 ParallelZone Architecture
@@ -220,36 +356,3 @@ Utilities
 
 This is basically a grab bag of functionality needed to support the other
 pieces. The primary piece is serialization.
-
-*****************
-Existing Runtimes
-*****************
-
-Depending on the definition of runtime there are a lot of possible choices
-out there. In this section, we limit ourselves to runtimes that support
-distributed parallelism.
-
-HPX
-===
-
-URL: `<https://github.com/STEllAR-GROUP/hpx>`_
-
-Features:
-- Cross-platform
-- C++ and Boost Standards compliant
-- Active devlopment
-- Looks like C++11 threads
-
-Cons:
-- No GPU support?
-- No MPI support?
-
-MADNESS
-=======
-
-URL: `<https://github.com/m-a-d-n-e-s-s/madness>`_
-
-Features:
-- Under TiledArray already
-
-

@@ -69,11 +69,10 @@ RuntimeView::RuntimeView(madness_world_reference world) :
   RuntimeView(0, nullptr, world.mpi.comm().Get_mpi_comm()) {}
 
 RuntimeView::RuntimeView(int argc, char** argv, mpi_comm_type comm) :
-  m_pimpl_(start_madness(argc, argv, comm)) {
-    auto my_rank = m_pimpl_->m_world.rank();
-    auto rs      = make_resource_set(my_rank, *this);
-    m_pimpl_->m_resource_sets.emplace(my_rank, std::move(rs));
-}
+  RuntimeView(start_madness(argc, argv, comm)) {}
+
+RuntimeView::RuntimeView(pimpl_pointer pimpl) noexcept :
+  m_pimpl_(std::move(pimpl)) {}
 
 RuntimeView::RuntimeView(const RuntimeView& other) noexcept = default;
 
@@ -108,39 +107,26 @@ bool RuntimeView::did_i_start_madness() const noexcept {
     return !null() ? m_pimpl_->m_did_i_start_madness : false;
 }
 
-RuntimeView::resource_set_reference RuntimeView::at(size_type i) {
-    bounds_check_(i);
-    if(!m_pimpl_->m_resource_sets.count(i))
-        m_pimpl_->m_resource_sets[i] = make_resource_set(i, *this);
-    return m_pimpl_->m_resource_sets.at(i);
-}
-
 RuntimeView::const_resource_set_reference RuntimeView::at(size_type i) const {
     bounds_check_(i);
-    if(!m_pimpl_->m_resource_sets.count(i))
-        m_pimpl_->m_resource_sets[i] = make_resource_set(i, *this);
-    return m_pimpl_->m_resource_sets.at(i);
+    return m_pimpl_->at(i);
 }
 
-bool RuntimeView::has_me() const {
+bool RuntimeView::has_me() const noexcept {
     if(null()) return false;
-    throw std::runtime_error("NYI");
+    return m_pimpl_->m_comm.me() != MPI_PROC_NULL;
 }
 
 RuntimeView::const_resource_set_reference RuntimeView::my_resource_set() const {
-    return pimpl_().m_resource_sets.at(m_pimpl_->m_my_rank);
+    return pimpl_().at(m_pimpl_->m_comm.me());
 }
 
 RuntimeView::size_type RuntimeView::count(const_ram_reference ram) const {
-    if(null()) return 0;
-    // TODO: implement me!
-    throw std::runtime_error("NYI");
-}
-
-RuntimeView::const_range RuntimeView::equal_range(
-  const_ram_reference ram) const {
-    if(null()) return const_range{0, 0};
-    throw std::runtime_error("NYI");
+    size_type count = 0;
+    for(size_type i = 0; i < size(); ++i) {
+        if(at(i).ram() == ram) ++count;
+    }
+    return count;
 }
 
 RuntimeView::logger_reference RuntimeView::progress_logger() {
@@ -166,14 +152,6 @@ void RuntimeView::set_debug_logger(logger_type&& l) {
 }
 
 // -----------------------------------------------------------------------------
-// -- MPI all-to-all methods
-// -----------------------------------------------------------------------------
-
-double RuntimeView::reduce(double input, double op) const {
-    throw std::runtime_error("NYI");
-}
-
-// -----------------------------------------------------------------------------
 // -- Utility methods
 // -----------------------------------------------------------------------------
 
@@ -182,7 +160,9 @@ void RuntimeView::swap(RuntimeView& other) noexcept {
 }
 
 bool RuntimeView::operator==(const RuntimeView& rhs) const {
-    throw std::runtime_error("NYI");
+    if(null() != rhs.null()) return false;
+    if(null()) return true;
+    return *m_pimpl_ == *rhs.m_pimpl_;
 }
 
 // -----------------------------------------------------------------------------

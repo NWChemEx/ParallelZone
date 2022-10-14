@@ -40,10 +40,6 @@ class RAMPIMPL;
  *  the RAM instance when memory is freed (and having the downstream classes
  *  use the allocators).
  *
- *  TODO: MPI operations need to be templated and use template meta-programming
- *        to deduce return types. For now we just set all types to double and
- *        return std::optional<double>. The present implementations all throw
- *        std::runtime_error("NYI").
  */
 class RAM {
 public:
@@ -56,9 +52,7 @@ public:
     /// Type of the pointer holding the PIMPL
     using pimpl_pointer = std::unique_ptr<pimpl_type>;
 
-    /// Since BinaryViews can be owning we use them for the actual binary type
-    using binary_type = std::byte;
-
+    ///
     using const_binary_reference = mpi_helpers::BinaryView;
 
     // -------------------------------------------------------------------------

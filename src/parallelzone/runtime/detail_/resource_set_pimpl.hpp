@@ -22,33 +22,64 @@
 
 namespace parallelzone::runtime::detail_ {
 
+/** @brief Implements the ResourceSet.
+ *
+ *  Design notes:
+ *  - Types are primarily pulled in from the ResourceSet class
+ */
 struct ResourceSetPIMPL {
     /// Type *this implements, typedef of ResourceSet
     using resource_set_type = ResourceSet;
 
-    /// Type of the RuntimeView we're part of
-    using runtime_view = RuntimeView;
-
-    /// How the RuntimeView accesses MPI
+    /// How the RuntimeView accesses MPI, typedef of CommPP
     using mpi_comm_type = mpi_helpers::CommPP;
 
+    /// Type used to model RAM, ultimately typedef of ResourceSet::ram_type
     using ram_type = resource_set_type::ram_type;
 
+    /// Type used for indexing, ultimately typedef of ResourceSet::size_type
     using size_type = resource_set_type::size_type;
 
+    /// Type of pointer ResourceSet used to store *this, ultimately typedef of
+    /// ResourceSet::pimpl_pointer
     using pimpl_pointer = resource_set_type::pimpl_pointer;
 
+    /// Type of the loggers. ultimately a typedef of ResourceSet::logger_type
     using logger_type = resource_set_type::logger_type;
 
+    /// Type of a read/write reference to a logger, ultimately a typedef of
+    /// ResourceSet::logger_reference
     using logger_reference = resource_set_type::logger_reference;
 
+    /// Type of a view to a logger instance
     using logger_pointer = std::shared_ptr<logger_type>;
 
+    /** @brief Initializes *this with the resources owned by process @p rank on
+     *          MPI communicator @p my_mpi.
+     *
+     *  @param[in] rank The current process's rank on @p my_mpi
+     *  @param[in] my_mpi The MPI communicator to use for communication.
+     *
+     */
     ResourceSetPIMPL(size_type rank, mpi_comm_type my_mpi);
 
+    /** @brief Makes a deep copy of *this.
+     *
+     * This method behaves identical to the copy ctor except that resulting
+     * copy is on the heap and already wrapped up in a manner that facilitates
+     * using it to power a new ResourceSet instance.
+     *
+     * @todo Should the Loggers be deep copied?
+     *
+     * @return A deep copy of *this allocated on the heap.
+     */
     pimpl_pointer clone() const {
         return std::make_unique<ResourceSetPIMPL>(*this);
     }
+
+    // -------------------------------------------------------------------------
+    // -- Getters
+    // -------------------------------------------------------------------------
 
     logger_reference progress_logger() {
         if(!m_progress_logger_pointer)
@@ -60,6 +91,29 @@ struct ResourceSetPIMPL {
         if(!m_debug_logger_pointer) throw std::runtime_error("No Debug Logger");
         return *m_debug_logger_pointer;
     }
+
+    // -------------------------------------------------------------------------
+    // -- Utility
+    // -------------------------------------------------------------------------
+
+    /** @brief Compares *this to another ResourceSetPIMPL instance
+     *
+     *  Two ResourceSetPIMPL instances if they are:
+     *  - associated with the same MPI communicator,
+     *  - owned by the same MPI rank of that communicator, and
+     *  - have the same hardware resources.
+     *
+     *  N.B. In practice this method will implement both ResourceSet::operator==
+     *  and ResourceSet::operator!=, since the latter is implemented by negating
+     *  the former.
+     *
+     *  @param[in] rhs The instance we are comparing to.
+     *
+     *  @return True if *this is value equal to @p rhs and false otherwise.
+     *
+     *  @throw None no throw guarantee
+     */
+    bool operator==(const ResourceSetPIMPL& rhs) const noexcept;
 
     /// The rank of this process
     size_type m_rank;
@@ -77,17 +131,58 @@ struct ResourceSetPIMPL {
     logger_pointer m_debug_logger_pointer;
 };
 
+/** @brief Determines the size of the RAM local to the current process
+ *
+ *  This function wraps the process of figuring out how much RAM the current
+ *  process has local access to.
+ *
+ *  @return The amount of RAM, hard-coded to 10
+ *  @todo Implement me
+ */
+inline auto get_ram_size() {
+    // TODO: Implement this for real
+    return ResourceSetPIMPL::size_type(10);
+}
+
+/** @brief Convenience function for creating a ResourceSet with the PIMPL's ctor
+ *
+ *  This function wraps the process of allocating a ResourceSetPIMPL and then
+ *  moving it into a new ResourceSet. This method is used internally when we
+ *  want to prepare a ResourceSet with a specified state. This function is not
+ *  exposed because the user shouldn't ever have to make a ResourceSet.
+ *
+ *  @param[in] rank The MPI rank of the process which owns this resource set.
+ *  @param[in] my_mpi The MPI communicator used to move data to/from the
+ *                    resource set.
+ *
+ *  @return The ResourceSet for the requested process.
+ *
+ *  @throw std::bad_alloc if there's a problem allocating the ResourceSetPIMPL
+ *                        strong throw guarantee.
+ */
+inline auto make_resource_set(ResourceSetPIMPL::size_type rank,
+                              ResourceSetPIMPL::mpi_comm_type my_mpi) {
+    auto p = std::make_unique<ResourceSetPIMPL>(rank, my_mpi);
+    return ResourceSet(std::move(p));
+}
+
+// -----------------------------------------------------------------------------
+// -- Inline Implementations
+// -----------------------------------------------------------------------------
+
 inline ResourceSetPIMPL::ResourceSetPIMPL(size_type rank,
                                           mpi_comm_type my_mpi) :
-  m_rank(rank), m_my_mpi(my_mpi) {
-    using ram_pimpl = hardware::detail_::RAMPIMPL;
+  m_rank(rank),
+  m_ram(hardware::detail_::make_ram(get_ram_size(), rank, my_mpi)),
+  m_my_mpi(my_mpi) {}
 
-    // TODO: Find this out somehow
-    size_type max_ram_size = 10;
-    mpi_helpers::CommPP comm(my_mpi);
-    auto pram =
-      std::make_unique<ram_pimpl>(max_ram_size, rank, std::move(comm));
-    ram_type(std::move(pram)).swap(m_ram);
+inline bool ResourceSetPIMPL::operator==(
+  const ResourceSetPIMPL& rhs) const noexcept {
+    // TODO: Compare loggers
+    auto my_state  = std::tie(m_rank, m_ram, m_my_mpi);
+    auto rhs_state = std::tie(rhs.m_rank, rhs.m_ram, rhs.m_my_mpi);
+
+    return my_state == rhs_state;
 }
 
 } // namespace parallelzone::runtime::detail_

@@ -51,6 +51,23 @@ struct RAMPIMPL {
     comm_type m_mpi_comm;
 };
 
+/** @brief Wraps the process of making a RAM instance by calling RAMPIMPL's
+ *         ctor.
+ *
+ *  @relates RAM
+ *
+ *  @brief size How much memory does the instance actually have?
+ *  @brief rank Which MPI rank owns the RAM (rank one @p mpi_comm)
+ *  @brief mpi_comm The MPI communicator to use for communicating.
+ *
+ *  @return A RAM instance initialized from the provided state.
+ */
+inline auto make_ram(RAMPIMPL::size_type size, RAMPIMPL::size_type rank,
+                     RAMPIMPL::comm_type comm) {
+    auto pram = std::make_unique<RAMPIMPL>(size, rank, std::move(comm));
+    return RAM(std::move(pram));
+}
+
 inline RAMPIMPL::RAMPIMPL(size_type size, size_type rank, comm_type comm) :
   m_size(size), m_rank(rank), m_mpi_comm(comm) {}
 

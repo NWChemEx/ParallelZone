@@ -34,13 +34,23 @@ class ResourceSetPIMPL;
  *  is a runtime abstraction for interacting with one of these sets of
  *  resources.
  *
+ *  In MPI terms, a ResourceSet maps to an MPI rank. In conventional MPI
+ *  workflows, one gets the rank of the local process, determines what resources
+ *  the local process has, and then interacts with the resources. This class
+ *  aims to cut out the middle man, by providing direct access to the locally
+ *  accessible resources.
  *
- *  In MPI terms, a ResourceSet maps to an MPI rank.
- *  There may be some resources that every Worker can see (think a
- *  parallel filesystem), but in general each Worker can only see a subset of
- *  the resources in the ResourceSet (the ResourceSet class internally knows
- *  this mapping).
+ *  ResourceSet instances can be null. Null instances are affiliated with
+ *  MPI_COMM_NULL, have an MPI rank of MPI_PROC_NULL, and contain zero
+ *  resources. Null instances are typically used as placeholders and have
+ *  little to no utility in an actual parallel computation.
  *
+ *  ResourceSet instances can be empty meaning that it has no resources. All
+ *  null ResourceSet instances are empty; however, an empty resource set may
+ *  be affiliated with a non-null MPI communicator and thus have a non-null
+ *  rank. At the moment it is not possible to generate a ResourceSet which is
+ *  non-null and empty, but when logical partitioning is implemented this will
+ *  change.
  */
 class ResourceSet {
 public:
@@ -65,12 +75,12 @@ public:
     /// Type of a read/write reference to a logger_type object
     using logger_reference = logger_type&;
 
-    /** @brief Creates an empty ResourceSet
+    /** @brief Creates a null ResourceSet.
      *
-     *  The ResourceSet created by this ctor has no workers and
-     *  no resources.The resulting ResourceSet is more or less a place holder.
-     *  Assigning to the default constructed instance is presently the only
-     *  way to make it non-empty.
+     *  The ResourceSet created by this ctor has no resources and is affiliated
+     *  with the null MPI communicator.The resulting ResourceSet is more or
+     *  less a placeholder. Assigning to a null ResourceSet is presently the
+     *  only way to make it non-null.
      *
      *  @throw None No throw guarantee.
      */
@@ -80,9 +90,8 @@ public:
      *
      *  Initializing ResourceSets is an implementation detail of ParallelZone.
      *  The actual initialization is done in the source files where the
-     *  declaration of the PIMPL is visible. The initialization thus works by
-     *  creating a PIMPL and then building a ResourceSet around it. This is
-     *  the ctor used to build said ResourceSet.
+     *  declaration of the PIMPL is visible. The initialization works by
+     *  initializing a PIMPL and then using this ctor to build the ResourceSet.
      *
      *  @param[in] pimpl The state for the newly created ResourceSet.
      *
@@ -91,6 +100,12 @@ public:
     ResourceSet(pimpl_pointer pimpl) noexcept;
 
     /** @brief Makes a new ResourceSet which is a deep copy of @p other
+     *
+     *  ResourceSets are views of the physical resources. When you deep copy
+     *  a ResourceSet you are deep copying the views of those resources. In
+     *  other words, if you deep copy *this you're not going to double the
+     *  physical memory of your computer, you will however have two interfaces
+     *  to that memory which can be used independently of one another.
      *
      *  @param[in] other The ResourceSet we are copying.
      *
@@ -150,22 +165,21 @@ public:
     // -- Getters
     // -------------------------------------------------------------------------
 
-    // TODO: Make noexcept?
-    /** @brief The MPI rank of the current process
+    /** @brief The MPI rank of the process who owns *this
      *
-     *  ResourceSets are usually shared by multiple workers. This method is used
-     *  to determine how many workers have access to this resource set.
+     *  ResourceSets contain the resources available to a process. In MPI
+     *  processes are identified by their ranks. This method will return the
+     *  MPI rank of the process which owns *this. The rank ordering is
+     *  determined by the MPI communicator in the RuntimeView which owns *this.
      *
-     *  In MPI terms this corresponds to the number of processes that can see
-     *  this ResourceSet.
+     *  If this is a null resource set, the resulting rank is MPI_PROC_NULL.
      *
-     *  @return The number of Workers in this ResourceSet
+     *  @return The rank of the process who owns *this.
      *
      *  @throw None No throw guarantee.
      */
-    size_type mpi_rank() const;
+    size_type mpi_rank() const noexcept;
 
-    // TODO: Make noexcept
     /** @brief Determines if the resource set is owned by the current process
      *
      *  Each ResourceSet is associated with a processes. This method can
@@ -175,7 +189,7 @@ public:
      *
      *  @throw None No throw guarantee.
      */
-    bool is_mine() const;
+    bool is_mine() const noexcept;
 
     /** @brief Does this ResourceSet have RAM?
      *
@@ -187,7 +201,7 @@ public:
      *
      *  @return True if this ResourceSet has RAM and false otherwise.
      *
-     *  @throw None No throw gurantee.
+     *  @throw None No throw guarantee.
      */
     bool has_ram() const noexcept;
 
@@ -196,7 +210,7 @@ public:
      *  From the perspective of the user of this class all of the RAM accessible
      *  to it is local, so there's only one RAM object. If under the hood this
      *  is not the case (e.g., we're treating RAM spread across nodes as a
-     *  single entitiy) it's up to the RAM class to make that work with the
+     *  single entity) it's up to the RAM class to make that work with the
      *  specified API.
      *
      *  @return A read-only reference to the RAM.
@@ -205,54 +219,6 @@ public:
      *                           throw guarantee.
      */
     const_ram_reference ram() const;
-
-    // -------------------------------------------------------------------------
-    // -- Utility methods
-    // -------------------------------------------------------------------------
-
-    /** @brief True if *this contains no resources
-     *
-     *  @return True if this ResourceSet is empty (has no resources) and false
-     *          otherwise.
-     *
-     *  @throw None No throw guarantee.
-     */
-    bool empty() const noexcept;
-
-    /** @brief Exchanges the state of two ResourceSet objects
-     *
-     *  This method will put the state of *this in @p other and take the state
-     *  of @p other and put it in *this.
-     *
-     *  @param[in,out] other The ResourceSet we are swapping state with. After
-     *                       this call @p other will contain the state which
-     *                       was previously in *this.
-     *
-     *  @throw None No throw guarantee.
-     */
-    void swap(ResourceSet& other) noexcept;
-
-    // TODO: Make noexcept
-    /** @brief Determines if *this is value equal to @p rhs.
-     *
-     *  Two ResourceSets are value equal if they contain the same resources
-     *  and belong to the same process.
-     *
-     *  @return True if *this is value equal to @p rhs, and false otherwise.
-     *
-     *  @throw None No throw guarantee.
-     */
-    bool operator==(const ResourceSet& rhs) const;
-
-    // TODO: Make noexcept
-    /** @brief Determines if *this is different from @p rhs
-     *
-     *  This function simply negates a value equality comparison. See the
-     *  documentation for operator== for the definition of value equality.
-     *
-     *  @return False if *this is value equal to @p rhs, and true otherwise.
-     */
-    bool operator!=(const ResourceSet& rhs) const;
 
     /**
      * @brief Get progress logger for this ResourceSet
@@ -275,6 +241,69 @@ public:
      *          this resource set.
      */
     logger_reference debug_logger();
+
+    // -------------------------------------------------------------------------
+    // -- Utility methods
+    // -------------------------------------------------------------------------
+
+    /** @brief True if *this is a null ResourceSet
+     *
+     *  A null ResourceSet is affiliated with a null MPI communicator and has
+     *  no resources.
+     *
+     *  @return True if this ResourceSet is null and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool null() const noexcept;
+
+    /** @brief True if *this contains no resources
+     *
+     *  An empty ResourceSet has no resources and may or may not be affiliated
+     *  with an MPI communicator. All null ResourceSet instances are empty,
+     *  but not all empty ResourceSets are null.
+     *
+     *  @return True if this ResourceSet is empty (has no resources) and false
+     *          otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool empty() const noexcept;
+
+    /** @brief Exchanges the state of two ResourceSet objects
+     *
+     *  This method will put the state of *this in @p other and take the state
+     *  of @p other and put it in *this.
+     *
+     *  @param[in,out] other The ResourceSet we are swapping state with. After
+     *                       this call @p other will contain the state which
+     *                       was previously in *this.
+     *
+     *  @throw None No throw guarantee.
+     */
+    void swap(ResourceSet& other) noexcept;
+
+    /** @brief Determines if *this is value equal to @p rhs.
+     *
+     *  Two ResourceSets are value equal if they contain the same resources
+     *  and belong to the same process.
+     *
+     *  @return True if *this is value equal to @p rhs, and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool operator==(const ResourceSet& rhs) const noexcept;
+
+    /** @brief Determines if *this is different from @p rhs
+     *
+     *  This function simply negates a value equality comparison. See the
+     *  documentation for operator== for the definition of value equality.
+     *
+     *  @return False if *this is value equal to @p rhs, and true otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool operator!=(const ResourceSet& rhs) const noexcept;
 
     /**
      * @brief Set progress logger for this ResourceSet

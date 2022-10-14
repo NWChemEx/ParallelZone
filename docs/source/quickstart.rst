@@ -12,21 +12,11 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-####################
-Design Documentation
-####################
+##########
+Quickstart
+##########
 
-Topics in this section document the design considerations which went into
-developing ParallelZone.
+The point of this page is to give you a very quick introduction to using
+ParallelZone. Obviously, we won't cover everything.
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   parallel_zone
-   parallel_runtime
-   mpi
-   mpi_and_custom_types
-   hashing
-   serialization
-   reflection
+TODO: Write me!!!

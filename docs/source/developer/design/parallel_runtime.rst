@@ -12,21 +12,10 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-####################
-Design Documentation
-####################
+.. _parallel_runtime_design:
 
-Topics in this section document the design considerations which went into
-developing ParallelZone.
+#########################################
+Designing ParallelZone's Parallel Runtime
+#########################################
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   parallel_zone
-   parallel_runtime
-   mpi
-   mpi_and_custom_types
-   hashing
-   serialization
-   reflection
+ParallelZone (PZ), is envisioned as

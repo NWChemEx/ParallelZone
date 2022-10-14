@@ -22,15 +22,11 @@ set(
 )
 
 include(get_cpp)
+include(nwx_cxx_api_docs)
+
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_DOCS "Should we build the documentation?" OFF)
-option(
-    ONLY_BUILD_DOCS
-    "If enabled and BUILD_DOCS is true no libraries will be built" OFF
-)
-
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
 option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF )
@@ -45,14 +41,7 @@ endif()
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
-if("${BUILD_DOCS}")
-    find_package(Doxygen REQUIRED)
-    set(DOXYGEN_EXTRA_PACKAGES amsmath) # Extra LaTeX packages for documentation
-    doxygen_add_docs(parallelzone_cxx_api "${project_inc_dir}")
-    if("${ONLY_BUILD_DOCS}")
-        return()
-    endif()
-endif()
+nwx_cxx_api_docs(parallelzone_cxx_api "${project_inc_dir}")
 
 #TODO: Make sure MADworld uses the Cereal we build
 cpp_find_or_build_dependency(

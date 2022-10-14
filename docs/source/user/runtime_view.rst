@@ -12,21 +12,9 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-####################
-Design Documentation
-####################
+#####################
+The RuntimeView Class
+#####################
 
-Topics in this section document the design considerations which went into
-developing ParallelZone.
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-   parallel_zone
-   parallel_runtime
-   mpi
-   mpi_and_custom_types
-   hashing
-   serialization
-   reflection
+The ``RuntimeView`` is the top-level class of ParallelZone and is the first
+ParallelZone object most users will interact with.

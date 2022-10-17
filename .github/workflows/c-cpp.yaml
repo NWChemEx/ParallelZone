@@ -13,6 +13,6 @@ jobs:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@clang-test
     with: 
       dependencies: 'clang'
-      clang_version: 11
+      clang_version: 9
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}

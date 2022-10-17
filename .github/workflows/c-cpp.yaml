@@ -12,7 +12,7 @@ jobs:
   build:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@clang-test
     with: 
-      dependencies: 'gcc gcovr cmake openmpi clang'
+      dependencies: 'clang'
       clang_version: 11
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}

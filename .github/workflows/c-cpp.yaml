@@ -3,11 +3,15 @@ on:
   pull_request:
     branches:
       - master
+  push:
+    branches:
+      - clang-test
 
 jobs:
   build:
-    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
+    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@clang-test
     with: 
-      dependencies: 'gcc gcovr cmake openmpi'
+      dependencies: 'gcc gcovr cmake openmpi clang'
+      clang_version: 11
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}

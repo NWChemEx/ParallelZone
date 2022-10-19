@@ -45,11 +45,11 @@ Planned features:
    :caption: Contents:
 
    install
-   about
    quickstart
+   about
+   abbreviations
    user/index
    developer/index
-   abbreviations
 
 `C++ API <parallelzone_cxx_api/index.html>`_
 

@@ -13,7 +13,8 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.14)
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
+#TODO: Get from git
+set(VERSION 1.0)
 project(parallelzone VERSION "${VERSION}" LANGUAGES CXX)
 
 set(
@@ -96,6 +97,7 @@ include(nwx_python_mods)
 cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone )
 
 if("${BUILD_TESTING}")
+    set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
     cpp_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
@@ -105,7 +107,13 @@ if("${BUILD_TESTING}")
     )
     cpp_add_tests(
         test_parallelzone
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
+        SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
+        INCLUDE_DIR "${project_src_dir}"
+        DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
+    )
+    cpp_add_tests(
+        test_parallelzone_docs
+        SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
         INCLUDE_DIR "${project_src_dir}"
         DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
     )
@@ -114,5 +122,10 @@ if("${BUILD_TESTING}")
         NAME "test_pz_under_mpi"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
                "${CMAKE_BINARY_DIR}/test_parallelzone"
+    )
+    add_test(
+        NAME "test_pz_docs_under_mpi"
+        COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
+                "${CMAKE_BINARY_DIR}/test_parallelzone_docs"
     )
 endif()

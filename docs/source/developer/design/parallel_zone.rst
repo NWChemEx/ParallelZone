@@ -36,38 +36,41 @@ What's a Runtime?
 Strictly speaking there are several different, but related, concepts which get
 labeled "runtime". First, there is the runtime execution phase of a program,
 i.e., when the program is literally running (as opposed to say compile time,
-install time, etc.). Second, there is the runtime system which is what the
-coding language is built on (e.g., in C-based Python it's C, in C it's
-assembly magic). Lastly, there is the runtime environment which includes things
-managed by the operating system like environment variables, and hardware
-devices.
+install time, etc.). Second, there is the runtime system which comprises the
+APIs that your software will use to interact with the operating system and
+hardware during the runtime phase. In many programming scenarios these APIs are
+several layers removed from the actual OS and hardware, *i.e.*, you're rarely
+directly using device intrinsics or calling OS-specific functions. Lastly, there
+is the runtime environment which is the state of the computer during the runtime
+phase. This includes things like environment variables and hardware devices.
 
-When we say ParallelZone is a runtime, we really mean that it is a runtime
-system. Since ParallelZone also provides interfaces for querying the runtime
-environment we drop the distinction between runtime system and runtime
-environment and just call ParallelZone a "runtime".
+For simplicity we will continue to refer to ParallelZone as a runtime, but we
+really mean that it is a runtime system.
 
-*************************
-Why Do We Need a Runtime?
-*************************
+**********************************
+Why Do We Need a Runtime (System)?
+**********************************
 
-By its very nature, high-performance computing is focused on maximizing the
-performance of software. Inevitably, this requires knowledge of the runtime
-environment and the ability to effectively parallelize over the existing
-hardware. C++'s runtime system provides some CPU thread support, but does not
-provide support for other parallelism types (notably distributed and GPU)
-directly.
+By its very nature, high-performance computing (HPC) is focused on maximizing the
+performance of software. Inevitably, this requires a tighter coupling between
+the software and the specifics of the runtime environment. The runtime system
+provided by the C++ standard library notably lacks:
+
+- support for parallelism (C++11 started to correct this, but as of this
+  writing even the most modern C++ standards do not cover GPUs or distributed
+  parallelism),
+- hardware introspection,
+- serialization
+
+Hence we will need a runtime system to provide minimally these features.
 
 **************************************
 What is the Scope of the ParallelZone?
 **************************************
 
 ParallelZone will ultimately be a C++ library used by most pieces of our
-software stack. While we could roll all of our stack's dependencies into
-ParallelZone, our preference is to delimit between dependencies needed by
-most of the stack vs. just a couple pieces. We also want ParallelZone to be
-potentially useful to developers/projects outside the NWChemEx-Project
-organization and in turn we want to limit bloat.
+software stack. We also want ParallelZone to be useful to developers/projects
+outside the NWChemEx-Project organization, and in turn we want to limit bloat.
 
 To that end we limit ParallelZone to low-level, very general C++ operations
 focused on parallelism and supporting that parallelism. Notably this excludes
@@ -93,27 +96,45 @@ thus support object-oriented C++17 if we are to call it.
 Parallelization
 ===============
 
-The heart of ParallelZone is parallelization. We want ParallelZone to facilitate
-writing multi-process, multi-thread, and/or multi-GPU code. We are particularly
-interested in task-based parallelism models and SIMD APIs.
+The heart of ParallelZone is parallelization. This includes, but shouldn't be
+limited to:
+
+- multi-process parallelism,
+- CPU-threaded parallelism, and
+- GPU-thread parallelism
+
+There are a number of parallelism models. While it would be great if
+ParallelZone could support all models, we are particularly interested in
+task-based parallelism because it tends to be:
+
+- SIMD-like (which maps to existing hardware better),
+- more widely supported, and
+- easier to parallelize.
 
 Message Passing Interface (MPI) Support
 =======================================
 
 For better or for worse MPI is widely used for process parallelism. If our
-software is going to play well with others, the process parallelism aspect of
-our runtime needs to be built on MPI.
+software is going to play well with other high-performance software, the
+process parallelism aspect ofour runtime needs to support MPI.
+
+Scheduling
+==========
+
+We'd like our runtime to be capable of scheduling tasks for us. This includes
+spawning the tasks and load balancing them. While easy to express, scheduling
+is arguably the hardest part of writing parallel code. Generic solutions
+greatly simplify implementing performant software downstream.
 
 Hardware Introspection
 ======================
 
-The most effective parallelization strategy for a given computer is going to
-depend on the runtime environment of that computer. Notably we need a way to
-query hardware information for scheduling. Furthermore, new hardware will
-emerge and become relevant. The hardware detection of the runtime will need to
-grow as the list of available hardware grows. Thus the runtime must not limit
-itself to a particular set of hardware. At this point in time we foresee our
-algorithms needing knowledge (both globally and process local) of:
+Generic scheduling solutions will need a performance model for the task and
+knowledge of the runtime environment. Notably the scheduler needs to know what
+resources are available and their specs. Heterogeneous systems seem to be here
+to stay, so the runtime should be able to adapt as new hardware types are added.
+At this point in time we foresee our algorithms needing knowledge of (both the
+entire program and to the current process):
 
 Central Processing Unit (CPU)
 -----------------------------
@@ -189,7 +210,6 @@ distributed parallelism. As a disclaimer, the information here is primarily
 gleaned from skimming documentation and code, it may not reflect the actual
 state of the codes. If there is an egregious error please open a PR with a fix.
 Runtimes are listed in alphabetical order.
-
 
 HPX
 ===

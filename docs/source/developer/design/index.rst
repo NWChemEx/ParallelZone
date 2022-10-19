@@ -24,6 +24,7 @@ developing ParallelZone.
    :caption: Contents:
 
    parallel_zone
+   architecture
    parallel_runtime
    mpi
    mpi_and_custom_types

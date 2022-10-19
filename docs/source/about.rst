@@ -24,7 +24,7 @@ model with the :ref:`MPI` model.
 The MPI Worldview
 *****************
 
-:ref:`mpi_runtime` illustrates a simplified version of the MPI worldview. The
+:numref:`mpi_runtime` illustrates a simplified version of the MPI worldview. The
 MPI worldview is process-centric. In the MPI worldview, ``MPI_COMM_WORLD`` is
 the name given to the set of all processes. Within our example
 ``MPI_COMM_WORLD`` has three processes. MPI assigns these processes an
@@ -44,7 +44,7 @@ functions).
 .. figure:: assets/mpi.png
    :align: center
 
-   MPI runtime
+   Illustration of MPI's runtime abstraction model.
 
 Unfortunately on today's machines it takes more than distributing tasks or
 data to otherwise opaque processes to achieve high-performance. This is because
@@ -56,9 +56,9 @@ designed for.
 .. figure:: assets/hardware2mpi.png
    :align: center
 
-   MPI on a modern computer
+   Illustration of how MPI's runtime can be mapped to hardware.
 
-Consider the scenarios depicted in :ref:`hardware2mpi`. Since MPI ranks are
+Consider the scenarios depicted in :numref:`hardware2mpi`. Since MPI ranks are
 logical entities and not physical there is many ways we can map the physical
 hardware to MPI ranks. For example, we could make the entire computer one
 big MPI rank, or we could make each node an MPI rank, or we could put each

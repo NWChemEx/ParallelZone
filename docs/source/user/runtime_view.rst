@@ -16,5 +16,6 @@
 The RuntimeView Class
 #####################
 
-The ``RuntimeView`` is the top-level class of ParallelZone and is the first
-ParallelZone object most users will interact with.
+Programs operate within a runtime environment. In ParallelZone the
+responsibility for modeling the runtime environment falls to the
+``RuntimeView`` class.

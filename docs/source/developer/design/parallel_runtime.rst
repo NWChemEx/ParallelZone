@@ -18,4 +18,6 @@
 Designing ParallelZone's Parallel Runtime
 #########################################
 
-ParallelZone (PZ), is envisioned as
+:ref:`parallel_zone_design` described the overall design points which went into
+the architecture of ParallelZone. Here we focus on the architecture of the
+parallel runtime component.

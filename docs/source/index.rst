@@ -45,9 +45,9 @@ Planned features:
    :caption: Contents:
 
    install
+   abbreviations
    quickstart
    about
-   abbreviations
    user/index
    developer/index
 

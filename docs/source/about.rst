@@ -17,27 +17,21 @@ The ParallelZone Worldview
 ##########################
 
 To use ParallelZone it is helpful to understand the abstraction model at a high
-level. In our opinion this is most easily done by contrasting the ParallelZone
-model with the :ref:`MPI` model.
+level. ParallelZone expands on the :ref:`MPI` model. So we start with a brief
+review of MPI.
 
-*****************
-The MPI Worldview
-*****************
+**********
+MPI Primer
+**********
 
-:numref:`mpi_runtime` illustrates a simplified version of the MPI worldview. The
-MPI worldview is process-centric. In the MPI worldview, ``MPI_COMM_WORLD`` is
-the name given to the set of all processes. Within our example
-``MPI_COMM_WORLD`` has three processes. MPI assigns these processes an
+:numref:`mpi_runtime` illustrates a simplified version of how MPI sees a
+program. The view is process-centric. When the program starts, MPI defines a
+set ``MPI_COMM_WORLD`` which includes all of program's processes. Within our
+example ``MPI_COMM_WORLD`` has three processes. MPI assigns these processes an
 integer value (ranging from 0 to "the number of processes minus 1") called the
-process's rank. It's then up to the developer to use the ranks to split the work
-up. For example the developer could opt to have:
-
-- rank 0 run ``foo`, rank 1 run ``bar``, and rank 2 run ``baz``, or
-- rank 0 run ``foo`` on the first batch of data, rank 1 run ``foo`` on the
-  second batch, and rank 2 runs ``foo`` on the third batch.
-
-(``foo``, ``bar``, and ``baz`` being the names of some largely arbitrary opaque
-functions).
+process's rank. More complicated MPI setups can have further partition
+``MPI_COMM_WORLD`` into subsets, but the overall point remains: MPI's view of
+a program is a series of processes somehow grouped together.
 
 .. _mpi_runtime:
 
@@ -46,43 +40,79 @@ functions).
 
    Illustration of MPI's runtime abstraction model.
 
-Unfortunately on today's machines it takes more than distributing tasks or
-data to otherwise opaque processes to achieve high-performance. This is because
-today's machines are substantially more heterogeneous than the machines MPI was
-designed for.
+In a typical MPI-based program parallelism is expressed by somehow mapping tasks
+and data to ranks. For example say we have three arbitrary functions ``foo``,
+``bar``, and ``baz` and a chunk of data we want to run ``foo``, ``bar``, and
+``baz`` on. :numref:`mpi_mappings` shows the three ways we can do this in
+parallel.
 
-.. _hardware2mpi:
+.. _mpi_mappings:
 
-.. figure:: assets/hardware2mpi.png
+.. figure:: assets/mpi_mappings.png
    :align: center
 
-   Illustration of how MPI's runtime can be mapped to hardware.
+   Possible ways of mapping data and tasks to MPI ranks.
 
-Consider the scenarios depicted in :numref:`hardware2mpi`. Since MPI ranks are
-logical entities and not physical there is many ways we can map the physical
-hardware to MPI ranks. For example, we could make the entire computer one
-big MPI rank, or we could make each node an MPI rank, or we could put each
-CPU and GPU in its own MPI rank, or we could... The point is that if we just
-throw tasks/data at MPI ranks we're going to get very different performance
-depending on what the hardware underlying those ranks is.
+In the :ref:`simd` approach depicted at the top of :numref:`mpi_mappings` we
+distribute the data over the MPI ranks and have each rank pass its local chunk
+of data to the three functions. In :ref:`misd`, which is shown in the middle of
+:numref:`mpi_mappings` we instead distribute the functions over the ranks.
+Finally, in the :ref:`mimd` model shown at the bottom of :numref:`mpi_mappings`
+we distribute both the data and the functions.
 
-********************
-Back to ParallelZone
-********************
+Unfortunately on today's machines it takes more than distributing tasks and/or
+data to otherwise opaque ranks to achieve high-performance. This is because
+the performance also depends on the hardware available to each rank and how
+well utilized that hardware is.
 
-When a multi-process program starts running there is some total set of
-resources (here a "resource" is a somewhat catchall term that includes CPU,
-GPU, memory, etc.) available to that program. However, typically each process
-only has direct access to a subset of those resources. ParallelZone defines
-the set of resources local to a process as a "resource set". Users of
-ParallelZone write their code in terms of the resources in the process's
-resource set and not in terms of arbitrary ranks.
+*********************
+Focusing on Resources
+*********************
 
-As a somewhat technical aside, the assignment of resources to resource sets
-uses the same mechanism as assigning resources to the initial MPI ranks
-(typically a job scheduler). Thus resource sets are to some extent a
-re-branding of MPI ranks. The main difference between ParallelZone and MPI is
-that MPI requires the user to manually map MPI ranks back to resources. Resource
-sets in ParallelZone encapsulate the rank-to-resource mapping so that users can
-jump straight from resource sets to resources. Admittedly, this difference seems
-minor, but as will be seen this leads to dramatically simpler code.
+In ParallelZone we go beyond MPI by mapping tasks/data to hardware, bypassing
+the rank concept to the extent possible. More specifically, in ParallelZone we
+start by assuming that when a multi-process program starts running there is
+some total set of resources (here a "resource" is a somewhat catchall
+term that includes CPU, GPU, memory, etc.) available to that program. This
+total set of resources may or may not be all of the resources on the computer
+and it also may or may not be the case that ParallelZone can access all of the
+program's resources. Regardless, the set of resources ParallelZone can access
+forms the ``RuntimeView``.
+
+.. _nesting_runtime_views:
+
+.. figure:: assets/nesting_runtime_views.png
+   :align: center
+
+   Here the blue oval depicts the total resources the program is allowed to use
+   and the green oval shows the resources the program lets ParallelZone use. In
+   the top scenario ParallelZone manages all of the program's resources, whereas
+   in the bottom scenario it manages only some of the program's resources.
+
+To better illustrate the relationship between the program's total resources
+and the ``RuntimeView``, :numref:`nesting_runtime_views` shows two possible
+ways a ``RuntimeView`` may initialized. The top scenario shown in
+:numref:`nesting_runtime_views` occurs when the entire program uses
+ParallelZone as its parallel runtime. In this scenario a job is spun up with
+some set of resources and ParallelZone is allowed to manage all of them
+(*N.B.*, while both scenarios in :numref:`nesting_runtime_views`
+show ParallelZone only managing one node ParallelZone can manage multiple
+nodes). Another common scenario occurs when a program relying on ParallelZone is
+being driven by another program. In this scenario, the program has access to
+more resources than it shares with ParallelZone.
+
+Programs built on ParallelZone treat ``RuntimeView`` as the full set of
+resources regardless of whether it is or isn't.
+
+*****************
+Resource Affinity
+*****************
+
+Simply knowing the total amounts of resources available isn't quite enough. We
+also need to know which resources the current process has an affinity for. In
+ParallelZone we keep this simple by partitioning each process's resources into
+two sets: those it has an affinity for and those it doesn't. The set of
+resources a process has an affinity for is termed that process's
+``ResourceSet``. The ``ResourceSet`` of a process is populated with the
+resources in the ``RuntimeView`` which are located physically on the node where
+the process is running.

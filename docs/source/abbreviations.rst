@@ -48,6 +48,24 @@ GPU
 
 Graphical processing unit.
 
+.. _mimd:
+
+****
+MIMD
+****
+
+Multiple instructions, multiple data. A parallelism model in which each worker
+executes different instructions on different data.
+
+.. _misd:
+
+****
+MISD
+****
+
+Multiple instructions, single data. A parallelism model in which each worker
+executes different instructions on the same data.
+
 .. _mpi:
 
 ***
@@ -66,3 +84,12 @@ SIMD
 Single instruction, multiple data. Refers to a parallelism model in which each
 parallel worker has different data, but executes the same function on that
 data.
+
+.. _sisd:
+
+****
+SISD
+****
+
+Single instruction, single data. Serial execution as expressed by the remaining
+permutation of single/multiple instruction(s), single/multiple data.

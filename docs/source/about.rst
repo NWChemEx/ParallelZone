@@ -16,6 +16,13 @@
 The ParallelZone Worldview
 ##########################
 
+.. note::
+
+   TL;DR. In ParallelZone the ``RuntimeView`` instance is your handle to the
+   runtime environment. ``RuntimeView`` is a container of ``ResourceSet``
+   objects. ``ResourceSet`` objects describe the resources (*i.e.*, RAM, CPUs,
+   GPUs, *etc.*) that processes have direct/local access to.
+
 To use ParallelZone it is helpful to understand the abstraction model at a high
 level. ParallelZone expands on the :ref:`MPI` model. So we start with a brief
 review of MPI.
@@ -116,3 +123,38 @@ resources a process has an affinity for is termed that process's
 ``ResourceSet``. The ``ResourceSet`` of a process is populated with the
 resources in the ``RuntimeView`` which are located physically on the node where
 the process is running.
+
+.. _resource_set_mapping:
+
+.. figure:: assets/resourceset_mapping.png
+   :align: center
+
+   ParallelZone's view of the runtime environment for the common scenario of
+   one process per node.
+
+:numref:`resource_set_mapping` illustrates how ParallelZone sees the hardware
+in the runtime environment when the program has one process running on each
+node. In this scenario ``RuntimeView`` is managing the entire runtime
+environment, meaning the ``RuntimeView`` object can see both nodes. The
+``RuntimeView`` is then split in to two ``ResourceSet`` instances, each instance
+seeing the node the current process is running on. In this scenario the
+``ResourceSet`` objects are disjoint, *i.e.*, they do not share resources.
+
+ParallelZone does not restrict users to running one process per node. If a
+user runs more processes per node, then ParallelZone will give each of those
+processes its own ``ResourceSet``; however, the ``ResourceSet`` objects will no
+longer be disjoint since each process on a node can see the same resources.
+
+
+**********
+The Vision
+**********
+
+At the moment ParallelZone's feature set is pretty bare bones. The medium term
+goal is for the ``ResourceSet`` objects to have task schedulers. Users will
+estimate the resources needed for a task and tell a particular ``ResourceSet``
+to run the task. The schedulers will automatically figure out how to best run
+the task based on runtime conditions. Longer term we want to take this a step
+further and add task schedulers to ``RuntimeView``. The task schedulers on
+``RuntimeView`` would accept task graphs and take care of assigning the tasks
+in the graph to the schedulers in the individual ``ResourceSet`` objects.

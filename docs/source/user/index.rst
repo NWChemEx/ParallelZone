@@ -23,4 +23,6 @@ The topics in this section cover user interactions with ParallelZone in detail.
    :caption: Contents:
 
    runtime_view
+   resource_set
+   ram
    quick_reference

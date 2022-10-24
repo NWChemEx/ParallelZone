@@ -198,7 +198,9 @@ Full discussion :ref:`reflection_design`.
 
 At the moment, C++ lacks reflection (the ability to introspect and modify a
 program). Many generic programming tasks (for example hashing and
-serialization) can be largely automated if reflection exists.
+serialization) can be largely automated if reflection exists. While reflection
+would be nice, as discussed in :ref:`reflection_design` we have decided not to
+pursue this avenue.
 
 *****************
 Existing Runtimes

@@ -31,7 +31,7 @@ review of MPI.
 MPI Primer
 **********
 
-:numref:`mpi_runtime` illustrates a simplified version of how MPI sees a
+:numref:`fig_mpi_runtime` illustrates a simplified version of how MPI sees a
 program. The view is process-centric. When the program starts, MPI defines a
 set ``MPI_COMM_WORLD`` which includes all of program's processes. Within our
 example ``MPI_COMM_WORLD`` has three processes. MPI assigns these processes an
@@ -40,7 +40,7 @@ process's rank. More complicated MPI setups can have further partition
 ``MPI_COMM_WORLD`` into subsets, but the overall point remains: MPI's view of
 a program is a series of processes somehow grouped together.
 
-.. _mpi_runtime:
+.. _fig_mpi_runtime:
 
 .. figure:: assets/mpi.png
    :align: center
@@ -50,22 +50,22 @@ a program is a series of processes somehow grouped together.
 In a typical MPI-based program parallelism is expressed by somehow mapping tasks
 and data to ranks. For example say we have three arbitrary functions ``foo``,
 ``bar``, and ``baz` and a chunk of data we want to run ``foo``, ``bar``, and
-``baz`` on. :numref:`mpi_mappings` shows the three ways we can do this in
+``baz`` on. :numref:`fig_mpi_mappings` shows the three ways we can do this in
 parallel.
 
-.. _mpi_mappings:
+.. _fig_mpi_mappings:
 
 .. figure:: assets/mpi_mappings.png
    :align: center
 
    Possible ways of mapping data and tasks to MPI ranks.
 
-In the :ref:`simd` approach depicted at the top of :numref:`mpi_mappings` we
+In the :ref:`simd` approach depicted at the top of :numref:`fig_mpi_mappings` we
 distribute the data over the MPI ranks and have each rank pass its local chunk
 of data to the three functions. In :ref:`misd`, which is shown in the middle of
-:numref:`mpi_mappings` we instead distribute the functions over the ranks.
-Finally, in the :ref:`mimd` model shown at the bottom of :numref:`mpi_mappings`
-we distribute both the data and the functions.
+:numref:`fig_mpi_mappings` we instead distribute the functions over the ranks.
+Finally, in the :ref:`mimd` model shown at the bottom of
+:numref:`fig_mpi_mappings` we distribute both the data and the functions.
 
 Unfortunately on today's machines it takes more than distributing tasks and/or
 data to otherwise opaque ranks to achieve high-performance. This is because
@@ -86,7 +86,7 @@ and it also may or may not be the case that ParallelZone can access all of the
 program's resources. Regardless, the set of resources ParallelZone can access
 forms the ``RuntimeView``.
 
-.. _nesting_runtime_views:
+.. _fig_nesting_runtime_views:
 
 .. figure:: assets/nesting_runtime_views.png
    :align: center
@@ -97,12 +97,12 @@ forms the ``RuntimeView``.
    in the bottom scenario it manages only some of the program's resources.
 
 To better illustrate the relationship between the program's total resources
-and the ``RuntimeView``, :numref:`nesting_runtime_views` shows two possible
+and the ``RuntimeView``, :numref:`fig_nesting_runtime_views` shows two possible
 ways a ``RuntimeView`` may initialized. The top scenario shown in
-:numref:`nesting_runtime_views` occurs when the entire program uses
+:numref:`fig_nesting_runtime_views` occurs when the entire program uses
 ParallelZone as its parallel runtime. In this scenario a job is spun up with
 some set of resources and ParallelZone is allowed to manage all of them
-(*N.B.*, while both scenarios in :numref:`nesting_runtime_views`
+(*N.B.*, while both scenarios in :numref:`fig_nesting_runtime_views`
 show ParallelZone only managing one node ParallelZone can manage multiple
 nodes). Another common scenario occurs when a program relying on ParallelZone is
 being driven by another program. In this scenario, the program has access to
@@ -124,7 +124,7 @@ resources a process has an affinity for is termed that process's
 resources in the ``RuntimeView`` which are located physically on the node where
 the process is running.
 
-.. _resource_set_mapping:
+.. _fig_resource_set_mapping:
 
 .. figure:: assets/resourceset_mapping.png
    :align: center
@@ -132,9 +132,9 @@ the process is running.
    ParallelZone's view of the runtime environment for the common scenario of
    one process per node.
 
-:numref:`resource_set_mapping` illustrates how ParallelZone sees the hardware
-in the runtime environment when the program has one process running on each
-node. In this scenario ``RuntimeView`` is managing the entire runtime
+:numref:`fig_resource_set_mapping` illustrates how ParallelZone sees the
+hardware in the runtime environment when the program has one process running on
+each node. In this scenario ``RuntimeView`` is managing the entire runtime
 environment, meaning the ``RuntimeView`` object can see both nodes. The
 ``RuntimeView`` is then split in to two ``ResourceSet`` instances, each instance
 seeing the node the current process is running on. In this scenario the

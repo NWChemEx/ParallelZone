@@ -31,4 +31,30 @@ TEST_CASE("ram") {
 
     // Get the RAM local to the current process
     const auto& my_ram = rv.my_resource_set().ram();
+
+    // How much total ram does rank_0_ram and my_ram have?
+    const auto rank_0_total = rank_0_ram.total_space();
+    const auto my_total_ram = my_ram.total_space();
+
+    // Generate some process-specific data
+    const auto my_rank = rv.my_resource_set().mpi_rank();
+    std::vector<std::size_t> local_data{my_rank, my_rank + 1, my_rank + 2};
+
+    auto all_data = rank_0_ram.gather(local_data);
+
+    if(all_data) {
+        // TODO: use logger
+    } else {
+        // TODO: use logger
+    }
+
+    std::vector<std::size_t> corr;
+    for(std::size_t i = 0; i < rv.size(); ++i)
+        for(std::size_t j = 0; j < 3; ++j) corr.push_back(i + j);
+
+    if(my_rank == 0) {
+        REQUIRE(corr == *all_data);
+    } else {
+        REQUIRE_FALSE(all_data);
+    }
 }

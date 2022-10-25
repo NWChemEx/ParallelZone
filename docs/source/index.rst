@@ -51,7 +51,7 @@ Planned features:
    user/index
    developer/index
 
-`C++ API <parallelzone_cxx_api/index.html>`_
+`C++ API <cxx_api/html/index.html>`_
 
 Indices and tables
 ==================

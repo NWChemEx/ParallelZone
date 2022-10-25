@@ -135,13 +135,13 @@ public:
     BinaryBuffer(BinaryBuffer&& other) noexcept = default;
 
     /** @brief Overwrites the state in *this with the state contained in
-     *         @p other.
+     *         @p rhs.
      *
-     *  @param[in,out] other The buffer to take the state from. After this
-     *                       call @p other is in a state undistinguishable from
+     *  @param[in,out] rhs The buffer to take the state from. After this
+     *                       call @p rhs is in a state undistinguishable from
      *                       default construction.
      *
-     *  @return *this, but now containing the state of @p other.
+     *  @return *this, but now containing the state of @p rhs.
      *
      *  @throw None No throw guarantee.
      */
@@ -362,7 +362,7 @@ BinaryBuffer make_binary_buffer(T&& input);
  *
  *  This function is a convenience function for creating an object from an array
  *  of contiguous binary data. The BinaryBuffer is assumed to contain the
- *  serialized form of an object of type @p T if `NeedsSerialized<T>::value`
+ *  serialized form of an object of type @p T if NeedsSerialized<T>::value
  *  is true. Otherwise it is assumed that @p T can be created by copying the
  *  data out of @p buffer.
  *

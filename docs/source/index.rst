@@ -41,7 +41,7 @@ Planned features:
 - Hardware aware scheduling
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
    install

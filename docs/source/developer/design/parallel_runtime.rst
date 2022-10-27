@@ -76,6 +76,8 @@ entities for the purposes of this page.
 RuntimeView
 ===========
 
+Full discussion :ref:`runtime_view_design`.
+
 As the name suggests ``RuntimeView`` is a view of the actual runtime
 environment. This means it does not own the resources it accesses. Similarly,
 copying ``RuntimeView`` instances do not create more resources, instead it just
@@ -101,6 +103,8 @@ The ``RuntimeView`` class directly addresses (numbers refer to above):
 ResourceSet
 ===========
 
+Full discussion is at :ref:`resource_set_design`.
+
 Each process is associated with a ``ResourceSet`` instance. The ``ResourceSet``
 affiliated with the current process contains the resources which are local
 and directly accessible to that process.
@@ -118,6 +122,8 @@ and directly accessible to that process.
 
 Hardware Classes
 ================
+
+See discussions at :ref:`ram_design`.
 
 These classes have not been designed in detail yet. For now we note they should
 allow the user to query whatever information they want in order to make

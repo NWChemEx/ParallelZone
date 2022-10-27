@@ -25,4 +25,5 @@ The topics in this section cover user interactions with ParallelZone in detail.
    runtime_view
    resource_set
    ram
+   mpi_and_custom_types
    quick_reference

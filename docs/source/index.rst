@@ -16,14 +16,42 @@
 ParallelZone
 ############
 
+ParallelZone is a high-level, object-oriented C++ runtime system designed to
+facilitate writing high-performance, object-oriented C++ software. ParallelZone
+is conceived as being a stable :ref:`API` more than an implementation of a full
+blown runtime system. By this we mean that under the hood ParallelZone simply
+dispatches to more established runtime systems (such as :ref:`MPI`) and lets
+them do the heavy lifting. Unfortunately, the space of runtime systems is highly
+turbulent at the moment, which is why we designed ParallelZone to provide a
+buffer that insulates downstream dependencies from the chaotic underpinnings.
+
+The main features of ParallelZone include:
+
+- Object-oriented API. C++ is object-oriented. Your runtime should be too.
+- :ref:`SIMD`-like API. ParallelZone's API is designed to help you write
+  parallel code that looks serial because that's the easiest kind to write.
+- Support for process parallelism.
+- Backwards compatible with MPI.
+
+Planned features:
+
+- Thread support
+- Better hardware detection/introspection
+- Asynchronous execution
+- Hardware aware scheduling
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Contents:
 
+   install
+   abbreviations
+   quickstart
+   about
+   user/index
    developer/index
 
-`C++ API <parallelzone_cxx_api/index.html>`_
+`C++ API <cxx_api/html/index.html>`_
 
 Indices and tables
 ==================

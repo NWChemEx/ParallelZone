@@ -237,7 +237,7 @@ public:
  *
  *  This function is a convenience function for creating an object from a view
  *  of contiguous binary data. The ConstBinaryView is assumed to point to the
- *  serialized form of an object of type @p T if `NeedsSerialized<T>::value`
+ *  serialized form of an object of type @p T if NeedsSerialized<T>::value
  *  is true. Otherwise it is assumed that @p T can be created by copying the
  *  data out of @p view.
  *

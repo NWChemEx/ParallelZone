@@ -29,7 +29,7 @@ namespace parallelzone::mpi_helpers {
  *  (if it exists). This has two parts. First, for every @p T which maps to an
  *  MPI data type, MPIDataType<T>::value will be set to true; for all other @p T
  *  MPIDataType<T>::value will be false. Second, if @p T maps to an MPI data
- *  type, then `MPIDataType<T>::type()` will return this type (N.B. this is a
+ *  type, then MPIDataType<T>::type() will return this type (N.B. this is a
  *  function and not a typedef to get around weirdness with how various MPI
  *  vendors implement the enumerations).
  *

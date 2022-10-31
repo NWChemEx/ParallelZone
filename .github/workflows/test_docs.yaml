@@ -9,4 +9,4 @@ jobs:
     uses: NWChemEx-Project/.github/.github/workflows/test_docs_tmpl.yaml@master
     with:
       target: parallelzone_cxx_api
-      dependencies: cmake doxygen sphinx
+      dependencies: cmake doxygen graphviz sphinx

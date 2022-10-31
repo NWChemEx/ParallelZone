@@ -18,8 +18,8 @@
 Reflection Design
 #################
 
-This page describes the considerations that went into the reflection API
-ParallelZone relies on.
+This page describes the considerations that went into potentially including
+reflection in ParallelZone.
 
 *******************
 What is Reflection?

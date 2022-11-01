@@ -7,13 +7,12 @@ on:
     branches:
       - clang-test
 
-
 jobs:
   build:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@clang-test
     with: 
-      # dependencies: 'gcc gcovr cmake openmpi clang'
-      dependencies: 'gcovr cmake openmpi clang'
+      dependencies: 'gcc gcovr cmake openmpi clang'
+      #dependencies: 'gcovr cmake openmpi clang'
       #dependencies: 'clang'
       #remove gcc
       #preferred 9 can work on 11 for now.

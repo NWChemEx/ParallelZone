@@ -17,6 +17,6 @@ jobs:
       #dependencies: 'clang'
       #remove gcc
       #preferred 9 can work on 11 for now.
-      # clang_version: 9
+      clang_version: 9
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}

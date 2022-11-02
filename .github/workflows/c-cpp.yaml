@@ -7,7 +7,6 @@ on:
     branches:
       - clang-test
 
-
 jobs:
   build:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@clang-test

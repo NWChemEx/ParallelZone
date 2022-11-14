@@ -8,13 +8,13 @@ on:
       - clang-test
 
 jobs:
-  build-with-clang:
-    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@parallel-template
-    with: 
-      dependencies: 'gcovr cmake openmpi clang'
-      clang-build: true
-    secrets:
-      CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
+  # build-with-clang:
+  #   uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@parallel-template
+  #   with: 
+  #     dependencies: 'gcovr cmake openmpi clang'
+  #     clang-build: true
+  #   secrets:
+  #     CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
 
   build-with-gcc:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@parallel-template

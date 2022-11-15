@@ -14,7 +14,7 @@ ARG         GITHUB_TOKEN
 
 # ${BASE_IMAGE} should have the repo in /app/${REPO_NAME}
 WORKDIR     /app/${REPO_NAME}
-RUN         echo $PWD
+RUN         git pull 
 RUN         git checkout ${BRANCH_NAME}
 RUN         git pull 
 # Build...

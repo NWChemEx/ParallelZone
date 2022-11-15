@@ -1,0 +1,27 @@
+name: Docker CI
+
+on:  
+  push:
+  workflow_dispatch:
+jobs:
+  publish-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push image
+      run: |
+        docker build --tag ghcr.io/nwchemex-project/parallelzone_gcc11 \
+                     --build-arg BASE_IMAGE=ghcr.io/nwchemex-project/parallelzone_gcc11 \
+                     --build-arg REPO_NAME=ParallelZone \
+                     --build-arg GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+                     --build-arg BRANCH_NAME=${GITHUB_REF_NAME} .
+        docker push ghcr.io/nwchemex-project/parallelzone_gcc11 

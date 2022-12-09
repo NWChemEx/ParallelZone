@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "parallelzone/logger.hpp"
+#include "parallelzone/logger/logger.hpp"
 #include <fstream>
 #include <iostream>
 namespace parallelzone {
@@ -37,7 +37,7 @@ Logger::Logger() : Logger(nullptr) {}
 Logger::Logger(pimpl_ptr&& p) : m_pimpl_(std::move(p)) {}
 Logger::~Logger() noexcept = default;
 
-Logger::Logger(Logger&&) noexcept = default;
+Logger::Logger(Logger&&) noexcept            = default;
 Logger& Logger::operator=(Logger&&) noexcept = default;
 
 #define ASSERT_PIMPL(p) \
@@ -76,9 +76,9 @@ public:
     StdOutLogger()                 = default;
     ~StdOutLogger() noexcept final = default;
 
-    StdOutLogger(const my_type&)     = default;
-    StdOutLogger(my_type&&) noexcept = default;
-    StdOutLogger& operator=(const my_type&) = default;
+    StdOutLogger(const my_type&)                = default;
+    StdOutLogger(my_type&&) noexcept            = default;
+    StdOutLogger& operator=(const my_type&)     = default;
     StdOutLogger& operator=(my_type&&) noexcept = default;
 
     std::ostream& stream() final { return std::cout; }
@@ -96,9 +96,9 @@ public:
     StdErrLogger()                 = default;
     ~StdErrLogger() noexcept final = default;
 
-    StdErrLogger(const my_type&)     = default;
-    StdErrLogger(my_type&&) noexcept = default;
-    StdErrLogger& operator=(const my_type&) = default;
+    StdErrLogger(const my_type&)                = default;
+    StdErrLogger(my_type&&) noexcept            = default;
+    StdErrLogger& operator=(const my_type&)     = default;
     StdErrLogger& operator=(my_type&&) noexcept = default;
 
     std::ostream& stream() final { return std::cerr; }
@@ -119,9 +119,9 @@ public:
 
     virtual ~FileLogger() noexcept = default;
 
-    FileLogger(const my_type&)     = delete;
-    FileLogger(my_type&&) noexcept = default;
-    FileLogger& operator=(const my_type&) = delete;
+    FileLogger(const my_type&)                = delete;
+    FileLogger(my_type&&) noexcept            = default;
+    FileLogger& operator=(const my_type&)     = delete;
     FileLogger& operator=(my_type&&) noexcept = default;
 
     std::ostream& stream() final { return *m_fstream_; }
@@ -148,9 +148,9 @@ public:
     NullLogger() : FileLogger("/dev/null"){};
     ~NullLogger() noexcept final = default;
 
-    NullLogger(const my_type&)     = default;
-    NullLogger(my_type&&) noexcept = default;
-    NullLogger& operator=(const my_type&) = default;
+    NullLogger(const my_type&)                = default;
+    NullLogger(my_type&&) noexcept            = default;
+    NullLogger& operator=(const my_type&)     = default;
     NullLogger& operator=(my_type&&) noexcept = default;
 };
 
@@ -166,9 +166,9 @@ public:
     StreamLogger(std::ostream* p) : m_stream_(p) {}
     ~StreamLogger() noexcept final = default;
 
-    StreamLogger(const my_type&)     = default;
-    StreamLogger(my_type&&) noexcept = default;
-    StreamLogger& operator=(const my_type&) = default;
+    StreamLogger(const my_type&)                = default;
+    StreamLogger(my_type&&) noexcept            = default;
+    StreamLogger& operator=(const my_type&)     = default;
     StreamLogger& operator=(my_type&&) noexcept = default;
 
     std::ostream& stream() final {

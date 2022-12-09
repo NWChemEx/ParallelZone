@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "parallelzone/logger.hpp"
+#include "parallelzone/logger/logger.hpp"
 #include <catch2/catch.hpp>
 #include <fstream>
 #include <iostream>

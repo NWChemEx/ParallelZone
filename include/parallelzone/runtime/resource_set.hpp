@@ -15,9 +15,9 @@
  */
 
 #pragma once
+#include "parallelzone/hardware/ram/ram.hpp"
+#include "parallelzone/logger/logger.hpp"
 #include <memory>
-#include <parallelzone/hardware/ram/ram.hpp>
-#include <parallelzone/logger.hpp>
 
 namespace parallelzone::runtime {
 

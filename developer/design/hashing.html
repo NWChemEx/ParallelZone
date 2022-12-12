@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hashing Design &mdash; parallelzone 1.0.0 documentation</title>
+  <title>Hashing Design &mdash; parallelzone  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,10 +18,11 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Serialization Design" href="serialization.html" />
-    <link rel="prev" title="ParallelZone’s MPI API Design" href="mpi.html" /> 
+    <link rel="prev" title="Designing ComPP Class" href="compp.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -31,9 +32,6 @@
         <div class="wy-side-nav-search" >
             <a href="../../index.html" class="icon icon-home"> parallelzone
           </a>
-              <div class="version">
-                1.0.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -44,19 +42,22 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">The ParallelZone Worldview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">ParallelZone User Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../repo_layout.html">ParallelZone Repository Layout</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Documentation</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="mpi.html">ParallelZone’s MPI API Design</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Hashing Design</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#what-is-hashing">What is Hashing?</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#why-do-we-need-hashing">Why Do We Need Hashing?</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hashing-considerations">Hashing Considerations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hashing-implementations">Hashing Implementations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#hashing-strategy">Hashing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#high-level-design">High-Level Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#parallel-runtime-design">Parallel Runtime Design</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#utilities-design">Utilities Design</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Hashing Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="serialization.html">Serialization Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflection.html">Reflection Design</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="serialization.html">Serialization Design</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reflection.html">Reflection Design</a></li>
 </ul>
 </li>
 </ul>
@@ -76,10 +77,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Developer Documentation</a> &raquo;</li>
-          <li><a href="index.html">Design Documentation</a> &raquo;</li>
-      <li>Hashing Design</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Documentation</a></li>
+      <li class="breadcrumb-item active">Hashing Design</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/developer/design/hashing.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -266,7 +267,7 @@ capabilities of the C++ standard library, extending it to our custom types.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="mpi.html" class="btn btn-neutral float-left" title="ParallelZone’s MPI API Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="compp.html" class="btn btn-neutral float-left" title="Designing ComPP Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="serialization.html" class="btn btn-neutral float-right" title="Serialization Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

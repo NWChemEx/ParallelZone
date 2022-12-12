@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designing RAM Class &mdash; parallelzone  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Designing ComPP Class" href="compp.html" />
+    <link rel="prev" title="Designing ParallelZone’s ResourceSet Class" href="resource_set.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> parallelzone
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">The ParallelZone Worldview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">ParallelZone User Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../repo_layout.html">ParallelZone Repository Layout</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Documentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#high-level-design">High-Level Design</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#parallel-runtime-design">Parallel Runtime Design</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="parallel_runtime.html">Designing ParallelZone’s Parallel Runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime_view.html">Designing RuntimeView Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="resource_set.html">Designing ParallelZone’s ResourceSet Class</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Designing RAM Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="index.html#mpi-helpers">MPI Helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#utilities-design">Utilities Design</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">parallelzone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Documentation</a></li>
+      <li class="breadcrumb-item active">Designing RAM Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/ram.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="designing-ram-class">
+<span id="ram-design"></span><h1>Designing RAM Class<a class="headerlink" href="#designing-ram-class" title="Permalink to this heading"></a></h1>
+<p>As stated in <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a> we need abstractions to represent
+the physical hardware resources on the computer. The <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class models
+the random-access memory of a node.</p>
+<section id="why-do-we-need-the-ram-class">
+<h2>Why Do We Need the RAM Class?<a class="headerlink" href="#why-do-we-need-the-ram-class" title="Permalink to this heading"></a></h2>
+<p>From the perspective of ParallelZone, the <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class is primarily envisioned
+as a means for users to specify the start/end points of one-to-all and
+all-to-one MPI operations. End users can also use the <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class to
+figure out how much memory the process has access to, which can be useful for
+selecting among algorithms (space-time trade-off).</p>
+</section>
+<section id="design-considerations">
+<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Permalink to this heading"></a></h2>
+<p>Including the considerations brought up in <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a> and
+<a class="reference internal" href="resource_set.html#resource-set-design"><span class="std std-ref">Designing ParallelZone’s ResourceSet Class</span></a> we see the <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class needing to consider:</p>
+<ol class="arabic simple">
+<li><p>Current “state”</p>
+<ul class="simple">
+<li><p>Total capacity</p></li>
+<li><p>Total free memory</p></li>
+<li><p>Total used memory</p></li>
+<li><p>Potentially the transfer rate</p></li>
+</ul>
+</li>
+<li><p>All-to-one and one-to-all MPI operations</p></li>
+<li><p>Encapsulation of details</p></li>
+<li><p>Automatic tracking of memory usage</p></li>
+</ol>
+</section>
+<section id="architecture-of-the-ram-class">
+<h2>Architecture of the RAM Class<a class="headerlink" href="#architecture-of-the-ram-class" title="Permalink to this heading"></a></h2>
+<figure class="align-center" id="id1">
+<span id="fig-ram"></span><img alt="../../_images/ram.png" src="../../_images/ram.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 9 </span><span class="caption-text">High-level architecture of the RAM class.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p><a class="reference internal" href="#fig-ram"><span class="std std-numref">Fig. 9</span></a> illustrates the main pieces of the <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class. These
+pieces address the concerns by:</p>
+<ol class="arabic simple">
+<li><p>We use the PAPI runtime system for accessing information about the <code class="docutils literal notranslate"><span class="pre">RAM</span></code></p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">CommPP</span></code> object is used for the MPI operations.</p></li>
+<li><p>The use of the PIMPL idiom allows us to avoid leaking PAPI or the <code class="docutils literal notranslate"><span class="pre">CommPP</span></code>
+object through the API.</p></li>
+<li><p>This issue has not been resolved, but could be done through a custom
+allocator class tied to the <code class="docutils literal notranslate"><span class="pre">RAM</span></code> object.</p></li>
+</ol>
+</section>
+<section id="proposed-apis">
+<h2>Proposed APIs<a class="headerlink" href="#proposed-apis" title="Permalink to this heading"></a></h2>
+<p>Examples of all-to-one communication with ParallelZone.</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Each resource set generates some data</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_data</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// This gathers the data from all members of rt to resource set 0</span>
+<span class="c1">// Type U is deducible from type of data w/ template meta-programming</span>
+<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">gather</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">output</span><span class="p">.</span><span class="n">has_value</span><span class="p">()){</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// This only gets run on rank 0</span>
+<span class="w">    </span><span class="c1">// Do stuff with output</span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// Reductions are similar, but take an op to apply</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_op_to_apply</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Similar to gather, this reduces the data down to rank 0&#39;s RAM</span>
+<span class="c1">// Type V is deducible from type of op w/ template meta-programming</span>
+<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">reduce</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">output2</span><span class="p">.</span><span class="n">has_value</span><span class="p">()){</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// This only gets run on rank 0</span>
+<span class="w">    </span><span class="c1">// Do stuff with output2</span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Examples of one-to-all communications</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span><span class="w"></span>
+
+<span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="p">(</span><span class="n">me</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)){</span><span class="w"></span>
+<span class="w">    </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fill_in_data</span><span class="p">();</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// Value of data is ignored for ranks not equal to 0</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Examples of one-to-one communications</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span><span class="w"></span>
+
+<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">fill_in_data</span><span class="p">())</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
+<span class="k">if</span><span class="p">(</span><span class="n">me</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)){</span><span class="w"></span>
+<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">fill_in_data</span><span class="p">());</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+
+<span class="c1">// Sends the data to rank 1, type U determined by template meta-programming</span>
+<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">output</span><span class="p">.</span><span class="n">has_value</span><span class="p">()){</span><span class="w"></span>
+<span class="w">    </span><span class="c1">// This part is only run by rank 1</span>
+<span class="w">    </span><span class="c1">// Do stuff with output</span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The proposed APIs admittedly have some MIMD aspects to them in the
+“if I’m root” logic. This could be hidden in a scheduler. Something like:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">future_2_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">schedule</span><span class="p">([](){</span><span class="k">return</span><span class="w"> </span><span class="n">fill_in_data</span><span class="p">();});</span><span class="w"></span>
+</pre></div>
+</div>
+<p>With the idea being the underlying scheduler chooses the root.</p>
+</section>
+<section id="additional-notes">
+<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Permalink to this heading"></a></h2>
+<p>The RAM class is presently a stub. In particular PAPI is not hooked up.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="resource_set.html" class="btn btn-neutral float-left" title="Designing ParallelZone’s ResourceSet Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="compp.html" class="btn btn-neutral float-right" title="Designing ComPP Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

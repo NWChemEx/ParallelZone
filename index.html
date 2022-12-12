@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ParallelZone &mdash; parallelzone 1.0.0 documentation</title>
+  <title>ParallelZone &mdash; parallelzone  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,9 +18,10 @@
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Developer Documentation" href="developer/index.html" /> 
+    <link rel="next" title="Installing ParallelZone" href="install.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -30,9 +31,6 @@
         <div class="wy-side-nav-search" >
             <a href="#" class="icon icon-home"> parallelzone
           </a>
-              <div class="version">
-                1.0.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -43,6 +41,11 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">The ParallelZone Worldview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/index.html">ParallelZone User Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Documentation</a></li>
 </ul>
 
@@ -59,8 +62,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
-      <li>ParallelZone</li>
+      <li><a href="#" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">ParallelZone</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -72,30 +75,48 @@
              
   <section id="parallelzone">
 <h1>ParallelZone<a class="headerlink" href="#parallelzone" title="Permalink to this heading"></a></h1>
+<p>ParallelZone is a high-level, object-oriented C++ runtime system designed to
+facilitate writing high-performance, object-oriented C++ software. ParallelZone
+is conceived as being a stable <a class="reference internal" href="abbreviations.html#api"><span class="std std-ref">API</span></a> more than an implementation of a full
+blown runtime system. By this we mean that under the hood ParallelZone simply
+dispatches to more established runtime systems (such as <a class="reference internal" href="abbreviations.html#mpi"><span class="std std-ref">MPI</span></a>) and lets
+them do the heavy lifting. Unfortunately, the space of runtime systems is highly
+turbulent at the moment, which is why we designed ParallelZone to provide a
+buffer that insulates downstream dependencies from the chaotic underpinnings.</p>
+<p>The main features of ParallelZone include:</p>
+<ul class="simple">
+<li><p>Object-oriented API. C++ is object-oriented. Your runtime should be too.</p></li>
+<li><p><a class="reference internal" href="abbreviations.html#simd"><span class="std std-ref">SIMD</span></a>-like API. ParallelZone’s API is designed to help you write
+parallel code that looks serial because that’s the easiest kind to write.</p></li>
+<li><p>Support for process parallelism.</p></li>
+<li><p>Backwards compatible with MPI.</p></li>
+</ul>
+<p>Planned features:</p>
+<ul class="simple">
+<li><p>Thread support</p></li>
+<li><p>Better hardware detection/introspection</p></li>
+<li><p>Asynchronous execution</p></li>
+<li><p>Hardware aware scheduling</p></li>
+</ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developer/design/index.html">Design Documentation</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">The ParallelZone Worldview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/index.html">ParallelZone User Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Documentation</a></li>
 </ul>
 </div>
-<p><a class="reference external" href="parallelzone_cxx_api/index.html">C++ API</a></p>
-<section id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
-</section>
+<p><a class="reference external" href="cxx_api/html/index.html">C++ API</a></p>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="developer/index.html" class="btn btn-neutral float-right" title="Developer Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="install.html" class="btn btn-neutral float-right" title="Installing ParallelZone" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

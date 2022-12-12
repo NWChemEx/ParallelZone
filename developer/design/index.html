@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Design Documentation &mdash; parallelzone 1.0.0 documentation</title>
+  <title>Design Documentation &mdash; parallelzone  documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,10 +18,11 @@
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ParallelZone’s MPI API Design" href="mpi.html" />
-    <link rel="prev" title="Developer Documentation" href="../index.html" /> 
+    <link rel="next" title="Designing ParallelZone" href="parallel_zone.html" />
+    <link rel="prev" title="ParallelZone Repository Layout" href="../repo_layout.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -31,9 +32,6 @@
         <div class="wy-side-nav-search" >
             <a href="../../index.html" class="icon icon-home"> parallelzone
           </a>
-              <div class="version">
-                1.0.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -44,12 +42,33 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">The ParallelZone Worldview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">ParallelZone User Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../repo_layout.html">ParallelZone Repository Layout</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Design Documentation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="mpi.html">ParallelZone’s MPI API Design</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hashing.html">Hashing Design</a></li>
-<li class="toctree-l3"><a class="reference internal" href="serialization.html">Serialization Design</a></li>
-<li class="toctree-l3"><a class="reference internal" href="reflection.html">Reflection Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#high-level-design">High-Level Design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parallel_zone.html">Designing ParallelZone</a></li>
+<li class="toctree-l4"><a class="reference internal" href="architecture.html">ParallelZone Architecture</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#parallel-runtime-design">Parallel Runtime Design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="parallel_runtime.html">Designing ParallelZone’s Parallel Runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="runtime_view.html">Designing RuntimeView Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="resource_set.html">Designing ParallelZone’s ResourceSet Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ram.html">Designing RAM Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mpi-helpers">MPI Helpers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#utilities-design">Utilities Design</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="hashing.html">Hashing Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="serialization.html">Serialization Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflection.html">Reflection Design</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -69,9 +88,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Developer Documentation</a> &raquo;</li>
-      <li>Design Documentation</li>
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+      <li class="breadcrumb-item active">Design Documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/developer/design/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -85,44 +104,58 @@
 <h1>Design Documentation<a class="headerlink" href="#design-documentation" title="Permalink to this heading"></a></h1>
 <p>Topics in this section document the design considerations which went into
 developing ParallelZone.</p>
+<section id="high-level-design">
+<h2>High-Level Design<a class="headerlink" href="#high-level-design" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="mpi.html">ParallelZone’s MPI API Design</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hashing.html">Hashing Design</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html#what-is-hashing">What is Hashing?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html#why-do-we-need-hashing">Why Do We Need Hashing?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html#hashing-considerations">Hashing Considerations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html#hashing-implementations">Hashing Implementations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hashing.html#hashing-strategy">Hashing Strategy</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="serialization.html">Serialization Design</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="serialization.html#what-is-serialization">What is Serialization?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="serialization.html#why-do-we-need-serialization">Why Do We Need Serialization?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="serialization.html#serialization-considerations">Serialization Considerations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="serialization.html#serialization-implementations">Serialization Implementations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="serialization.html#serialization-strategy">Serialization Strategy</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="reflection.html">Reflection Design</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reflection.html#what-is-reflection">What is Reflection?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reflection.html#why-do-we-need-reflection">Why Do We Need Reflection?</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reflection.html#reflection-considerations">Reflection Considerations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reflection.html#reflection-implementations">Reflection Implementations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reflection.html#reflection-strategy">Reflection Strategy</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="parallel_zone.html">Designing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">ParallelZone Architecture</a></li>
 </ul>
 </div>
+</section>
+<section id="parallel-runtime-design">
+<h2>Parallel Runtime Design<a class="headerlink" href="#parallel-runtime-design" title="Permalink to this heading"></a></h2>
+<p>The “parallel runtime” component is the part of ParallelZone tasked with
+facilitating parallel programming. The topics in this part dive into design
+details of the pieces of the parallel runtime component.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parallel_runtime.html">Designing ParallelZone’s Parallel Runtime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runtime_view.html">Designing RuntimeView Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resource_set.html">Designing ParallelZone’s ResourceSet Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ram.html">Designing RAM Class</a></li>
+</ul>
+</div>
+<section id="mpi-helpers">
+<h3>MPI Helpers<a class="headerlink" href="#mpi-helpers" title="Permalink to this heading"></a></h3>
+<p>The “MPI Helpers” component of ParallelZone is a sub-component of the
+parallel runtime component. The MPI Helpers component provides low-level,
+object-oriented APIs for interacting with MPI.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="compp.html">Designing ComPP Class</a></li>
+</ul>
+</div>
+</section>
+</section>
+<section id="utilities-design">
+<h2>Utilities Design<a class="headerlink" href="#utilities-design" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="hashing.html">Hashing Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="serialization.html">Serialization Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reflection.html">Reflection Design</a></li>
+</ul>
+</div>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../index.html" class="btn btn-neutral float-left" title="Developer Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="mpi.html" class="btn btn-neutral float-right" title="ParallelZone’s MPI API Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../repo_layout.html" class="btn btn-neutral float-left" title="ParallelZone Repository Layout" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="parallel_zone.html" class="btn btn-neutral float-right" title="Designing ParallelZone" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

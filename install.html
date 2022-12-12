@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installing ParallelZone &mdash; parallelzone  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Abbreviations Used Throughout ParallelZone" href="abbreviations.html" />
+    <link rel="prev" title="ParallelZone" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> parallelzone
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing ParallelZone</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-command">Install Command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-options">Configuration Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parallelzone-dependencies">ParallelZone Dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#c-compiler">C++ Compiler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mpi">MPI</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cppyy">Cppyy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#other-dependencies">Other Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#catch2">Catch2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cereal">Cereal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cmaize">CMaize</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">The ParallelZone Worldview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/index.html">ParallelZone User Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">parallelzone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Installing ParallelZone</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/install.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installing-parallelzone">
+<h1>Installing ParallelZone<a class="headerlink" href="#installing-parallelzone" title="Permalink to this heading"></a></h1>
+<p>ParallelZone uses <a class="reference external" href="https://cmakepp.github.io/CMaize/index.html">CMaize</a> as
+its build system, more detailed build instructions can be found
+<a class="reference external" href="https://cmakepp.github.io/CMaize/getting_started/building/index.html">here</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We strongly recommend users use CMake toolchains to pass arguments to the
+<code class="docutils literal notranslate"><span class="pre">cmake</span></code> command. Typically CMake toolchains live in files named
+<code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;-toolchain.cmake</span></code>, where <code class="docutils literal notranslate"><span class="pre">&lt;prefix&gt;-</span></code> is an optional prefix to
+distinguish among toolchains. The contents of the CMake toolchain file
+usually just sets configuration values via a the standard CMake <code class="docutils literal notranslate"><span class="pre">set</span></code>
+function, <em>i.e.</em>, <code class="docutils literal notranslate"><span class="pre">set(&lt;option_name&gt;</span> <span class="pre">&lt;value&gt;)</span></code>.</p>
+</div>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Figure out what’s going on with CUDA, HIP, SYCL, and PAPI and update
+documentation accordingly. Right now all of these are off by default (and
+not used by ParallelZone) so users can safely ignore them.</p>
+</div>
+<section id="install-command">
+<h2>Install Command<a class="headerlink" href="#install-command" title="Permalink to this heading"></a></h2>
+<p>In many cases ParallelZone can be installed by:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/NWChemEx-Project/ParallelZone</span>
+<span class="go">cd ParallelZone</span>
+<span class="go">cmake -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE=&lt;path/to/toolchain/file&gt;</span>
+<span class="go">cmake --build build</span>
+<span class="go">cmake --build build --target install</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">&lt;path/to/toolchain/file&gt;</span></code> should be replaced by the path to your
+toolchain file (absolute path is recommended).</p>
+<div class="admonition-todo admonition" id="id2">
+<p class="admonition-title">Todo</p>
+<p>Can this be simplified by dropping the <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">--build</span> <span class="pre">build</span></code> command?</p>
+</div>
+</section>
+<section id="configuration-options">
+<h2>Configuration Options<a class="headerlink" href="#configuration-options" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BUILD_TESTING</span></code>. Off by default. Set to a truth-y value to enable testing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BUILD_PYBINDINGS</span></code>. On by default. When enabled the optional Python API is
+built.</p></li>
+</ul>
+</section>
+<section id="parallelzone-dependencies">
+<h2>ParallelZone Dependencies<a class="headerlink" href="#parallelzone-dependencies" title="Permalink to this heading"></a></h2>
+<p>If you have a problem building ParallelZone it’s most likely because you
+don’t have a new enough version of CMake installed or because CMake can’t find
+one of ParallelZone’s dependencies. This section enumerates ParallelZone’s
+dependencies.</p>
+<section id="c-compiler">
+<h3>C++ Compiler<a class="headerlink" href="#c-compiler" title="Permalink to this heading"></a></h3>
+<p>ParallelZone relies on the C++17 standard and should work with any C++17
+compliant compiler (GCC 9.x or newer). C++ compilers can often be installed by
+your OS’s package manager. CMake detects your C++ compiler via the value of
+<code class="docutils literal notranslate"><span class="pre">CMAKE_CXX_COMPILER</span></code>. So ensure <code class="docutils literal notranslate"><span class="pre">CMAKE_CXX_COMPILER</span></code> is set to the C++
+compiler you want to use.</p>
+<div class="admonition-todo admonition" id="id3">
+<p class="admonition-title">Todo</p>
+<p>Clang support.</p>
+</div>
+</section>
+<section id="mpi">
+<h3>MPI<a class="headerlink" href="#mpi" title="Permalink to this heading"></a></h3>
+<p>ParallelZone’s heaviest dependency is MADNESS which implicitly brings in
+<a class="reference internal" href="abbreviations.html#mpi"><span class="std std-ref">MPI</span></a>. Users must have an MPI distribution installed prior to building
+ParallelZone. MPI distributions exist in most major OS-level package managers,
+so check your package manager before installing MPI from source.</p>
+<p>While CMake can find MPI if it is installed in your OS’s standard spot, you may
+need to give CMake a hint in some cases. MPI provides compiler wrappers and
+it’s best to let CMake discover MPI via the C++ wrapper. Add:</p>
+<div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span><span class="p">(</span><span class="s">MPI_CXX_COMPILER</span><span class="w"> </span><span class="s">&lt;path/to/mpicxx&gt;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>to your toolchain to point CMake to MPI’s C++ compiler wrapper.</p>
+<section id="cppyy">
+<h4>Cppyy<a class="headerlink" href="#cppyy" title="Permalink to this heading"></a></h4>
+<p>URL: <a class="reference external" href="https://github.com/wlav/cppyy">https://github.com/wlav/cppyy</a></p>
+<p>If Python bindings are enabled (controlled by the CMake variable
+<code class="docutils literal notranslate"><span class="pre">BUILD_PYBINDINGS</span></code>, which is <code class="docutils literal notranslate"><span class="pre">ON</span></code> by default).  Cppyy is obtainable via
+PyPI (<em>i.e.</em>, the <code class="docutils literal notranslate"><span class="pre">pip</span></code> command). If Python bindings are desired,
+the python executable found by CMake must have Cppyy installed.</p>
+</section>
+</section>
+<section id="other-dependencies">
+<h3>Other Dependencies<a class="headerlink" href="#other-dependencies" title="Permalink to this heading"></a></h3>
+<p>The dependencies in this section can be built by ParallelZone’s build system
+when they are not located. Under normal circumstances users can ignore them.
+They are listed here primarily for completeness.</p>
+<section id="catch2">
+<h4>Catch2<a class="headerlink" href="#catch2" title="Permalink to this heading"></a></h4>
+<p>URL: <a class="reference external" href="https://github.com/catchorg/Catch2">https://github.com/catchorg/Catch2</a></p>
+<p>Used for unit testing. Only needed if unit testing is enabled (controlled by
+the CMake variable <code class="docutils literal notranslate"><span class="pre">BUILD_TESTING</span></code>, which is <code class="docutils literal notranslate"><span class="pre">OFF</span></code> by default).</p>
+</section>
+<section id="cereal">
+<h4>Cereal<a class="headerlink" href="#cereal" title="Permalink to this heading"></a></h4>
+<p>URL: <a class="reference external" href="https://github.com/USCiLab/cereal">https://github.com/USCiLab/cereal</a></p>
+<p>Used for serialization. The build system can automatically build Cereal for
+you if it’s not found.</p>
+</section>
+<section id="cmaize">
+<h4>CMaize<a class="headerlink" href="#cmaize" title="Permalink to this heading"></a></h4>
+<p>URL: <a class="reference external" href="https://cmakepp.github.io/CMaize/index.html">https://cmakepp.github.io/CMaize/index.html</a></p>
+<p>Used to simplify writing a CMake-based build system. The build system will grab
+it for you.</p>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="ParallelZone" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="abbreviations.html" class="btn btn-neutral float-right" title="Abbreviations Used Throughout ParallelZone" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

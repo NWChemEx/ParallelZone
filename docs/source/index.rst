@@ -52,9 +52,3 @@ Planned features:
    developer/index
 
 `C++ API <cxx_api/html/index.html>`_
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`

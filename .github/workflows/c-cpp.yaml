@@ -8,6 +8,6 @@ jobs:
   build:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
     with:
-      dependencies: 'gcc cmake openmpi'
+      dependencies: 'gcc gcovr cmake openmpi'
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}

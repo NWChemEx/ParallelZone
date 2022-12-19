@@ -3,30 +3,22 @@ on:
   pull_request:
     branches:
       - master
-  push:
-    branches:
-      - clang-test
-
 
 jobs:
-  # build:
-  #   uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
-  #   with: 
-  #     dependencies: 'gcc gcovr cmake openmpi'
-  #   secrets:
-  #     CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
   build-with-clang:
-    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@parallel-template
+    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
     with: 
       dependencies: 'gcc gcovr cmake openmpi'
-      clang-build: true
+      gcc-build: true
+      clang-build: false
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
 
   build-with-gcc:
-    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@parallel-template
+    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
     with: 
       dependencies: 'clang gcovr cmake openmpi'
-      clang-build: false
+      gcc-build: false
+      clang-build: true
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}

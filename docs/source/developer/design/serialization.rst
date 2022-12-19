@@ -400,7 +400,7 @@ simplicity the table does not include libraries which are deemed to fail the
    differ from those shown above based on the accuracy/completeness of its
    documentation.
 
-.. _serialization_strategy::
+.. _serialization_strategy:
 
 **********************
 Serialization Strategy

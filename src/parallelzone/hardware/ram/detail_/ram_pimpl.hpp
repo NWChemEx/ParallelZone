@@ -54,7 +54,7 @@ struct RAMPIMPL {
 /** @brief Wraps the process of making a RAM instance by calling RAMPIMPL's
  *         ctor.
  *
- *  @relates RAM
+ *  @relates RAMPIMPL
  *
  *  @brief size How much memory does the instance actually have?
  *  @brief rank Which MPI rank owns the RAM (rank one @p mpi_comm)

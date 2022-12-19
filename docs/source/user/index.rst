@@ -12,16 +12,18 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
-#######################
-Developer Documentation
-#######################
+###############################
+ParallelZone User Documentation
+###############################
 
-The documentation in this section is intended primarily for people who are
-interested in developing for, or understanding the internals of ParallelZone.
+The topics in this section cover user interactions with ParallelZone in detail.
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-   repo_layout
-   design/index
+   runtime_view
+   resource_set
+   ram
+   mpi_and_custom_types
+   quick_reference

@@ -13,7 +13,8 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.14)
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
+#TODO: Get from git
+set(VERSION 1.0)
 project(parallelzone VERSION "${VERSION}" LANGUAGES CXX)
 
 set(
@@ -22,15 +23,11 @@ set(
 )
 
 include(get_cpp)
+include(nwx_cxx_api_docs)
+
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_DOCS "Should we build the documentation?" OFF)
-option(
-    ONLY_BUILD_DOCS
-    "If enabled and BUILD_DOCS is true no libraries will be built" OFF
-)
-
 option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
 option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
 option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF )
@@ -45,14 +42,8 @@ endif()
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
-if("${BUILD_DOCS}")
-    find_package(Doxygen REQUIRED)
-    set(DOXYGEN_EXTRA_PACKAGES amsmath) # Extra LaTeX packages for documentation
-    doxygen_add_docs(parallelzone_cxx_api "${project_inc_dir}")
-    if("${ONLY_BUILD_DOCS}")
-        return()
-    endif()
-endif()
+set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/docs/build/html/cxx_api)
+nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 #TODO: Make sure MADworld uses the Cereal we build
 cpp_find_or_build_dependency(
@@ -107,6 +98,7 @@ include(nwx_python_mods)
 cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone )
 
 if("${BUILD_TESTING}")
+    set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
     cpp_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
@@ -116,7 +108,13 @@ if("${BUILD_TESTING}")
     )
     cpp_add_tests(
         test_parallelzone
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
+        SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
+        INCLUDE_DIR "${project_src_dir}"
+        DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
+    )
+    cpp_add_tests(
+        test_parallelzone_docs
+        SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
         INCLUDE_DIR "${project_src_dir}"
         DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
     )
@@ -125,5 +123,10 @@ if("${BUILD_TESTING}")
         NAME "test_pz_under_mpi"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
                "${CMAKE_BINARY_DIR}/test_parallelzone"
+    )
+    add_test(
+        NAME "test_pz_docs_under_mpi"
+        COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
+                "${CMAKE_BINARY_DIR}/test_parallelzone_docs"
     )
 endif()

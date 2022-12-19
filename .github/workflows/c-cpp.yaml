@@ -7,7 +7,7 @@ on:
 jobs:
   build-with-clang:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
-    with: 
+    with:
       dependencies: 'gcc gcovr cmake openmpi'
       gcc-build: true
       clang-build: false

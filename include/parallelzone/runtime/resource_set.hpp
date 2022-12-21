@@ -229,7 +229,7 @@ public:
      * @returns Logger instance intended for progress output associated with
      *          this resource set.
      */
-    logger_reference progress_logger();
+    // logger_reference progress_logger();
 
     /**
      * @brief Get debug logger for this ResourceSet
@@ -240,7 +240,7 @@ public:
      * @returns Logger instance intended for debug output associated with
      *          this resource set.
      */
-    logger_reference debug_logger();
+    // logger_reference debug_logger();
 
     // -------------------------------------------------------------------------
     // -- Utility methods
@@ -311,7 +311,7 @@ public:
      * @param[in] l Logger instance to override the current progress logger
      *              for this instance.
      */
-    void set_progress_logger(logger_type&& l);
+    // void set_progress_logger(logger_type&& l);
 
     /**
      * @brief Set debug logger for this ResourceSet
@@ -319,7 +319,7 @@ public:
      * @param[in] l Logger instance to override the current debug logger
      *              for this instance.
      */
-    void set_debug_logger(logger_type&& l);
+    // void set_debug_logger(logger_type&& l);
 
 private:
     /// True if this instance has a PIMPL, and false otherwise

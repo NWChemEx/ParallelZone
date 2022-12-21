@@ -130,15 +130,15 @@ TEST_CASE("ResourceSet") {
         REQUIRE_NOTHROW(rs.ram());
     }
 
-    SECTION("progress_logger") {
-        // TODO: Set and test progress logger
-        REQUIRE_THROWS_AS(defaulted.progress_logger(), std::runtime_error);
-    }
+    // SECTION("progress_logger") {
+    //     // TODO: Set and test progress logger
+    //     REQUIRE_THROWS_AS(defaulted.progress_logger(), std::runtime_error);
+    // }
 
-    SECTION("debug_logger") {
-        // TODO: Set and test debug logger
-        REQUIRE_THROWS_AS(defaulted.debug_logger(), std::runtime_error);
-    }
+    // SECTION("debug_logger") {
+    //     // TODO: Set and test debug logger
+    //     REQUIRE_THROWS_AS(defaulted.debug_logger(), std::runtime_error);
+    // }
 
     SECTION("null") {
         REQUIRE(defaulted.null());

@@ -18,7 +18,7 @@
 #
 # Set minimal cppyy version
 #
-set(cppyy_version "2.2.0")
+set(cppyy_version "2.4.0")
 #
 # Make sure Python3 is installed
 #

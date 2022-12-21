@@ -81,17 +81,6 @@ struct ResourceSetPIMPL {
     // -- Getters
     // -------------------------------------------------------------------------
 
-    logger_reference progress_logger() {
-        if(!m_progress_logger_pointer)
-            throw std::runtime_error("No Progress Logger");
-        return *m_progress_logger_pointer;
-    }
-
-    logger_reference debug_logger() {
-        if(!m_debug_logger_pointer) throw std::runtime_error("No Debug Logger");
-        return *m_debug_logger_pointer;
-    }
-
     // -------------------------------------------------------------------------
     // -- Utility
     // -------------------------------------------------------------------------
@@ -123,12 +112,6 @@ struct ResourceSetPIMPL {
 
     /// The Runtime this resource set belongs to.
     mpi_comm_type m_my_mpi;
-
-    /// Progress Logger
-    logger_pointer m_progress_logger_pointer;
-
-    /// Debug Logger
-    logger_pointer m_debug_logger_pointer;
 };
 
 /** @brief Determines the size of the RAM local to the current process

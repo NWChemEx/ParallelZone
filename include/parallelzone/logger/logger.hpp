@@ -25,8 +25,12 @@ namespace detail_ {
 class LoggerPIMPL;
 } // namespace detail_
 
-/**
- *  A class to manage various stream loggers under a unified API
+/** @brief A class to manage various loggers under a unified API
+ *
+ *  In our design, users determine what records/data to log by passing them to
+ *  a logger. The logger then sends the record/data to a sink, which is
+ *  responsible for actually logging the record/data. The Logger class
+ *  implements the user-facing API for logging records/data.
  */
 class Logger {
 public:
@@ -34,7 +38,13 @@ public:
     using pimpl_type = detail_::LoggerPIMPL;
 
     /// Type of a unique_ptr to an object of type pimpl_type
-    using pimpl_ptr = std::unique_ptr<pimpl_type>;
+    using pimpl_ptr = std::shared_ptr<pimpl_type>;
+
+    /// Type of a string-based message
+    using string_type = std::string;
+
+    /// Type of a read-only reference to a string-based message
+    using const_string_reference = const string_type&;
 
     /// Type of a raw output stream
     using ostream_type = std::ostream;
@@ -89,52 +99,15 @@ public:
     Logger& operator=(Logger&& other) noexcept;
 
     /**
-     * @brief Obtain stream from underlying Logger instance.
-     *
-     * @returns Refeference to underlying stream instance
-     */
-    ostream_reference stream();
-
-    /**
      * @brief Print a message to log
      * @param[in] msg Message to print to log
      * @returns Reference to this logger instance
      */
-    Logger& print(const std::string& msg);
+    Logger& print(const_string_reference msg);
 
 private:
     /// Pointer to implementatin details
     pimpl_ptr m_pimpl_;
 };
-
-/// Create STDOUT logger
-Logger make_stdout_logger();
-/// Create STDERR logger
-Logger make_stderr_logger();
-
-/**
- * @brief Create File Logger
- *
- * Produced logger will print contents to a specified file
- *
- * @param[in] fname Filename for specified logger
- */
-Logger make_file_logger(std::string fname);
-
-/**
- * @brief Create a Null logger
- *
- * Prints contents into the void.
- */
-Logger make_null_logger();
-
-/**
- * @brief Create stream logger
- *
- * Prints contents to a specified stream.
- *
- * @param[in] s Stream from which to generate logger.
- */
-Logger make_stream_logger(std::ostream* s);
 
 } // namespace parallelzone

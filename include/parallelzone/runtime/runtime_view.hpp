@@ -420,7 +420,7 @@ public:
      * @throw std::runtime_error if *this is a view of the null runtime. Strong
      *                           throw guarantee.
      */
-    logger_reference progress_logger();
+    // logger_reference progress_logger();
 
     /**
      * @brief Get debug logger for this RuntimeView
@@ -435,7 +435,7 @@ public:
      * @throw std::runtime_error if *this is a view of the null runtime. Strong
      *                           throw guarantee.
      */
-    logger_reference debug_logger();
+    // logger_reference debug_logger();
 
     // -------------------------------------------------------------------------
     // -- Setters
@@ -451,7 +451,7 @@ public:
      * @throw std::runtime_error if *this is a view of the null runtime. Strong
      *                           throw guarantee.
      */
-    void set_progress_logger(logger_type&& l);
+    // void set_progress_logger(logger_type&& l);
 
     /**
      * @brief Set debug logger for this RuntimeView
@@ -463,7 +463,7 @@ public:
      * @throw std::runtime_error if *this is a view of the null runtime. Strong
      *                           throw guarantee.
      */
-    void set_debug_logger(logger_type&& l);
+    // void set_debug_logger(logger_type&& l);
 
     // -------------------------------------------------------------------------
     // -- MPI all-to-all methods

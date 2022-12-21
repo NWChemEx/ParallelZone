@@ -30,8 +30,6 @@ inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
   m_did_i_start_madness(did_i_start_madness),
   m_world(world),
   m_comm(world.mpi.comm().Get_mpi_comm()),
-  m_progress_logger_pointer(make_default_stdout_logger(world)),
-  m_debug_logger_pointer(make_default_stderr_logger(world)),
   m_resource_sets_() {
     // Pre-populate the current rank's resource set.
     instantiate_resource_set_(m_comm.me());

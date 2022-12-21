@@ -129,27 +129,9 @@ RuntimeView::size_type RuntimeView::count(const_ram_reference ram) const {
     return count;
 }
 
-RuntimeView::logger_reference RuntimeView::progress_logger() {
-    return pimpl_().progress_logger();
-}
-
-RuntimeView::logger_reference RuntimeView::debug_logger() {
-    return pimpl_().debug_logger();
-}
-
 // -----------------------------------------------------------------------------
 // -- Setters
 // -----------------------------------------------------------------------------
-
-void RuntimeView::set_progress_logger(logger_type&& l) {
-    pimpl_().m_progress_logger_pointer =
-      std::make_unique<logger_type>(std::move(l));
-}
-
-void RuntimeView::set_debug_logger(logger_type&& l) {
-    pimpl_().m_debug_logger_pointer =
-      std::make_unique<logger_type>(std::move(l));
-}
 
 // -----------------------------------------------------------------------------
 // -- Utility methods

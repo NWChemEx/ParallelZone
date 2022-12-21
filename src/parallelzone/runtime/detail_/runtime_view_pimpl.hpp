@@ -19,16 +19,6 @@
 
 namespace parallelzone::runtime::detail_ {
 
-inline std::shared_ptr<Logger> make_default_stdout_logger(madness::World& w) {
-    return w.rank() ? std::make_shared<Logger>(make_null_logger()) :
-                      std::make_shared<Logger>(make_stdout_logger());
-}
-
-inline std::shared_ptr<Logger> make_default_stderr_logger(madness::World& w) {
-    return w.rank() ? std::make_shared<Logger>(make_null_logger()) :
-                      std::make_shared<Logger>(make_stderr_logger());
-}
-
 /** @brief Holds the state for the RuntimeView class
  *
  *  Right now this class assumes MADNESS is managing MPI, so it holds a MADNESS
@@ -116,17 +106,6 @@ struct RuntimeViewPIMPL {
      *                        allocating it.
      */
     const_resource_set_reference at(size_type rank) const;
-
-    logger_reference progress_logger() {
-        if(!m_progress_logger_pointer)
-            throw std::runtime_error("No Progress Logger");
-        return *m_progress_logger_pointer;
-    }
-
-    logger_reference debug_logger() {
-        if(!m_debug_logger_pointer) throw std::runtime_error("No Debug Logger");
-        return *m_debug_logger_pointer;
-    }
 
     /** @brief Determines if *this is value equal to @p rhs.
      *

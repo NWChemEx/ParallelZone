@@ -26,22 +26,41 @@ private:
     using parent_type = Logger;
 
 public:
+    /// Ultimately a typedef of Logger::const_string_reference
+    using const_string_reference = std::string;
+
     /// Ultimately a typedef of Logger::pimpl_ptr
     using pimpl_ptr = parent_type::pimpl_ptr;
 
-    /// Ultimately a typedef of Logger::ostream_reference
-    using ostream_reference = parent_type::ostream_reference;
+    LoggerPIMPL()                              = default;
+    LoggerPIMPL(const LoggerPIMPL&)            = delete;
+    LoggerPIMPL& operator=(const LoggerPIMPL&) = delete;
+    virtual ~LoggerPIMPL() noexcept            = default;
 
-    LoggerPIMPL()                   = default;
-    virtual ~LoggerPIMPL() noexcept = default;
+    void trace(const_string_reference msg) { trace_(msg); }
+    void debug(const_string_reference msg) { debug_(msg); }
+    void info(const_string_reference msg) { info_(msg); }
+    void warn(const_string_reference msg) { warn_(msg); }
+    void error(const_string_reference msg) { error_(msg); }
+    void critical(const_string_reference msg) { critical_(msg); }
 
-    pimpl_ptr clone() const { return clone_(); }
-
-    ostream_reference stream() { return stream_(); }
+protected:
+    // Protected to avoid slicing
+    LoggerPIMPL(LoggerPIMPL&&)            = default;
+    LoggerPIMPL& operator=(LoggerPIMPL&&) = default;
 
 private:
-    virtual pimpl_ptr clone_() const    = 0;
-    virtual ostream_reference stream_() = 0;
+    virtual void trace_(const_string_reference msg) = 0;
+
+    virtual void debug_(const_string_reference msg) = 0;
+
+    virtual void info_(const_string_reference msg) = 0;
+
+    virtual void warn_(const_string_reference msg) = 0;
+
+    virtual void error_(const_string_reference msg) = 0;
+
+    virtual void critical_(const_string_reference msg) = 0;
 };
 
 } // namespace parallelzone::detail_

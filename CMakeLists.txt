@@ -61,6 +61,14 @@ cpp_find_or_build_dependency(
                BUILD_TESTING=OFF
 )
 
+cpp_find_or_build_dependency(
+    spdlog
+    URL github.com/gabime/spdlog
+    VERSION ad0e89cbfb4d0c1ce4d097e134eb7be67baebb36
+    BUILD_TARGET spdlog
+    FIND_TARGET spdlog::spdlog
+)
+
 # PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
 if("${BUILD_PAPI_BINDINGS}")
     include(build_papi)
@@ -90,7 +98,7 @@ cpp_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIR "${project_inc_dir}"
-    DEPENDS MADworld bphash::bphash cereal::cereal
+    DEPENDS MADworld bphash::bphash cereal::cereal spdlog::spdlog
 
 )
 

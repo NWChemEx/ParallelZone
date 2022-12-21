@@ -205,49 +205,49 @@ TEST_CASE("RuntimeView") {
         REQUIRE(argc_argv.count(rank0_ram) >= 1);
     }
 
-    SECTION("progress_logger") {
-        // Redirect STDOUT to string
-        std::stringstream str;
-        auto cout_rdbuf = std::cout.rdbuf(str.rdbuf());
+    // SECTION("progress_logger") {
+    //     // Redirect STDOUT to string
+    //     std::stringstream str;
+    //     auto cout_rdbuf = std::cout.rdbuf(str.rdbuf());
 
-        // Print something to progress logger
-        argc_argv.progress_logger().stream()
-          << "Hello from " << argc_argv.madness_world().rank() << std::flush;
+    //     // Print something to progress logger
+    //     argc_argv.progress_logger().stream()
+    //       << "Hello from " << argc_argv.madness_world().rank() << std::flush;
 
-        // Reset STDOUT
-        std::cout.rdbuf(cout_rdbuf);
+    //     // Reset STDOUT
+    //     std::cout.rdbuf(cout_rdbuf);
 
-        // Check output was only on root rank
-        if(argc_argv.madness_world().rank() == 0) {
-            REQUIRE(str.str() == "Hello from 0");
-        } else {
-            REQUIRE(str.str() == "");
-        }
+    //     // Check output was only on root rank
+    //     if(argc_argv.madness_world().rank() == 0) {
+    //         REQUIRE(str.str() == "Hello from 0");
+    //     } else {
+    //         REQUIRE(str.str() == "");
+    //     }
 
-        REQUIRE_THROWS_AS(null.progress_logger(), std::runtime_error);
-    }
+    //     REQUIRE_THROWS_AS(null.progress_logger(), std::runtime_error);
+    // }
 
-    SECTION("debug_logger") {
-        // Redirect STDERR to string
-        std::stringstream str;
-        auto cerr_rdbuf = std::cerr.rdbuf(str.rdbuf());
+    // SECTION("debug_logger") {
+    //     // Redirect STDERR to string
+    //     std::stringstream str;
+    //     auto cerr_rdbuf = std::cerr.rdbuf(str.rdbuf());
 
-        // Print something to debug logger
-        argc_argv.debug_logger().stream()
-          << "Hello from " << argc_argv.madness_world().rank() << std::flush;
+    //     // Print something to debug logger
+    //     argc_argv.debug_logger().stream()
+    //       << "Hello from " << argc_argv.madness_world().rank() << std::flush;
 
-        // Reset STDERR
-        std::cerr.rdbuf(cerr_rdbuf);
+    //     // Reset STDERR
+    //     std::cerr.rdbuf(cerr_rdbuf);
 
-        // Check output was only on root rank
-        if(argc_argv.madness_world().rank() == 0) {
-            REQUIRE(str.str() == "Hello from 0");
-        } else {
-            REQUIRE(str.str() == "");
-        }
+    //     // Check output was only on root rank
+    //     if(argc_argv.madness_world().rank() == 0) {
+    //         REQUIRE(str.str() == "Hello from 0");
+    //     } else {
+    //         REQUIRE(str.str() == "");
+    //     }
 
-        REQUIRE_THROWS_AS(null.debug_logger(), std::runtime_error);
-    }
+    //     REQUIRE_THROWS_AS(null.debug_logger(), std::runtime_error);
+    // }
 
     SECTION("gather") {
         using data_type = std::vector<std::string>;

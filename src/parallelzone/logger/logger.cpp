@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-#include "parallelzone/logger/logger.hpp"
+#include "detail_/logger_pimpl.hpp"
 #include <fstream>
 #include <iostream>
 namespace parallelzone {
-
-namespace detail_ {
-class LoggerPIMPL {
-    using my_type = LoggerPIMPL;
-    using my_ptr  = std::unique_ptr<my_type>;
-
-public:
-    LoggerPIMPL()                   = default;
-    virtual ~LoggerPIMPL() noexcept = default;
-
-    virtual my_ptr clone() const   = 0;
-    virtual std::ostream& stream() = 0;
-};
-} // namespace detail_
 
 Logger::Logger() : Logger(nullptr) {}
 Logger::Logger(pimpl_ptr&& p) : m_pimpl_(std::move(p)) {}
@@ -66,24 +52,6 @@ Logger& Logger::print(const std::string& msg) {
 }
 
 #undef ASSERT_PIMPL
-
-class StdOutLogger : public detail_::LoggerPIMPL {
-    using base_type = detail_::LoggerPIMPL;
-    using base_ptr  = std::unique_ptr<base_type>;
-    using my_type   = StdOutLogger;
-
-public:
-    StdOutLogger()                 = default;
-    ~StdOutLogger() noexcept final = default;
-
-    StdOutLogger(const my_type&)                = default;
-    StdOutLogger(my_type&&) noexcept            = default;
-    StdOutLogger& operator=(const my_type&)     = default;
-    StdOutLogger& operator=(my_type&&) noexcept = default;
-
-    std::ostream& stream() final { return std::cout; }
-    base_ptr clone() const final { return std::make_unique<my_type>(); }
-};
 
 Logger make_stdout_logger() { return Logger(std::make_unique<StdOutLogger>()); }
 
@@ -137,22 +105,6 @@ protected:
 Logger make_file_logger(std::string fname) {
     return Logger(std::make_unique<FileLogger>(fname));
 }
-
-// TODO: This can probbaly be made more performance by adding
-// a custom extension of std::streambuf that has a nullcall in
-// xputs / overflow
-class NullLogger : public FileLogger {
-    using my_type = NullLogger;
-
-public:
-    NullLogger() : FileLogger("/dev/null"){};
-    ~NullLogger() noexcept final = default;
-
-    NullLogger(const my_type&)                = default;
-    NullLogger(my_type&&) noexcept            = default;
-    NullLogger& operator=(const my_type&)     = default;
-    NullLogger& operator=(my_type&&) noexcept = default;
-};
 
 Logger make_null_logger() { return Logger(std::make_unique<NullLogger>()); }
 

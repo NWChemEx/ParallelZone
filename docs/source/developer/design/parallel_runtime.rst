@@ -61,7 +61,7 @@ Parallel Runtime Design
 
 .. _fig_parallel_runtime:
 
-.. figure:: ../../assets/parallel_runtime_design.png
+.. figure:: assets/parallel_runtime_design.png
    :align: center
 
    High-level architecture of the parallel runtime component of ParallelZone.

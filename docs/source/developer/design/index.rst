@@ -68,4 +68,5 @@ Utilities Design
 
    hashing
    serialization
+   logging
    reflection

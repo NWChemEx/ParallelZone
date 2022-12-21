@@ -29,10 +29,19 @@ class LoggerPIMPL;
  *  A class to manage various stream loggers under a unified API
  */
 class Logger {
-    using pimpl_type = detail_::LoggerPIMPL;
-    using pimpl_ptr  = std::unique_ptr<pimpl_type>;
-
 public:
+    /// Type of the object used to implement a Logger instance
+    using pimpl_type = detail_::LoggerPIMPL;
+
+    /// Type of a unique_ptr to an object of type pimpl_type
+    using pimpl_ptr = std::unique_ptr<pimpl_type>;
+
+    /// Type of a raw output stream
+    using ostream_type = std::ostream;
+
+    /// Type of a read/write reference to an object of type ostream_type
+    using ostream_reference = ostream_type&;
+
     /// Construct a Logger instance without implementation
     Logger();
 
@@ -84,7 +93,7 @@ public:
      *
      * @returns Refeference to underlying stream instance
      */
-    std::ostream& stream();
+    ostream_reference stream();
 
     /**
      * @brief Print a message to log

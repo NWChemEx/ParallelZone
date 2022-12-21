@@ -14,9 +14,9 @@
 
 .. _compp_design:
 
-#####################
-Designing ComPP Class
-#####################
+######################
+Designing CommPP Class
+######################
 
 The design specifications in :ref:`runtime_view_design` and :ref:`ram_design`
 call for a ``CommPP`` class to take care of the MPI operations. Here we
@@ -54,7 +54,7 @@ CommPP Architecture
 
 .. _fig_compp:
 
-.. figure:: ../../assets/compp.png
+.. figure:: assets/compp.png
    :align: center
 
    Overall architecture of the CommPP class.

@@ -56,7 +56,7 @@ Architecture of the RAM Class
 
 .. _fig_ram:
 
-.. figure:: ../../assets/ram.png
+.. figure:: assets/ram.png
    :align: center
 
    High-level architecture of the RAM class.

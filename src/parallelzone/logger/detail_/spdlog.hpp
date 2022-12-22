@@ -66,8 +66,8 @@ private:
     std::shared_ptr<spdlog::logger> m_logger_;
 };
 
-inline auto make_stdout_color_mt() {
-    return SpdlogPIMPL(spdlog::stdout_color_mt("stdout"));
+inline auto make_stdout_color_mt(const std::string& name) {
+    return SpdlogPIMPL(spdlog::stdout_color_mt(name));
 }
 
 inline auto make_file_mt(const std::string& file_name) {

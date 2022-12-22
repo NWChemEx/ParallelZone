@@ -40,7 +40,7 @@ public:
     using pimpl_type = detail_::LoggerPIMPL;
 
     /// Type of a unique_ptr to an object of type pimpl_type
-    using pimpl_ptr = std::shared_ptr<pimpl_type>;
+    using pimpl_ptr = std::unique_ptr<pimpl_type>;
 
     /// Type of a string-based message
     using string_type = std::string;

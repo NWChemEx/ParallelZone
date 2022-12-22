@@ -15,49 +15,30 @@
  */
 
 #include "logger_pimpl.hpp"
-#include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/ostream_sink.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/spdlog.h>
-#include <sstream>
 
 namespace parallelzone::detail_ {
 
-inline auto map_severity_levels(Logger::severity s) {
-    switch(s) {
-        case(Logger::severity::trace): {
-            return spdlog::level::trace;
-        }
-        case(Logger::severity::debug): {
-            return spdlog::level::debug;
-        }
-        case(Logger::severity::info): {
-            return spdlog::level::info;
-        }
-        case(Logger::severity::warn): {
-            return spdlog::level::warn;
-        }
-        case(Logger::severity::error): {
-            return spdlog::level::err;
-        }
-        case(Logger::severity::critical): {
-            return spdlog::level::critical;
-        }
-    }
-
-    throw std::logic_error("Did you forget to register a new severity?");
-}
-
+/** @brief LoggerPIMPL object which wraps a spdlog::logger
+ *
+ *  This class implements ParallelZone's logger by punting to spdlog. Internally
+ *  it holds an spdlog::logger. Users of this PIMPL should set an spdlog::logger
+ *  up to their liking and then make an SpdlogPIMPL. Free functions which wrap
+ *  common scenarios: stdout and files are provided.
+ */
 class SpdlogPIMPL : public LoggerPIMPL {
 public:
     /// Type of a view of a Spdlog logger object
-    using spdlog_ptr = std::shared_ptr<spdlog::logger>;
+    using spdlog_type = spdlog::logger;
 
     /// Deleted to help avoid null state
     SpdlogPIMPL() = delete;
 
-    /**
-     * @brief Construct a new Spdlog P I M P L object
+    /** @brief Construct a new SpdlogPIMPL object which wraps @p ptr
+     *
+     * SpdlogPIMPL objects work by wrapping Spdlog::logger objects. This ctor
+     * takes an already created Spdlog::logger object and builds *this around
+     * it.
      *
      * @param[in] ptr The Spdlog logger we're wrapping. Assumed to be a non-
      *                null pointer.
@@ -65,27 +46,73 @@ public:
      * @throws std::runtime_error if @p ptr is a null pointer. Strong throw
      *                            guarantee.
      */
-    explicit SpdlogPIMPL(spdlog_ptr ptr) : m_logger_(ptr) {
-        if(!m_logger_) throw std::runtime_error("Expected non-null pointer.");
-        m_logger_->set_level(spdlog::level::trace);
-    }
+    explicit SpdlogPIMPL(spdlog_type logger);
+
+protected:
+    SpdlogPIMPL(const SpdlogPIMPL&)            = default;
+    SpdlogPIMPL& operator=(const SpdlogPIMPL&) = default;
+    SpdlogPIMPL(SpdlogPIMPL&&)                 = default;
+    SpdlogPIMPL& operator=(SpdlogPIMPL&&)      = default;
 
 private:
-    /// Implements LoggerPIMPL::log by dispatching to spdlog::logger::log
-    void log_(severity_type severity, const_string_reference msg) {
-        m_logger_->log(map_severity_levels(severity), msg);
-    }
+    /// Calls the copy ctor on *this
+    pimpl_ptr clone_() const override;
 
-    /// The actual spdlog logger
-    std::shared_ptr<spdlog::logger> m_logger_;
+    /// Implements set_severity_ by setting the level on m_logger_
+    void set_severity_(severity_type severity) override;
+
+    /// Implements LoggerPIMPL::log by dispatching to spdlog::logger::log
+    void log_(severity_type severity, const_string_reference msg) override;
+
+    /** @brief Implements LoggerPIMPL::are_equal by downcasting @p other and
+     *         comparing m_logger_ to other.m_logger_
+     *
+     *  This method compares the name and sinks of the wrapped spdlog object.
+     *  It does not compare the levels or pattern (the former seems to
+     *  auto-synch and the latter is not exposed).
+     *
+     *  @param[in] other The object to compare to *this.
+     *
+     *  @return True if @p other is a Spdlog object and  @p other and *this
+     *          have the same state. False otherwise.
+     */
+    bool are_equal_(const LoggerPIMPL& other) const noexcept override;
+
+    /// The actual spdlog logger, shared_ptr b/c it functions like a singleton
+    spdlog_type m_logger_;
 };
 
-inline auto make_stdout_color_mt(const std::string& name) {
-    return SpdlogPIMPL(spdlog::stdout_color_mt(name));
-}
+// -----------------------------------------------------------------------------
+// -- Factory functions
+// -----------------------------------------------------------------------------
 
-inline auto make_file_mt(const std::string& file_name) {
-    return SpdlogPIMPL(spdlog::basic_logger_mt(file_name, file_name));
-}
+/** @brief Creates a SpdlogPIMPL whose sink is standard out
+ *
+ *  @relates SpdlogPIMPL
+ *
+ *  The object resulting from this function is setup so that logged records are
+ *  directed to standard out, in color, and in a thread-safe manner.
+ *
+ *  @param[in] name An ID for the logger.
+ *
+ *  @return SpdlogPIMPL wrapping an spdlog::logger setup according to this
+ *          function's description.
+ */
+SpdlogPIMPL make_stdout_color_mt(const std::string& name);
+
+/** @brief Creates a SpdlogPIMPL whose sink is the specified file.
+ *
+ *  @relates SpdlogPIMPL
+ *
+ *  The object resulting from this function is setup so that logged records are
+ *  written directly to the provided file. If the file already exists the
+ *  resulting logger will append to it.
+ *
+ *  @param[in] name An ID for the logger.
+ *
+ *  @return SpdlogPIMPL wrapping an spdlog::logger setup according to this
+ *          function's description.
+ */
+SpdlogPIMPL make_file_mt(const std::string& name, const std::string& file_name);
 
 } // namespace parallelzone::detail_

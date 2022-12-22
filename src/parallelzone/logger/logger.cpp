@@ -30,9 +30,13 @@ Logger& Logger::operator=(Logger&&) noexcept = default;
 #define ASSERT_PIMPL(p) \
     if(!p) throw std::runtime_error("LoggerPIMPL not set");
 
-Logger::Logger(const Logger& other) = default;
+Logger::Logger(const Logger& other) :
+  m_pimpl_(other.m_pimpl_ ? other.m_pimpl_->clone() : nullptr) {}
 
-Logger& Logger::operator=(const Logger& other) = default;
+Logger& Logger::operator=(const Logger& other) {
+    Logger(other).m_pimpl_.swap(m_pimpl_);
+    return *this;
+}
 
 Logger& Logger::print(const_string_reference msg) {
     if(m_pimpl_) m_pimpl_->log(severity::info, msg);

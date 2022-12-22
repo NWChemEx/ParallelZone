@@ -23,43 +23,57 @@
 
 namespace parallelzone::detail_ {
 
+inline auto map_severity_levels(Logger::severity s) {
+    switch(s) {
+        case(Logger::severity::trace): {
+            return spdlog::level::trace;
+        }
+        case(Logger::severity::debug): {
+            return spdlog::level::debug;
+        }
+        case(Logger::severity::info): {
+            return spdlog::level::info;
+        }
+        case(Logger::severity::warn): {
+            return spdlog::level::warn;
+        }
+        case(Logger::severity::error): {
+            return spdlog::level::err;
+        }
+        case(Logger::severity::critical): {
+            return spdlog::level::critical;
+        }
+    }
+
+    throw std::logic_error("Did you forget to register a new severity?");
+}
+
 class SpdlogPIMPL : public LoggerPIMPL {
 public:
+    /// Type of a view of a Spdlog logger object
     using spdlog_ptr = std::shared_ptr<spdlog::logger>;
 
-    SpdlogPIMPL() = default;
+    /// Deleted to help avoid null state
+    SpdlogPIMPL() = delete;
 
-    explicit SpdlogPIMPL(spdlog_ptr ptr) : m_logger_(ptr) {}
+    /**
+     * @brief Construct a new Spdlog P I M P L object
+     *
+     * @param[in] ptr The Spdlog logger we're wrapping. Assumed to be a non-
+     *                null pointer.
+     *
+     * @throws std::runtime_error if @p ptr is a null pointer. Strong throw
+     *                            guarantee.
+     */
+    explicit SpdlogPIMPL(spdlog_ptr ptr) : m_logger_(ptr) {
+        if(!m_logger_) throw std::runtime_error("Expected non-null pointer.");
+        m_logger_->set_level(spdlog::level::trace);
+    }
 
 private:
-    void trace_(const_string_reference msg) override {
-        if(!m_logger_) return;
-        m_logger_->trace(msg);
-    }
-
-    void debug_(const_string_reference msg) override {
-        if(!m_logger_) return;
-        m_logger_->debug(msg);
-    }
-
-    void info_(const_string_reference msg) override {
-        if(!m_logger_) return;
-        m_logger_->info(msg);
-    }
-
-    void warn_(const_string_reference msg) override {
-        if(!m_logger_) return;
-        m_logger_->warn(msg);
-    }
-
-    void error_(const_string_reference msg) override {
-        if(!m_logger_) return;
-        m_logger_->error(msg);
-    }
-
-    void critical_(const_string_reference msg) override {
-        if(!m_logger_) return;
-        m_logger_->critical(msg);
+    /// Implements LoggerPIMPL::log by dispatching to spdlog::logger::log
+    void log_(severity_type severity, const_string_reference msg) {
+        m_logger_->log(map_severity_levels(severity), msg);
     }
 
     /// The actual spdlog logger
@@ -72,11 +86,6 @@ inline auto make_stdout_color_mt(const std::string& name) {
 
 inline auto make_file_mt(const std::string& file_name) {
     return SpdlogPIMPL(spdlog::basic_logger_mt(file_name, file_name));
-}
-
-inline auto make_sstream_mt(const std::string& name, std::stringstream& ss) {
-    auto sink = std::make_shared<spdlog::sinks::ostream_sink_mt>(ss);
-    return SpdlogPIMPL(std::make_shared<spdlog::logger>(name, sink));
 }
 
 } // namespace parallelzone::detail_

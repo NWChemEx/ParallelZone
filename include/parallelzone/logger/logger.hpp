@@ -34,6 +34,8 @@ class LoggerPIMPL;
  */
 class Logger {
 public:
+    enum class severity { trace, debug, info, warn, error, critical };
+
     /// Type of the object used to implement a Logger instance
     using pimpl_type = detail_::LoggerPIMPL;
 

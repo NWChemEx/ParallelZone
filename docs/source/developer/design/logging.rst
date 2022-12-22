@@ -82,6 +82,8 @@ Logging Considerations
    - Assume logging disabled for performance runs
    - Ideally logger configurable at compile and runtime.
 
+.. _existing_logging_solutions:
+
 **************************
 Existing Logging Solutions
 **************************
@@ -248,15 +250,17 @@ the ones we looked at and is unlikely to be exhaustive.
 Logging Design
 **************
 
-Logging Component Architecture
-==============================
-
 .. _logging_arch:
 
 .. figure:: assets/logging_arch.png
    :align: center
 
    Software architecture of ParallelZone's Logging component.
+
+Ultimately none of the widely available logging solutions do everything we want
+and we have chosen to have the user-facing logger be written by us. This 
+provides a stable API to users of ParallelZone, while allowing ParallelZone
+developers to graft the missing features onto existing logging libraries.
 
 The current logging architecture is summarized in Figure :numref:`logging_arch`.
 As a first pass we have adopted a very simple design where the overall program
@@ -298,52 +302,23 @@ specific. At present the global logger is implemented so only the root process
 logs. So if process-local data is logged, the log only reflects the value of
 the root process's record and all other records are not logged.
 
-Logger Architecture
-===================
-
-.. _logger_arch:
-
-.. figure:: assets/logger_arch.png
-   :align: center
-
-   Architecture of the Logger class.
-
-For the first implementation of the logging component we adopted the simple
-architecture shown in Figure :numref:`logger_arch`. Users of ParallelZone see
-one class, ``Logger``. As a first pass, ``Logger`` simply provides APIs for
-printing arbitrary data at a specified severity level. Eventually, this may be
-expanded to support more fine-grained control over the log formatting.
-Internally ``Logger`` is implemented by a ``LoggerPIMPL`` object. In this first
-pass the ``LoggerPIMPL`` is simply a wrapper around Spdlog and controlling the
-sink for the ``Logger`` class amounts to configuring the Spdlog object in the
-PIMPL. Ultimately we chose to use spdlog because it is relatively lightweight,
-has enough features for our current needs, and is well supported.
-
-This design addresses the above considerations by:
+This architecture addresses the considerations raised above by:
 
 1. Multiple loggers.
 
-   - We can have multiple ``Logger`` instances. Each instance is configured for
-     a specific scope.
+   - We can have multiple logger instances. Each instance is configured 
+     for a specific scope (global vs. process-local).
 
-#. Multiple logging levels.
+3. Concurrency aware.
 
-   - Gained by using Spdlog.
-
-#. Concurrency aware.
-
-   - Spdlog is thread-safe.
    - Distributed logging accomplished by having two logs, one for replicated
      and one for distributed data.
 
-#. Different "sinks"
 
-   - Provided by Spdlog.
-
-#. Enable/disable logging
-
-   - Spdlog has a null sink.
-   - Spdlog supports log filtering by severity.
+The remaining issues, including the thread-safety requirement of consideration
+3, are punted to the ``LoggerView`` class, which is the class actually
+implementing the global and process-local loggers. The design of ``LoggerView`` 
+is provided here: :ref:`logger_view_design`.
 
 *********************
 Future Considerations
@@ -352,8 +327,7 @@ Future Considerations
 The current design satisfies our current needs, but should be extensible
 if/when users want to customize logging more. In particular:
 
-- Can add ``Sink`` classes so users define their own sink behavior (Spdlog
-  also allows custom sinks, so our ``Sink`` class would wrap theirs).
+
 - Add ability to further scope loggers. Imagine having loggers per class, or
   for specific instances. Turning on/off such loggers makes it easier to track
   what's going on with the class and instances.

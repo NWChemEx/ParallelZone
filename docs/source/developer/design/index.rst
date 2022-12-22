@@ -69,4 +69,5 @@ Utilities Design
    hashing
    serialization
    logging
+   logger_view
    reflection

@@ -35,7 +35,7 @@ Logger::Logger(const Logger& other) = default;
 Logger& Logger::operator=(const Logger& other) = default;
 
 Logger& Logger::print(const_string_reference msg) {
-    if(m_pimpl_) m_pimpl_->info(msg);
+    if(m_pimpl_) m_pimpl_->log(severity::info, msg);
     return *this;
 }
 

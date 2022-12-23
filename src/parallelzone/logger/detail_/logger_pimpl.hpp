@@ -23,7 +23,7 @@ namespace parallelzone::detail_ {
 /**
  * @brief Defines the API for Logger implementations
  *
- * The LoggerPIMPL class decouples the ``Logger`` from the sink it logs to.
+ * The LoggerPIMPL class decouples the `Logger` from the sink it logs to.
  * The details of the sink are implemented by classes which derive from
  * LoggerPIMPL.
  */
@@ -33,8 +33,11 @@ private:
     using parent_type = Logger;
 
 public:
+    /// Ultimately a typedef of Logger::string_type;
+    using string_type = parent_type::string_type;
+
     /// Ultimately a typedef of Logger::const_string_reference
-    using const_string_reference = std::string;
+    using const_string_reference = parent_type::const_string_reference;
 
     /// Ultimately a typedef of Logger::severity
     using severity_type = parent_type::severity;
@@ -67,7 +70,18 @@ public:
 
     /** @brief Used to set the severity threshold for logging.
      *
+     *  All log messages have a severity level. To minimize noise users may
+     *  choose to only display log messages with a certain severity level (or
+     *  greater). This method sets the minimum severity log for display to
+     *  @p severity. This means that log messages tagged with a severity of
+     *  @p severity, or greater, will be displayed.
      *
+     *  This method ultimately dispatches to set_severity_, which in turn
+     *  is implemented by the derived class.
+     *
+     *  @param[in] severity The minimum severity level to display.
+     *
+     *  @throw ??? Throws if the derived class's implementation throws.
      */
     void set_severity(severity_type severity) { set_severity_(severity); }
 
@@ -120,7 +134,6 @@ protected:
     LoggerPIMPL(LoggerPIMPL&&)                 = default;
     LoggerPIMPL& operator=(LoggerPIMPL&&)      = default;
 
-private:
     /** @brief Hook for polymorphic deep copy
      *
      *  The most derived class is responsible for making this method perform

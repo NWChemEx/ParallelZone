@@ -36,10 +36,11 @@ using namespace runtime;
 
 TEST_CASE("RuntimeView") {
     using pimpl_pointer = RuntimeView::pimpl_pointer;
+    using logger_type   = RuntimeView::logger_type;
 
     RuntimeView null(pimpl_pointer{});
-    RuntimeView defaulted;
     RuntimeView argc_argv = testing::PZEnvironment::comm_world();
+    RuntimeView defaulted;
 
     mpi_helpers::CommPP comm(defaulted.mpi_comm());
 
@@ -169,8 +170,9 @@ TEST_CASE("RuntimeView") {
     SECTION("at()") {
         REQUIRE_THROWS_AS(null.at(0), std::out_of_range);
         auto n_resource_sets = defaulted.size();
+        logger_type log;
         for(auto i = 0; i < n_resource_sets; ++i) {
-            auto corr = runtime::detail_::make_resource_set(i, comm);
+            auto corr = runtime::detail_::make_resource_set(i, comm, log);
             REQUIRE(defaulted.at(i) == corr);
             REQUIRE(argc_argv.at(i) == corr);
         }
@@ -185,8 +187,8 @@ TEST_CASE("RuntimeView") {
 
     SECTION("my_resource_set") {
         REQUIRE_THROWS_AS(null.my_resource_set(), std::runtime_error);
-
-        auto corr = runtime::detail_::make_resource_set(comm.me(), comm);
+        logger_type log;
+        auto corr = runtime::detail_::make_resource_set(comm.me(), comm, log);
         REQUIRE(defaulted.my_resource_set() == corr);
         REQUIRE(argc_argv.my_resource_set() == corr);
     }
@@ -205,49 +207,13 @@ TEST_CASE("RuntimeView") {
         REQUIRE(argc_argv.count(rank0_ram) >= 1);
     }
 
-    // SECTION("progress_logger") {
-    //     // Redirect STDOUT to string
-    //     std::stringstream str;
-    //     auto cout_rdbuf = std::cout.rdbuf(str.rdbuf());
-
-    //     // Print something to progress logger
-    //     argc_argv.progress_logger().stream()
-    //       << "Hello from " << argc_argv.madness_world().rank() << std::flush;
-
-    //     // Reset STDOUT
-    //     std::cout.rdbuf(cout_rdbuf);
-
-    //     // Check output was only on root rank
-    //     if(argc_argv.madness_world().rank() == 0) {
-    //         REQUIRE(str.str() == "Hello from 0");
-    //     } else {
-    //         REQUIRE(str.str() == "");
-    //     }
-
-    //     REQUIRE_THROWS_AS(null.progress_logger(), std::runtime_error);
-    // }
-
-    // SECTION("debug_logger") {
-    //     // Redirect STDERR to string
-    //     std::stringstream str;
-    //     auto cerr_rdbuf = std::cerr.rdbuf(str.rdbuf());
-
-    //     // Print something to debug logger
-    //     argc_argv.debug_logger().stream()
-    //       << "Hello from " << argc_argv.madness_world().rank() << std::flush;
-
-    //     // Reset STDERR
-    //     std::cerr.rdbuf(cerr_rdbuf);
-
-    //     // Check output was only on root rank
-    //     if(argc_argv.madness_world().rank() == 0) {
-    //         REQUIRE(str.str() == "Hello from 0");
-    //     } else {
-    //         REQUIRE(str.str() == "");
-    //     }
-
-    //     REQUIRE_THROWS_AS(null.debug_logger(), std::runtime_error);
-    // }
+    SECTION("logger") {
+        if(defaulted.my_resource_set().mpi_rank() != 0) {
+            REQUIRE(defaulted.logger() == Logger());
+        } else {
+            REQUIRE(defaulted.logger() != Logger());
+        }
+    }
 
     SECTION("gather") {
         using data_type = std::vector<std::string>;
@@ -283,10 +249,13 @@ TEST_CASE("RuntimeView") {
     }
 
     SECTION("operator==/operator!=") {
+        // Different communicators
         REQUIRE(defaulted != null);
         REQUIRE_FALSE(defaulted == null);
 
-        REQUIRE(defaulted == argc_argv);
-        REQUIRE_FALSE(defaulted != argc_argv);
+        // Different loggers
+        defaulted.logger() = Logger();
+        REQUIRE(defaulted != argc_argv);
+        REQUIRE_FALSE(defaulted == argc_argv);
     }
 }

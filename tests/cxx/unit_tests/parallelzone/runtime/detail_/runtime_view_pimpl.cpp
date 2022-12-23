@@ -29,6 +29,8 @@ using namespace parallelzone::runtime::detail_;
  * ParallelZone (unless it just so happens that this is the only test run or
  * the last one).
  *
+ * At this point the logger is mainly just along for the ride, so we use null
+ * loggers for most tests.
  */
 
 TEST_CASE("RuntimeViewPIMPL") {
@@ -36,7 +38,8 @@ TEST_CASE("RuntimeViewPIMPL") {
     auto& world = rt.madness_world();
     RuntimeViewPIMPL::comm_type comm(world.mpi.comm().Get_mpi_comm());
     RuntimeViewPIMPL::comm_type null_comm;
-    RuntimeViewPIMPL pimpl(false, rt.madness_world());
+    parallelzone::Logger log;
+    RuntimeViewPIMPL pimpl(false, rt.madness_world(), log);
 
     SECTION("CTor") {
         REQUIRE_FALSE(pimpl.m_did_i_start_madness);
@@ -44,18 +47,29 @@ TEST_CASE("RuntimeViewPIMPL") {
     }
 
     SECTION("at") {
-        REQUIRE(pimpl.at(0) == make_resource_set(0, comm));
+        REQUIRE(pimpl.at(0) == make_resource_set(0, comm, log));
 
         if(comm.size() > 1) {
-            REQUIRE(pimpl.at(1) == make_resource_set(1, comm));
+            REQUIRE(pimpl.at(1) == make_resource_set(1, comm, log));
         }
     }
 
     SECTION("operator==") {
-        RuntimeViewPIMPL other(false, rt.madness_world());
-        REQUIRE(pimpl == other);
+        SECTION("Same") {
+            RuntimeViewPIMPL other(false, rt.madness_world(), log);
+            REQUIRE(pimpl == other);
+        }
 
-        other.m_comm = RuntimeViewPIMPL::comm_type{};
-        REQUIRE_FALSE(pimpl == other);
+        SECTION("Different communicator") {
+            RuntimeViewPIMPL other(false, rt.madness_world(), log);
+            other.m_comm = null_comm;
+            REQUIRE_FALSE(pimpl == other);
+        }
+
+        SECTION("Different logger") {
+            // This assumes the default logger isn't a null logger
+            RuntimeViewPIMPL other(false, rt.madness_world(), rt.logger());
+            REQUIRE_FALSE(pimpl == other);
+        }
     }
 }

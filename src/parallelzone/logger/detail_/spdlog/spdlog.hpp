@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#pragma once
 
-#include "logger_pimpl.hpp"
+#include "../logger_pimpl.hpp"
 #include <spdlog/spdlog.h>
 
 namespace parallelzone::detail_ {
 
 /** @brief LoggerPIMPL object which wraps a spdlog::logger
  *
- *  This class implements ParallelZone's logger by punting to spdlog. Internally
- *  it holds an spdlog::logger. Users of this PIMPL should set an spdlog::logger
- *  up to their liking and then make an SpdlogPIMPL. Free functions which wrap
- *  common scenarios: stdout and files are provided.
+ *  This class is a common base class for when the LoggerPIMPL is implemented
+ *  by Spdlog. This class holds the actual spdlog::logger and takes care of
+ *  comparing the ids. Comparing additional state, including the sinks, is
+ *  punted to the derived classes.
  */
 class SpdlogPIMPL : public LoggerPIMPL {
 public:
@@ -38,7 +39,9 @@ public:
      *
      * SpdlogPIMPL objects work by wrapping Spdlog::logger objects. This ctor
      * takes an already created Spdlog::logger object and builds *this around
-     * it.
+     * it. In most cases users will not call this directly. Instead they will
+     * instantiate an instance of the derived class, which will then call this
+     * ctor.
      *
      * @param[in] ptr The Spdlog logger we're wrapping. Assumed to be a non-
      *                null pointer.
@@ -54,8 +57,7 @@ protected:
     SpdlogPIMPL(SpdlogPIMPL&&)                 = default;
     SpdlogPIMPL& operator=(SpdlogPIMPL&&)      = default;
 
-private:
-    /// Calls the copy ctor on *this
+    /// Calls the copy ctor on *this, derived classes must override too
     pimpl_ptr clone_() const override;
 
     /// Implements set_severity_ by setting the level on m_logger_
@@ -71,6 +73,8 @@ private:
      *  It does not compare the levels or pattern (the former seems to
      *  auto-synch and the latter is not exposed).
      *
+     *  Derived classes must override this method too.
+     *
      *  @param[in] other The object to compare to *this.
      *
      *  @return True if @p other is a Spdlog object and  @p other and *this
@@ -78,41 +82,9 @@ private:
      */
     bool are_equal_(const LoggerPIMPL& other) const noexcept override;
 
+private:
     /// The actual spdlog logger, shared_ptr b/c it functions like a singleton
     spdlog_type m_logger_;
 };
-
-// -----------------------------------------------------------------------------
-// -- Factory functions
-// -----------------------------------------------------------------------------
-
-/** @brief Creates a SpdlogPIMPL whose sink is standard out
- *
- *  @relates SpdlogPIMPL
- *
- *  The object resulting from this function is setup so that logged records are
- *  directed to standard out, in color, and in a thread-safe manner.
- *
- *  @param[in] name An ID for the logger.
- *
- *  @return SpdlogPIMPL wrapping an spdlog::logger setup according to this
- *          function's description.
- */
-SpdlogPIMPL make_stdout_color_mt(const std::string& name);
-
-/** @brief Creates a SpdlogPIMPL whose sink is the specified file.
- *
- *  @relates SpdlogPIMPL
- *
- *  The object resulting from this function is setup so that logged records are
- *  written directly to the provided file. If the file already exists the
- *  resulting logger will append to it.
- *
- *  @param[in] name An ID for the logger.
- *
- *  @return SpdlogPIMPL wrapping an spdlog::logger setup according to this
- *          function's description.
- */
-SpdlogPIMPL make_file_mt(const std::string& name, const std::string& file_name);
 
 } // namespace parallelzone::detail_

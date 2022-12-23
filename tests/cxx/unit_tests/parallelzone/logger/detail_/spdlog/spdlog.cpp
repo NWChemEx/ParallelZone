@@ -1,7 +1,23 @@
+/*
+ * Copyright 2022 NWChemEx-Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include <catch2/catch.hpp>
 #include <filesystem>
 #include <iostream>
-#include <parallelzone/logger/detail_/spdlog.hpp>
+#include <parallelzone/logger/detail_/spdlog/spdlog.hpp>
 #include <spdlog/sinks/ostream_sink.h>
 #include <sstream>
 
@@ -28,6 +44,33 @@ TEST_CASE("SpdlogPIMPL") {
     SECTION("clone") {
         auto p = ss_log.clone();
         REQUIRE(p->are_equal(ss_log));
+    }
+
+    SECTION("set_severity") {
+        std::vector<severity> all_levels{severity::trace, severity::debug,
+                                         severity::info,  severity::warn,
+                                         severity::error, severity::critical};
+
+        for(auto i = 0; i < all_levels.size(); ++i) {
+            SECTION("level = " + std::to_string(i)) {
+                ss_log.set_severity(all_levels[i]);
+                ss_log.log(severity::trace, "Hello trace");
+                ss_log.log(severity::debug, "Hello debug");
+                ss_log.log(severity::info, "Hello info");
+                ss_log.log(severity::warn, "Hello warn");
+                ss_log.log(severity::error, "Hello error");
+                ss_log.log(severity::critical, "Hello critical");
+
+                std::stringstream corr;
+                if(i < 1) corr << "[ss_log] [trace] Hello trace" << std::endl;
+                if(i < 2) corr << "[ss_log] [debug] Hello debug" << std::endl;
+                if(i < 3) corr << "[ss_log] [info] Hello info" << std::endl;
+                if(i < 4) corr << "[ss_log] [warning] Hello warn" << std::endl;
+                if(i < 5) corr << "[ss_log] [error] Hello error" << std::endl;
+                corr << "[ss_log] [critical] Hello critical" << std::endl;
+                REQUIRE(corr.str() == ss.str());
+            }
+        }
     }
 
     SECTION("log") {
@@ -64,27 +107,5 @@ TEST_CASE("SpdlogPIMPL") {
         // Different name
         auto name = SpdlogPIMPL(spdlog::logger("ss_log2", sink));
         REQUIRE_FALSE(ss_log.are_equal(name));
-
-        // Different sink
-        auto sink2     = std::make_shared<spdlog::sinks::ostream_sink_mt>(ss);
-        auto sink_temp = spdlog::logger("ss_log", sink2);
-        REQUIRE_FALSE(ss_log.are_equal(SpdlogPIMPL(sink_temp)));
-    }
-}
-
-TEST_CASE("make_stdout_color_mt") {
-    // Not really sure how to test this...
-    REQUIRE_NOTHROW(make_stdout_color_mt("hello"));
-}
-
-TEST_CASE("make_file_mt") {
-    // Make sure the file doesn't exist before we do this test. We don't want
-    // to mess things up if it does.
-    if(!std::filesystem::exists("file1.txt")) {
-        auto file = make_file_mt("hello", "file1.txt");
-        file.log(severity::info, "hello world");
-
-        REQUIRE(std::filesystem::exists("file1.txt"));
-        std::filesystem::remove("file1.txt");
     }
 }

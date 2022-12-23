@@ -30,7 +30,10 @@ using namespace parallelzone::runtime;
 TEST_CASE("ResourceSet") {
     using pimpl_type     = ResourceSet::pimpl_type;
     using comm_type      = parallelzone::mpi_helpers::CommPP;
+    using logger_type    = ResourceSet::logger_type;
     const auto null_rank = MPI_PROC_NULL;
+
+    logger_type log;
 
     auto& world = testing::PZEnvironment::comm_world();
     comm_type comm(world.mpi_comm());
@@ -39,7 +42,7 @@ TEST_CASE("ResourceSet") {
     ResourceSet defaulted;
 
     // Null b/c PIMPL was set to null
-    ResourceSet null(std::make_unique<pimpl_type>(null_rank, comm_type{}));
+    ResourceSet null(std::make_unique<pimpl_type>(null_rank, comm_type{}, log));
 
     // Not null or empty
     auto& rs = world.my_resource_set();
@@ -130,15 +133,11 @@ TEST_CASE("ResourceSet") {
         REQUIRE_NOTHROW(rs.ram());
     }
 
-    // SECTION("progress_logger") {
-    //     // TODO: Set and test progress logger
-    //     REQUIRE_THROWS_AS(defaulted.progress_logger(), std::runtime_error);
-    // }
-
-    // SECTION("debug_logger") {
-    //     // TODO: Set and test debug logger
-    //     REQUIRE_THROWS_AS(defaulted.debug_logger(), std::runtime_error);
-    // }
+    SECTION("logger") {
+        REQUIRE_THROWS_AS(defaulted.logger(), std::runtime_error);
+        REQUIRE(rs.logger() == log);
+        REQUIRE(null.logger() == log);
+    }
 
     SECTION("null") {
         REQUIRE(defaulted.null());
@@ -169,7 +168,8 @@ TEST_CASE("ResourceSet") {
         REQUIRE(defaulted != rs);
 
         // non-defaulted vs. non-defaulted (same state)
-        ResourceSet other_rs(std::make_unique<pimpl_type>(rs.mpi_rank(), comm));
+        ResourceSet other_rs(
+          std::make_unique<pimpl_type>(rs.mpi_rank(), comm, log));
         REQUIRE(rs == other_rs);
         REQUIRE_FALSE(rs != other_rs);
 

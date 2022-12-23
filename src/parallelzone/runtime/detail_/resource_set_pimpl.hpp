@@ -61,7 +61,7 @@ struct ResourceSetPIMPL {
      *  @param[in] my_mpi The MPI communicator to use for communication.
      *
      */
-    ResourceSetPIMPL(size_type rank, mpi_comm_type my_mpi);
+    ResourceSetPIMPL(size_type rank, mpi_comm_type my_mpi, logger_type logger);
 
     /** @brief Makes a deep copy of *this.
      *
@@ -76,10 +76,6 @@ struct ResourceSetPIMPL {
     pimpl_pointer clone() const {
         return std::make_unique<ResourceSetPIMPL>(*this);
     }
-
-    // -------------------------------------------------------------------------
-    // -- Getters
-    // -------------------------------------------------------------------------
 
     // -------------------------------------------------------------------------
     // -- Utility
@@ -112,6 +108,8 @@ struct ResourceSetPIMPL {
 
     /// The Runtime this resource set belongs to.
     mpi_comm_type m_my_mpi;
+
+    logger_pointer m_plogger;
 };
 
 /** @brief Determines the size of the RAM local to the current process
@@ -144,8 +142,10 @@ inline auto get_ram_size() {
  *                        strong throw guarantee.
  */
 inline auto make_resource_set(ResourceSetPIMPL::size_type rank,
-                              ResourceSetPIMPL::mpi_comm_type my_mpi) {
-    auto p = std::make_unique<ResourceSetPIMPL>(rank, my_mpi);
+                              ResourceSetPIMPL::mpi_comm_type my_mpi,
+                              ResourceSetPIMPL::logger_type logger) {
+    auto p =
+      std::make_unique<ResourceSetPIMPL>(rank, my_mpi, std::move(logger));
     return ResourceSet(std::move(p));
 }
 
@@ -153,17 +153,19 @@ inline auto make_resource_set(ResourceSetPIMPL::size_type rank,
 // -- Inline Implementations
 // -----------------------------------------------------------------------------
 
-inline ResourceSetPIMPL::ResourceSetPIMPL(size_type rank,
-                                          mpi_comm_type my_mpi) :
+inline ResourceSetPIMPL::ResourceSetPIMPL(size_type rank, mpi_comm_type my_mpi,
+                                          logger_type logger) :
   m_rank(rank),
   m_ram(hardware::detail_::make_ram(get_ram_size(), rank, my_mpi)),
-  m_my_mpi(my_mpi) {}
+  m_my_mpi(my_mpi),
+  m_plogger(std::make_unique<logger_type>(std::move(logger))) {}
 
 inline bool ResourceSetPIMPL::operator==(
   const ResourceSetPIMPL& rhs) const noexcept {
     // TODO: Compare loggers
-    auto my_state  = std::tie(m_rank, m_ram, m_my_mpi);
-    auto rhs_state = std::tie(rhs.m_rank, rhs.m_ram, rhs.m_my_mpi);
+    auto my_state = std::tie(m_rank, m_ram, m_my_mpi, *m_plogger);
+    auto rhs_state =
+      std::tie(rhs.m_rank, rhs.m_ram, rhs.m_my_mpi, *rhs.m_plogger);
 
     return my_state == rhs_state;
 }

@@ -408,6 +408,8 @@ public:
      */
     size_type count(const_ram_reference ram) const;
 
+    logger_reference logger() const;
+
     /**
      * @brief Get progress logger for this RuntimeView
      *
@@ -436,34 +438,6 @@ public:
      *                           throw guarantee.
      */
     // logger_reference debug_logger();
-
-    // -------------------------------------------------------------------------
-    // -- Setters
-    // -------------------------------------------------------------------------
-
-    /**
-     * @brief Set progress logger for this RuntimeView
-     *
-     * @param[in,out] l Logger instance to override the current progress logger
-     *                for this instance. After this operation @p l is in a
-     *                valid but otherwise undefined state.
-     *
-     * @throw std::runtime_error if *this is a view of the null runtime. Strong
-     *                           throw guarantee.
-     */
-    // void set_progress_logger(logger_type&& l);
-
-    /**
-     * @brief Set debug logger for this RuntimeView
-     *
-     * @param[in,out] l Logger instance to override the current debug logger
-     *                for this instance. After this operation @p l is in a
-     *                valid but otherwise undefined state.
-     *
-     * @throw std::runtime_error if *this is a view of the null runtime. Strong
-     *                           throw guarantee.
-     */
-    // void set_debug_logger(logger_type&& l);
 
     // -------------------------------------------------------------------------
     // -- MPI all-to-all methods

@@ -220,27 +220,16 @@ public:
      */
     const_ram_reference ram() const;
 
-    /**
-     * @brief Get progress logger for this ResourceSet
+    /** @brief Gets the process-local logger for this ResourceSet
      *
-     * This logger is intended to print progress information to a specified
-     * output associated with this ResourceSet.
+     * This logger can be used to print process-local messages. In general,
+     * process-local messages are messages whose content varies from process
+     * to process. For example, printing the local part of a distributed
+     * object.
      *
-     * @returns Logger instance intended for progress output associated with
-     *          this resource set.
+     * @returns Logger instance to use for logging process-local data.
      */
-    // logger_reference progress_logger();
-
-    /**
-     * @brief Get debug logger for this ResourceSet
-     *
-     * This logger is intended to print debug information to a specified
-     * output associated with this ResourceSet.
-     *
-     * @returns Logger instance intended for debug output associated with
-     *          this resource set.
-     */
-    // logger_reference debug_logger();
+    logger_reference logger() const;
 
     // -------------------------------------------------------------------------
     // -- Utility methods
@@ -304,22 +293,6 @@ public:
      *  @throw None No throw guarantee.
      */
     bool operator!=(const ResourceSet& rhs) const noexcept;
-
-    /**
-     * @brief Set progress logger for this ResourceSet
-     *
-     * @param[in] l Logger instance to override the current progress logger
-     *              for this instance.
-     */
-    // void set_progress_logger(logger_type&& l);
-
-    /**
-     * @brief Set debug logger for this ResourceSet
-     *
-     * @param[in] l Logger instance to override the current debug logger
-     *              for this instance.
-     */
-    // void set_debug_logger(logger_type&& l);
 
 private:
     /// True if this instance has a PIMPL, and false otherwise

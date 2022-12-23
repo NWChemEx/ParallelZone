@@ -26,10 +26,12 @@
 namespace parallelzone::runtime::detail_ {
 
 inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
-                                          madness_world_reference world) :
+                                          madness_world_reference world,
+                                          logger_type logger) :
   m_did_i_start_madness(did_i_start_madness),
   m_world(world),
   m_comm(world.mpi.comm().Get_mpi_comm()),
+  m_plogger(std::make_shared<logger_type>(std::move(logger))),
   m_resource_sets_() {
     // Pre-populate the current rank's resource set.
     instantiate_resource_set_(m_comm.me());
@@ -48,15 +50,20 @@ inline RuntimeViewPIMPL::const_resource_set_reference RuntimeViewPIMPL::at(
 
 inline bool RuntimeViewPIMPL::operator==(
   const RuntimeViewPIMPL& rhs) const noexcept {
-    // Right now the state of all resource sets is tied to the MPI communicator
-    // and can't be mutated. In turn, if two RuntimeViewPIMPL instances wrap the
-    // same communicator they also have the same resource sets.
-    return m_comm == rhs.m_comm;
+    // Except for the logger, all other RuntimeViewPIMPL state is tied to the
+    // MPI communicator
+    if(m_comm != rhs.m_comm) return false;
+    return *m_plogger == *rhs.m_plogger;
 }
 
 void RuntimeViewPIMPL::instantiate_resource_set_(size_type rank) const {
+    using rs_pimpl = detail_::ResourceSetPIMPL;
     if(m_resource_sets_.count(rank)) return;
-    auto p = std::make_unique<detail_::ResourceSetPIMPL>(rank, m_comm);
+
+    // Null loggers for now
+    logger_type logger;
+
+    auto p = std::make_unique<rs_pimpl>(rank, m_comm, std::move(logger));
     m_resource_sets_.emplace(rank, ResourceSet(std::move(p)));
 }
 

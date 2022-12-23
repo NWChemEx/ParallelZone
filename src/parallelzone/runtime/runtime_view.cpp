@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include "../logger/detail_/spdlog/stdout.hpp"
 #include "detail_/resource_set_pimpl.hpp"
 #include "detail_/runtime_view_pimpl.hpp"
 
@@ -43,14 +44,26 @@ auto start_madness(int argc, char** argv, const MPI_Comm& comm) {
     } else
         pworld = madness::World::find_instance(SafeMPI::Intracomm(comm));
 
-    return std::make_shared<detail_::RuntimeViewPIMPL>(initialize, *pworld);
+    Logger log;
+    if(pworld->rank() == 0) {
+        auto pimpl = parallelzone::detail_::StdoutSpdlog("Rank 0");
+        Logger(pimpl.clone()).swap(log);
+    }
+
+    using pimpl_type = detail_::RuntimeViewPIMPL;
+    return std::make_shared<pimpl_type>(initialize, *pworld, log);
 }
 
-ResourceSet make_resource_set(std::size_t rank, const RuntimeView& r) {
-    mpi_helpers::CommPP c(r.mpi_comm());
-    auto p = std::make_unique<detail_::ResourceSetPIMPL>(rank, c);
-    return ResourceSet(std::move(p));
-}
+// ResourceSet make_resource_set(std::size_t rank, const RuntimeView& r) {
+//     mpi_helpers::CommPP c(r.mpi_comm());
+
+//     // No process-local logger for the moment
+//     Logger log;
+
+//     auto p =
+//       std::make_unique<detail_::ResourceSetPIMPL>(rank, c, std::move(log));
+//     return ResourceSet(std::move(p));
+// }
 
 } // namespace
 
@@ -129,9 +142,9 @@ RuntimeView::size_type RuntimeView::count(const_ram_reference ram) const {
     return count;
 }
 
-// -----------------------------------------------------------------------------
-// -- Setters
-// -----------------------------------------------------------------------------
+RuntimeView::logger_reference RuntimeView::logger() const {
+    return *pimpl_().m_plogger;
+}
 
 // -----------------------------------------------------------------------------
 // -- Utility methods

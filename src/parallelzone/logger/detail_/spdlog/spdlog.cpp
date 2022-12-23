@@ -15,8 +15,6 @@
  */
 
 #include "spdlog.hpp"
-#include <spdlog/sinks/basic_file_sink.h>
-#include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace parallelzone::detail_ {
 
@@ -88,23 +86,7 @@ bool SpdlogPIMPL::are_equal_(const LoggerPIMPL& other) const noexcept {
 
     // if(m_logger_.level() != p->m_logger_.level()) return false;
 
-    return std::tie(m_logger_.name(), m_logger_.sinks()) ==
-           std::tie(p->m_logger_.name(), p->m_logger_.sinks());
-}
-
-// -----------------------------------------------------------------------------
-// -- Factory Functions
-// -----------------------------------------------------------------------------
-
-SpdlogPIMPL make_stdout_color_mt(const std::string& name) {
-    auto sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    return SpdlogPIMPL(spdlog::logger(name, sink));
-}
-
-SpdlogPIMPL make_file_mt(const std::string& name,
-                         const std::string& file_name) {
-    auto sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(file_name);
-    return SpdlogPIMPL(spdlog::logger(name, sink));
+    return m_logger_.name() == p->m_logger_.name();
 }
 
 } // namespace parallelzone::detail_

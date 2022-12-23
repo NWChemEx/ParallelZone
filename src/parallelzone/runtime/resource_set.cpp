@@ -62,9 +62,10 @@ ResourceSet::const_ram_reference ResourceSet::ram() const {
     throw std::out_of_range("ResourceSet has no RAM");
 }
 
-// -----------------------------------------------------------------------------
-// -- Setters
-// -----------------------------------------------------------------------------
+ResourceSet::logger_reference ResourceSet::logger() const {
+    assert_pimpl_();
+    return *m_pimpl_->m_plogger;
+}
 
 // -----------------------------------------------------------------------------
 // -- Utility methods

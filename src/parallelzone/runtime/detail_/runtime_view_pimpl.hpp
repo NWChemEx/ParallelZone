@@ -87,7 +87,8 @@ struct RuntimeViewPIMPL {
      *  @param[in] world The MADNESS world *this wraps.
      *
      */
-    RuntimeViewPIMPL(bool did_i_start_madness, madness_world_reference world);
+    RuntimeViewPIMPL(bool did_i_start_madness, madness_world_reference world,
+                     logger_type logger);
 
     /// Tears down MADNESS, when all references are gone (and if we started it)
     ~RuntimeViewPIMPL() noexcept;
@@ -137,11 +138,8 @@ struct RuntimeViewPIMPL {
     /// The MPI communicator we're built around
     comm_type m_comm;
 
-    /// Progress Logger
-    logger_pointer m_progress_logger_pointer;
-
-    /// Debug Logger
-    logger_pointer m_debug_logger_pointer;
+    /// Pointer to the logger (pointer to allow logging with const ResourceSets)
+    logger_pointer m_plogger;
 
 private:
     /** @brief Wraps the process of instantiating a ResourceSet.

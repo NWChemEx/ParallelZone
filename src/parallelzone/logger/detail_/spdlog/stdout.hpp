@@ -39,10 +39,10 @@ public:
     explicit StdoutSpdlog(const_string_reference id);
 
 protected:
-    StdoutSpdlog(const StdoutSpdlog&)            = default;
+    StdoutSpdlog(const StdoutSpdlog&) = default;
     StdoutSpdlog& operator=(const StdoutSpdlog&) = default;
     StdoutSpdlog(StdoutSpdlog&&)                 = default;
-    StdoutSpdlog& operator=(StdoutSpdlog&&)      = default;
+    StdoutSpdlog& operator=(StdoutSpdlog&&) = default;
 
     /// Implements clone() by calling copy ctor on *this
     pimpl_ptr clone_() const override;

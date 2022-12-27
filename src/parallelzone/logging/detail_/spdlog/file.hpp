@@ -45,10 +45,10 @@ public:
     FileSpdlog(const_string_reference id, const_string_reference file_name);
 
 protected:
-    FileSpdlog(const FileSpdlog&)            = default;
+    FileSpdlog(const FileSpdlog&) = default;
     FileSpdlog& operator=(const FileSpdlog&) = default;
     FileSpdlog(FileSpdlog&&)                 = default;
-    FileSpdlog& operator=(FileSpdlog&&)      = default;
+    FileSpdlog& operator=(FileSpdlog&&) = default;
 
     /// Implemented by calling the copy ctor on *this
     pimpl_ptr clone_() const override;

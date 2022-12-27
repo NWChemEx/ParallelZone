@@ -128,10 +128,10 @@ public:
 
 protected:
     // Protected to avoid slicing
-    LoggerPIMPL(const LoggerPIMPL&)            = default;
+    LoggerPIMPL(const LoggerPIMPL&) = default;
     LoggerPIMPL& operator=(const LoggerPIMPL&) = default;
     LoggerPIMPL(LoggerPIMPL&&)                 = default;
-    LoggerPIMPL& operator=(LoggerPIMPL&&)      = default;
+    LoggerPIMPL& operator=(LoggerPIMPL&&) = default;
 
     /** @brief Hook for polymorphic deep copy
      *

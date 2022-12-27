@@ -111,6 +111,7 @@ struct ResourceSetPIMPL {
     /// The Runtime this resource set belongs to.
     mpi_comm_type m_my_mpi;
 
+    /// The process-local logger
     logger_pointer m_plogger;
 };
 

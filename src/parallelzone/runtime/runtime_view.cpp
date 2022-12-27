@@ -49,17 +49,6 @@ auto start_madness(int argc, char** argv, const MPI_Comm& comm) {
     return std::make_shared<pimpl_type>(initialize, *pworld, std::move(log));
 }
 
-// ResourceSet make_resource_set(std::size_t rank, const RuntimeView& r) {
-//     mpi_helpers::CommPP c(r.mpi_comm());
-
-//     // No process-local logger for the moment
-//     Logger log;
-
-//     auto p =
-//       std::make_unique<detail_::ResourceSetPIMPL>(rank, c, std::move(log));
-//     return ResourceSet(std::move(p));
-// }
-
 } // namespace
 
 // -----------------------------------------------------------------------------

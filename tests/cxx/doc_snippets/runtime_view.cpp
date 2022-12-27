@@ -38,8 +38,21 @@ TEST_CASE("runtime_view") {
     // Synchronize the data across the program
     auto results = rv.gather(local_data);
 
-    // TODO: Print results using logger
+    // Log the value of result (N.B. after gather all processes have the result)
+    for(const auto& x : results) rv.logger() << std::to_string(x);
 
+    // Log the value of result as severity::trace
+    for(const auto& x : results) rv.logger().trace(std::to_string(x));
+
+    // Log the value of result as severity::debug
+    auto debug_s = parallelzone::Logger::severity::debug;
+    for(const auto& x : results) rv.logger().log(debug_s, std::to_string(x));
+
+    // -------------------------------------------------------------------------
+    // Examples stop here and correctness test start
+    // -------------------------------------------------------------------------
+
+    // This checks that all-gather works as intended
     REQUIRE(results.size() == rv.size() * 3);
 
     std::vector<std::size_t> corr;

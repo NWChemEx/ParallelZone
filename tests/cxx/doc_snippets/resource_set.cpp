@@ -47,6 +47,12 @@ TEST_CASE("resource_set") {
     // Does rank 0 have RAM?
     const bool does_0_have_ram = rank_0_rs.has_ram();
 
+    // Have each resource set print whether it's rank 0 or not
+    my_rs.logger().debug("Am I rank 0: " + std::to_string(is_local));
+
+    // -------------------------------------------------------------------------
+    // Examples stop here and correctness tests start
+    // -------------------------------------------------------------------------
     const bool am_i_supposed_to_be_0 = my_rs.mpi_rank() == 0;
     REQUIRE(is_local == am_i_supposed_to_be_0);
     REQUIRE(do_i_have_ram);

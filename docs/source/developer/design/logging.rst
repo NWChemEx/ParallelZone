@@ -18,13 +18,16 @@
 Designing the Logging Component
 ###############################
 
+ParallelZone provides a ``Logger`` class to facilitate recording of events, 
+i.e., print statements. The high-level design is summarized on this page.
+
 *****************
 What is a Logger?
 *****************
 
 A logger is a software element (in our case a class) which records events.
 Events can be be almost anything including: user interactions, errors, timing
-information, progress reports, and status. Typically the events are recorded
+information, progress , and status. Typically the events are recorded
 to a console, file, or database. Logging is particularly important for
 understanding complicated software systems including those with concurrency,
 automation, and remote access.
@@ -265,9 +268,10 @@ developers to graft the missing features onto existing logging libraries.
 The current logging architecture is summarized in Figure :numref:`logging_arch`.
 As a first pass we have adopted a very simple design where the overall program
 has one logger and each process has another logger. Where the logger's actually
-output their logs (typically known as sinks) is discussed in the next section
-focusing on the logging design. For now we focus on how developers using the
-ParallelZone runtime interact with the loggers. The setting of sinks is
+output their logs (typically known as sinks) is considered an implementation
+detail of the logger objects. For now we focus on how developers using the
+ParallelZone runtime interact with the loggers. The justification for punting on
+sinks, is that setting of sinks is
 typically done by the user of the resulting program, since they're the ones that
 know what level of logging they want and where they want those logs.
 
@@ -288,7 +292,9 @@ loggers. This is because we assume that the global and process-local loggers are
 thread safe. If threading is used without distributing work (each process does
 the same threading work), the global logger should be used. If, however
 hybrid parallelism is occurring, *i.e.*, the threading work done by each
-process is different, then the process-local logger should be used.
+process is different, then the process-local logger should be used. Either way,
+if the loggers are thread-safe then no additional threading concerns are
+warranted.
 
 At this point it's natural to ask: what happens when a user uses the "wrong"
 logger? The easiest scenario is when a user logs program-wide state in the
@@ -308,6 +314,7 @@ This architecture addresses the considerations raised above by:
 
    - We can have multiple logger instances. Each instance is configured 
      for a specific scope (global vs. process-local).
+   - Thread-safety should avoid the need for a "thread-local" logger.
 
 3. Concurrency aware.
 
@@ -316,9 +323,9 @@ This architecture addresses the considerations raised above by:
 
 
 The remaining issues, including the thread-safety requirement of consideration
-3, are punted to the ``LoggerView`` class, which is the class actually
-implementing the global and process-local loggers. The design of ``LoggerView`` 
-is provided here: :ref:`logger_view_design`.
+3, are punted to the ``Logger`` class, which is the class actually
+implementing the global and process-local loggers. The design of ``Logger`` 
+is provided here: :ref:`logger_design`.
 
 *********************
 Future Considerations
@@ -327,7 +334,11 @@ Future Considerations
 The current design satisfies our current needs, but should be extensible
 if/when users want to customize logging more. In particular:
 
-
 - Add ability to further scope loggers. Imagine having loggers per class, or
   for specific instances. Turning on/off such loggers makes it easier to track
   what's going on with the class and instances.
+- Realistically we probably want a factory, or similar mechanism, for
+  setting up the initial loggers. Since our initialization choices are 
+  presently very limited we punt on the factory until more choices become
+  available.
+

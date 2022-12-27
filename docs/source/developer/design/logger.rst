@@ -27,7 +27,8 @@ What is the Logger Class?
 *************************
 
 The ``Logger`` class is the user-facing API of ParallelZone's logging
-component.
+component. The ``Logger`` class is used by users of ParallelZone to log
+events, *i.e.*, errors, warnings, progress, etc. 
 
 ********************************
 Why do we need the Logger Class?
@@ -36,8 +37,11 @@ Why do we need the Logger Class?
 As summarized in :ref:`logging_design`, we are not aware of any existing logging
 solutions that do everything we need. We have thus chosen to implement the
 missing features, to our liking, within the ``Logger`` class. The 
-``Logger`` class also provides a stable API for ParallelZone users should we
-need to add additional logging capabilities or switch backends.
+``Logger`` class also provides a stable API for ParallelZone users in the event
+we should need to add additional logging capabilities or switch out the backend.
+The ``Logger`` class also separates the concern of "what to log" from "how to
+log it"; "how to log it" is the responsibility of the sink (which is currently
+an implementation detail of the ``Logger`` class).
 
 *********************
 Logger Considerations
@@ -84,26 +88,24 @@ Logger Design
 .. figure:: assets/logger_arch.png
    :align: center
 
-   Architecture of the Logger class and its infrastructure.
+   Architecture of the ``Logger`` class and its infrastructure.
 
 For the first implementation of the logging component we adopted the simple
 architecture shown in Figure :numref:`logger_arch`. Users of ParallelZone see
 one class, ``Logger``. As a first pass, ``Logger`` simply provides APIs 
-for printing arbitrary data at a specified severity level. Eventually, this may 
-be expanded to support more fine-grained control over the log formatting.
-Internally ``Logger`` is implemented by a ``LoggerPIMPL`` object. In this 
-first pass the ``LoggerPIMPL`` is simply a wrapper around Spdlog and controlling 
-the sink for the ``Logger`` class amounts to configuring the Spdlog object 
-in the PIMPL. Ultimately we chose to use Spdlog because it is relatively 
-lightweight, has enough features for our current needs, and is well supported.
+for printing arbitrary data, already in a ``std::string`` (or implicitly
+convertible to a ``std::string``) at various severity levels. Eventually, this 
+may be expanded to support more fine-grained control over the log formatting.
 
-LoggerPIMPL Design
-==================
+Internally ``Logger`` is implemented by a ``LoggerPIMPL`` object. The literal
+``LoggerPIMPL`` object is an abstract base class which defines the API for 
+actual implementations. Our Spdlog-based implementation derives the 
+``SpdlogPIMPL`` class from ``LoggerPIMPL`` to implement the parts of the PIMPL
+API common to all Spdlog-based implementations.
 
-At the moment, the ``LoggerPIMPL`` class is primarily meant to isolate the
-``Logger`` class from the details of its sink. While sinks are usually
-singletons, we leave that as an implementation detail for the class implementing
-``LoggerPIMPL``.
+For now we have two sinks, and they are implemented by further specializing the
+``SpdlogPIMPL``. The sinks, ``StdoutSpdlog`` and ``FileSpdlog`` respectively
+output logs to standard out and a specified file. 
 
 This design addresses the considerations remaining from  
 :ref:`logging_design` by:
@@ -134,3 +136,11 @@ particular we note:
 
 - Can add ``Sink`` classes so users define their own sink behavior (Spdlog
   also allows custom sinks, so our ``Sink`` class would wrap theirs).
+- Can add more formatting options to ``Logger``. Spdlog uses the C++ fmt library
+  (which the C++20 extension is based heavily on). We can expose this down
+  the road.
+- Can add support for more types beyond ``std::string``. At the end of the day
+  we ultimately need to print strings so supporting of other types is simply
+  a convenience mechanism for channeling them into the string paths.
+- Can add wide-character support. Spdlog already supports it so it's just a
+  matter of exposing it.  

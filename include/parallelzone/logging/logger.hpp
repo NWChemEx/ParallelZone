@@ -237,13 +237,13 @@ public:
      *  this method. This method will forward the provided severity and
      *  message to the backend. In general the backend will log the message as
      *  long as the current logger's internal threshold for logging is set at
-     *  or below @p severity. Whether @p msg is logged right away, or queued is
+     *  or below @p s. Whether @p msg is logged right away, or queued is
      *  implementation dependent.
      *
      *  If *this is a null logger this method is a no-op.
      *
-     *  @param[in] severity How important is this message? See the documentation
-     *                      for the severity enum for more information.
+     *  @param[in] s How important is this message? See the documentation
+     *               for the severity enum for more information.
      *
      *  @param[in] msg The message to log.
      *

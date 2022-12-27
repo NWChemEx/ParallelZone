@@ -15,7 +15,7 @@
  */
 
 #include <catch2/catch.hpp>
-#include <parallelzone/logger/detail_/spdlog/stdout.hpp>
+#include <parallelzone/logging/detail_/spdlog/stdout.hpp>
 #include <spdlog/sinks/ostream_sink.h>
 #include <sstream>
 

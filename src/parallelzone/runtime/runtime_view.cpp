@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "../logger/detail_/spdlog/stdout.hpp"
 #include "detail_/resource_set_pimpl.hpp"
 #include "detail_/runtime_view_pimpl.hpp"
+#include <parallelzone/logging/logger_factory.hpp>
 
 // N.B. AFAIK the only way a RuntimeView can have no PIMPL is if an exception is
 //      thrown in the ctor, the user catches the exception, and uses the
@@ -44,14 +44,9 @@ auto start_madness(int argc, char** argv, const MPI_Comm& comm) {
     } else
         pworld = madness::World::find_instance(SafeMPI::Intracomm(comm));
 
-    Logger log;
-    if(pworld->rank() == 0) {
-        auto pimpl = parallelzone::detail_::StdoutSpdlog("Rank 0");
-        Logger(pimpl.clone()).swap(log);
-    }
-
+    auto log         = LoggerFactory::default_global_logger(pworld->rank());
     using pimpl_type = detail_::RuntimeViewPIMPL;
-    return std::make_shared<pimpl_type>(initialize, *pworld, log);
+    return std::make_shared<pimpl_type>(initialize, *pworld, std::move(log));
 }
 
 // ResourceSet make_resource_set(std::size_t rank, const RuntimeView& r) {

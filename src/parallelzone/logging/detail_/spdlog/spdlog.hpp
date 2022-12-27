@@ -43,19 +43,16 @@ public:
      * instantiate an instance of the derived class, which will then call this
      * ctor.
      *
-     * @param[in] ptr The Spdlog logger we're wrapping. Assumed to be a non-
-     *                null pointer.
+     * @param[in] logger The Spdlog logger we're wrapping.
      *
-     * @throws std::runtime_error if @p ptr is a null pointer. Strong throw
-     *                            guarantee.
      */
     explicit SpdlogPIMPL(spdlog_type logger);
 
 protected:
-    SpdlogPIMPL(const SpdlogPIMPL&) = default;
+    SpdlogPIMPL(const SpdlogPIMPL&)            = default;
     SpdlogPIMPL& operator=(const SpdlogPIMPL&) = default;
     SpdlogPIMPL(SpdlogPIMPL&&)                 = default;
-    SpdlogPIMPL& operator=(SpdlogPIMPL&&) = default;
+    SpdlogPIMPL& operator=(SpdlogPIMPL&&)      = default;
 
     /// Calls the copy ctor on *this, derived classes must override too
     pimpl_ptr clone_() const override;

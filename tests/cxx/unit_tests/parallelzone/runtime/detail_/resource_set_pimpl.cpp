@@ -15,6 +15,7 @@
  */
 
 #include <catch2/catch.hpp>
+#include <parallelzone/logging/logger_factory.hpp>
 #include <parallelzone/runtime/detail_/resource_set_pimpl.hpp>
 
 using namespace parallelzone::runtime;
@@ -65,10 +66,11 @@ TEST_CASE("ResourceSetPIMPL") {
         REQUIRE_FALSE(rank0 == ResourceSetPIMPL(0, comm_type{}, log));
         REQUIRE_FALSE(rank1 == ResourceSetPIMPL(1, comm_type{}, log));
 
-        // Different loggers
-        RuntimeView rt;
-        REQUIRE_FALSE(rank0 == ResourceSetPIMPL(0, comm, rt.logger()));
-        REQUIRE_FALSE(rank1 == ResourceSetPIMPL(1, comm, rt.logger()));
+        // Different loggers (N.B. rank0 and rank1 contain null logger, not
+        // the loggers they would have if correctly setup)
+        auto logger0 = parallelzone::LoggerFactory::default_global_logger(0);
+        REQUIRE_FALSE(rank0 == ResourceSetPIMPL(0, comm, logger0));
+        REQUIRE_FALSE(rank1 == ResourceSetPIMPL(1, comm, logger0));
     }
 }
 

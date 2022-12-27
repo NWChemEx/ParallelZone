@@ -15,6 +15,7 @@
  */
 
 #include "../../test_parallelzone.hpp"
+#include <parallelzone/logging/logger_factory.hpp>
 #include <parallelzone/runtime/detail_/runtime_view_pimpl.hpp>
 
 using namespace parallelzone::runtime;
@@ -67,8 +68,9 @@ TEST_CASE("RuntimeViewPIMPL") {
         }
 
         SECTION("Different logger") {
-            // This assumes the default logger isn't a null logger
-            RuntimeViewPIMPL other(false, rt.madness_world(), rt.logger());
+            // This assumes the default logger for rank 0 isn't a null logger
+            auto log0 = parallelzone::LoggerFactory::default_global_logger(0);
+            RuntimeViewPIMPL other(false, rt.madness_world(), log0);
             REQUIRE_FALSE(pimpl == other);
         }
     }

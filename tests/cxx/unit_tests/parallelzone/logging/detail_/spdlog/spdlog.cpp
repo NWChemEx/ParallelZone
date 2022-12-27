@@ -17,7 +17,7 @@
 #include <catch2/catch.hpp>
 #include <filesystem>
 #include <iostream>
-#include <parallelzone/logger/detail_/spdlog/spdlog.hpp>
+#include <parallelzone/logging/detail_/spdlog/spdlog.hpp>
 #include <spdlog/sinks/ostream_sink.h>
 #include <sstream>
 

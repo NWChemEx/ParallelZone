@@ -15,8 +15,7 @@
  */
 
 #pragma once
-
-#include <parallelzone/logger/logger.hpp>
+#include <parallelzone/logging/logger.hpp>
 
 namespace parallelzone::detail_ {
 
@@ -129,10 +128,10 @@ public:
 
 protected:
     // Protected to avoid slicing
-    LoggerPIMPL(const LoggerPIMPL&) = default;
+    LoggerPIMPL(const LoggerPIMPL&)            = default;
     LoggerPIMPL& operator=(const LoggerPIMPL&) = default;
     LoggerPIMPL(LoggerPIMPL&&)                 = default;
-    LoggerPIMPL& operator=(LoggerPIMPL&&) = default;
+    LoggerPIMPL& operator=(LoggerPIMPL&&)      = default;
 
     /** @brief Hook for polymorphic deep copy
      *

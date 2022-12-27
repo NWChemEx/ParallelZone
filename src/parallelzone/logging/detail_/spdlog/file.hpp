@@ -34,7 +34,7 @@ public:
      *  are written directly to the provided file. If the file already exists
      *  the resulting logger will append to it.
      *
-     *  @param[in] name An ID for the logger.
+     *  @param[in] id An ID for the logger.
      *  @param[in] file_name The path where the file will exist. If @p file_name
      *                       is relative it will be created relative to where
      *                       the program is currently running.
@@ -45,10 +45,10 @@ public:
     FileSpdlog(const_string_reference id, const_string_reference file_name);
 
 protected:
-    FileSpdlog(const FileSpdlog&) = default;
+    FileSpdlog(const FileSpdlog&)            = default;
     FileSpdlog& operator=(const FileSpdlog&) = default;
     FileSpdlog(FileSpdlog&&)                 = default;
-    FileSpdlog& operator=(FileSpdlog&&) = default;
+    FileSpdlog& operator=(FileSpdlog&&)      = default;
 
     /// Implemented by calling the copy ctor on *this
     pimpl_ptr clone_() const override;

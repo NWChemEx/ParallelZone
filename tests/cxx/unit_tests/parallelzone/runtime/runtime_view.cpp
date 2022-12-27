@@ -16,6 +16,7 @@
 
 #include "../test_parallelzone.hpp"
 #include <iostream>
+#include <parallelzone/logging/logger_factory.hpp>
 #include <parallelzone/mpi_helpers/commpp/commpp.hpp>
 #include <parallelzone/runtime/detail_/resource_set_pimpl.hpp>
 #include <sstream>
@@ -254,7 +255,12 @@ TEST_CASE("RuntimeView") {
         REQUIRE_FALSE(defaulted == null);
 
         // Different loggers
-        defaulted.logger() = Logger();
+        bool am_i_0 = argc_argv.at(0).is_mine();
+
+        // This assumes that rank 0 has a different logger than the other ranks
+        // and sets rank 0's logger to that of rank 1, and all other ranks get
+        // rank 0's logger
+        defaulted.logger() = LoggerFactory::default_global_logger(am_i_0);
         REQUIRE(defaulted != argc_argv);
         REQUIRE_FALSE(defaulted == argc_argv);
     }

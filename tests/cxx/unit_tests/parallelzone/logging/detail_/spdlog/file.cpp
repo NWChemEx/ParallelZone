@@ -16,8 +16,8 @@
 
 #include <catch2/catch.hpp>
 #include <filesystem>
-#include <parallelzone/logger/detail_/spdlog/file.hpp>
-#include <parallelzone/logger/detail_/spdlog/stdout.hpp>
+#include <parallelzone/logging/detail_/spdlog/file.hpp>
+#include <parallelzone/logging/detail_/spdlog/stdout.hpp>
 
 using namespace parallelzone::detail_;
 

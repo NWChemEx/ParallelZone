@@ -86,6 +86,8 @@ struct RuntimeViewPIMPL {
      *                                 otherwise.
      *  @param[in] world The MADNESS world *this wraps.
      *
+     *  @param[in] logger The program-wide logger as seen by the current
+     *                    process.
      */
     RuntimeViewPIMPL(bool did_i_start_madness, madness_world_reference world,
                      logger_type logger);

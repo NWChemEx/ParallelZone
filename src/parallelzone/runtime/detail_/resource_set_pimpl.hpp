@@ -59,7 +59,9 @@ struct ResourceSetPIMPL {
      *
      *  @param[in] rank The current process's rank on @p my_mpi
      *  @param[in] my_mpi The MPI communicator to use for communication.
-     *
+     *  @param[in] logger The process-local logger for MPI rank @p rank, as
+     *                    seen by the current process (N.B. the current process
+     *                    may not be rank @p rank).
      */
     ResourceSetPIMPL(size_type rank, mpi_comm_type my_mpi, logger_type logger);
 
@@ -135,6 +137,9 @@ inline auto get_ram_size() {
  *  @param[in] rank The MPI rank of the process which owns this resource set.
  *  @param[in] my_mpi The MPI communicator used to move data to/from the
  *                    resource set.
+ *  @param[in] logger The process-local logger for MPI rank @p rank, as seen by
+ *                    the current process (note the current process may not be
+ *                    rank @p rank).
  *
  *  @return The ResourceSet for the requested process.
  *

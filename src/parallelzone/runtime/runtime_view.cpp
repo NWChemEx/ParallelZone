@@ -16,6 +16,7 @@
 
 #include "detail_/resource_set_pimpl.hpp"
 #include "detail_/runtime_view_pimpl.hpp"
+#include <parallelzone/logging/logger_factory.hpp>
 
 // N.B. AFAIK the only way a RuntimeView can have no PIMPL is if an exception is
 //      thrown in the ctor, the user catches the exception, and uses the
@@ -43,13 +44,9 @@ auto start_madness(int argc, char** argv, const MPI_Comm& comm) {
     } else
         pworld = madness::World::find_instance(SafeMPI::Intracomm(comm));
 
-    return std::make_shared<detail_::RuntimeViewPIMPL>(initialize, *pworld);
-}
-
-ResourceSet make_resource_set(std::size_t rank, const RuntimeView& r) {
-    mpi_helpers::CommPP c(r.mpi_comm());
-    auto p = std::make_unique<detail_::ResourceSetPIMPL>(rank, c);
-    return ResourceSet(std::move(p));
+    auto log         = LoggerFactory::default_global_logger(pworld->rank());
+    using pimpl_type = detail_::RuntimeViewPIMPL;
+    return std::make_shared<pimpl_type>(initialize, *pworld, std::move(log));
 }
 
 } // namespace
@@ -129,26 +126,8 @@ RuntimeView::size_type RuntimeView::count(const_ram_reference ram) const {
     return count;
 }
 
-RuntimeView::logger_reference RuntimeView::progress_logger() {
-    return pimpl_().progress_logger();
-}
-
-RuntimeView::logger_reference RuntimeView::debug_logger() {
-    return pimpl_().debug_logger();
-}
-
-// -----------------------------------------------------------------------------
-// -- Setters
-// -----------------------------------------------------------------------------
-
-void RuntimeView::set_progress_logger(logger_type&& l) {
-    pimpl_().m_progress_logger_pointer =
-      std::make_unique<logger_type>(std::move(l));
-}
-
-void RuntimeView::set_debug_logger(logger_type&& l) {
-    pimpl_().m_debug_logger_pointer =
-      std::make_unique<logger_type>(std::move(l));
+RuntimeView::logger_reference RuntimeView::logger() const {
+    return *pimpl_().m_plogger;
 }
 
 // -----------------------------------------------------------------------------

@@ -15,6 +15,7 @@
  */
 
 #include <catch2/catch.hpp>
+#include <parallelzone/logging/logger_factory.hpp>
 #include <parallelzone/runtime/detail_/resource_set_pimpl.hpp>
 
 using namespace parallelzone::runtime;
@@ -28,8 +29,10 @@ TEST_CASE("ResourceSetPIMPL") {
     using comm_type = ResourceSetPIMPL::mpi_comm_type;
     comm_type comm(MPI_COMM_WORLD);
 
-    ResourceSetPIMPL rank0(0, comm);
-    ResourceSetPIMPL rank1(1, comm);
+    parallelzone::Logger log;
+
+    ResourceSetPIMPL rank0(0, comm, log);
+    ResourceSetPIMPL rank1(1, comm, log);
 
     SECTION("CTor") {
         REQUIRE(rank0.m_rank == 0);
@@ -42,12 +45,8 @@ TEST_CASE("ResourceSetPIMPL") {
         REQUIRE(rank0.m_my_mpi == comm);
         REQUIRE(rank1.m_my_mpi == comm);
 
-        using logger_pointer = ResourceSetPIMPL::logger_pointer;
-        REQUIRE(rank0.m_progress_logger_pointer == logger_pointer{});
-        REQUIRE(rank1.m_progress_logger_pointer == logger_pointer{});
-
-        REQUIRE(rank0.m_debug_logger_pointer == logger_pointer{});
-        REQUIRE(rank1.m_debug_logger_pointer == logger_pointer{});
+        REQUIRE(*rank0.m_plogger == log);
+        REQUIRE(*rank1.m_plogger == log);
     }
 
     SECTION("clone") {
@@ -55,29 +54,23 @@ TEST_CASE("ResourceSetPIMPL") {
         REQUIRE(*rank1.clone() == rank1);
     }
 
-    SECTION("progress_logger") {
-        REQUIRE_THROWS_AS(rank0.progress_logger(), std::runtime_error);
-        REQUIRE_THROWS_AS(rank1.progress_logger(), std::runtime_error);
-    }
-
-    SECTION("debug_logger") {
-        REQUIRE_THROWS_AS(rank0.debug_logger(), std::runtime_error);
-        REQUIRE_THROWS_AS(rank1.debug_logger(), std::runtime_error);
-    }
-
     SECTION("operator==") {
         // Same
-        REQUIRE(rank0 == ResourceSetPIMPL(0, comm));
-        REQUIRE(rank1 == ResourceSetPIMPL(1, comm));
+        REQUIRE(rank0 == ResourceSetPIMPL(0, comm, log));
+        REQUIRE(rank1 == ResourceSetPIMPL(1, comm, log));
 
         // Different ranks
         REQUIRE_FALSE(rank0 == rank1);
 
         // Different MPI communicators
-        REQUIRE_FALSE(rank0 == ResourceSetPIMPL(0, comm_type{}));
-        REQUIRE_FALSE(rank1 == ResourceSetPIMPL(1, comm_type{}));
+        REQUIRE_FALSE(rank0 == ResourceSetPIMPL(0, comm_type{}, log));
+        REQUIRE_FALSE(rank1 == ResourceSetPIMPL(1, comm_type{}, log));
 
-        // TODO: Compare loggers
+        // Different loggers (N.B. rank0 and rank1 contain null logger, not
+        // the loggers they would have if correctly setup)
+        auto logger0 = parallelzone::LoggerFactory::default_global_logger(0);
+        REQUIRE_FALSE(rank0 == ResourceSetPIMPL(0, comm, logger0));
+        REQUIRE_FALSE(rank1 == ResourceSetPIMPL(1, comm, logger0));
     }
 }
 
@@ -86,6 +79,7 @@ TEST_CASE("get_ram_size") { REQUIRE(get_ram_size() == 10); }
 TEST_CASE("make_resource_set") {
     using comm_type = ResourceSetPIMPL::mpi_comm_type;
     comm_type comm(MPI_COMM_WORLD);
-    auto p = std::make_unique<ResourceSetPIMPL>(0, comm);
-    REQUIRE(make_resource_set(0, comm) == ResourceSet(std::move(p)));
+    parallelzone::Logger log;
+    auto p = std::make_unique<ResourceSetPIMPL>(0, comm, log);
+    REQUIRE(make_resource_set(0, comm, log) == ResourceSet(std::move(p)));
 }

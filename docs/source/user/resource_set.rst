@@ -78,3 +78,37 @@ computer has RAM, we can verify this by:
 Again similar methods are available for determining if other hardware is present
 or not. These methods can be a convenient mechanism for dispatching based on
 whether certain hardware is available or not.
+
+*********************
+Process-Local Logging
+*********************
+
+Program-wide logging is done through the ``RuntimeView``, process-local logging
+is done through the ``ResourceSet`` class. Process-local logging works nearly
+identical to program-wide logging. For example, if we want each process to
+log whether its value of ``is_local`` this is done by:
+
+.. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
+   :language: c++
+   :lines: 50-51
+
+Compared to program-wide logging the main difference is that with process-local
+logging each process can (but doesn't necessarily) log to a different sink.
+This makes it much easier to figure out what each process did when going back
+over the logs.
+
+.. warning::
+
+   Care has been taken to ensure that replicated data can always be written 
+   to the process-local logger. The reverse is not true. In particular,
+   deadlock can occur if the program-wide logger is called from a block of
+   source code that is not executed by all processes. Sinks in general
+   try to avoid implementations which can deadlock, but it is not
+   guaranteed.
+
+Typically process local-logging uses file sinks, with one file per process.
+Especially if there's more than one process per filesystem this can have notable
+performance degradation. For this reason, the process local sinks are by default
+directed to null sinks (they don't print). Generally speaking, log messages
+for process-local logs should have a severity of ``trace`` or ``debug`` as
+most users will only turn them on when debugging is needed.

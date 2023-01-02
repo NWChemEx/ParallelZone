@@ -56,7 +56,7 @@ RuntimeView Architecture
 
 .. _fig_runtime_view:
 
-.. figure:: ../../assets/runtime_view.png
+.. figure:: assets/runtime_view.png
    :align: center
 
    Schematic illustration of the RuntimeView class and its major pieces.

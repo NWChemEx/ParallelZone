@@ -408,62 +408,18 @@ public:
      */
     size_type count(const_ram_reference ram) const;
 
-    /**
-     * @brief Get progress logger for this RuntimeView
+    /** @brief Returns the program-wide logger
      *
-     * This logger is intended to print progress information to a specified
-     * output associated with this RuntimeView. Defaults to root-only
-     * print.
+     *  The program-wide logger is used for logging replicated data and state
+     *  that all processes in *this agree on. To log process-local data use
+     *  the logger provided by the ResourceSet objects.
      *
-     * @returns Logger instance intended for progress output associated with
-     *          this runtime view.
-     * @throw std::runtime_error if *this is a view of the null runtime. Strong
-     *                           throw guarantee.
+     *  @return A read/write reference to the program-wide logger.
+     *
+     *  @throw std::runtime_error if *this does not have a PIMPL. Strong throw
+     *                            guarantee.
      */
-    logger_reference progress_logger();
-
-    /**
-     * @brief Get debug logger for this RuntimeView
-     *
-     * This logger is intended to print debug information to a specified
-     * output associated with this RuntimeView. Defaults to root-only
-     * print.
-     *
-     * @returns Logger instance intended for debug output associated with
-     *          this runtime view.
-     *
-     * @throw std::runtime_error if *this is a view of the null runtime. Strong
-     *                           throw guarantee.
-     */
-    logger_reference debug_logger();
-
-    // -------------------------------------------------------------------------
-    // -- Setters
-    // -------------------------------------------------------------------------
-
-    /**
-     * @brief Set progress logger for this RuntimeView
-     *
-     * @param[in,out] l Logger instance to override the current progress logger
-     *                for this instance. After this operation @p l is in a
-     *                valid but otherwise undefined state.
-     *
-     * @throw std::runtime_error if *this is a view of the null runtime. Strong
-     *                           throw guarantee.
-     */
-    void set_progress_logger(logger_type&& l);
-
-    /**
-     * @brief Set debug logger for this RuntimeView
-     *
-     * @param[in,out] l Logger instance to override the current debug logger
-     *                for this instance. After this operation @p l is in a
-     *                valid but otherwise undefined state.
-     *
-     * @throw std::runtime_error if *this is a view of the null runtime. Strong
-     *                           throw guarantee.
-     */
-    void set_debug_logger(logger_type&& l);
+    logger_reference logger() const;
 
     // -------------------------------------------------------------------------
     // -- MPI all-to-all methods

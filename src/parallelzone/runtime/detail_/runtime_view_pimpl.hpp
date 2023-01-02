@@ -19,16 +19,6 @@
 
 namespace parallelzone::runtime::detail_ {
 
-inline std::shared_ptr<Logger> make_default_stdout_logger(madness::World& w) {
-    return w.rank() ? std::make_shared<Logger>(make_null_logger()) :
-                      std::make_shared<Logger>(make_stdout_logger());
-}
-
-inline std::shared_ptr<Logger> make_default_stderr_logger(madness::World& w) {
-    return w.rank() ? std::make_shared<Logger>(make_null_logger()) :
-                      std::make_shared<Logger>(make_stderr_logger());
-}
-
 /** @brief Holds the state for the RuntimeView class
  *
  *  Right now this class assumes MADNESS is managing MPI, so it holds a MADNESS
@@ -96,8 +86,11 @@ struct RuntimeViewPIMPL {
      *                                 otherwise.
      *  @param[in] world The MADNESS world *this wraps.
      *
+     *  @param[in] logger The program-wide logger as seen by the current
+     *                    process.
      */
-    RuntimeViewPIMPL(bool did_i_start_madness, madness_world_reference world);
+    RuntimeViewPIMPL(bool did_i_start_madness, madness_world_reference world,
+                     logger_type logger);
 
     /// Tears down MADNESS, when all references are gone (and if we started it)
     ~RuntimeViewPIMPL() noexcept;
@@ -116,17 +109,6 @@ struct RuntimeViewPIMPL {
      *                        allocating it.
      */
     const_resource_set_reference at(size_type rank) const;
-
-    logger_reference progress_logger() {
-        if(!m_progress_logger_pointer)
-            throw std::runtime_error("No Progress Logger");
-        return *m_progress_logger_pointer;
-    }
-
-    logger_reference debug_logger() {
-        if(!m_debug_logger_pointer) throw std::runtime_error("No Debug Logger");
-        return *m_debug_logger_pointer;
-    }
 
     /** @brief Determines if *this is value equal to @p rhs.
      *
@@ -158,11 +140,8 @@ struct RuntimeViewPIMPL {
     /// The MPI communicator we're built around
     comm_type m_comm;
 
-    /// Progress Logger
-    logger_pointer m_progress_logger_pointer;
-
-    /// Debug Logger
-    logger_pointer m_debug_logger_pointer;
+    /// Pointer to the logger (pointer to allow logging with const ResourceSets)
+    logger_pointer m_plogger;
 
 private:
     /** @brief Wraps the process of instantiating a ResourceSet.

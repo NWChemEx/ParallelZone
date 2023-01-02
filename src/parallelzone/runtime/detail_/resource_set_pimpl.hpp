@@ -59,9 +59,11 @@ struct ResourceSetPIMPL {
      *
      *  @param[in] rank The current process's rank on @p my_mpi
      *  @param[in] my_mpi The MPI communicator to use for communication.
-     *
+     *  @param[in] logger The process-local logger for MPI rank @p rank, as
+     *                    seen by the current process (N.B. the current process
+     *                    may not be rank @p rank).
      */
-    ResourceSetPIMPL(size_type rank, mpi_comm_type my_mpi);
+    ResourceSetPIMPL(size_type rank, mpi_comm_type my_mpi, logger_type logger);
 
     /** @brief Makes a deep copy of *this.
      *
@@ -75,21 +77,6 @@ struct ResourceSetPIMPL {
      */
     pimpl_pointer clone() const {
         return std::make_unique<ResourceSetPIMPL>(*this);
-    }
-
-    // -------------------------------------------------------------------------
-    // -- Getters
-    // -------------------------------------------------------------------------
-
-    logger_reference progress_logger() {
-        if(!m_progress_logger_pointer)
-            throw std::runtime_error("No Progress Logger");
-        return *m_progress_logger_pointer;
-    }
-
-    logger_reference debug_logger() {
-        if(!m_debug_logger_pointer) throw std::runtime_error("No Debug Logger");
-        return *m_debug_logger_pointer;
     }
 
     // -------------------------------------------------------------------------
@@ -124,11 +111,8 @@ struct ResourceSetPIMPL {
     /// The Runtime this resource set belongs to.
     mpi_comm_type m_my_mpi;
 
-    /// Progress Logger
-    logger_pointer m_progress_logger_pointer;
-
-    /// Debug Logger
-    logger_pointer m_debug_logger_pointer;
+    /// The process-local logger
+    logger_pointer m_plogger;
 };
 
 /** @brief Determines the size of the RAM local to the current process
@@ -154,6 +138,9 @@ inline auto get_ram_size() {
  *  @param[in] rank The MPI rank of the process which owns this resource set.
  *  @param[in] my_mpi The MPI communicator used to move data to/from the
  *                    resource set.
+ *  @param[in] logger The process-local logger for MPI rank @p rank, as seen by
+ *                    the current process (note the current process may not be
+ *                    rank @p rank).
  *
  *  @return The ResourceSet for the requested process.
  *
@@ -161,8 +148,10 @@ inline auto get_ram_size() {
  *                        strong throw guarantee.
  */
 inline auto make_resource_set(ResourceSetPIMPL::size_type rank,
-                              ResourceSetPIMPL::mpi_comm_type my_mpi) {
-    auto p = std::make_unique<ResourceSetPIMPL>(rank, my_mpi);
+                              ResourceSetPIMPL::mpi_comm_type my_mpi,
+                              ResourceSetPIMPL::logger_type logger) {
+    auto p =
+      std::make_unique<ResourceSetPIMPL>(rank, my_mpi, std::move(logger));
     return ResourceSet(std::move(p));
 }
 
@@ -170,17 +159,19 @@ inline auto make_resource_set(ResourceSetPIMPL::size_type rank,
 // -- Inline Implementations
 // -----------------------------------------------------------------------------
 
-inline ResourceSetPIMPL::ResourceSetPIMPL(size_type rank,
-                                          mpi_comm_type my_mpi) :
+inline ResourceSetPIMPL::ResourceSetPIMPL(size_type rank, mpi_comm_type my_mpi,
+                                          logger_type logger) :
   m_rank(rank),
   m_ram(hardware::detail_::make_ram(get_ram_size(), rank, my_mpi)),
-  m_my_mpi(my_mpi) {}
+  m_my_mpi(my_mpi),
+  m_plogger(std::make_unique<logger_type>(std::move(logger))) {}
 
 inline bool ResourceSetPIMPL::operator==(
   const ResourceSetPIMPL& rhs) const noexcept {
     // TODO: Compare loggers
-    auto my_state  = std::tie(m_rank, m_ram, m_my_mpi);
-    auto rhs_state = std::tie(rhs.m_rank, rhs.m_ram, rhs.m_my_mpi);
+    auto my_state = std::tie(m_rank, m_ram, m_my_mpi, *m_plogger);
+    auto rhs_state =
+      std::tie(rhs.m_rank, rhs.m_ram, rhs.m_my_mpi, *rhs.m_plogger);
 
     return my_state == rhs_state;
 }

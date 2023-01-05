@@ -1,23 +1,44 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>The ParallelZone Worldview &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="author" title="About these documents" href="#" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -25,13 +46,29 @@
     <link rel="prev" title="Quickstart" href="quickstart.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="index.html" class="icon icon-home"> parallelzone
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -39,7 +76,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing ParallelZone</a></li>
@@ -56,32 +104,73 @@
 <li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Documentation</a></li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">parallelzone</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
-      <li class="breadcrumb-item active">The ParallelZone Worldview</li>
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>The ParallelZone Worldview</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="_sources/about.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <section id="the-parallelzone-worldview">
-<h1>The ParallelZone Worldview<a class="headerlink" href="#the-parallelzone-worldview" title="Permalink to this heading"></a></h1>
+<h1>The ParallelZone Worldview<a class="headerlink" href="#the-parallelzone-worldview" title="Permalink to this heading">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>TL;DR. In ParallelZone the <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> instance is your handle to the
@@ -93,7 +182,7 @@ GPUs, <em>etc.</em>) that processes have direct/local access to.</p>
 level. ParallelZone expands on the <a class="reference internal" href="abbreviations.html#mpi"><span class="std std-ref">MPI</span></a> model. So we start with a brief
 review of MPI.</p>
 <section id="mpi-primer">
-<h2>MPI Primer<a class="headerlink" href="#mpi-primer" title="Permalink to this heading"></a></h2>
+<h2>MPI Primer<a class="headerlink" href="#mpi-primer" title="Permalink to this heading">¶</a></h2>
 <p><a class="reference internal" href="#fig-mpi-runtime"><span class="std std-numref">Fig. 1</span></a> illustrates a simplified version of how MPI sees a
 program. The view is process-centric. When the program starts, MPI defines a
 set <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code> which includes all of program’s processes. Within our
@@ -105,7 +194,7 @@ a program is a series of processes somehow grouped together.</p>
 <figure class="align-center" id="id1">
 <span id="fig-mpi-runtime"></span><img alt="_images/mpi.png" src="_images/mpi.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Illustration of MPI’s runtime abstraction model.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Illustration of MPI’s runtime abstraction model.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>In a typical MPI-based program parallelism is expressed by somehow mapping tasks
@@ -116,7 +205,7 @@ parallel.</p>
 <figure class="align-center" id="id2">
 <span id="fig-mpi-mappings"></span><img alt="_images/mpi_mappings.png" src="_images/mpi_mappings.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Possible ways of mapping data and tasks to MPI ranks.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Possible ways of mapping data and tasks to MPI ranks.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>In the <a class="reference internal" href="abbreviations.html#simd"><span class="std std-ref">SIMD</span></a> approach depicted at the top of <a class="reference internal" href="#fig-mpi-mappings"><span class="std std-numref">Fig. 2</span></a> we
@@ -131,7 +220,7 @@ the performance also depends on the hardware available to each rank and how
 well utilized that hardware is.</p>
 </section>
 <section id="focusing-on-resources">
-<h2>Focusing on Resources<a class="headerlink" href="#focusing-on-resources" title="Permalink to this heading"></a></h2>
+<h2>Focusing on Resources<a class="headerlink" href="#focusing-on-resources" title="Permalink to this heading">¶</a></h2>
 <p>In ParallelZone we go beyond MPI by mapping tasks/data to hardware, bypassing
 the rank concept to the extent possible. More specifically, in ParallelZone we
 start by assuming that when a multi-process program starts running there is
@@ -147,7 +236,7 @@ forms the <code class="docutils literal notranslate"><span class="pre">RuntimeVi
 <p><span class="caption-number">Fig. 3 </span><span class="caption-text">Here the blue oval depicts the total resources the program is allowed to use
 and the green oval shows the resources the program lets ParallelZone use. In
 the top scenario ParallelZone manages all of the program’s resources, whereas
-in the bottom scenario it manages only some of the program’s resources.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+in the bottom scenario it manages only some of the program’s resources.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>To better illustrate the relationship between the program’s total resources
@@ -165,7 +254,7 @@ more resources than it shares with ParallelZone.</p>
 resources regardless of whether it is or isn’t.</p>
 </section>
 <section id="resource-affinity">
-<h2>Resource Affinity<a class="headerlink" href="#resource-affinity" title="Permalink to this heading"></a></h2>
+<h2>Resource Affinity<a class="headerlink" href="#resource-affinity" title="Permalink to this heading">¶</a></h2>
 <p>Simply knowing the total amounts of resources available isn’t quite enough. We
 also need to know which resources the current process has an affinity for. In
 ParallelZone we keep this simple by partitioning each process’s resources into
@@ -178,7 +267,7 @@ the process is running.</p>
 <span id="fig-resource-set-mapping"></span><img alt="_images/resourceset_mapping.png" src="_images/resourceset_mapping.png" />
 <figcaption>
 <p><span class="caption-number">Fig. 4 </span><span class="caption-text">ParallelZone’s view of the runtime environment for the common scenario of
-one process per node.</span><a class="headerlink" href="#id4" title="Permalink to this image"></a></p>
+one process per node.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p><a class="reference internal" href="#fig-resource-set-mapping"><span class="std std-numref">Fig. 4</span></a> illustrates how ParallelZone sees the
@@ -194,7 +283,7 @@ processes its own <code class="docutils literal notranslate"><span class="pre">R
 longer be disjoint since each process on a node can see the same resources.</p>
 </section>
 <section id="the-vision">
-<h2>The Vision<a class="headerlink" href="#the-vision" title="Permalink to this heading"></a></h2>
+<h2>The Vision<a class="headerlink" href="#the-vision" title="Permalink to this heading">¶</a></h2>
 <p>At the moment ParallelZone’s feature set is pretty bare bones. The medium term
 goal is for the <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> objects to have task schedulers. Users will
 estimate the resources needed for a task and tell a particular <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code>
@@ -208,33 +297,50 @@ in the graph to the schedulers in the individual <code class="docutils literal n
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="user/index.html" class="btn btn-neutral float-right" title="ParallelZone User Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, NWChemEx Team.</p>
-  </div>
+    <p>
+        &#169; Copyright 2021, NWChemEx Team.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

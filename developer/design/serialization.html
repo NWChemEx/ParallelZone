@@ -1,37 +1,74 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Serialization Design &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Reflection Design" href="reflection.html" />
+    <link rel="next" title="Designing the Logging Component" href="logging.html" />
     <link rel="prev" title="Hashing Design" href="hashing.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../../index.html" class="icon icon-home"> parallelzone
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -39,7 +76,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
@@ -55,6 +103,8 @@
 <li class="toctree-l3 current"><a class="reference internal" href="index.html#utilities-design">Utilities Design</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="hashing.html">Hashing Design</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Serialization Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="logging.html">Designing the Logging Component</a></li>
+<li class="toctree-l4"><a class="reference internal" href="logger.html">Designing the Logger Class</a></li>
 <li class="toctree-l4"><a class="reference internal" href="reflection.html">Reflection Design</a></li>
 </ul>
 </li>
@@ -64,36 +114,79 @@
 </li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">parallelzone</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
-          <li class="breadcrumb-item"><a href="index.html">Design Documentation</a></li>
-      <li class="breadcrumb-item active">Serialization Design</li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer Documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Design Documentation</a> &raquo;</li>
+        
+      <li>Serialization Design</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../../_sources/developer/design/serialization.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <section id="serialization-design">
-<span id="id1"></span><h1>Serialization Design<a class="headerlink" href="#serialization-design" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Serialization Design<a class="headerlink" href="#serialization-design" title="Permalink to this heading">¶</a></h1>
 <section id="what-is-serialization">
-<h2>What is Serialization?<a class="headerlink" href="#what-is-serialization" title="Permalink to this heading"></a></h2>
+<h2>What is Serialization?<a class="headerlink" href="#what-is-serialization" title="Permalink to this heading">¶</a></h2>
 <p>In the context of object-oriented programming, serialization is the process of
 deconstructing an object’s state into a flat state that is suitable for storage
 and/or transmission. For most applications it is also important that it be
@@ -110,7 +203,7 @@ members and serializes/deserializes them (recursion terminating when fundamental
 C++ types are found).</p>
 </section>
 <section id="why-do-we-need-serialization">
-<h2>Why Do We Need Serialization?<a class="headerlink" href="#why-do-we-need-serialization" title="Permalink to this heading"></a></h2>
+<h2>Why Do We Need Serialization?<a class="headerlink" href="#why-do-we-need-serialization" title="Permalink to this heading">¶</a></h2>
 <p>In ParallelZone we need serialization for transmitting objects. More
 specifically in order to be able send/receive objects we need to be able to
 serialize/deserialize them. We anticipate that downstream dependencies may want
@@ -118,7 +211,7 @@ to piggy back off of the ParallelZone serialization infrastructure to store
 objects.</p>
 </section>
 <section id="serialization-considerations">
-<span id="id2"></span><h2>Serialization Considerations<a class="headerlink" href="#serialization-considerations" title="Permalink to this heading"></a></h2>
+<span id="id2"></span><h2>Serialization Considerations<a class="headerlink" href="#serialization-considerations" title="Permalink to this heading">¶</a></h2>
 <p>This section lists the points which were considered in devising our
 serialization solution.</p>
 <ul>
@@ -209,7 +302,7 @@ distributed object)</p></li>
 </ul>
 </section>
 <section id="serialization-implementations">
-<h2>Serialization Implementations<a class="headerlink" href="#serialization-implementations" title="Permalink to this heading"></a></h2>
+<h2>Serialization Implementations<a class="headerlink" href="#serialization-implementations" title="Permalink to this heading">¶</a></h2>
 <p>This section is a collection of the C++ serialization libraries for which we are
 aware. For each library we have provided some basic vitals and some notes. A
 detailed comparison of the more promising choices are given below.</p>
@@ -440,7 +533,7 @@ activity, stars, and watchers were accurate as of March 2022 and have likely
 changed since then.</p>
 </div>
 <section id="detailed-comparison">
-<h3>Detailed Comparison<a class="headerlink" href="#detailed-comparison" title="Permalink to this heading"></a></h3>
+<h3>Detailed Comparison<a class="headerlink" href="#detailed-comparison" title="Permalink to this heading">¶</a></h3>
 <p>Based on the discussion in <a class="reference internal" href="#serialization-considerations"><span class="std std-ref">Serialization Considerations</span></a>, we have
 identified the following features we are looking for in a serialization library:</p>
 <p>Matureness</p>
@@ -494,15 +587,6 @@ we won’t be able to modify the source of.</p>
 simplicity the table does not include libraries which are deemed to fail the
 “matureness” criteria (in most cases because there wasn’t enough interest).</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 25%" />
-<col style="width: 7%" />
-<col style="width: 17%" />
-<col style="width: 7%" />
-<col style="width: 13%" />
-<col style="width: 17%" />
-<col style="width: 15%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Name</p></th>
 <th class="head"><p>STL</p></th>
@@ -600,7 +684,7 @@ documentation.</p>
 </section>
 </section>
 <section id="serialization-strategy">
-<span id="id3"></span><h2>Serialization Strategy<a class="headerlink" href="#serialization-strategy" title="Permalink to this heading"></a></h2>
+<span id="id3"></span><h2>Serialization Strategy<a class="headerlink" href="#serialization-strategy" title="Permalink to this heading">¶</a></h2>
 <p>On the basis of the head-to-head serialization library comparisons, Cereal
 appears to be the clear winner. While Cereal is currently being actively
 developed, this is a somewhat recent development. More specifically there was
@@ -691,33 +775,50 @@ written to the archive. Classes can dispatch based on archive type.</p></li>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="logging.html" class="btn btn-neutral float-right" title="Designing the Logging Component" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="hashing.html" class="btn btn-neutral float-left" title="Hashing Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="reflection.html" class="btn btn-neutral float-right" title="Reflection Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, NWChemEx Team.</p>
-  </div>
+    <p>
+        &#169; Copyright 2021, NWChemEx Team.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

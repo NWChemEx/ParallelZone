@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Designing the Logging Component &mdash; parallelzone  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Designing the Logger Class" href="logger.html" />
+    <link rel="prev" title="Serialization Design" href="serialization.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> parallelzone
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">The ParallelZone Worldview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">ParallelZone User Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../repo_layout.html">ParallelZone Repository Layout</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Documentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#high-level-design">High-Level Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#parallel-runtime-design">Parallel Runtime Design</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#utilities-design">Utilities Design</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hashing.html">Hashing Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="serialization.html">Serialization Design</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Designing the Logging Component</a></li>
+<li class="toctree-l4"><a class="reference internal" href="logger.html">Designing the Logger Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflection.html">Reflection Design</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">parallelzone</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer Documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Design Documentation</a> &raquo;</li>
+        
+      <li>Designing the Logging Component</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/developer/design/logging.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="designing-the-logging-component">
+<span id="logging-design"></span><h1>Designing the Logging Component<a class="headerlink" href="#designing-the-logging-component" title="Permalink to this heading">¶</a></h1>
+<p>ParallelZone provides a <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class to facilitate recording of events,
+i.e., print statements. The high-level design is summarized on this page.</p>
+<section id="what-is-a-logger">
+<h2>What is a Logger?<a class="headerlink" href="#what-is-a-logger" title="Permalink to this heading">¶</a></h2>
+<p>A logger is a software element (in our case a class) which records events.
+Events can be be almost anything including: user interactions, errors, timing
+information, progress , and status. Typically the events are recorded
+to a console, file, or database. Logging is particularly important for
+understanding complicated software systems including those with concurrency,
+automation, and remote access.</p>
+<p>Logging is not meant for data archival. While you may want to output important
+results in the logs, keep in mind that logs are often turned off/overridden,
+etc. So while it’s okay to put results in the logs, they need to go to a more
+permanent location as well.</p>
+</section>
+<section id="why-do-we-need-a-logging-component">
+<h2>Why Do We Need a Logging Component?<a class="headerlink" href="#why-do-we-need-a-logging-component" title="Permalink to this heading">¶</a></h2>
+<p>The ParallelZone runtime is designed to make writing high-performance software
+as easy as possible. Most high-performance software is very complicated
+(even if much of the complication is abstracted away). Complications include:</p>
+<ul class="simple">
+<li><p>Concurrency. The program is actually doing multiple things at once.</p></li>
+<li><p>Non-deterministic ordering. Tasks do not necessarily run in the same order
+each time.</p></li>
+<li><p>Job scheduling. Job is typically run remotely and in a manner that makes it
+hard to access the program.</p></li>
+</ul>
+<p>It thus becomes imperative for the software to log events so that developers
+(and users) can figure out what happened after a run completes, particularly if
+the run is unsuccessful.</p>
+</section>
+<section id="logging-considerations">
+<h2>Logging Considerations<a class="headerlink" href="#logging-considerations" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Multiple loggers.</p>
+<ul class="simple">
+<li><p>Want loggers with different scopes (global, process-local, thread-local).</p></li>
+<li><p>Useful for turning on/off logging in different parts of the code.</p></li>
+<li><p>Logger backend/configuration determines if each logger has different output</p></li>
+</ul>
+</li>
+<li><p>Multiple logging levels.</p>
+<ul class="simple">
+<li><p>Printing every message should be reserved for difficult debugging.</p></li>
+<li><p>Severity level (info, warn, etc.) used to triage what to print.</p></li>
+</ul>
+</li>
+<li><p>Concurrency aware.</p>
+<ul class="simple">
+<li><p>Thread-safe ideally.</p></li>
+<li><p>Distributed logging is “relatively easy” to add after the fact.</p></li>
+</ul>
+</li>
+<li><p>Different “sinks”</p>
+<ul class="simple">
+<li><p>Console, file, databases.</p></li>
+</ul>
+</li>
+<li><p>Enable/disable logging</p>
+<ul class="simple">
+<li><p>Can be expensive, too verbose, etc.</p></li>
+<li><p>Assume logging disabled for performance runs</p></li>
+<li><p>Ideally logger configurable at compile and runtime.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="existing-logging-solutions">
+<span id="id1"></span><h2>Existing Logging Solutions<a class="headerlink" href="#existing-logging-solutions" title="Permalink to this heading">¶</a></h2>
+<p>There are a lot of existing C/C++ logging solutions. This section summarizes
+the ones we looked at and is unlikely to be exhaustive.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>As a disclaimer we have not used any of these loggers extensively, and the
+notes in this section are based on impressions gleaned by looking at the
+repos, reading documentation, etc. The notes are unlikely to be full
+representations of any logging package</p>
+</div>
+<ul class="simple">
+<li><p>Blackhole</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/3Hren/blackhole">Website</a>.</p></li>
+<li><p>Different log levels, multiple file backends, attributes.</p></li>
+<li><p>Last update 2018, small community (18 watchers and 191 stars).</p></li>
+</ul>
+</li>
+<li><p>Boost::Log</p>
+<ul>
+<li><p><a class="reference external" href="https://www.boost.org/doc/libs/1_81_0/libs/log/doc/html/index.html">Website</a></p></li>
+<li><p>Narrow and wide character support.</p></li>
+<li><p>Streaming support.</p></li>
+<li><p>Different log levels.</p></li>
+<li><p>Extensible meta-data, sinks, and loggers.</p></li>
+<li><p>Thread-safe, process-safe?</p></li>
+<li><p>Actively maintained (relatively few watches/starts, but it’s part of Boost).</p></li>
+</ul>
+</li>
+<li><p>Clutchlog</p>
+<ul>
+<li><p><a class="reference external" href="https://nojhan.github.io/clutchlog/">Website</a></p></li>
+<li><p>Targets debugging single-run applications.</p></li>
+<li><p>Select log messages to print based on log level, stack depth, and code
+location</p></li>
+<li><p>Templated log format</p></li>
+<li><p>Colored logging</p></li>
+<li><p>Active development, but small community (2 watchers, 10 stars)</p></li>
+</ul>
+</li>
+<li><p>EasyLogging++</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/amrayn/easyloggingpp">Website</a></p></li>
+<li><p>Single header, no-dependencies</p></li>
+<li><p>Different log levels, conditional logging, performance tracking.</p></li>
+<li><p>Log file rotation, stack trace.</p></li>
+<li><p>Thread-safe</p></li>
+<li><p>Last development 2021, large community (189 watchers, 3.3K stars)</p></li>
+</ul>
+</li>
+<li><p>G3log</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/KjellKod/g3log">Website</a>.</p></li>
+<li><p>Different log levels, streaming syntax, conditional logging.</p></li>
+<li><p>Multiple sinks/targets.</p></li>
+<li><p>Extensible.</p></li>
+<li><p>Active development, small community (53 watchers, 800 stars).</p></li>
+</ul>
+</li>
+<li><p>Google Logging (glog)</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/google/glog">Website</a></p></li>
+<li><p>Different log levels, each with its own file</p></li>
+<li><p>Verbosity levels, toggle-able per source file</p></li>
+<li><p>Supports logging via streams.</p></li>
+<li><p>Conditional logging.</p></li>
+<li><p>Debug-only logging.</p></li>
+<li><p>Signal handler to dump stack traces.</p></li>
+<li><p>Thread-safe API.</p></li>
+<li><p>Can remove old logs.</p></li>
+<li><p>Options controlled by setting flags to program, environment variables, or
+global variables.</p></li>
+<li><p>Active development, large community (262 watchers and 5.8K stars)</p></li>
+</ul>
+</li>
+<li><p>log4cplus</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/log4cplus/log4cplus">Website</a></p></li>
+<li><p>Different log levels.</p></li>
+<li><p>Thread-safe.</p></li>
+<li><p>Documentation is</p></li>
+<li><p>Can not be restarted.</p></li>
+<li><p>Active development, large community (92 watchers and 1.4K stars)</p></li>
+</ul>
+</li>
+<li><p>log4cpp</p>
+<ul>
+<li><p><a class="reference external" href="https://log4cpp.sourceforge.net">Website</a></p></li>
+<li><p>Likely abandoned (last activity 2016)</p></li>
+</ul>
+</li>
+<li><p>log4cxx</p>
+<ul>
+<li><p><a class="reference external" href="https://logging.apache.org/log4cxx/latest_stable/">Website</a>.</p></li>
+<li><p>Log levels, logger hierarchies, conditional logging.</p></li>
+<li><p>Write to multiple sinks (appenders).</p></li>
+<li><p>Extensible</p></li>
+<li><p>Active development, small community (21 watchers and 202 stars), but
+developed by Apache.</p></li>
+</ul>
+</li>
+<li><p>Loguru</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/emilk/loguru">Website</a>.</p></li>
+<li><p>Log levels, streams.</p></li>
+<li><p>Scope blocks in logs.</p></li>
+<li><p>Active development, large community (52 watchers and 1.5K stars).</p></li>
+</ul>
+</li>
+<li><p>Minimal Asynchronous Logger (MAL)</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/RafaGago/mini-async-log">Website</a>.</p></li>
+<li><p>Log levels, printf-like syntax.</p></li>
+<li><p>Strip logs at compile time.</p></li>
+<li><p>Last update 2018, small community (16 watchers and 216 stars).</p></li>
+</ul>
+</li>
+<li><p>NanoLog</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/Iyengar111/NanoLog">Website</a>.</p></li>
+<li><p>Multiple log levels, file rolling, asynchronous writes.</p></li>
+<li><p>Guaranteed and on-guaranteed writes.</p></li>
+<li><p>Last commit 2017, small community (34 watchers and 603 stars).</p></li>
+</ul>
+</li>
+<li><p>Pantheios</p>
+<ul>
+<li><p><a class="reference external" href="http://www.pantheios.org">Website</a>.</p></li>
+<li><p>A “diagnostic logging API library” (AFAIK this means Pantheios is supposed
+to be a stable API over existing loggers like log4cxx, etc.).</p></li>
+<li><p>Log levels.</p></li>
+<li><p>Poor documentation (lots of broken links).</p></li>
+<li><p>Unsure of community, last supported in 2020.</p></li>
+</ul>
+</li>
+<li><p>Plog</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/SergiusTheBest/plog">Website</a>.</p></li>
+<li><p>Header-only, small source, and portable.</p></li>
+<li><p>Log levels, stream support, support for several file types.</p></li>
+<li><p>Conditional logging, can have multiple loggers</p></li>
+<li><p>Rolling file support.</p></li>
+<li><p>Thread-safe.</p></li>
+<li><p>Extensible.</p></li>
+<li><p>Active development, large community (61 watchers 1.6K stars).</p></li>
+</ul>
+</li>
+<li><p>Quill</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/odygrd/quill">Website</a>.</p></li>
+<li><p>Log levels, backtrace</p></li>
+<li><p>Formatting in background thread (for trivial copyable objects).</p></li>
+<li><p>Various log file types</p></li>
+<li><p>Thread-safe.</p></li>
+<li><p>Active development, small community (20 watchers, 677 stars).</p></li>
+</ul>
+</li>
+<li><p>Reckless</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/mattiasflodin/reckless">Website</a>.</p></li>
+<li><p>Log levels.</p></li>
+<li><p>Low-latency, high-throughput logging library.</p></li>
+<li><p>Last update 2021, small community (26 watchers, 445 stars) .</p></li>
+</ul>
+</li>
+<li><p>spdlog</p>
+<ul>
+<li><p><a class="reference external" href="https://github.com/gabime/spdlog">Website</a>.</p></li>
+<li><p>Log levels, multiple log targets.</p></li>
+<li><p>Header-only.</p></li>
+<li><p>Extensible.</p></li>
+<li><p>Thread-safe</p></li>
+<li><p>Active development, large community (433 watchers, 16.5K stars).</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id2">
+<h2>Logging Design<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
+<figure class="align-center" id="id3">
+<span id="logging-arch"></span><img alt="../../_images/logging_arch.png" src="../../_images/logging_arch.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 12 </span><span class="caption-text">Software architecture of ParallelZone’s Logging component.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+<p>Ultimately none of the widely available logging solutions do everything we want
+and we have chosen to have the user-facing logger be written by us. This
+provides a stable API to users of ParallelZone, while allowing ParallelZone
+developers to graft the missing features onto existing logging libraries.</p>
+<p>The current logging architecture is summarized in Figure <a class="reference internal" href="#logging-arch"><span class="std std-numref">Fig. 12</span></a>.
+As a first pass we have adopted a very simple design where the overall program
+has one logger and each process has another logger. Where the logger’s actually
+output their logs (typically known as sinks) is considered an implementation
+detail of the logger objects. For now we focus on how developers using the
+ParallelZone runtime interact with the loggers. The justification for punting on
+sinks, is that setting of sinks is
+typically done by the user of the resulting program, since they’re the ones that
+know what level of logging they want and where they want those logs.</p>
+<p>The logger for the overall program is represented by the the “Global Logger” in
+Figure <a class="reference internal" href="#logging-arch"><span class="std std-numref">Fig. 12</span></a>. The global logger is accessible from the
+<code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> object. The global logger is used to log program-wide state.
+Program-wide state includes, but is not limited to: program start, program end,
+available hardware, and replicated data (<em>i.e.</em>, data which is the same on each
+process). By contrast, the other set of loggers in Figure <a class="reference internal" href="#logging-arch"><span class="std std-numref">Fig. 12</span></a>
+are the “Process-Local Loggers” and are meant for logging process-local state.
+Process-local state includes, but is not limited to: the process-local part of
+distributed data, timing data for a task run by the current process, process
+ID, and MPI rank. Each process-local logger is tied to the <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code>
+representing the process the logger is local to.</p>
+<p>It should be noted that the current design does not include thread-local
+loggers. This is because we assume that the global and process-local loggers are
+thread safe. If threading is used without distributing work (each process does
+the same threading work), the global logger should be used. If, however
+hybrid parallelism is occurring, <em>i.e.</em>, the threading work done by each
+process is different, then the process-local logger should be used. Either way,
+if the loggers are thread-safe then no additional threading concerns are
+warranted.</p>
+<p>At this point it’s natural to ask: what happens when a user uses the “wrong”
+logger? The easiest scenario is when a user logs program-wide state in the
+process-local logger. Exactly what happens depends on the sink, but in general
+the result is logging the same record once for each process. If for example the
+sinks are set-up so that each process-local logger writes to an individual file,
+then each file simply contains a copy of the record. If the sinks all re-direct
+to standard out, then the same record is printed once for each process. Logging
+process-local data to the global logger is trickier as it is implementation
+specific. At present the global logger is implemented so only the root process
+logs. So if process-local data is logged, the log only reflects the value of
+the root process’s record and all other records are not logged.</p>
+<p>This architecture addresses the considerations raised above by:</p>
+<ol class="arabic simple">
+<li><p>Multiple loggers.</p>
+<ul class="simple">
+<li><p>We can have multiple logger instances. Each instance is configured
+for a specific scope (global vs. process-local).</p></li>
+<li><p>Thread-safety should avoid the need for a “thread-local” logger.</p></li>
+</ul>
+</li>
+</ol>
+<ol class="arabic simple" start="3">
+<li><p>Concurrency aware.</p>
+<ul class="simple">
+<li><p>Distributed logging accomplished by having two logs, one for replicated
+and one for distributed data.</p></li>
+</ul>
+</li>
+</ol>
+<p>The remaining issues, including the thread-safety requirement of consideration
+3, are punted to the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class, which is the class actually
+implementing the global and process-local loggers. The design of <code class="docutils literal notranslate"><span class="pre">Logger</span></code>
+is provided here: <a class="reference internal" href="logger.html#logger-design"><span class="std std-ref">Designing the Logger Class</span></a>.</p>
+</section>
+<section id="future-considerations">
+<h2>Future Considerations<a class="headerlink" href="#future-considerations" title="Permalink to this heading">¶</a></h2>
+<p>The current design satisfies our current needs, but should be extensible
+if/when users want to customize logging more. In particular:</p>
+<ul class="simple">
+<li><p>Add ability to further scope loggers. Imagine having loggers per class, or
+for specific instances. Turning on/off such loggers makes it easier to track
+what’s going on with the class and instances.</p></li>
+<li><p>Realistically we probably want a factory, or similar mechanism, for
+setting up the initial loggers. Since our initialization choices are
+presently very limited we punt on the factory until more choices become
+available.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="logger.html" class="btn btn-neutral float-right" title="Designing the Logger Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="serialization.html" class="btn btn-neutral float-left" title="Serialization Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, NWChemEx Team.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

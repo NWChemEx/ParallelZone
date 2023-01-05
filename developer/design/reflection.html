@@ -1,36 +1,73 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
   <title>Reflection Design &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    <script src="../../_static/js/theme.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="prev" title="Serialization Design" href="serialization.html" /> 
+    <link rel="prev" title="Designing the Logger Class" href="logger.html" /> 
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
+
+   
   <div class="wy-grid-for-nav">
+    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
+          
+
+          
             <a href="../../index.html" class="icon icon-home"> parallelzone
+          
+
+          
           </a>
+
+          
+            
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -38,7 +75,18 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
@@ -54,6 +102,8 @@
 <li class="toctree-l3 current"><a class="reference internal" href="index.html#utilities-design">Utilities Design</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="hashing.html">Hashing Design</a></li>
 <li class="toctree-l4"><a class="reference internal" href="serialization.html">Serialization Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="logging.html">Designing the Logging Component</a></li>
+<li class="toctree-l4"><a class="reference internal" href="logger.html">Designing the Logger Class</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">Reflection Design</a></li>
 </ul>
 </li>
@@ -63,38 +113,81 @@
 </li>
 </ul>
 
+            
+          
         </div>
+        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">parallelzone</a>
+        
       </nav>
 
+
       <div class="wy-nav-content">
+        
         <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a></li>
-          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
-          <li class="breadcrumb-item"><a href="index.html">Design Documentation</a></li>
-      <li class="breadcrumb-item active">Reflection Design</li>
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Developer Documentation</a> &raquo;</li>
+        
+          <li><a href="index.html">Design Documentation</a> &raquo;</li>
+        
+      <li>Reflection Design</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
+        
+          
             <a href="../../_sources/developer/design/reflection.rst.txt" rel="nofollow"> View page source</a>
+          
+        
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+            
   <section id="reflection-design">
-<span id="id1"></span><h1>Reflection Design<a class="headerlink" href="#reflection-design" title="Permalink to this heading"></a></h1>
+<span id="id1"></span><h1>Reflection Design<a class="headerlink" href="#reflection-design" title="Permalink to this heading">¶</a></h1>
 <p>This page describes the considerations that went into potentially including
 reflection in ParallelZone.</p>
 <section id="what-is-reflection">
-<h2>What is Reflection?<a class="headerlink" href="#what-is-reflection" title="Permalink to this heading"></a></h2>
+<h2>What is Reflection?<a class="headerlink" href="#what-is-reflection" title="Permalink to this heading">¶</a></h2>
 <p>In object-oriented languages one distinguishes between the object’s type and the
 object’s state (i.e., class vs. instance of a class). While most coding
 scenarios focus on inspecting and manipulating an object’s state, there are
@@ -110,7 +203,7 @@ reflection would be the one after C++23 (C++26?). Point being, reflection as
 part of the C++ language is a ways away.</p>
 </section>
 <section id="why-do-we-need-reflection">
-<h2>Why Do We Need Reflection?<a class="headerlink" href="#why-do-we-need-reflection" title="Permalink to this heading"></a></h2>
+<h2>Why Do We Need Reflection?<a class="headerlink" href="#why-do-we-need-reflection" title="Permalink to this heading">¶</a></h2>
 <p>Strictly speaking we don’t need reflection, but the lack of reflection leads to
 a lot of boilerplate when adding meta-operations (e.g. printing, value
 comparison, hashing, and serialization). These operations all involve some form
@@ -120,7 +213,7 @@ but it makes switching say hashing or serialization libraries a pain.
 With reflection, we can keep interactions with such libraries in a single place.</p>
 </section>
 <section id="reflection-considerations">
-<h2>Reflection Considerations<a class="headerlink" href="#reflection-considerations" title="Permalink to this heading"></a></h2>
+<h2>Reflection Considerations<a class="headerlink" href="#reflection-considerations" title="Permalink to this heading">¶</a></h2>
 <ul>
 <li><p>Need to reflect polymorphic classes</p>
 <blockquote>
@@ -159,7 +252,7 @@ reflection added to them from outside of their definitions</p></li>
 </ul>
 </section>
 <section id="reflection-implementations">
-<h2>Reflection Implementations<a class="headerlink" href="#reflection-implementations" title="Permalink to this heading"></a></h2>
+<h2>Reflection Implementations<a class="headerlink" href="#reflection-implementations" title="Permalink to this heading">¶</a></h2>
 <p>Below is a list of C++ libraries implementing reflection without outside tools
 such as schemas or code generation.</p>
 <ul>
@@ -229,7 +322,7 @@ quickly perusing documentation and source code.</p>
 </div>
 </section>
 <section id="reflection-strategy">
-<h2>Reflection Strategy<a class="headerlink" href="#reflection-strategy" title="Permalink to this heading"></a></h2>
+<h2>Reflection Strategy<a class="headerlink" href="#reflection-strategy" title="Permalink to this heading">¶</a></h2>
 <p>Of the available libraries only Boost::Describe and RTTR are currently
 supported. AFAIK, RTTR is only runtime reflection. This is a notable problem as
 many applications of reflection (e.g., hashing and serialization) will require
@@ -245,32 +338,49 @@ have to roll our own solution.</p>
 
 
            </div>
+           
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="serialization.html" class="btn btn-neutral float-left" title="Serialization Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="logger.html" class="btn btn-neutral float-left" title="Designing the Logger Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2021, NWChemEx Team.</p>
-  </div>
+    <p>
+        &#169; Copyright 2021, NWChemEx Team.
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
         </div>
       </div>
+
     </section>
+
   </div>
-  <script>
+  
+
+  <script type="text/javascript">
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
+
+  
+  
+    
+   
 
 </body>
 </html>

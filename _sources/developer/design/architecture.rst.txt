@@ -25,7 +25,7 @@ Figure: :numref:`architecture`.
 
 .. _architecture:
 
-.. figure:: ../../assets/architecture.png
+.. figure:: assets/architecture.png
    :align: center
 
    Software architecture of ParallelZone.
@@ -77,7 +77,7 @@ implementing it.
 MPI Helpers
 ***********
 
-Main discussion :ref:`mpi_api_design`.
+Main discussion :ref:`compp_design`.
 
 The MPI standard exposes C APIs. "Proper" C++ MPI bindings should automate
 much of the call to the C API. More specifically, by using template
@@ -99,9 +99,11 @@ Hardware
 Logging
 *******
 
-.. todo::
+Main page: :ref:`logging_design`.
 
-   Document design and link to it.
+The logging component is used for recording events that occur while
+ParallelZone (and software built on ParallelZone) run. Events include:
+important results, timing information, or problems.
 
 **********
 Schedulers

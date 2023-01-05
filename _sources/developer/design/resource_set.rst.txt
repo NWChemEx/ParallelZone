@@ -59,7 +59,7 @@ ResourceSet Architecture
 
 .. _fig_resource_set:
 
-.. figure:: ../../assets/resource_set.png
+.. figure:: assets/resource_set.png
    :align: center
 
    Illustration of the ResourceSet class and its major members.

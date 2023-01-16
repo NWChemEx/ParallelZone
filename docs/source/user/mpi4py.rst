@@ -22,6 +22,11 @@ Using ParallelZone with mpi4py
    See `mpi4py documentation
    <https://mpi4py.readthedocs.io/en/stable/install.html>`_ for more information.
 
+.. warning::
+
+   Python support for ParallelZone is currently in beta. APIs are not
+   considered stable at this time and are subject to change.
+   
 mpi4py is the most popular package that provides Python bindings for the MPI standard. Here, we describe
 how you can use mpi4py along with ParallelZone. 
 

@@ -8,21 +8,22 @@ on:
       - ninja-build
 
 jobs:
-  # build-with-clang:
-  #   uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
-  #   with:
-  #     dependencies: 'gcc gcovr cmake openmpi'
-  #     gcc-build: true
-  #     clang-build: false
-  #   secrets:
-  #     CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
-
   build-with-gcc:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@ninja-build
-    with: 
-      dependencies: 'clang gcovr cmake openmpi'
-      gcc-build: false
-      clang-build: true
+    with:
+      dependencies: 'ninja gcc gcovr cmake openmpi'
+      gcc-build: true
+      clang-build: false
       ninja_build: true
     secrets:
       CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}
+
+  # build-with-clang:
+  #   uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@ninja-build
+  #   with: 
+  #     dependencies: 'clang gcovr cmake openmpi'
+  #     gcc-build: false
+  #     clang-build: true
+  #     ninja_build: true
+  #   secrets:
+  #     CPP_GITHUB_TOKEN: ${{ secrets.CPP_GITHUB_TOKEN }}

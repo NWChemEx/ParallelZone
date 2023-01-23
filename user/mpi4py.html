@@ -1,44 +1,22 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Using ParallelZone with mpi4py &mdash; parallelzone  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-
-    
+    <script src="../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../about.html" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -46,29 +24,13 @@
     <link rel="prev" title="Using MPI With Custom Types" href="mpi_and_custom_types.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../index.html" class="icon icon-home"> parallelzone
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,18 +38,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing ParallelZone</a></li>
@@ -110,75 +61,33 @@
 <li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Documentation</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../index.html">parallelzone</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="index.html">ParallelZone User Documentation</a> &raquo;</li>
-        
-      <li>Using ParallelZone with mpi4py</li>
-    
-    
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">ParallelZone User Documentation</a></li>
+      <li class="breadcrumb-item active">Using ParallelZone with mpi4py</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../_sources/user/mpi4py.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <section id="using-parallelzone-with-mpi4py">
-<h1>Using ParallelZone with mpi4py<a class="headerlink" href="#using-parallelzone-with-mpi4py" title="Permalink to this heading">¶</a></h1>
+             
+  <div class="section" id="using-parallelzone-with-mpi4py">
+<h1>Using ParallelZone with mpi4py<a class="headerlink" href="#using-parallelzone-with-mpi4py" title="Permalink to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>mpi4py is not installed by ParallelZone, so should be installed separately.
@@ -191,8 +100,8 @@ considered stable at this time and are subject to change.</p>
 </div>
 <p>mpi4py is the most popular package that provides Python bindings for the MPI standard. Here, we describe
 how you can use mpi4py along with ParallelZone.</p>
-<section id="mpi-initialization-and-finalization">
-<h2>MPI Initialization and Finalization<a class="headerlink" href="#mpi-initialization-and-finalization" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="mpi-initialization-and-finalization">
+<h2>MPI Initialization and Finalization<a class="headerlink" href="#mpi-initialization-and-finalization" title="Permalink to this heading"></a></h2>
 <p>The MPI standard requires <cite>MPI_Init</cite> or <cite>MPI_Init_thread</cite> function to be called by each process to
 initialize the MPI execution environment. mpi4py performs initialization (if necessary)
 automatically when <cite>MPI</cite> module is imported with <cite>from mpi4py import MPI</cite>.
@@ -211,9 +120,9 @@ thread support level manually. See the <a class="reference external" href="https
 for more details. However, note that it is not possible to pass a
 communicator to mpi4py explicitly.</p>
 </div>
-</section>
-<section id="passing-mpi4py-communicator-to-parallelzone">
-<h2>Passing mpi4py Communicator to ParallelZone<a class="headerlink" href="#passing-mpi4py-communicator-to-parallelzone" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="passing-mpi4py-communicator-to-parallelzone">
+<h2>Passing mpi4py Communicator to ParallelZone<a class="headerlink" href="#passing-mpi4py-communicator-to-parallelzone" title="Permalink to this heading"></a></h2>
 <p>If a user is interested in only sharing a subset of resources with ParallelZone,
 then the user needs to initialize ParallelZone by passing the communicator
 created by mpi4py. An example, where the user passes <cite>MPI_COMM_SELF</cite> as the
@@ -225,55 +134,38 @@ communicator for ParallelZone is given below.</p>
 <span class="n">pz_world</span> <span class="o">=</span> <span class="n">parallelzone</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">RuntimeView</span><span class="p">(</span><span class="n">pz_comm</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="quick_reference.html" class="btn btn-neutral float-right" title="Quick Reference / FAQs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="mpi_and_custom_types.html" class="btn btn-neutral float-left" title="Using MPI With Custom Types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quick_reference.html" class="btn btn-neutral float-right" title="Quick Reference / FAQs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, NWChemEx Team.
-
-    </p>
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

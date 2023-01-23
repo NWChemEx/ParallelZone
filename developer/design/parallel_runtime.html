@@ -1,44 +1,22 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Designing ParallelZone’s Parallel Runtime &mdash; parallelzone  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,29 +24,13 @@
     <link rel="prev" title="ParallelZone Architecture" href="architecture.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> parallelzone
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,18 +38,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
@@ -114,90 +65,47 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">parallelzone</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Developer Documentation</a> &raquo;</li>
-        
-          <li><a href="index.html">Design Documentation</a> &raquo;</li>
-        
-      <li>Designing ParallelZone’s Parallel Runtime</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Documentation</a></li>
+      <li class="breadcrumb-item active">Designing ParallelZone’s Parallel Runtime</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/developer/design/parallel_runtime.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <section id="designing-parallelzone-s-parallel-runtime">
-<span id="parallel-runtime-design"></span><h1>Designing ParallelZone’s Parallel Runtime<a class="headerlink" href="#designing-parallelzone-s-parallel-runtime" title="Permalink to this heading">¶</a></h1>
+             
+  <div class="section" id="designing-parallelzone-s-parallel-runtime">
+<span id="parallel-runtime-design"></span><h1>Designing ParallelZone’s Parallel Runtime<a class="headerlink" href="#designing-parallelzone-s-parallel-runtime" title="Permalink to this heading"></a></h1>
 <p><a class="reference internal" href="parallel_zone.html#parallel-zone-design"><span class="std std-ref">Designing ParallelZone</span></a> described the overall design points which went into
 the architecture of ParallelZone. Here we focus on the architecture of the
 parallel runtime component.</p>
-<section id="why-do-we-need-a-parallel-runtime">
-<h2>Why Do We Need a Parallel Runtime?<a class="headerlink" href="#why-do-we-need-a-parallel-runtime" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="why-do-we-need-a-parallel-runtime">
+<h2>Why Do We Need a Parallel Runtime?<a class="headerlink" href="#why-do-we-need-a-parallel-runtime" title="Permalink to this heading"></a></h2>
 <p>The primary goal of ParallelZone is to be a runtime system for parallel
 software. To accomplish this ParallelZone must have abstractions the software
 can use to interact with the runtime environment in a parallel manner. Ideally
 these interactions should make the task of writing parallel code as simple as
 possible.</p>
-</section>
-<section id="design-considerations">
-<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="design-considerations">
+<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Permalink to this heading"></a></h2>
 <p>The parallel runtime will be responsible for addressing many of the
 considerations raised in the <a class="reference internal" href="parallel_zone.html#parallel-zone-design"><span class="std std-ref">Designing ParallelZone</span></a> section. Including:</p>
 <ol class="arabic simple">
@@ -217,23 +125,21 @@ on)</p></li>
 <li><p>compatible with not being the top (<em>i.e.</em>, should work even when it’s not
 wrapping <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code>).</p></li>
 </ol>
-</section>
-<section id="id1">
-<h2>Parallel Runtime Design<a class="headerlink" href="#id1" title="Permalink to this heading">¶</a></h2>
-<figure class="align-center" id="id2">
+</div>
+<div class="section" id="id1">
+<h2>Parallel Runtime Design<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<div class="figure align-center" id="id2">
 <span id="fig-parallel-runtime"></span><img alt="../../_images/parallel_runtime_design.png" src="../../_images/parallel_runtime_design.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 6 </span><span class="caption-text">High-level architecture of the parallel runtime component of ParallelZone.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 6 </span><span class="caption-text">High-level architecture of the parallel runtime component of ParallelZone.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</div>
 <p><a class="reference internal" href="#fig-parallel-runtime"><span class="std std-numref">Fig. 6</span></a> provides a high-level overview of the parallel
 runtime in ParallelZone. The <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> class is an abstraction which
 models the runtime environment. The <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> class is used to group
 resources into affinity sets. The various hardware classes (<em>e.g.</em>, <code class="docutils literal notranslate"><span class="pre">CPU</span></code>,
 <code class="docutils literal notranslate"><span class="pre">RAM</span></code>, etc.) and the <code class="docutils literal notranslate"><span class="pre">Scheduler</span></code> instances are still considered opaque
 entities for the purposes of this page.</p>
-<section id="runtimeview">
-<h3>RuntimeView<a class="headerlink" href="#runtimeview" title="Permalink to this heading">¶</a></h3>
+<div class="section" id="runtimeview">
+<h3>RuntimeView<a class="headerlink" href="#runtimeview" title="Permalink to this heading"></a></h3>
 <p>Full discussion <a class="reference internal" href="runtime_view.html#runtime-view-design"><span class="std std-ref">Designing RuntimeView Class</span></a>.</p>
 <p>As the name suggests <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> is a view of the actual runtime
 environment. This means it does not own the resources it accesses. Similarly,
@@ -257,9 +163,9 @@ is a large part of supporting process parallelism.</p></li>
 <li><p>State is tied to underlying MPI communicator. Splitting the communicator is
 allowed.</p></li>
 </ol>
-</section>
-<section id="resourceset">
-<h3>ResourceSet<a class="headerlink" href="#resourceset" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="resourceset">
+<h3>ResourceSet<a class="headerlink" href="#resourceset" title="Permalink to this heading"></a></h3>
 <p>Full discussion is at <a class="reference internal" href="resource_set.html#resource-set-design"><span class="std std-ref">Designing ParallelZone’s ResourceSet Class</span></a>.</p>
 <p>Each process is associated with a <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> instance. The <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code>
 affiliated with the current process contains the resources which are local
@@ -276,77 +182,60 @@ with objects.</p></li>
 <li><p>Understands that its resources are local and resources in other
 <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> objects are in general local.</p></li>
 </ol>
-</section>
-<section id="hardware-classes">
-<h3>Hardware Classes<a class="headerlink" href="#hardware-classes" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="hardware-classes">
+<h3>Hardware Classes<a class="headerlink" href="#hardware-classes" title="Permalink to this heading"></a></h3>
 <p>See discussions at <a class="reference internal" href="ram.html#ram-design"><span class="std std-ref">Designing RAM Class</span></a>.</p>
 <p>These classes have not been designed in detail yet. For now we note they should
 allow the user to query whatever information they want in order to make
 informed runtime decisions. They also are responsible for encapsulating the
 mechanisms for interacting with that device (<em>e.g.</em>, sending result from the
 memory of one <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> to that of another).</p>
-</section>
-<section id="scheduler-classes">
-<h3>Scheduler Classes<a class="headerlink" href="#scheduler-classes" title="Permalink to this heading">¶</a></h3>
+</div>
+<div class="section" id="scheduler-classes">
+<h3>Scheduler Classes<a class="headerlink" href="#scheduler-classes" title="Permalink to this heading"></a></h3>
 <p>The scheduler has not been designed yet.</p>
-</section>
-</section>
-<section id="additional-options">
-<h2>Additional Options<a class="headerlink" href="#additional-options" title="Permalink to this heading">¶</a></h2>
+</div>
+</div>
+<div class="section" id="additional-options">
+<h2>Additional Options<a class="headerlink" href="#additional-options" title="Permalink to this heading"></a></h2>
 <p>Ultimately the runtime environment is a singleton. It may make more sense to
 actually create a class <code class="docutils literal notranslate"><span class="pre">Runtime</span></code> which holds the state of the runtime
 environment and have <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> really hold a reference to the <code class="docutils literal notranslate"><span class="pre">Runtime</span></code>
 object. The primary benefit of this is that it better maps to MPI (which really
 is a singleton).</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="runtime_view.html" class="btn btn-neutral float-right" title="Designing RuntimeView Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="architecture.html" class="btn btn-neutral float-left" title="ParallelZone Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="runtime_view.html" class="btn btn-neutral float-right" title="Designing RuntimeView Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, NWChemEx Team.
-
-    </p>
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

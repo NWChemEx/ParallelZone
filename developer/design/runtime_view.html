@@ -1,44 +1,22 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Designing RuntimeView Class &mdash; parallelzone  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,29 +24,13 @@
     <link rel="prev" title="Designing ParallelZone’s Parallel Runtime" href="parallel_runtime.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> parallelzone
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,18 +38,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
@@ -114,88 +65,45 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">parallelzone</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Developer Documentation</a> &raquo;</li>
-        
-          <li><a href="index.html">Design Documentation</a> &raquo;</li>
-        
-      <li>Designing RuntimeView Class</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Documentation</a></li>
+      <li class="breadcrumb-item active">Designing RuntimeView Class</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/developer/design/runtime_view.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <section id="designing-runtimeview-class">
-<span id="runtime-view-design"></span><h1>Designing RuntimeView Class<a class="headerlink" href="#designing-runtimeview-class" title="Permalink to this heading">¶</a></h1>
+             
+  <div class="section" id="designing-runtimeview-class">
+<span id="runtime-view-design"></span><h1>Designing RuntimeView Class<a class="headerlink" href="#designing-runtimeview-class" title="Permalink to this heading"></a></h1>
 <p>The need for the <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> class grew out of
 <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a>. Here we flesh the design out more.</p>
-<section id="why-do-we-need-the-runtimeview-class">
-<h2>Why Do We Need the RuntimeView Class?<a class="headerlink" href="#why-do-we-need-the-runtimeview-class" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="why-do-we-need-the-runtimeview-class">
+<h2>Why Do We Need the RuntimeView Class?<a class="headerlink" href="#why-do-we-need-the-runtimeview-class" title="Permalink to this heading"></a></h2>
 <p>As discussed in <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a>, the <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> class is
 ParallelZone’s abstraction for modeling the runtime environment. <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code>
 will also serve as the top-level <a class="reference internal" href="../../abbreviations.html#api"><span class="std std-ref">API</span></a> for accessing ParallelZone
 functionality.</p>
-</section>
-<section id="what-should-the-runtimeview-class-manage">
-<h2>What Should the RuntimeView Class Manage?<a class="headerlink" href="#what-should-the-runtimeview-class-manage" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="what-should-the-runtimeview-class-manage">
+<h2>What Should the RuntimeView Class Manage?<a class="headerlink" href="#what-should-the-runtimeview-class-manage" title="Permalink to this heading"></a></h2>
 <p>ParallelZone assumes it is managing the runtime environment for a potentially
 multi-process program. In general that program can be running on a laptop, the
 number one supercomputer in the world, or anything in between.</p>
@@ -213,15 +121,13 @@ System-wide state will be accessible from <code class="docutils literal notransl
 <li><p>MPI compatability.</p></li>
 <li><p>Flexibility of backend.</p></li>
 </ol>
-</section>
-<section id="runtimeview-architecture">
-<h2>RuntimeView Architecture<a class="headerlink" href="#runtimeview-architecture" title="Permalink to this heading">¶</a></h2>
-<figure class="align-center" id="id1">
+</div>
+<div class="section" id="runtimeview-architecture">
+<h2>RuntimeView Architecture<a class="headerlink" href="#runtimeview-architecture" title="Permalink to this heading"></a></h2>
+<div class="figure align-center" id="id1">
 <span id="fig-runtime-view"></span><img alt="../../_images/runtime_view.png" src="../../_images/runtime_view.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 7 </span><span class="caption-text">Schematic illustration of the RuntimeView class and its major pieces.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 7 </span><span class="caption-text">Schematic illustration of the RuntimeView class and its major pieces.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</div>
 <p>The architecture of <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> is shown in <a class="reference internal" href="#fig-runtime-view"><span class="std std-numref">Fig. 7</span></a>. This
 addresses the above consideration by (numbering is from above):</p>
 <ol class="arabic simple">
@@ -250,9 +156,9 @@ customizable, but it is assumed this logger is always called in a SIMD manner
 by all processes. Default behavior is to redirect all output to <code class="docutils literal notranslate"><span class="pre">/dev/null</span></code>
 except that of the root process.</p></li>
 </ul>
-</section>
-<section id="proposed-apis">
-<h2>Proposed APIs<a class="headerlink" href="#proposed-apis" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="proposed-apis">
+<h2>Proposed APIs<a class="headerlink" href="#proposed-apis" title="Permalink to this heading"></a></h2>
 <p>Examples of all-to-all communications</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span>
 
@@ -265,55 +171,38 @@ except that of the root process.</p></li>
 <span class="k">auto</span><span class="w"> </span><span class="n">output2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">reduce</span><span class="o">&lt;</span><span class="n">RAM</span><span class="o">&gt;</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">);</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="resource_set.html" class="btn btn-neutral float-right" title="Designing ParallelZone’s ResourceSet Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="parallel_runtime.html" class="btn btn-neutral float-left" title="Designing ParallelZone’s Parallel Runtime" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="resource_set.html" class="btn btn-neutral float-right" title="Designing ParallelZone’s ResourceSet Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, NWChemEx Team.
-
-    </p>
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

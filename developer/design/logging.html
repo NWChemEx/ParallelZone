@@ -1,44 +1,22 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Designing the Logging Component &mdash; parallelzone  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="author" title="About these documents" href="../../about.html" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -46,29 +24,13 @@
     <link rel="prev" title="Serialization Design" href="serialization.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> parallelzone
-          
-
-          
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,18 +38,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
@@ -114,81 +65,38 @@
 </li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">parallelzone</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
-          <li><a href="../index.html">Developer Documentation</a> &raquo;</li>
-        
-          <li><a href="index.html">Design Documentation</a> &raquo;</li>
-        
-      <li>Designing the Logging Component</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Documentation</a></li>
+      <li class="breadcrumb-item active">Designing the Logging Component</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/developer/design/logging.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <section id="designing-the-logging-component">
-<span id="logging-design"></span><h1>Designing the Logging Component<a class="headerlink" href="#designing-the-logging-component" title="Permalink to this heading">¶</a></h1>
+             
+  <div class="section" id="designing-the-logging-component">
+<span id="logging-design"></span><h1>Designing the Logging Component<a class="headerlink" href="#designing-the-logging-component" title="Permalink to this heading"></a></h1>
 <p>ParallelZone provides a <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class to facilitate recording of events,
 i.e., print statements. The high-level design is summarized on this page.</p>
-<section id="what-is-a-logger">
-<h2>What is a Logger?<a class="headerlink" href="#what-is-a-logger" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="what-is-a-logger">
+<h2>What is a Logger?<a class="headerlink" href="#what-is-a-logger" title="Permalink to this heading"></a></h2>
 <p>A logger is a software element (in our case a class) which records events.
 Events can be be almost anything including: user interactions, errors, timing
 information, progress , and status. Typically the events are recorded
@@ -199,9 +107,9 @@ automation, and remote access.</p>
 results in the logs, keep in mind that logs are often turned off/overridden,
 etc. So while it’s okay to put results in the logs, they need to go to a more
 permanent location as well.</p>
-</section>
-<section id="why-do-we-need-a-logging-component">
-<h2>Why Do We Need a Logging Component?<a class="headerlink" href="#why-do-we-need-a-logging-component" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="why-do-we-need-a-logging-component">
+<h2>Why Do We Need a Logging Component?<a class="headerlink" href="#why-do-we-need-a-logging-component" title="Permalink to this heading"></a></h2>
 <p>The ParallelZone runtime is designed to make writing high-performance software
 as easy as possible. Most high-performance software is very complicated
 (even if much of the complication is abstracted away). Complications include:</p>
@@ -215,9 +123,9 @@ hard to access the program.</p></li>
 <p>It thus becomes imperative for the software to log events so that developers
 (and users) can figure out what happened after a run completes, particularly if
 the run is unsuccessful.</p>
-</section>
-<section id="logging-considerations">
-<h2>Logging Considerations<a class="headerlink" href="#logging-considerations" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="logging-considerations">
+<h2>Logging Considerations<a class="headerlink" href="#logging-considerations" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Multiple loggers.</p>
 <ul class="simple">
@@ -251,9 +159,9 @@ the run is unsuccessful.</p>
 </ul>
 </li>
 </ol>
-</section>
-<section id="existing-logging-solutions">
-<span id="id1"></span><h2>Existing Logging Solutions<a class="headerlink" href="#existing-logging-solutions" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="existing-logging-solutions">
+<span id="id1"></span><h2>Existing Logging Solutions<a class="headerlink" href="#existing-logging-solutions" title="Permalink to this heading"></a></h2>
 <p>There are a lot of existing C/C++ logging solutions. This section summarizes
 the ones we looked at and is unlikely to be exhaustive.</p>
 <div class="admonition note">
@@ -429,15 +337,13 @@ to be a stable API over existing loggers like log4cxx, etc.).</p></li>
 </ul>
 </li>
 </ul>
-</section>
-<section id="id2">
-<h2>Logging Design<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h2>
-<figure class="align-center" id="id3">
+</div>
+<div class="section" id="id2">
+<h2>Logging Design<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<div class="figure align-center" id="id3">
 <span id="logging-arch"></span><img alt="../../_images/logging_arch.png" src="../../_images/logging_arch.png" />
-<figcaption>
-<p><span class="caption-number">Fig. 12 </span><span class="caption-text">Software architecture of ParallelZone’s Logging component.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+<p class="caption"><span class="caption-number">Fig. 12 </span><span class="caption-text">Software architecture of ParallelZone’s Logging component.</span><a class="headerlink" href="#id3" title="Permalink to this image"></a></p>
+</div>
 <p>Ultimately none of the widely available logging solutions do everything we want
 and we have chosen to have the user-facing logger be written by us. This
 provides a stable API to users of ParallelZone, while allowing ParallelZone
@@ -503,9 +409,9 @@ and one for distributed data.</p></li>
 3, are punted to the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class, which is the class actually
 implementing the global and process-local loggers. The design of <code class="docutils literal notranslate"><span class="pre">Logger</span></code>
 is provided here: <a class="reference internal" href="logger.html#logger-design"><span class="std std-ref">Designing the Logger Class</span></a>.</p>
-</section>
-<section id="future-considerations">
-<h2>Future Considerations<a class="headerlink" href="#future-considerations" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="future-considerations">
+<h2>Future Considerations<a class="headerlink" href="#future-considerations" title="Permalink to this heading"></a></h2>
 <p>The current design satisfies our current needs, but should be extensible
 if/when users want to customize logging more. In particular:</p>
 <ul class="simple">
@@ -517,55 +423,38 @@ setting up the initial loggers. Since our initialization choices are
 presently very limited we punt on the factory until more choices become
 available.</p></li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="logger.html" class="btn btn-neutral float-right" title="Designing the Logger Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="serialization.html" class="btn btn-neutral float-left" title="Serialization Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="logger.html" class="btn btn-neutral float-right" title="Designing the Logger Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2021, NWChemEx Team.
-
-    </p>
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -17,7 +17,6 @@ name: Tag and Release
 on:
   push:
     branches:
-      - master
       - automate-versioning
 
 jobs:

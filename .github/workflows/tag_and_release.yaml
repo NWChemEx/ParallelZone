@@ -19,6 +19,7 @@ on:
     branches:
       - automate-versioning
 
+
 jobs:
   tag:
     uses: NWChemEx-Project/.github/.github/workflows/tag_and_release_master.yaml@automate-versioning

@@ -15,9 +15,9 @@
 name: Tag and Release
 
 on:
-  push:
+  pull_request:
     branches:
-      - automate-versioning
+      - master
 
 jobs:
   tag:

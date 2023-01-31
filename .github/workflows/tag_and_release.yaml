@@ -23,4 +23,4 @@ jobs:
   tag:
     uses: NWChemEx-Project/.github/.github/workflows/tag_and_release_master.yaml@automate-versioning
     secrets:
-      token: ${{ secrets.UPDATE_TAG }}
+      token: ${{ secrets.GITHUB_TOKEN }}

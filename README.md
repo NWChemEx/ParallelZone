@@ -33,6 +33,8 @@ TODO: Link to install instructions
 
 # Contributing
 
+[Contributor Guidelines](https://github.com/NWChemEx-Project/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md)
+
 TODO: Write me!
 TODO: Link to developer documentation.
 TODO: Link to contributor license agreement

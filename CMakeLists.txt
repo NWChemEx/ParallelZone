@@ -50,7 +50,7 @@ endif()
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
-# set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/docs/build/html/cxx_api)
+set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/docs/build/html/cxx_api)
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 #TODO: Make sure MADworld uses the Cereal we build

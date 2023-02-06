@@ -3,11 +3,10 @@ on:
   pull_request:
     branches:
       - master
-      - test-deploy
 
 jobs:
   Build-Documentation:
-    uses: NWChemEx-Project/.github/.github/workflows/test_docs_tmpl.yaml@build-doc-test
+    uses: NWChemEx-Project/.github/.github/workflows/test_docs_tmpl.yaml@master
     with:
       target: parallelzone_cxx_api
       dependencies: cmake doxygen graphviz sphinx

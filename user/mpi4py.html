@@ -29,11 +29,15 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> parallelzone
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            parallelzone
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -74,7 +78,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">ParallelZone User Documentation</a></li>
       <li class="breadcrumb-item active">Using ParallelZone with mpi4py</li>
       <li class="wy-breadcrumbs-aside">
@@ -91,19 +95,21 @@
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>mpi4py is not installed by ParallelZone, so should be installed separately.
-See <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/install.html">mpi4py documentation</a> for more information.</p>
+See <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/install.html">mpi4py documentation</a> for more
+information.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Python support for ParallelZone is currently in beta. APIs are not
 considered stable at this time and are subject to change.</p>
 </div>
-<p>mpi4py is the most popular package that provides Python bindings for the MPI standard. Here, we describe
-how you can use mpi4py along with ParallelZone.</p>
+<p>mpi4py is the most popular package that provides Python bindings for the MPI
+standard. Here, we describe how you can use mpi4py along with ParallelZone.</p>
 <div class="section" id="mpi-initialization-and-finalization">
 <h2>MPI Initialization and Finalization<a class="headerlink" href="#mpi-initialization-and-finalization" title="Permalink to this heading"></a></h2>
-<p>The MPI standard requires <cite>MPI_Init</cite> or <cite>MPI_Init_thread</cite> function to be called by each process to
-initialize the MPI execution environment. mpi4py performs initialization (if necessary)
+<p>The MPI standard requires <cite>MPI_Init</cite> or <cite>MPI_Init_thread</cite> function to be called
+by each process to initialize the MPI execution environment. mpi4py performs
+initialization (if necessary)
 automatically when <cite>MPI</cite> module is imported with <cite>from mpi4py import MPI</cite>.
 By default thread support is enabled with <cite>MPI_THREAD_MULTIPLE</cite> option, which is
 also the required thread support level for ParallelZone. If

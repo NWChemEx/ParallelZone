@@ -67,20 +67,32 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a href="https://github.com/NWChemEx-Project/ParallelZone"><img src="https://github.com/NWChemEx-Project/ParallelZone/workflows/C_C++_CI/badge.svg" alt="Actions" style="pointer-events: none;" class="inline"/></a></p>
-<p><a href="https://codecov.io/github/NWChemEx-Project/ParallelZone/branch/master"><img src="https://codecov.io/github/NWChemEx-Project/ParallelZone/branch/master/graphs/sunburst.svg?token=gdemefzIU7" alt="Codecov" style="pointer-events: none;" class="inline"/></a></p>
 <h1><a class="anchor" id="autotoc_md0"></a>
 ParallelZone</h1>
-<p>Parallel runtime for NWChemEx. Still in the early stages of development. See <a href="https://github.com/NWChemEx-Project/ParallelZone/discussions">discussions</a> for further information.</p>
+<p>ParallelZone is a parallel <a href="https://en.wikipedia.org/wiki/Runtime_system">runtime system</a> designed to be useful for object-oriented, task-based, scientific software. ParallelZone is still far from a complete project, but the feature set is expected to grow dynamically based on the needs of its consumers (primarily the NWChemEx project).</p>
+<p>A more detailed, user-centric, description of the project can be found <a href="https://nwchemex-project.github.io/ParallelZone/about.html">here</a>.</p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Features</h1>
-<p>TODO: Write me!</p>
+<ul>
+<li>Object-oriented C++ bindings to MPI.</li>
+<li>Logging primitives.</li>
+<li>Primitives for hardware resources.</li>
+</ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
 Install</h1>
-<p>TODO: Link to install instructions</p>
+<p>ParallelZone relies on CMake for configuring and building, meaning that installation is usually achieved via a variation on:</p>
+<div class="fragment"><div class="line">git clone https://github.com/NWChemEx-Project/ParallelZone</div>
+<div class="line">cd ParallelZone</div>
+<div class="line">cmake -H. -Bbuild -D...</div>
+<div class="line">cmake --build build</div>
+<div class="line">cmake --build build --target install</div>
+</div><!-- fragment --><p> More detailed install instructions can be found <a href="https://nwchemex-project.github.io/ParallelZone/install.html">here</a>.</p>
 <h1><a class="anchor" id="autotoc_md3"></a>
 Contributing</h1>
-<p><a href="https://github.com/NWChemEx-Project/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md">Contributor Guidelines</a></p>
-<p>TODO: Write me! TODO: Link to developer documentation. TODO: Link to contributor license agreement TOOD: Link to code of conduct </p>
+<p><a href="https://github.com/NWChemEx-Project/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md">Contributor Guidelines</a> <a href="https://github.com/NWChemEx-Project/.github/blob/master/.github/CONTRIBUTING.md#contributor-license-agreement-cla">Contributor License Agreement</a> <a href="https://nwchemex-project.github.io/ParallelZone/developer/index.html">Developer Documentation</a> <a href="https://github.com/NWChemEx-Project/.github/blob/master/.github/CODE_OF_CONDUCT.md">Code of Conduct</a></p>
+<h1><a class="anchor" id="autotoc_md4"></a>
+Acknowledgments</h1>
+<p>This research was supported by the Exascale Computing Project (17-SC-20-SC), a collaborative effort of the U.S. Department of Energy Office of Science and the National Nuclear Security Administration. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

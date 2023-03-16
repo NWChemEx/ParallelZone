@@ -55,10 +55,10 @@ More detailed install instructions can be found
 
 # Contributing
 
-[Contributor Guidelines](https://github.com/NWChemEx-Project/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md)
-[Contributor License Agreement](https://github.com/NWChemEx-Project/.github/blob/master/.github/CONTRIBUTING.md#contributor-license-agreement-cla)
-[Developer Documentation](https://nwchemex-project.github.io/ParallelZone/developer/index.html)
-[Code of Conduct](https://github.com/NWChemEx-Project/.github/blob/master/.github/CODE_OF_CONDUCT.md)
+- [Contributor Guidelines](https://github.com/NWChemEx-Project/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md)
+- [Contributor License Agreement](https://github.com/NWChemEx-Project/.github/blob/master/.github/CONTRIBUTING.md#contributor-license-agreement-cla)
+- [Developer Documentation](https://nwchemex-project.github.io/ParallelZone/developer/index.html)
+- [Code of Conduct](https://github.com/NWChemEx-Project/.github/blob/master/.github/CODE_OF_CONDUCT.md)
 
 # Acknowledgments
 

@@ -102,6 +102,13 @@ cpp_find_or_build_dependency(
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
 
+if("${BUILD_PYBINDGS}")
+    # Cppyy bindings
+    #include(nwx_python_mods)
+    #cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone)
+
+endif()
+
 cpp_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
@@ -110,8 +117,8 @@ cpp_add_library(
 
 )
 
-include(nwx_python_mods)
-cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone )
+
+
 
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")

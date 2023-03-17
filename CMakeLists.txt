@@ -83,18 +83,6 @@ if("${BUILD_PAPI_BINDINGS}")
 endif ()
 
 cpp_find_or_build_dependency(
-    bphash
-    URL github.com/ryanmrichard/BPHash
-    BUILD_TARGET bphash
-    FIND_TARGET bphash::bphash
-    BRANCH master
-    CMAKE_ARGS BUILD_TESTING=OFF
-)
-# Note that hashes may differ with different compilers when typeid is used.
-# Comment below to disable using typeid for hashes.
-target_compile_definitions(bphash PUBLIC BPHASH_USE_TYPEID)
-
-cpp_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
     BUILD_TARGET cereal
@@ -106,7 +94,7 @@ cpp_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIR "${project_inc_dir}"
-    DEPENDS MADworld bphash::bphash cereal::cereal spdlog::spdlog
+    DEPENDS MADworld cereal::cereal spdlog::spdlog
 
 )
 

@@ -23,7 +23,6 @@
  * library.
  */
 
-#include "parallelzone/hasher.hpp"
 #include "parallelzone/serialization.hpp"
 #include <parallelzone/runtime/runtime.hpp>
 

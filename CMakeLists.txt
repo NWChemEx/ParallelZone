@@ -50,6 +50,9 @@ endif()
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
+# Project dependencies
+set(project_depends "")
+
 # set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/docs/build/html/cxx_api)
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
@@ -69,6 +72,8 @@ cpp_find_or_build_dependency(
                BUILD_TESTING=OFF
 )
 
+list(APPEND project_depends MADworld)
+
 cpp_find_or_build_dependency(
     spdlog
     URL github.com/gabime/spdlog
@@ -76,11 +81,13 @@ cpp_find_or_build_dependency(
     BUILD_TARGET spdlog
     FIND_TARGET spdlog::spdlog
 )
+list(APPEND project_depends spdlog::spdlog)
 
 # PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
 if("${BUILD_PAPI_BINDINGS}")
     include(build_papi)
 endif ()
+
 
 cpp_find_or_build_dependency(
     cereal
@@ -89,27 +96,18 @@ cpp_find_or_build_dependency(
     FIND_TARGET cereal::cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
-
-if("${BUILD_PYBINDGS}")
-    # Cppyy bindings
-    #include(nwx_python_mods)
-    #cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone)
-
-endif()
+list(APPEND project_depends cereal::cereal)
 
 cpp_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIR "${project_inc_dir}"
-    DEPENDS MADworld cereal::cereal spdlog::spdlog
-
+    DEPENDS "${project_depends}"
 )
-
-
-
 
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
+
     cpp_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
@@ -121,14 +119,15 @@ if("${BUILD_TESTING}")
         test_parallelzone
         SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
         INCLUDE_DIR "${project_src_dir}"
-        DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
     cpp_add_tests(
         test_parallelzone_docs
         SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
         INCLUDE_DIR "${project_src_dir}"
-        DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
+
     find_package(MPI REQUIRED)
     add_test(
         NAME "test_pz_under_mpi"
@@ -140,4 +139,39 @@ if("${BUILD_TESTING}")
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
                 "${CMAKE_BINARY_DIR}/test_parallelzone_docs"
     )
+endif()
+
+if("${BUILD_PYBINDINGS}")
+    # Cppyy bindings
+    #include(nwx_python_mods)
+    #cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone)
+
+    cpp_find_or_build_dependency(
+        pybind11
+        URL github.com/pybind/pybind11
+        BUILD_TARGET pybind11::pybind11
+        FIND_TARGET pybind11::embed
+        CMAKE_ARGS PYBIND11_INSTALL=ON
+                   PYBIND11_FINDPYTHON=ON
+    )
+    file(
+        GLOB_RECURSE PY_FILES
+        CONFIGURE_DEPENDS
+        ${CMAKE_CURRENT_LIST_DIR}/src/python/*.cpp
+    )
+    pybind11_add_module(py_parallelzone MODULE ${PY_FILES})
+    target_link_libraries(py_parallelzone PUBLIC ${PROJECT_NAME})
+    set_target_properties(
+        py_parallelzone
+        PROPERTIES LIBRARY_OUTPUT_NAME
+        parallelzone
+    )
+
+    if("${BUILD_TESTING}")
+        set(PY_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
+        add_test(
+            NAME "pytest_parallelzone"
+            COMMAND "python" "${PY_TEST_DIR}/module.py"
+        )
+    endif()
 endif()

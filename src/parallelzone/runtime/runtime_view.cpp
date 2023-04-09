@@ -32,14 +32,13 @@ namespace {
 auto start_commpp(int argc, char** argv, const MPI_Comm& comm) {
     int mpi_initialized;
     MPI_Initialized(&mpi_initialized);
-    if (!mpi_initialized) {
-        MPI_Init(&argc, &argv);
-    }
+    if(!mpi_initialized) { MPI_Init(&argc, &argv); }
     mpi_helpers::CommPP commpp(comm);
 
-    auto log = LoggerFactory::default_global_logger(commpp.me());
+    auto log         = LoggerFactory::default_global_logger(commpp.me());
     using pimpl_type = detail_::RuntimeViewPIMPL;
-    return std::make_shared<pimpl_type>(!mpi_initialized, commpp, std::move(log));
+    return std::make_shared<pimpl_type>(!mpi_initialized, commpp,
+                                        std::move(log));
 }
 
 } // namespace
@@ -78,12 +77,10 @@ RuntimeView::~RuntimeView() noexcept = default;
 RuntimeView::mpi_comm_type RuntimeView::mpi_comm() const noexcept {
     if(null()) return MPI_COMM_NULL;
     return m_pimpl_->m_comm.comm();
-
 }
 
 RuntimeView::size_type RuntimeView::size() const noexcept {
     return !null() ? m_pimpl_->m_comm.size() : 0;
-
 }
 
 bool RuntimeView::null() const noexcept { return !static_cast<bool>(m_pimpl_); }

@@ -44,12 +44,12 @@
 #include <cereal/types/vector.hpp>
 
 namespace parallelzone {
-using XMLOutputArchive = cereal::XMLOutputArchive;
-using XMLInputArchive = cereal::XMLInputArchive ;
-using JSONOutputArchive = cereal::JSONOutputArchive;
-using JSONInputArchive = cereal::JSONInputArchive;
-using BinaryOutputArchive = cereal::BinaryOutputArchive;
-using BinaryInputArchive  = cereal::BinaryInputArchive;
+using XMLOutputArchive            = cereal::XMLOutputArchive;
+using XMLInputArchive             = cereal::XMLInputArchive;
+using JSONOutputArchive           = cereal::JSONOutputArchive;
+using JSONInputArchive            = cereal::JSONInputArchive;
+using BinaryOutputArchive         = cereal::BinaryOutputArchive;
+using BinaryInputArchive          = cereal::BinaryInputArchive;
 using PortableBinaryOutputArchive = cereal::PortableBinaryOutputArchive;
 using PortableBinaryInputArchive  = cereal::PortableBinaryInputArchive;
 template<typename T, typename Archive>
@@ -58,4 +58,4 @@ template<typename T, typename Archive>
 using is_deserializable = cereal::traits::is_input_serializable<T, Archive>;
 using cereal::traits::detail::get_input_from_output;
 using cereal::traits::detail::get_output_from_input;
-}
+} // namespace parallelzone

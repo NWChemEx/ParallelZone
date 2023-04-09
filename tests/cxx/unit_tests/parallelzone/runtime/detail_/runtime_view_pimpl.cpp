@@ -35,7 +35,7 @@ using namespace parallelzone::runtime::detail_;
  */
 
 TEST_CASE("RuntimeViewPIMPL") {
-    auto& rt    = testing::PZEnvironment::comm_world();
+    auto& rt = testing::PZEnvironment::comm_world();
     RuntimeViewPIMPL::comm_type comm(rt.mpi_comm());
     RuntimeViewPIMPL::comm_type null_comm;
     parallelzone::Logger log;

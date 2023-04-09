@@ -25,7 +25,8 @@
 
 namespace parallelzone::runtime::detail_ {
 
-inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_commpp, comm_type comm, logger_type logger) :
+inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_commpp,
+                                          comm_type comm, logger_type logger) :
   m_did_i_start_commpp(did_i_start_commpp),
   m_comm(comm),
   m_plogger(std::make_shared<logger_type>(std::move(logger))),

@@ -69,13 +69,15 @@ struct RuntimeViewPIMPL {
      *  @param[in] did_i_start_commpp True if *this should be responsible for
      *                                 the lifetime of CommPP and false
      *                                 otherwise.
-     *  @param[in] comm The MPI communicator associated with the instance of the class.
+     *  @param[in] comm The MPI communicator associated with the instance of the
+     * class.
      *
      *  @param[in] logger The program-wide logger as seen by the current
      *                    process.
      */
 
-    RuntimeViewPIMPL(bool did_i_start_commpp, comm_type comm, logger_type logger);
+    RuntimeViewPIMPL(bool did_i_start_commpp, comm_type comm,
+                     logger_type logger);
 
     /// Destructor, when all references are gone (and if we started it)
     ~RuntimeViewPIMPL() noexcept;

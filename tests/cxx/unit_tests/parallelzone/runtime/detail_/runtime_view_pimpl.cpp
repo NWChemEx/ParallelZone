@@ -24,9 +24,9 @@ using namespace parallelzone::runtime::detail_;
 /* Testing Notes
  *
  * Unfortunately fully testing the ctor/dtor is tricky because we can't restart
- * MADNESS/MPI. In particular this means if we make a
- * RuntimeViewPIMPL instance and tell it that it started MADNESS, when it goes
- * out of scope it will finalize MADNESS and break all of the other tests in
+ * MPI. In particular this means if we make a
+ * RuntimeViewPIMPL instance and tell it that it started MPI, when it goes
+ * out of scope it will finalize MPI and break all of the other tests in
  * ParallelZone (unless it just so happens that this is the only test run or
  * the last one).
  *

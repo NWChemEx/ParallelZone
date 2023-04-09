@@ -28,29 +28,7 @@ namespace parallelzone::runtime {
 namespace {
 
 // Basically a ternary statement dispatching on whether we need to initialize
-// MADNESS or not
-// auto start_madness(int argc, char** argv, const MPI_Comm& comm) {
-//     bool initialize = !madness::initialized();
-//     madness::World* pworld;
-//     if(initialize) {
-//         // MADNESS doesn't appear to check if the provided comm is
-//         // MPI_COMM_WORLD, so if you pass an MPI_COMM it assumes MPI was
-//         // initialized. This if/else statement avoids passing a comm if we were
-//         // given MPI_COMM_WORLD
-//         if(comm == MPI_COMM_WORLD)
-//             pworld = &madness::initialize(argc, argv, true);
-//         else
-//             pworld = &madness::initialize(argc, argv, comm, true);
-//     } else
-//         pworld = madness::World::find_instance(SafeMPI::Intracomm(comm));
-
-//     auto log         = LoggerFactory::default_global_logger(pworld->rank());
-//     using pimpl_type = detail_::RuntimeViewPIMPL;
-//     return std::make_shared<pimpl_type>(initialize, *pworld, std::move(log));
-// }
-
-// Basically a ternary statement dispatching on whether we need to initialize
-// MADNESS or not
+// MPI or not
 auto start_commpp(int argc, char** argv, const MPI_Comm& comm) {
     int mpi_initialized;
     MPI_Initialized(&mpi_initialized);

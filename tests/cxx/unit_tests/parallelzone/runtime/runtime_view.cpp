@@ -27,8 +27,8 @@ using namespace runtime;
 /* Testing notes
  *
  * Here we have similar caveats to the RuntimeViewPIMPL unit tests, namely we
- * need to avoid restarting and/or shutting down MADNESS (and MPI under it). By
- * time we get into this test the main function will have initialized MADNESS by
+ * need to avoid restarting and/or shutting down CommPP (and MPI under it). By
+ * time we get into this test the main function will have initialized CommPP by
  * calling the RuntimeView(argc_type, argv_type) ctor.
  *
  * These unit tests assume MPI_COMM_WORLD is the top-level communicator given

@@ -36,14 +36,13 @@ using namespace parallelzone::runtime::detail_;
 
 TEST_CASE("RuntimeViewPIMPL") {
     auto& rt    = testing::PZEnvironment::comm_world();
-    auto& world = rt.madness_world();
-    RuntimeViewPIMPL::comm_type comm(world.mpi.comm().Get_mpi_comm());
+    RuntimeViewPIMPL::comm_type comm(rt.mpi_comm());
     RuntimeViewPIMPL::comm_type null_comm;
     parallelzone::Logger log;
-    RuntimeViewPIMPL pimpl(false, rt.madness_world(), log);
+    RuntimeViewPIMPL pimpl(false, comm, log);
 
     SECTION("CTor") {
-        REQUIRE_FALSE(pimpl.m_did_i_start_madness);
+        REQUIRE_FALSE(pimpl.m_did_i_start_commpp);
         REQUIRE(pimpl.m_comm == comm);
     }
 
@@ -57,12 +56,12 @@ TEST_CASE("RuntimeViewPIMPL") {
 
     SECTION("operator==") {
         SECTION("Same") {
-            RuntimeViewPIMPL other(false, rt.madness_world(), log);
+            RuntimeViewPIMPL other(false, comm, log);
             REQUIRE(pimpl == other);
         }
 
         SECTION("Different communicator") {
-            RuntimeViewPIMPL other(false, rt.madness_world(), log);
+            RuntimeViewPIMPL other(false, comm, log);
             other.m_comm = null_comm;
             REQUIRE_FALSE(pimpl == other);
         }
@@ -70,7 +69,7 @@ TEST_CASE("RuntimeViewPIMPL") {
         SECTION("Different logger") {
             // This assumes the default logger for rank 0 isn't a null logger
             auto log0 = parallelzone::LoggerFactory::default_global_logger(0);
-            RuntimeViewPIMPL other(false, rt.madness_world(), log0);
+            RuntimeViewPIMPL other(false, comm, log0);
             REQUIRE_FALSE(pimpl == other);
         }
     }

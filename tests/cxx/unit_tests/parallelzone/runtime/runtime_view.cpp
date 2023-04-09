@@ -49,20 +49,16 @@ TEST_CASE("RuntimeView") {
         SECTION("Default") {
             REQUIRE(defaulted.size() > 0);
             REQUIRE(defaulted.mpi_comm() == MPI_COMM_WORLD);
-            REQUIRE_FALSE(defaulted.did_i_start_madness());
+            REQUIRE_FALSE(defaulted.did_i_start_commpp());
         }
         SECTION("argc and argv") {
             REQUIRE(argc_argv.size() > 0);
             REQUIRE(argc_argv.mpi_comm() == MPI_COMM_WORLD);
-            REQUIRE(argc_argv.did_i_start_madness());
+            REQUIRE(argc_argv.did_i_start_commpp());
         }
         SECTION("mpi comm") {
             RuntimeView mpi_comm(argc_argv.mpi_comm());
             REQUIRE(mpi_comm == argc_argv);
-        }
-        SECTION("madness world") {
-            RuntimeView mad_world(argc_argv.madness_world());
-            REQUIRE(mad_world == argc_argv);
         }
         SECTION("primary") {
             RuntimeView primary(0, nullptr, argc_argv.mpi_comm());
@@ -152,20 +148,16 @@ TEST_CASE("RuntimeView") {
         REQUIRE(result == MPI_IDENT);
     }
 
-    SECTION("madness_world") {
-        REQUIRE_THROWS_AS(null.madness_world(), std::runtime_error);
-    }
-
     SECTION("size()") {
         REQUIRE(null.size() == 0);
         REQUIRE(defaulted.size() > 0);
         REQUIRE(argc_argv.size() > 0);
     }
 
-    SECTION("did_i_start_madness") {
-        REQUIRE_FALSE(null.did_i_start_madness());
-        REQUIRE_FALSE(defaulted.did_i_start_madness());
-        REQUIRE(argc_argv.did_i_start_madness());
+    SECTION("did_i_start_commpp") {
+        REQUIRE_FALSE(null.did_i_start_commpp());
+        REQUIRE_FALSE(defaulted.did_i_start_commpp());
+        REQUIRE(argc_argv.did_i_start_commpp());
     }
 
     SECTION("at()") {

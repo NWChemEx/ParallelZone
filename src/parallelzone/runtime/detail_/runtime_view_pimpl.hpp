@@ -52,9 +52,6 @@ struct RuntimeViewPIMPL {
     /// Type of the conatiner holding resource_set_type objects
     using resource_set_container = std::map<size_type, resource_set_type>;
 
-    /// Ultimately a typedef of RuntimeView::madness_world_reference
-    using madness_world_reference = parent_type::madness_world_reference;
-
     /// The type of our MPI Comm wrapper
     using comm_type = mpi_helpers::CommPP;
 
@@ -89,8 +86,9 @@ struct RuntimeViewPIMPL {
      *  @param[in] logger The program-wide logger as seen by the current
      *                    process.
      */
-    RuntimeViewPIMPL(bool did_i_start_madness, madness_world_reference world,
-                     logger_type logger);
+    // RuntimeViewPIMPL(bool did_i_start_madness, madness_world_reference world,
+    //                  logger_type logger);
+    RuntimeViewPIMPL(bool did_i_start_commpp, comm_type comm, logger_type logger);
 
     /// Tears down MADNESS, when all references are gone (and if we started it)
     ~RuntimeViewPIMPL() noexcept;
@@ -133,9 +131,11 @@ struct RuntimeViewPIMPL {
 
     /// Did this PIMPL start MADNESS?
     bool m_did_i_start_madness;
+    bool m_did_i_start_commpp;
+
 
     /// Reference to the madness world this instance wraps
-    madness_world_reference m_world;
+    //madness_world_reference m_world;
 
     /// The MPI communicator we're built around
     comm_type m_comm;

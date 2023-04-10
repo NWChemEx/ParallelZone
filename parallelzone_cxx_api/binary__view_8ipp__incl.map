@@ -1,8 +1,8 @@
 <map id="include/parallelzone/mpi_helpers/binary_buffer/binary_view.ipp" name="include/parallelzone/mpi_helpers/binary_buffer/binary_view.ipp">
-<area shape="rect" id="node1" title=" " alt="" coords="3485,5,3681,61"/>
+<area shape="rect" id="node1" title=" " alt="" coords="3089,5,3285,61"/>
 <area shape="rect" id="node2" href="$traits_8hpp_source.html" title=" " alt="" coords="257,109,444,151"/>
-<area shape="rect" id="node14" href="$serialization_8hpp_source.html" title=" " alt="" coords="3475,117,3690,143"/>
-<area shape="rect" id="node46" title=" " alt="" coords="3715,117,3789,143"/>
+<area shape="rect" id="node14" href="$serialization_8hpp_source.html" title=" " alt="" coords="3079,117,3294,143"/>
+<area shape="rect" id="node42" title=" " alt="" coords="3319,117,3393,143"/>
 <area shape="rect" id="node3" href="$gather_8hpp_source.html" title=" " alt="" coords="76,199,263,240"/>
 <area shape="rect" id="node5" href="$needs__serialized_8hpp_source.html" title=" " alt="" coords="105,288,306,329"/>
 <area shape="rect" id="node6" href="$mpi__data__type_8hpp_source.html" title=" " alt="" coords="255,377,444,419"/>
@@ -41,8 +41,4 @@
 <area shape="rect" id="node39" title=" " alt="" coords="5352,206,5539,233"/>
 <area shape="rect" id="node40" title=" " alt="" coords="5563,206,5743,233"/>
 <area shape="rect" id="node41" title=" " alt="" coords="5767,206,5942,233"/>
-<area shape="rect" id="node42" title=" " alt="" coords="5966,206,6151,233"/>
-<area shape="rect" id="node43" title=" " alt="" coords="6176,199,6339,240"/>
-<area shape="rect" id="node44" title=" " alt="" coords="6363,199,6528,240"/>
-<area shape="rect" id="node45" title=" " alt="" coords="6552,199,6707,240"/>
 </map>

@@ -114,51 +114,23 @@ $(function() {
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#include &lt;cereal/types/valarray.hpp&gt;</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;cereal/types/variant.hpp&gt;</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &lt;cereal/types/vector.hpp&gt;</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;madness/world/archive.h&gt;</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &lt;madness/world/buffer_archive.h&gt;</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;madness/world/cereal_archive.h&gt;</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &lt;madness/world/type_traits.h&gt;</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">namespace </span>parallelzone {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">using</span> XMLOutputArchive =</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  madness::archive::CerealOutputArchive&lt;cereal::XMLOutputArchive&gt;;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">using</span> XMLInputArchive =</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  madness::archive::CerealInputArchive&lt;cereal::XMLInputArchive&gt;;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">using</span> JSONOutputArchive =</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  madness::archive::CerealOutputArchive&lt;cereal::JSONOutputArchive&gt;;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">using</span> JSONInputArchive =</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  madness::archive::CerealInputArchive&lt;cereal::JSONInputArchive&gt;;</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">using</span> BinaryOutputArchive =</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  madness::archive::CerealOutputArchive&lt;cereal::BinaryOutputArchive&gt;;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">using</span> BinaryInputArchive =</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  madness::archive::CerealInputArchive&lt;cereal::BinaryInputArchive&gt;;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">using</span> PortableBinaryOutputArchive =</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  madness::archive::CerealOutputArchive&lt;cereal::PortableBinaryOutputArchive&gt;;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">using</span> PortableBinaryInputArchive =</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  madness::archive::CerealInputArchive&lt;cereal::PortableBinaryInputArchive&gt;;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> Archive&gt;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="keyword">using</span> is_serializable = cereal::traits::is_output_serializable&lt;T, Archive&gt;;</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> Archive&gt;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="keyword">using</span> is_deserializable = cereal::traits::is_input_serializable&lt;T, Archive&gt;;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="keyword">using</span> cereal::traits::detail::get_input_from_output;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="keyword">using</span> cereal::traits::detail::get_output_from_input;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="keyword">using</span> madness::is_input_archive;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="keyword">using</span> madness::is_input_archive_v;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="keyword">using</span> madness::is_output_archive;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="keyword">using</span> madness::is_output_archive_v;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;} <span class="comment">// namespace parallelzone</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;CEREAL_SETUP_ARCHIVE_TRAITS(madness::archive::BufferInputArchive,</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                            madness::archive::BufferOutputArchive)</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::XMLInputArchive,</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                            parallelzone::XMLOutputArchive)</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::JSONInputArchive,</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                            parallelzone::JSONOutputArchive)</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::BinaryInputArchive,</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                            parallelzone::BinaryOutputArchive)</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;CEREAL_SETUP_ARCHIVE_TRAITS(parallelzone::PortableBinaryInputArchive,</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                            parallelzone::PortableBinaryOutputArchive)</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="keyword">namespace </span>parallelzone {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">using</span> XMLOutputArchive            = cereal::XMLOutputArchive;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="keyword">using</span> XMLInputArchive             = cereal::XMLInputArchive;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="keyword">using</span> JSONOutputArchive           = cereal::JSONOutputArchive;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">using</span> JSONInputArchive            = cereal::JSONInputArchive;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="keyword">using</span> BinaryOutputArchive         = cereal::BinaryOutputArchive;</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keyword">using</span> BinaryInputArchive          = cereal::BinaryInputArchive;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">using</span> PortableBinaryOutputArchive = cereal::PortableBinaryOutputArchive;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">using</span> PortableBinaryInputArchive  = cereal::PortableBinaryInputArchive;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> Archive&gt;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">using</span> is_serializable = cereal::traits::is_output_serializable&lt;T, Archive&gt;;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> Archive&gt;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">using</span> is_deserializable = cereal::traits::is_input_serializable&lt;T, Archive&gt;;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">using</span> cereal::traits::detail::get_input_from_output;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">using</span> cereal::traits::detail::get_output_from_input;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;} <span class="comment">// namespace parallelzone</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

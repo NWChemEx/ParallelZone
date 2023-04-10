@@ -18,30 +18,32 @@ Using ParallelZone with mpi4py
 
 .. note::
 
-   mpi4py is not installed by ParallelZone, so should be installed separately. 
+   mpi4py is not installed by ParallelZone, so should be installed separately.
    See `mpi4py documentation
-   <https://mpi4py.readthedocs.io/en/stable/install.html>`_ for more information.
+   <https://mpi4py.readthedocs.io/en/stable/install.html>`__ for more
+   information.
 
 .. warning::
 
    Python support for ParallelZone is currently in beta. APIs are not
    considered stable at this time and are subject to change.
-   
-mpi4py is the most popular package that provides Python bindings for the MPI standard. Here, we describe
-how you can use mpi4py along with ParallelZone. 
+
+mpi4py is the most popular package that provides Python bindings for the MPI
+standard. Here, we describe how you can use mpi4py along with ParallelZone.
 
 **************************************
 MPI Initialization and Finalization
 **************************************
 
-The MPI standard requires `MPI_Init` or `MPI_Init_thread` function to be called by each process to
-initialize the MPI execution environment. mpi4py performs initialization (if necessary)
-automatically when `MPI` module is imported with `from mpi4py import MPI`. 
+The MPI standard requires `MPI_Init` or `MPI_Init_thread` function to be called
+by each process to initialize the MPI execution environment. mpi4py performs
+initialization (if necessary)
+automatically when `MPI` module is imported with `from mpi4py import MPI`.
 By default thread support is enabled with `MPI_THREAD_MULTIPLE` option, which is
 also the required thread support level for ParallelZone. If
 MPI is already initialized, i.e. by ParallelZone, mpi4py basically uses the
 same MPI environment. Finalization is also handled automatically by mpi4py
-when Python processes exit. 
+when Python processes exit.
 
 Therefore, for a general use case, where `MPI_COMM_WORLD` refers to the same
 set of resources for mpi4py and ParallelZone, they are compatible with each
@@ -51,12 +53,12 @@ other.
 
    It is possible to disable automatic initialization of mpi4py or change the
    thread support level manually. See the `mpi4py documentation
-   <https://mpi4py.readthedocs.io/en/stable/mpi4py.html?highlight=initialization#runtime-configuration-options>`_
+   <https://mpi4py.readthedocs.io/en/stable/mpi4py.html?highlight=initialization#runtime-configuration-options>`__
    for more details. However, note that it is not possible to pass a
    communicator to mpi4py explicitly.
 
 ************************************************
-Passing mpi4py Communicator to ParallelZone 
+Passing mpi4py Communicator to ParallelZone
 ************************************************
 
 If a user is interested in only sharing a subset of resources with ParallelZone,

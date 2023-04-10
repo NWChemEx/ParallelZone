@@ -83,19 +83,7 @@ if("${BUILD_PAPI_BINDINGS}")
     include(build_papi)
 endif ()
 
-cmaize_find_or_build_dependency(
-    bphash
-    URL github.com/ryanmrichard/BPHash
-    BUILD_TARGET bphash
-    FIND_TARGET bphash::bphash
-    BRANCH master
-    CMAKE_ARGS BUILD_TESTING=OFF
-)
-# Note that hashes may differ with different compilers when typeid is used.
-# Comment below to disable using typeid for hashes.
-target_compile_definitions(bphash PUBLIC BPHASH_USE_TYPEID)
-
-cmaize_find_or_build_dependency(
+cpp_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
     BUILD_TARGET cereal
@@ -107,8 +95,7 @@ cmaize_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIRS "${project_inc_dir}"
-    DEPENDS MADNESS bphash cereal spdlog
-
+    DEPENDS MADNESS cereal spdlog
 )
 
 include(nwx_python_mods)

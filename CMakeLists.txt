@@ -19,8 +19,8 @@ project(parallelzone VERSION "${VERSION}" LANGUAGES CXX)
 
 include(FetchContent)
 FetchContent_Declare(
-        nwx_cmake
-        GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
+    nwx_cmake
+    GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
 )
 FetchContent_MakeAvailable(nwx_cmake)
 list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
@@ -30,7 +30,7 @@ set(
     CACHE STRING "" FORCE
 )
 
-include(get_cpp)
+include(get_cmaize)
 include(nwx_cxx_api_docs)
 
 
@@ -54,8 +54,8 @@ set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 #TODO: Make sure MADworld uses the Cereal we build
-cpp_find_or_build_dependency(
-    MADworld
+cmaize_find_or_build_dependency(
+    MADNESS
     URL github.com/m-a-d-n-e-s-s/madness
     #VERSION 20d4d7cffbbc98dd7b7d6a5feb7d68f1df067cd6
     VERSION 997e8b458c4234fb6c8c2781a5df59cb14b7e700
@@ -69,12 +69,13 @@ cpp_find_or_build_dependency(
                BUILD_TESTING=OFF
 )
 
-cpp_find_or_build_dependency(
+cmaize_find_or_build_dependency(
     spdlog
     URL github.com/gabime/spdlog
     VERSION ad0e89cbfb4d0c1ce4d097e134eb7be67baebb36
     BUILD_TARGET spdlog
     FIND_TARGET spdlog::spdlog
+    CMAKE_ARGS SPDLOG_INSTALL=ON
 )
 
 # PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
@@ -86,16 +87,15 @@ cpp_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
     BUILD_TARGET cereal
-    FIND_TARGET cereal::cereal
+    FIND_TARGET cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
 
-cpp_add_library(
+cmaize_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
-    INCLUDE_DIR "${project_inc_dir}"
-    DEPENDS MADworld cereal::cereal spdlog::spdlog
-
+    INCLUDE_DIRS "${project_inc_dir}"
+    DEPENDS MADNESS cereal spdlog
 )
 
 include(nwx_python_mods)
@@ -114,13 +114,13 @@ if("${BUILD_TESTING}")
         test_parallelzone
         SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
         INCLUDE_DIR "${project_src_dir}"
-        DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
+        DEPENDS Catch2 MADNESS parallelzone cereal
     )
     cpp_add_tests(
         test_parallelzone_docs
         SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
         INCLUDE_DIR "${project_src_dir}"
-        DEPENDS Catch2::Catch2 MADworld parallelzone cereal::cereal
+        DEPENDS Catch2 MADNESS parallelzone cereal
     )
     find_package(MPI REQUIRED)
     add_test(
@@ -134,3 +134,5 @@ if("${BUILD_TESTING}")
                 "${CMAKE_BINARY_DIR}/test_parallelzone_docs"
     )
 endif()
+
+cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)

@@ -87,7 +87,7 @@ cmaize_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
     BUILD_TARGET cereal
-    FIND_TARGET cereal
+    FIND_TARGET cereal::cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
 

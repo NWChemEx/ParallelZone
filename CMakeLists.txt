@@ -83,7 +83,7 @@ if("${BUILD_PAPI_BINDINGS}")
     include(build_papi)
 endif ()
 
-cpp_find_or_build_dependency(
+cmaize_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
     BUILD_TARGET cereal
@@ -103,23 +103,23 @@ cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone )
 
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
-    cpp_find_or_build_dependency(
+    cmaize_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
 		VERSION v2.13.9
     )
-    cpp_add_tests(
+    cmaize_add_tests(
         test_parallelzone
         SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
-        INCLUDE_DIR "${project_src_dir}"
+        INCLUDE_DIRS "${project_src_dir}"
         DEPENDS Catch2 MADNESS parallelzone cereal
     )
-    cpp_add_tests(
+    cmaize_add_tests(
         test_parallelzone_docs
         SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
-        INCLUDE_DIR "${project_src_dir}"
+        INCLUDE_DIRS "${project_src_dir}"
         DEPENDS Catch2 MADNESS parallelzone cereal
     )
     find_package(MPI REQUIRED)

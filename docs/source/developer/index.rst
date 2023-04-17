@@ -19,8 +19,8 @@ Developer Documentation
 The documentation in this section is intended primarily for people who are
 interested in developing for, or understanding the internals of ParallelZone.
 As part of the NWChemEx organization, developers may also find the
-`NWChemEx Developer Documentation
-<https://nwchemex-project.github.io/.github/>`__` to be useful.
+`NWChemEx Developer Documentation <https://nwchemex-project.github.io/.github/>`__
+to be useful.
 
 .. toctree::
    :maxdepth: 2

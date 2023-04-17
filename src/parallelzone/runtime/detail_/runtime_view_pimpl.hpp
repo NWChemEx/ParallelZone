@@ -21,7 +21,15 @@ namespace parallelzone::runtime::detail_ {
 
 /** @brief Holds the state for the RuntimeView class
  *
- *  This class uses CommPP to manage MPI.
+ *  Right now this class assumes MADNESS is managing MPI, so it holds a MADNESS
+ *  world; however, no part of ParallelZone actually uses the MADNESS world
+ *  and it is entirely possible to just power this class off of the CommPP
+ *  object.
+ *
+ *  One option going forward would be to make this class polymorphic and have
+ *  the derived classes power the RuntimeView based on the runtime the user
+ *  wants to use (e.g., one derived class if we want to use MADNESS, another
+ *  derived class for CommPP).
  *
  */
 struct RuntimeViewPIMPL {
@@ -44,6 +52,9 @@ struct RuntimeViewPIMPL {
     /// Type of the conatiner holding resource_set_type objects
     using resource_set_container = std::map<size_type, resource_set_type>;
 
+    /// Ultimately a typedef of RuntimeView::madness_world_reference
+    using madness_world_reference = parent_type::madness_world_reference;
+
     /// The type of our MPI Comm wrapper
     using comm_type = mpi_helpers::CommPP;
 
@@ -62,24 +73,26 @@ struct RuntimeViewPIMPL {
     /// Ultimately a typedef of RuntimeView::argv_type
     using argv_type = parent_type::argv_type;
 
-    /** @brief Initializes *this from the provided MPI communicator.
+    /** @brief Initializes *this from the provided MADNESS world.
      *
-     *  Constructor for the RuntimeViewPIMPL class.
+     *  This ctor will strip the relevant information off of the MADNESS world
+     *  to initialize *this (e.g., the rank of the current process, and the MPI
+     *  communicator). It also records whether or no *this is responsible for
+     *  tearing down MADNESS when it goes out of scope (if *this started
+     *  MADNESS then it is responsible for tearing it down).
      *
-     *  @param[in] did_i_start_commpp True if *this should be responsible for
-     *                                 the lifetime of CommPP and false
+     *  @param[in] did_i_start_madness True if *this should be responsible for
+     *                                 the lifetime of MADNESS and false
      *                                 otherwise.
-     *  @param[in] comm The MPI communicator associated with the instance of the
-     * class.
+     *  @param[in] world The MADNESS world *this wraps.
      *
      *  @param[in] logger The program-wide logger as seen by the current
      *                    process.
      */
-
-    RuntimeViewPIMPL(bool did_i_start_commpp, comm_type comm,
+    RuntimeViewPIMPL(bool did_i_start_madness, madness_world_reference world,
                      logger_type logger);
 
-    /// Destructor, when all references are gone (and if we started it)
+    /// Tears down MADNESS, when all references are gone (and if we started it)
     ~RuntimeViewPIMPL() noexcept;
 
     /** @brief Wraps retrieving a ResourceSet
@@ -118,8 +131,11 @@ struct RuntimeViewPIMPL {
      */
     bool operator==(const RuntimeViewPIMPL& rhs) const noexcept;
 
-    /// Did this PIMPL start CommPP?
-    bool m_did_i_start_commpp;
+    /// Did this PIMPL start MADNESS?
+    bool m_did_i_start_madness;
+
+    /// Reference to the madness world this instance wraps
+    madness_world_reference m_world;
 
     /// The MPI communicator we're built around
     comm_type m_comm;

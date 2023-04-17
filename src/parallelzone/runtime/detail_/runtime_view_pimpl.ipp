@@ -25,10 +25,12 @@
 
 namespace parallelzone::runtime::detail_ {
 
-inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_commpp,
-                                          comm_type comm, logger_type logger) :
-  m_did_i_start_commpp(did_i_start_commpp),
-  m_comm(comm),
+inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
+                                          madness_world_reference world,
+                                          logger_type logger) :
+  m_did_i_start_madness(did_i_start_madness),
+  m_world(world),
+  m_comm(world.mpi.comm().Get_mpi_comm()),
   m_plogger(std::make_shared<logger_type>(std::move(logger))),
   m_resource_sets_() {
     // Pre-populate the current rank's resource set.
@@ -36,8 +38,8 @@ inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_commpp,
 }
 
 inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
-    if(!m_did_i_start_commpp) return;
-    MPI_Finalize();
+    if(!m_did_i_start_madness) return;
+    madness::finalize();
 }
 
 inline RuntimeViewPIMPL::const_resource_set_reference RuntimeViewPIMPL::at(

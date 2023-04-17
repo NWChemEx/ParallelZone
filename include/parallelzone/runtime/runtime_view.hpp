@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <madness/world/MADworld.h>
 #include <parallelzone/mpi_helpers/commpp/commpp.hpp>
 #include <parallelzone/runtime/resource_set.hpp>
 
@@ -39,13 +40,13 @@ class RuntimeViewPIMPL;
  *  MPI_COMM_WORLD; however, the underlying MPI_Comm need not be MPI_COMM_WORLD.
  *
  *  @note RuntimeView uses RAII (resource acquisition is initialization) to
- *        manage MPI. This means that if you do supply a handle to an
- *        already initialized MPI runtime, then RuntimeView will assume
- *        it is using MPI_COMM_WORLD and will initialize MPI if
- *        necesary. In the event that RuntimeView does initialize MPI,
- *        it is also responsible for tearing-down MPI when the last
- *        reference to MPI goes out of scope. Internally, this is
- *        managed with a shared_ptr. So if you want to ensure that MPI
+ *        manage MADNESS/MPI. This means that if you do supply a handle to an
+ *        already initialized MADNESS/MPI runtime, then RuntimeView will assume
+ *        it is using MPI_COMM_WORLD and will initialize MADNESS/MPI if
+ *        necesary. In the event that RuntimeView does initialize MADNESS/MPI,
+ *        it is also responsible for tearing-down MADNESS/MPI when the last
+ *        reference to MADNESS/MPI goes out of scope. Internally, this is
+ *        managed with a shared_ptr. So if you want to ensure that MADNESS/MPI
  *        is not finalized while you're doing something, make sure you hold on
  *        to a RuntimeView.
  */
@@ -56,6 +57,12 @@ public:
 
     /// Type Runtime uses for handles to MPI communicators
     using mpi_comm_type = MPI_Comm;
+
+    /// Type of a MADNESS world (sort of it's MPI_Comm)
+    using madness_world_type = madness::World;
+
+    /// Type of a modifable reference to a MADNESS world
+    using madness_world_reference = madness_world_type&;
 
     /// Type used to pass the program's argument count (i.e., "argc")
     using argc_type = int;
@@ -137,13 +144,26 @@ public:
      */
     explicit RuntimeView(mpi_comm_type comm);
 
+    /** @brief Creates a RuntimeView which aliases the provided MADNESS runtime.
+     *
+     *  This ctor is primarily meant for initializing a RuntimeView instance
+     *  after MADNESS (and therefore MPI) have already been started. This ctor
+     *  dispatches to the primary ctor by passing `argc = 0`, `argv = nullptr`,
+     *  and whatever MPI_Comm corresponds to @p world. See the primary ctor
+     *  documentation for more details.
+     *
+     *  @param[in] world The MADNESS runtime instance we are aliasing.
+     *
+     */
+    explicit RuntimeView(madness_world_reference world);
+
     /** @brief Primary ctor for creating a new RuntimeView
      *
      *  Most of the other ctors dispatch to this ctor. The ctor first determines
-     *  if CommPP has been initialized. If CommPP has not been initialized,
-     *  CommPP will be initialized and the resulting RuntimeView instance will
-     *  be responsible for tearing down CommPP when it is no longer in use
-     *  (as determined by an internal counter). After ensuring CommPP
+     *  if MADNESS has been initialized. If MADNESS has not been initialized,
+     *  MADNESS will be initialized and the resulting RuntimeView instance will
+     *  be responsible for tearing down MADNESS when it is no longer in use
+     *  (as determined by an internal counter). After ensuring MADNESS
      *  is initialized, this ctor will collect information about the computer
      *  and initialize the internal ResourceSets with said information.
      *
@@ -193,7 +213,7 @@ public:
      *  resources *this holds before the operation and increase the reference
      *  count to the resources in @p rhs. If the reference count to the
      *  resources in *this reaches 0 as a result of the aforementioned
-     *  decrement, they will be released (possibly finalizing MPI).
+     *  decrement, they will be released (possibly finalizing MADNESS/MPI).
      *
      *  @param[in] rhs The RuntimeView whose resources we want *this to alias
      *
@@ -237,9 +257,9 @@ public:
      *
      *  RuntimeViews behave somewhat like a shared_ptr. Copies of a RuntimeView
      *  increment an internal counter. As long as the inernal counter is
-     *  non-zero the resources (i.e., MPI) will not be finalized.
+     *  non-zero the resources (i.e., MADNESS and MPI) will not be finalized.
      *  When the counter reaches zero (and assuming the original RuntimeView
-     *  actually initialized MPI) MPI will be finalized.
+     *  actually initialized MADNESS/MPI) MADNESS and MPI will be finalized.
      *
      *  @throw None No throw guarantee.
      */
@@ -262,6 +282,17 @@ public:
      *  @throw None No throw guarantee.
      */
     mpi_comm_type mpi_comm() const noexcept;
+
+    /** @brief Returns the MADNESS world powering *this
+     *
+     *  @return A read/write reference to the MADNESS world
+     *
+     *  @todo Can we make this no throw?
+     *
+     *  @throw std::runtime_error if *this is a view of the null runtime. Strong
+     *         throw guarantee.
+     */
+    madness_world_reference madness_world() const;
 
     /** @brief The number of resource sets in this instance.
      *
@@ -290,23 +321,23 @@ public:
     bool null() const noexcept;
 
     /** @brief Used to determine if this RuntimeView aliases the resources that
-     *         started CommPP.
+     *         started MADNESS.
      *
-     *  If a RuntimeView starts CommPP it's responsible for making sure CommPP
+     *  If a RuntimeView starts MADNESS it's responsible for making sure MADNESS
      *  is finalized. The finalization happens in the dtor when all references
      *  to the original resources are out of scope. This method can be used to
      *  determine if letting the current RuntimeView go out of scope will
      *  decrement the reference count (if the return is true) or not (if the
      *  return is false).
      *
-     *  @note A null runtime did not start CommPP and will return false.
+     *  @note A null runtime did not start MADNESS and will return false.
      *
-     *  @return True if the aliased resources started CommPP and false
+     *  @return True if the aliased resources started MADNESS and false
      *          otherwise.
      *
      *  @throw None No throw guarantee.
      */
-    bool did_i_start_commpp() const noexcept;
+    bool did_i_start_madness() const noexcept;
 
     /** @brief Returns the @p i-th resource set in a read-only state.
      *

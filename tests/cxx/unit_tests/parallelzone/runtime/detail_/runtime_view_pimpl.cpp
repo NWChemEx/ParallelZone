@@ -24,9 +24,9 @@ using namespace parallelzone::runtime::detail_;
 /* Testing Notes
  *
  * Unfortunately fully testing the ctor/dtor is tricky because we can't restart
- * MPI. In particular this means if we make a
- * RuntimeViewPIMPL instance and tell it that it started MPI, when it goes
- * out of scope it will finalize MPI and break all of the other tests in
+ * MADNESS/MPI. In particular this means if we make a
+ * RuntimeViewPIMPL instance and tell it that it started MADNESS, when it goes
+ * out of scope it will finalize MADNESS and break all of the other tests in
  * ParallelZone (unless it just so happens that this is the only test run or
  * the last one).
  *
@@ -35,14 +35,15 @@ using namespace parallelzone::runtime::detail_;
  */
 
 TEST_CASE("RuntimeViewPIMPL") {
-    auto& rt = testing::PZEnvironment::comm_world();
-    RuntimeViewPIMPL::comm_type comm(rt.mpi_comm());
+    auto& rt    = testing::PZEnvironment::comm_world();
+    auto& world = rt.madness_world();
+    RuntimeViewPIMPL::comm_type comm(world.mpi.comm().Get_mpi_comm());
     RuntimeViewPIMPL::comm_type null_comm;
     parallelzone::Logger log;
-    RuntimeViewPIMPL pimpl(false, comm, log);
+    RuntimeViewPIMPL pimpl(false, rt.madness_world(), log);
 
     SECTION("CTor") {
-        REQUIRE_FALSE(pimpl.m_did_i_start_commpp);
+        REQUIRE_FALSE(pimpl.m_did_i_start_madness);
         REQUIRE(pimpl.m_comm == comm);
     }
 
@@ -56,12 +57,12 @@ TEST_CASE("RuntimeViewPIMPL") {
 
     SECTION("operator==") {
         SECTION("Same") {
-            RuntimeViewPIMPL other(false, comm, log);
+            RuntimeViewPIMPL other(false, rt.madness_world(), log);
             REQUIRE(pimpl == other);
         }
 
         SECTION("Different communicator") {
-            RuntimeViewPIMPL other(false, comm, log);
+            RuntimeViewPIMPL other(false, rt.madness_world(), log);
             other.m_comm = null_comm;
             REQUIRE_FALSE(pimpl == other);
         }
@@ -69,7 +70,7 @@ TEST_CASE("RuntimeViewPIMPL") {
         SECTION("Different logger") {
             // This assumes the default logger for rank 0 isn't a null logger
             auto log0 = parallelzone::LoggerFactory::default_global_logger(0);
-            RuntimeViewPIMPL other(false, comm, log0);
+            RuntimeViewPIMPL other(false, rt.madness_world(), log0);
             REQUIRE_FALSE(pimpl == other);
         }
     }

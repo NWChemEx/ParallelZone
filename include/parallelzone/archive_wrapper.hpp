@@ -29,9 +29,9 @@ using variant_input =
                parallelzone::JSONInputArchive*, parallelzone::XMLInputArchive*>;
 
 /** @brief ArchiveWrapper class enables serialization and deserialization of
- * objects using various types of archives supported by Cereal.
+ * objects using various types of archives supported by MADNESS and Cereal.
  *
- *  This class wraps Cereal API for different output archive types.
+ *  This class wraps MADNESS/Cereal API for different output archive types.
  * Required for serialization of Any.
  */
 template<typename VariantArchive>
@@ -42,6 +42,8 @@ public:
 
     template<typename T>
     ArchiveWrapper& operator()(T&& obj) {
+        // MADNESS archive doesn't support `()`, but it supports `&` like Boost
+        // archive.
         std::visit([&](auto&& ar) { (*ar) & std::forward<T>(obj); }, m_ar_);
         return *this;
     }

@@ -15,7 +15,6 @@
  */
 
 #pragma once
-#include <memory>
 #include <mpi.h>
 #include <parallelzone/mpi_helpers/binary_buffer/binary_buffer.hpp>
 #include <parallelzone/mpi_helpers/binary_buffer/binary_view.hpp>

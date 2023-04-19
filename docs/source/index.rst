@@ -44,10 +44,9 @@ Planned features:
    :maxdepth: 1
    :caption: Contents:
 
+   background/index
    install
-   abbreviations
    quickstart
-   about
    user/index
    developer/index
 

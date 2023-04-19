@@ -12,6 +12,8 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
+.. _installing_parallelzone:
+
 #######################
 Installing ParallelZone
 #######################
@@ -26,7 +28,7 @@ its build system, more detailed build instructions can be found
    ``cmake`` command. Typically CMake toolchains live in files named
    ``<prefix>-toolchain.cmake``, where ``<prefix>-`` is an optional prefix to
    distinguish among toolchains. The contents of the CMake toolchain file
-   usually just sets configuration values via a the standard CMake ``set``
+   usually just sets configuration values set via the standard CMake ``set``
    function, *i.e.*, ``set(<option_name> <value>)``.
 
 

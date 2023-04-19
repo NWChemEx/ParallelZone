@@ -19,9 +19,10 @@
 Abbreviations Used Throughout ParallelZone
 ##########################################
 
-The following subsections list (in alphabetical order) abbreviations encountered
-throughout ParallelZone. Pages are encouraged to link to each abbreviation on
-its first use.
+The following is a list (in alphabetical order) of abbreviations encountered
+throughout ParallelZone. Pages are encouraged to use these abbreviations and
+to link to the abbreviation on its first use (instead of defining the
+abbreviation).
 
 .. _api:
 

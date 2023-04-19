@@ -290,23 +290,23 @@ public:
     bool null() const noexcept;
 
     /** @brief Used to determine if this RuntimeView aliases the resources that
-     *         started CommPP.
+     *         started mpi.
      *
-     *  If a RuntimeView starts CommPP it's responsible for making sure CommPP
+     *  If a RuntimeView starts MPI it's responsible for making sure MPI
      *  is finalized. The finalization happens in the dtor when all references
      *  to the original resources are out of scope. This method can be used to
      *  determine if letting the current RuntimeView go out of scope will
      *  decrement the reference count (if the return is true) or not (if the
      *  return is false).
      *
-     *  @note A null runtime did not start CommPP and will return false.
+     *  @note A null runtime did not start MPI and will return false.
      *
-     *  @return True if the aliased resources started CommPP and false
+     *  @return True if the aliased resources started MPI and false
      *          otherwise.
      *
      *  @throw None No throw guarantee.
      */
-    bool did_i_start_commpp() const noexcept;
+    bool did_i_start_mpi() const noexcept;
 
     /** @brief Returns the @p i-th resource set in a read-only state.
      *

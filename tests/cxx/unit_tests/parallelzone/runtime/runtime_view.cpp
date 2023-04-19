@@ -49,12 +49,12 @@ TEST_CASE("RuntimeView") {
         SECTION("Default") {
             REQUIRE(defaulted.size() > 0);
             REQUIRE(defaulted.mpi_comm() == MPI_COMM_WORLD);
-            REQUIRE_FALSE(defaulted.did_i_start_commpp());
+            REQUIRE_FALSE(defaulted.did_i_start_mpi());
         }
         SECTION("argc and argv") {
             REQUIRE(argc_argv.size() > 0);
             REQUIRE(argc_argv.mpi_comm() == MPI_COMM_WORLD);
-            REQUIRE(argc_argv.did_i_start_commpp());
+            REQUIRE(argc_argv.did_i_start_mpi());
         }
         SECTION("mpi comm") {
             RuntimeView mpi_comm(argc_argv.mpi_comm());
@@ -155,9 +155,9 @@ TEST_CASE("RuntimeView") {
     }
 
     SECTION("did_i_start_commpp") {
-        REQUIRE_FALSE(null.did_i_start_commpp());
-        REQUIRE_FALSE(defaulted.did_i_start_commpp());
-        REQUIRE(argc_argv.did_i_start_commpp());
+        REQUIRE_FALSE(null.did_i_start_mpi());
+        REQUIRE_FALSE(defaulted.did_i_start_mpi());
+        REQUIRE(argc_argv.did_i_start_mpi());
     }
 
     SECTION("at()") {

@@ -66,9 +66,9 @@ struct RuntimeViewPIMPL {
      *
      *  Constructor for the RuntimeViewPIMPL class.
      *
-     *  @param[in] did_i_start_commpp True if *this should be responsible for
-     *                                 the lifetime of CommPP and false
-     *                                 otherwise.
+     *  @param[in] did_i_start_mpi True if *this should be responsible for
+     *                             the lifetime of MPI  and false
+     *                             otherwise.
      *  @param[in] comm The MPI communicator associated with the instance of the
      * class.
      *
@@ -76,8 +76,7 @@ struct RuntimeViewPIMPL {
      *                    process.
      */
 
-    RuntimeViewPIMPL(bool did_i_start_commpp, comm_type comm,
-                     logger_type logger);
+    RuntimeViewPIMPL(bool did_i_start_mpi, comm_type comm, logger_type logger);
 
     /// Destructor, when all references are gone (and if we started it)
     ~RuntimeViewPIMPL() noexcept;
@@ -118,8 +117,8 @@ struct RuntimeViewPIMPL {
      */
     bool operator==(const RuntimeViewPIMPL& rhs) const noexcept;
 
-    /// Did this PIMPL start CommPP?
-    bool m_did_i_start_commpp;
+    /// Did this PIMPL start MPI?
+    bool m_did_i_start_mpi;
 
     /// The MPI communicator we're built around
     comm_type m_comm;

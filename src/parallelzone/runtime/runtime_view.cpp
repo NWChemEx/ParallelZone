@@ -29,10 +29,14 @@ namespace {
 
 // Basically a ternary statement dispatching on whether we need to initialize
 // MPI or not
-auto start_commpp(int argc, char** argv, const MPI_Comm& comm) {
-    int mpi_initialized;
-    MPI_Initialized(&mpi_initialized);
-    if(!mpi_initialized) { MPI_Init(&argc, &argv); }
+auto start_mpi(int argc, char** argv, const MPI_Comm& comm) {
+    bool mpi_initialized = madness::initialized();
+    if(!mpi_initialized) {
+        if(comm == MPI_COMM_WORLD)
+            madness::initialize(argc, argv, true);
+        else
+            madness::initialize(argc, argv, comm, true);
+    }
     mpi_helpers::CommPP commpp(comm);
 
     auto log         = LoggerFactory::default_global_logger(commpp.me());
@@ -55,7 +59,7 @@ RuntimeView::RuntimeView(argc_type argc, argv_type argv) :
 RuntimeView::RuntimeView(mpi_comm_type comm) : RuntimeView(0, nullptr, comm) {}
 
 RuntimeView::RuntimeView(int argc, char** argv, mpi_comm_type comm) :
-  RuntimeView(start_commpp(argc, argv, comm)) {}
+  RuntimeView(start_mpi(argc, argv, comm)) {}
 
 RuntimeView::RuntimeView(pimpl_pointer pimpl) noexcept :
   m_pimpl_(std::move(pimpl)) {}
@@ -85,8 +89,8 @@ RuntimeView::size_type RuntimeView::size() const noexcept {
 
 bool RuntimeView::null() const noexcept { return !static_cast<bool>(m_pimpl_); }
 
-bool RuntimeView::did_i_start_commpp() const noexcept {
-    return !null() ? m_pimpl_->m_did_i_start_commpp : false;
+bool RuntimeView::did_i_start_mpi() const noexcept {
+    return !null() ? m_pimpl_->m_did_i_start_mpi : false;
 }
 
 RuntimeView::const_resource_set_reference RuntimeView::at(size_type i) const {

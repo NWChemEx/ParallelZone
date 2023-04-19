@@ -42,7 +42,7 @@ TEST_CASE("RuntimeViewPIMPL") {
     RuntimeViewPIMPL pimpl(false, comm, log);
 
     SECTION("CTor") {
-        REQUIRE_FALSE(pimpl.m_did_i_start_commpp);
+        REQUIRE_FALSE(pimpl.m_did_i_start_mpi);
         REQUIRE(pimpl.m_comm == comm);
     }
 

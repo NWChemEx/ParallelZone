@@ -101,7 +101,20 @@ Examples of all-to-all communications
    auto data = generate_data();
 
    // This is an all gather
-   auto output = rt.gather<RAM>(data);
+   auto output = rt.gather(data);
 
    // This is an all reduce
-   auto output2 = rt.reduce<RAM>(data, op);
+   auto output2 = rt.reduce(data, op);
+
+.. note::
+
+   As written the APIs assume the data is going to/from RAM. If we eventually
+   want to support other memory spaces we could create overloads which take the
+   target space. In particular we note that we can NOT do things like:
+
+   .. code-block:: c++
+
+      auto output = rt.my_resource_set().ram().gather(data);
+
+   because that would result in deadlock (it calls a series of all-to-one calls
+   where each rank thinks it's the root).

@@ -91,14 +91,6 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a69d490c31d18c01821c69f5d60c6dd37">mpi_comm_type</a> = MPI_Comm</td></tr>
 <tr class="memdesc:a69d490c31d18c01821c69f5d60c6dd37"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type Runtime uses for handles to MPI communicators. <br /></td></tr>
 <tr class="separator:a69d490c31d18c01821c69f5d60c6dd37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a32226b5b0811d1dd59ffbf9af6ad5b2f"><td class="memItemLeft" align="right" valign="top"><a id="a32226b5b0811d1dd59ffbf9af6ad5b2f"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a32226b5b0811d1dd59ffbf9af6ad5b2f">madness_world_type</a> = madness::World</td></tr>
-<tr class="memdesc:a32226b5b0811d1dd59ffbf9af6ad5b2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a MADNESS world (sort of it's MPI_Comm) <br /></td></tr>
-<tr class="separator:a32226b5b0811d1dd59ffbf9af6ad5b2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ff0d781ba41abb3a0fd76be82731458"><td class="memItemLeft" align="right" valign="top"><a id="a1ff0d781ba41abb3a0fd76be82731458"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a1ff0d781ba41abb3a0fd76be82731458">madness_world_reference</a> = <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a32226b5b0811d1dd59ffbf9af6ad5b2f">madness_world_type</a> &amp;</td></tr>
-<tr class="memdesc:a1ff0d781ba41abb3a0fd76be82731458"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a modifable reference to a MADNESS world. <br /></td></tr>
-<tr class="separator:a1ff0d781ba41abb3a0fd76be82731458"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a465e869cbe8eebaf084c6df8636c9889"><td class="memItemLeft" align="right" valign="top"><a id="a465e869cbe8eebaf084c6df8636c9889"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a465e869cbe8eebaf084c6df8636c9889">argc_type</a> = int</td></tr>
 <tr class="memdesc:a465e869cbe8eebaf084c6df8636c9889"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type used to pass the program's argument count (i.e., "argc") <br /></td></tr>
@@ -163,9 +155,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a9db42b9952f182dfacf9ca281144c1a7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a9db42b9952f182dfacf9ca281144c1a7">RuntimeView</a> (<a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a69d490c31d18c01821c69f5d60c6dd37">mpi_comm_type</a> comm)</td></tr>
 <tr class="memdesc:a9db42b9952f182dfacf9ca281144c1a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> which aliases the provided MPI runtime.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#a9db42b9952f182dfacf9ca281144c1a7">More...</a><br /></td></tr>
 <tr class="separator:a9db42b9952f182dfacf9ca281144c1a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc93bc6e1ae55e527f87ee60de215fb5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#acc93bc6e1ae55e527f87ee60de215fb5">RuntimeView</a> (<a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a1ff0d781ba41abb3a0fd76be82731458">madness_world_reference</a> world)</td></tr>
-<tr class="memdesc:acc93bc6e1ae55e527f87ee60de215fb5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> which aliases the provided MADNESS runtime.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#acc93bc6e1ae55e527f87ee60de215fb5">More...</a><br /></td></tr>
-<tr class="separator:acc93bc6e1ae55e527f87ee60de215fb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e87388ff3cd5cb42d61e6f3a394297d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a1e87388ff3cd5cb42d61e6f3a394297d">RuntimeView</a> (<a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a465e869cbe8eebaf084c6df8636c9889">argc_type</a> argc, <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#af941c5b949749cf3d5e283c94c56d092">argv_type</a> argv, <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a69d490c31d18c01821c69f5d60c6dd37">mpi_comm_type</a> comm)</td></tr>
 <tr class="memdesc:a1e87388ff3cd5cb42d61e6f3a394297d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Primary ctor for creating a new <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a>.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#a1e87388ff3cd5cb42d61e6f3a394297d">More...</a><br /></td></tr>
 <tr class="separator:a1e87388ff3cd5cb42d61e6f3a394297d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -190,18 +179,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a68de2e5f59cae07a9e7720586f9e87fc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a69d490c31d18c01821c69f5d60c6dd37">mpi_comm_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a68de2e5f59cae07a9e7720586f9e87fc">mpi_comm</a> () const noexcept</td></tr>
 <tr class="memdesc:a68de2e5f59cae07a9e7720586f9e87fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the MPI communicator powering *this.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#a68de2e5f59cae07a9e7720586f9e87fc">More...</a><br /></td></tr>
 <tr class="separator:a68de2e5f59cae07a9e7720586f9e87fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad0f654d28b8ee8bf1e49ea61da70a0aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a1ff0d781ba41abb3a0fd76be82731458">madness_world_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#ad0f654d28b8ee8bf1e49ea61da70a0aa">madness_world</a> () const</td></tr>
-<tr class="memdesc:ad0f654d28b8ee8bf1e49ea61da70a0aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the MADNESS world powering *this.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#ad0f654d28b8ee8bf1e49ea61da70a0aa">More...</a><br /></td></tr>
-<tr class="separator:ad0f654d28b8ee8bf1e49ea61da70a0aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a644d2d0db4e49577d34ac3478f3a8a4a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a2f6116eb45714fe8da8134abcb606f82">size_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a644d2d0db4e49577d34ac3478f3a8a4a">size</a> () const noexcept</td></tr>
 <tr class="memdesc:a644d2d0db4e49577d34ac3478f3a8a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of resource sets in this instance.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#a644d2d0db4e49577d34ac3478f3a8a4a">More...</a><br /></td></tr>
 <tr class="separator:a644d2d0db4e49577d34ac3478f3a8a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada0761c70ccce9de074428ba38990581"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#ada0761c70ccce9de074428ba38990581">null</a> () const noexcept</td></tr>
 <tr class="memdesc:ada0761c70ccce9de074428ba38990581"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if *this is a view of the null runtime.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#ada0761c70ccce9de074428ba38990581">More...</a><br /></td></tr>
 <tr class="separator:ada0761c70ccce9de074428ba38990581"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a162e3dec3b281e1e49bc1089c1871f68"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a162e3dec3b281e1e49bc1089c1871f68">did_i_start_madness</a> () const noexcept</td></tr>
-<tr class="memdesc:a162e3dec3b281e1e49bc1089c1871f68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine if this <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> aliases the resources that started MADNESS.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#a162e3dec3b281e1e49bc1089c1871f68">More...</a><br /></td></tr>
-<tr class="separator:a162e3dec3b281e1e49bc1089c1871f68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0dbb7d6fcd1f62b174b7b4887e61ba0"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#ad0dbb7d6fcd1f62b174b7b4887e61ba0">did_i_start_mpi</a> () const noexcept</td></tr>
+<tr class="memdesc:ad0dbb7d6fcd1f62b174b7b4887e61ba0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Used to determine if this <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> aliases the resources that started mpi.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#ad0dbb7d6fcd1f62b174b7b4887e61ba0">More...</a><br /></td></tr>
+<tr class="separator:ad0dbb7d6fcd1f62b174b7b4887e61ba0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd2c5feb354c9bdc7d85da2a9e9a4da5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#aeaa1b6e48948de13f2fca7fb2fc84f5d">const_resource_set_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#acd2c5feb354c9bdc7d85da2a9e9a4da5">at</a> (<a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a2f6116eb45714fe8da8134abcb606f82">size_type</a> i) const</td></tr>
 <tr class="memdesc:acd2c5feb354c9bdc7d85da2a9e9a4da5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the <code>i-th</code> resource set in a read-only state.  <a href="classparallelzone_1_1runtime_1_1RuntimeView.html#acd2c5feb354c9bdc7d85da2a9e9a4da5">More...</a><br /></td></tr>
 <tr class="separator:acd2c5feb354c9bdc7d85da2a9e9a4da5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -249,10 +235,10 @@ Related Functions</h2></td></tr>
 <p>The runtime (environment) is where a program runs. The <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> class provides an API for querying properties of the runtime. The "view" part of the name signifies that a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> instance does not own the state, but only aliases it.</p>
 <p>Users should be aware that a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> instance may only be a slice of the actual runtime (either because other programs are running on the computer or because another part of the program is using resources).</p>
 <p>In MPI terms think of <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> as an intra-communicator paralleling MPI_COMM_WORLD; however, the underlying MPI_Comm need not be MPI_COMM_WORLD.</p>
-<dl class="section note"><dt>Note</dt><dd><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> uses RAII (resource acquisition is initialization) to manage MADNESS/MPI. This means that if you do supply a handle to an already initialized MADNESS/MPI runtime, then <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> will assume it is using MPI_COMM_WORLD and will initialize MADNESS/MPI if necesary. In the event that <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> does initialize MADNESS/MPI, it is also responsible for tearing-down MADNESS/MPI when the last reference to MADNESS/MPI goes out of scope. Internally, this is managed with a shared_ptr. So if you want to ensure that MADNESS/MPI is not finalized while you're doing something, make sure you hold on to a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a>. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> uses RAII (resource acquisition is initialization) to manage MPI. This means that if you do supply a handle to an already initialized MPI runtime, then <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> will assume it is using MPI_COMM_WORLD and will initialize MPI if necesary. In the event that <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> does initialize MPI, it is also responsible for tearing-down MPI when the last reference to MPI goes out of scope. Internally, this is managed with a shared_ptr. So if you want to ensure that MPI is not finalized while you're doing something, make sure you hold on to a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a>. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7d21c3d45f8812fb17bbd559d80190cb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d21c3d45f8812fb17bbd559d80190cb">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[1/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d21c3d45f8812fb17bbd559d80190cb">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[1/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -272,7 +258,7 @@ Related Functions</h2></td></tr>
 </div>
 </div>
 <a id="a0248db0e06092a91211a7001fdb2fbb0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0248db0e06092a91211a7001fdb2fbb0">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[2/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0248db0e06092a91211a7001fdb2fbb0">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[2/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -310,7 +296,7 @@ Related Functions</h2></td></tr>
 </div>
 </div>
 <a id="a9db42b9952f182dfacf9ca281144c1a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9db42b9952f182dfacf9ca281144c1a7">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[3/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9db42b9952f182dfacf9ca281144c1a7">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[3/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -344,43 +330,8 @@ Related Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="acc93bc6e1ae55e527f87ee60de215fb5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc93bc6e1ae55e527f87ee60de215fb5">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[4/8]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">parallelzone::runtime::RuntimeView::RuntimeView </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a1ff0d781ba41abb3a0fd76be82731458">madness_world_reference</a>&#160;</td>
-          <td class="paramname"><em>world</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">explicit</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Creates a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> which aliases the provided MADNESS runtime. </p>
-<p>This ctor is primarily meant for initializing a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> instance after MADNESS (and therefore MPI) have already been started. This ctor dispatches to the primary ctor by passing <code>argc = 0</code>, <code>argv = nullptr</code>, and whatever MPI_Comm corresponds to <code>world</code>. See the primary ctor documentation for more details.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">world</td><td>The MADNESS runtime instance we are aliasing. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a1e87388ff3cd5cb42d61e6f3a394297d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1e87388ff3cd5cb42d61e6f3a394297d">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[5/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e87388ff3cd5cb42d61e6f3a394297d">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[4/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -412,7 +363,7 @@ Related Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Primary ctor for creating a new <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a>. </p>
-<p>Most of the other ctors dispatch to this ctor. The ctor first determines if MADNESS has been initialized. If MADNESS has not been initialized, MADNESS will be initialized and the resulting <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> instance will be responsible for tearing down MADNESS when it is no longer in use (as determined by an internal counter). After ensuring MADNESS is initialized, this ctor will collect information about the computer and initialize the internal ResourceSets with said information.</p>
+<p>Most of the other ctors dispatch to this ctor. The ctor first determines if CommPP has been initialized. If CommPP has not been initialized, CommPP will be initialized and the resulting <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> instance will be responsible for tearing down CommPP when it is no longer in use (as determined by an internal counter). After ensuring CommPP is initialized, this ctor will collect information about the computer and initialize the internal ResourceSets with said information.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">argc</td><td>The number of arguments the program was called with. In conventional usage, <code>argc</code> is &gt;= 1, but a value of 0 is allowed if <code>argv</code> is a nullptr. </td></tr>
@@ -431,7 +382,7 @@ Related Functions</h2></td></tr>
 </div>
 </div>
 <a id="a51b18c7bc27aae0df5087992545599b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a51b18c7bc27aae0df5087992545599b6">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[6/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a51b18c7bc27aae0df5087992545599b6">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[5/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -472,7 +423,7 @@ Related Functions</h2></td></tr>
 </div>
 </div>
 <a id="a77b614e37303449ecc2315858db2aed4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77b614e37303449ecc2315858db2aed4">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[7/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a77b614e37303449ecc2315858db2aed4">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[6/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -513,7 +464,7 @@ Related Functions</h2></td></tr>
 </div>
 </div>
 <a id="a5a27a5b66cbc399fce7b23fa67d8201e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5a27a5b66cbc399fce7b23fa67d8201e">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[8/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a27a5b66cbc399fce7b23fa67d8201e">&#9670;&nbsp;</a></span>RuntimeView() <span class="overload">[7/7]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -577,7 +528,7 @@ Related Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Releases the present <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> instance. </p>
-<p>RuntimeViews behave somewhat like a shared_ptr. Copies of a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> increment an internal counter. As long as the inernal counter is non-zero the resources (i.e., MADNESS and MPI) will not be finalized. When the counter reaches zero (and assuming the original <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> actually initialized MADNESS/MPI) MADNESS and MPI will be finalized.</p>
+<p>RuntimeViews behave somewhat like a shared_ptr. Copies of a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> increment an internal counter. As long as the inernal counter is non-zero the resources (i.e., MPI) will not be finalized. When the counter reaches zero (and assuming the original <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> actually initialized MPI) MPI will be finalized.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
@@ -655,8 +606,8 @@ Related Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a162e3dec3b281e1e49bc1089c1871f68"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a162e3dec3b281e1e49bc1089c1871f68">&#9670;&nbsp;</a></span>did_i_start_madness()</h2>
+<a id="ad0dbb7d6fcd1f62b174b7b4887e61ba0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0dbb7d6fcd1f62b174b7b4887e61ba0">&#9670;&nbsp;</a></span>did_i_start_mpi()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -665,7 +616,7 @@ Related Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">bool parallelzone::runtime::RuntimeView::did_i_start_madness </td>
+          <td class="memname">bool parallelzone::runtime::RuntimeView::did_i_start_mpi </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -678,10 +629,10 @@ Related Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Used to determine if this <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> aliases the resources that started MADNESS. </p>
-<p>If a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> starts MADNESS it's responsible for making sure MADNESS is finalized. The finalization happens in the dtor when all references to the original resources are out of scope. This method can be used to determine if letting the current <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> go out of scope will decrement the reference count (if the return is true) or not (if the return is false).</p>
-<dl class="section note"><dt>Note</dt><dd>A null runtime did not start MADNESS and will return false.</dd></dl>
-<dl class="section return"><dt>Returns</dt><dd>True if the aliased resources started MADNESS and false otherwise.</dd></dl>
+<p>Used to determine if this <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> aliases the resources that started mpi. </p>
+<p>If a <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> starts MPI it's responsible for making sure MPI is finalized. The finalization happens in the dtor when all references to the original resources are out of scope. This method can be used to determine if letting the current <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> go out of scope will decrement the reference count (if the return is true) or not (if the return is false).</p>
+<dl class="section note"><dt>Note</dt><dd>A null runtime did not start MPI and will return false.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the aliased resources started MPI and false otherwise.</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
@@ -845,33 +796,6 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="ad0f654d28b8ee8bf1e49ea61da70a0aa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad0f654d28b8ee8bf1e49ea61da70a0aa">&#9670;&nbsp;</a></span>madness_world()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a1ff0d781ba41abb3a0fd76be82731458">RuntimeView::madness_world_reference</a> parallelzone::runtime::RuntimeView::madness_world </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Returns the MADNESS world powering *this. </p>
-<dl class="section return"><dt>Returns</dt><dd>A read/write reference to the MADNESS world</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Can we make this no throw?</dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname">std::runtime_error</td><td>if *this is a view of the null runtime. Strong throw guarantee. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="a68de2e5f59cae07a9e7720586f9e87fc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a68de2e5f59cae07a9e7720586f9e87fc">&#9670;&nbsp;</a></span>mpi_comm()</h2>
 
@@ -994,7 +918,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Makes *this alias the same resources as <code>rhs</code>. </p>
-<p>This method will set the internal state so that it aliases the same resources as <code>rhs</code>. This will decrement the reference count to the resources *this holds before the operation and increase the reference count to the resources in <code>rhs</code>. If the reference count to the resources in *this reaches 0 as a result of the aforementioned decrement, they will be released (possibly finalizing MADNESS/MPI).</p>
+<p>This method will set the internal state so that it aliases the same resources as <code>rhs</code>. This will decrement the reference count to the resources *this holds before the operation and increase the reference count to the resources in <code>rhs</code>. If the reference count to the resources in *this reaches 0 as a result of the aforementioned decrement, they will be released (possibly finalizing MPI).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">rhs</td><td>The <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> whose resources we want *this to alias</td></tr>

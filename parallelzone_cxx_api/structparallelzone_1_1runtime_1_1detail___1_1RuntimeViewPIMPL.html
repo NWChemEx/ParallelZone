@@ -116,10 +116,6 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="str
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#abbdc3524d7edc45c36c80e9ee0e1357a">resource_set_container</a> = std::map&lt; <a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#ad44dd59f34299d08c62909ce5a4a78ce">size_type</a>, <a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a21f193d351f6c373a289d0c3b993ca3c">resource_set_type</a> &gt;</td></tr>
 <tr class="memdesc:abbdc3524d7edc45c36c80e9ee0e1357a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of the conatiner holding resource_set_type objects. <br /></td></tr>
 <tr class="separator:abbdc3524d7edc45c36c80e9ee0e1357a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a209544d4a666c51c3952513e59718dc2"><td class="memItemLeft" align="right" valign="top"><a id="a209544d4a666c51c3952513e59718dc2"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a209544d4a666c51c3952513e59718dc2">madness_world_reference</a> = <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a1ff0d781ba41abb3a0fd76be82731458">parent_type::madness_world_reference</a></td></tr>
-<tr class="memdesc:a209544d4a666c51c3952513e59718dc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ultimately a typedef of <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#a1ff0d781ba41abb3a0fd76be82731458" title="Type of a modifable reference to a MADNESS world.">RuntimeView::madness_world_reference</a>. <br /></td></tr>
-<tr class="separator:a209544d4a666c51c3952513e59718dc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98d8778f4ee9b4df0d8bf7d0daf1695e"><td class="memItemLeft" align="right" valign="top"><a id="a98d8778f4ee9b4df0d8bf7d0daf1695e"></a>
 using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a98d8778f4ee9b4df0d8bf7d0daf1695e">comm_type</a> = <a class="el" href="classparallelzone_1_1mpi__helpers_1_1CommPP.html">mpi_helpers::CommPP</a></td></tr>
 <tr class="memdesc:a98d8778f4ee9b4df0d8bf7d0daf1695e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of our MPI Comm wrapper. <br /></td></tr>
@@ -147,12 +143,12 @@ using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="str
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a46d1462232f6ddd4b153a9e710c4cb13"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a46d1462232f6ddd4b153a9e710c4cb13">RuntimeViewPIMPL</a> (bool did_i_start_madness, <a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a209544d4a666c51c3952513e59718dc2">madness_world_reference</a> world, <a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#aaf8705ec297a06af8c5be9452ea2d89d">logger_type</a> logger)</td></tr>
-<tr class="memdesc:a46d1462232f6ddd4b153a9e710c4cb13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes *this from the provided MADNESS world.  <a href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a46d1462232f6ddd4b153a9e710c4cb13">More...</a><br /></td></tr>
-<tr class="separator:a46d1462232f6ddd4b153a9e710c4cb13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0c3f5a0c6ce62ae1b99615bcc7ae720"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#af0c3f5a0c6ce62ae1b99615bcc7ae720">RuntimeViewPIMPL</a> (bool did_i_start_mpi, <a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a98d8778f4ee9b4df0d8bf7d0daf1695e">comm_type</a> comm, <a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#aaf8705ec297a06af8c5be9452ea2d89d">logger_type</a> logger)</td></tr>
+<tr class="memdesc:af0c3f5a0c6ce62ae1b99615bcc7ae720"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes *this from the provided MPI communicator.  <a href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#af0c3f5a0c6ce62ae1b99615bcc7ae720">More...</a><br /></td></tr>
+<tr class="separator:af0c3f5a0c6ce62ae1b99615bcc7ae720"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4273a75e69f3f7a03104312d7a86328"><td class="memItemLeft" align="right" valign="top"><a id="af4273a75e69f3f7a03104312d7a86328"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#af4273a75e69f3f7a03104312d7a86328">~RuntimeViewPIMPL</a> () noexcept</td></tr>
-<tr class="memdesc:af4273a75e69f3f7a03104312d7a86328"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tears down MADNESS, when all references are gone (and if we started it) <br /></td></tr>
+<tr class="memdesc:af4273a75e69f3f7a03104312d7a86328"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor, when all references are gone (and if we started it) <br /></td></tr>
 <tr class="separator:af4273a75e69f3f7a03104312d7a86328"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6bafca19ade0696ad2d7862aa28815e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a91c5e78bebed696486267698b373b00a">const_resource_set_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a6bafca19ade0696ad2d7862aa28815e8">at</a> (<a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#ad44dd59f34299d08c62909ce5a4a78ce">size_type</a> rank) const</td></tr>
 <tr class="memdesc:a6bafca19ade0696ad2d7862aa28815e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps retrieving a <a class="el" href="classparallelzone_1_1runtime_1_1ResourceSet.html" title="A set of runtime resources.">ResourceSet</a>.  <a href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a6bafca19ade0696ad2d7862aa28815e8">More...</a><br /></td></tr>
@@ -163,14 +159,10 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:a4f361dc35378a96ae9927e22d13fdf6b"><td class="memItemLeft" align="right" valign="top"><a id="a4f361dc35378a96ae9927e22d13fdf6b"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a4f361dc35378a96ae9927e22d13fdf6b">m_did_i_start_madness</a></td></tr>
-<tr class="memdesc:a4f361dc35378a96ae9927e22d13fdf6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Did this PIMPL start MADNESS? <br /></td></tr>
-<tr class="separator:a4f361dc35378a96ae9927e22d13fdf6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab249050ea3f0304959d42b34e645b647"><td class="memItemLeft" align="right" valign="top"><a id="ab249050ea3f0304959d42b34e645b647"></a>
-<a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a209544d4a666c51c3952513e59718dc2">madness_world_reference</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#ab249050ea3f0304959d42b34e645b647">m_world</a></td></tr>
-<tr class="memdesc:ab249050ea3f0304959d42b34e645b647"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to the madness world this instance wraps. <br /></td></tr>
-<tr class="separator:ab249050ea3f0304959d42b34e645b647"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3244b231038dbcd008d2cbed7936a208"><td class="memItemLeft" align="right" valign="top"><a id="a3244b231038dbcd008d2cbed7936a208"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a3244b231038dbcd008d2cbed7936a208">m_did_i_start_mpi</a></td></tr>
+<tr class="memdesc:a3244b231038dbcd008d2cbed7936a208"><td class="mdescLeft">&#160;</td><td class="mdescRight">Did this PIMPL start MPI? <br /></td></tr>
+<tr class="separator:a3244b231038dbcd008d2cbed7936a208"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af179fba563e182abb82a57e615baab9a"><td class="memItemLeft" align="right" valign="top"><a id="af179fba563e182abb82a57e615baab9a"></a>
 <a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a98d8778f4ee9b4df0d8bf7d0daf1695e">comm_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#af179fba563e182abb82a57e615baab9a">m_comm</a></td></tr>
 <tr class="memdesc:af179fba563e182abb82a57e615baab9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The MPI communicator we're built around. <br /></td></tr>
@@ -182,11 +174,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Holds the state for the <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> class. </p>
-<p>Right now this class assumes MADNESS is managing MPI, so it holds a MADNESS world; however, no part of ParallelZone actually uses the MADNESS world and it is entirely possible to just power this class off of the CommPP object.</p>
-<p>One option going forward would be to make this class polymorphic and have the derived classes power the <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html" title="A view of the execution environment.">RuntimeView</a> based on the runtime the user wants to use (e.g., one derived class if we want to use MADNESS, another derived class for CommPP). </p>
+<p>This class uses CommPP to manage MPI. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a46d1462232f6ddd4b153a9e710c4cb13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46d1462232f6ddd4b153a9e710c4cb13">&#9670;&nbsp;</a></span>RuntimeViewPIMPL()</h2>
+<a id="af0c3f5a0c6ce62ae1b99615bcc7ae720"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0c3f5a0c6ce62ae1b99615bcc7ae720">&#9670;&nbsp;</a></span>RuntimeViewPIMPL()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -198,13 +189,13 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
           <td class="memname">parallelzone::runtime::detail_::RuntimeViewPIMPL::RuntimeViewPIMPL </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>did_i_start_madness</em>, </td>
+          <td class="paramname"><em>did_i_start_mpi</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a209544d4a666c51c3952513e59718dc2">madness_world_reference</a>&#160;</td>
-          <td class="paramname"><em>world</em>, </td>
+          <td class="paramtype"><a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a98d8778f4ee9b4df0d8bf7d0daf1695e">comm_type</a>&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -225,12 +216,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 </table>
 </div><div class="memdoc">
 
-<p>Initializes *this from the provided MADNESS world. </p>
-<p>This ctor will strip the relevant information off of the MADNESS world to initialize *this (e.g., the rank of the current process, and the MPI communicator). It also records whether or no *this is responsible for tearing down MADNESS when it goes out of scope (if *this started MADNESS then it is responsible for tearing it down).</p>
+<p>Initializes *this from the provided MPI communicator. </p>
+<p>Constructor for the <a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html" title="Holds the state for the RuntimeView class.">RuntimeViewPIMPL</a> class.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">did_i_start_madness</td><td>True if *this should be responsible for the lifetime of MADNESS and false otherwise. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">world</td><td>The MADNESS world *this wraps.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">did_i_start_mpi</td><td>True if *this should be responsible for the lifetime of MPI and false otherwise. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">comm</td><td>The MPI communicator associated with the instance of the class.</td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">logger</td><td>The program-wide logger as seen by the current process. </td></tr>
   </table>
   </dd>

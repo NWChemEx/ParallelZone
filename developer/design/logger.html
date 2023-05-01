@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designing the Logger Class &mdash; parallelzone  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../../about.html" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Reflection Design" href="reflection.html" />
+    <link rel="prev" title="Designing the Logging Component" href="logging.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            parallelzone
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../about.html">The ParallelZone Worldview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user/index.html">ParallelZone User Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Developer Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../repo_layout.html">ParallelZone Repository Layout</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Design Documentation</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="index.html#high-level-design">High-Level Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="index.html#parallel-runtime-design">Parallel Runtime Design</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html#utilities-design">Utilities Design</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="hashing.html">Hashing Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="serialization.html">Serialization Design</a></li>
+<li class="toctree-l4"><a class="reference internal" href="logging.html">Designing the Logging Component</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Designing the Logger Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reflection.html">Reflection Design</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">parallelzone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Developer Documentation</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Design Documentation</a></li>
+      <li class="breadcrumb-item active">Designing the Logger Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/developer/design/logger.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="designing-the-logger-class">
+<span id="logger-design"></span><h1>Designing the Logger Class<a class="headerlink" href="#designing-the-logger-class" title="Permalink to this heading"></a></h1>
+<p>The discussion <a class="reference internal" href="logging.html#logging-design"><span class="std std-ref">Designing the Logging Component</span></a> ends in concluding that ParallelZone needs
+a <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class. This page details the design and architecture of the
+<code class="docutils literal notranslate"><span class="pre">Logger</span></code> class and the underlying infrastructure needed to make it work.</p>
+<div class="section" id="what-is-the-logger-class">
+<h2>What is the Logger Class?<a class="headerlink" href="#what-is-the-logger-class" title="Permalink to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class is the user-facing API of ParallelZone’s logging
+component. The <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class is used by users of ParallelZone to log
+events, <em>i.e.</em>, errors, warnings, progress, etc.</p>
+</div>
+<div class="section" id="why-do-we-need-the-logger-class">
+<h2>Why do we need the Logger Class?<a class="headerlink" href="#why-do-we-need-the-logger-class" title="Permalink to this heading"></a></h2>
+<p>As summarized in <a class="reference internal" href="logging.html#logging-design"><span class="std std-ref">Designing the Logging Component</span></a>, we are not aware of any existing logging
+solutions that do everything we need. We have thus chosen to implement the
+missing features, to our liking, within the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class. The
+<code class="docutils literal notranslate"><span class="pre">Logger</span></code> class also provides a stable API for ParallelZone users in the event
+we should need to add additional logging capabilities or switch out the backend.
+The <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class also separates the concern of “what to log” from “how to
+log it”; “how to log it” is the responsibility of the sink (which is currently
+an implementation detail of the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class).</p>
+</div>
+<div class="section" id="logger-considerations">
+<h2>Logger Considerations<a class="headerlink" href="#logger-considerations" title="Permalink to this heading"></a></h2>
+<p>The considerations for the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class are the considerations from
+<a class="reference internal" href="logging.html#logging-design"><span class="std std-ref">Designing the Logging Component</span></a> not addressed there. Specifically:</p>
+<ol class="arabic simple">
+<li><p>Multiple logging levels.</p>
+<ul class="simple">
+<li><p>Printing every message should be reserved for difficult debugging.</p></li>
+<li><p>Severity level (info, warn, etc.) used to triage what to print.</p></li>
+</ul>
+</li>
+<li><p>Concurrency aware.</p>
+<ul class="simple">
+<li><p>Thread-safe ideally.</p></li>
+</ul>
+</li>
+<li><p>Different “sinks”</p>
+<ul class="simple">
+<li><p>Console, file, databases.</p></li>
+</ul>
+</li>
+<li><p>Enable/disable logging</p>
+<ul class="simple">
+<li><p>Can be expensive, too verbose, etc.</p></li>
+<li><p>Assume logging disabled for performance runs</p></li>
+<li><p>Ideally logger configurable at compile and runtime.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="existing-logger-solutions">
+<h2>Existing Logger Solutions<a class="headerlink" href="#existing-logger-solutions" title="Permalink to this heading"></a></h2>
+<p><a class="reference internal" href="logging.html#existing-logging-solutions"><span class="std std-ref">Existing Logging Solutions</span></a> covered the existing logging solutions in
+detail and will not be replicated here. Instead we point out that of the
+available choices, Spdlog has most of the features we want and is heavily
+supported. As seen in the next section we have opted to build our <code class="docutils literal notranslate"><span class="pre">Logger</span></code>
+infrastructure around Spdlog.</p>
+</div>
+<div class="section" id="id1">
+<h2>Logger Design<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<div class="figure align-center" id="id2">
+<span id="logger-arch"></span><img alt="../../_images/logger_arch.png" src="../../_images/logger_arch.png" />
+<p class="caption"><span class="caption-number">Fig. 13 </span><span class="caption-text">Architecture of the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class and its infrastructure.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</div>
+<p>For the first implementation of the logging component we adopted the simple
+architecture shown in Figure <a class="reference internal" href="#logger-arch"><span class="std std-numref">Fig. 13</span></a>. Users of ParallelZone see
+one class, <code class="docutils literal notranslate"><span class="pre">Logger</span></code>. As a first pass, <code class="docutils literal notranslate"><span class="pre">Logger</span></code> simply provides APIs
+for printing arbitrary data, already in a <code class="docutils literal notranslate"><span class="pre">std::string</span></code> (or implicitly
+convertible to a <code class="docutils literal notranslate"><span class="pre">std::string</span></code>) at various severity levels. Eventually, this
+may be expanded to support more fine-grained control over the log formatting.</p>
+<p>Internally <code class="docutils literal notranslate"><span class="pre">Logger</span></code> is implemented by a <code class="docutils literal notranslate"><span class="pre">LoggerPIMPL</span></code> object. The literal
+<code class="docutils literal notranslate"><span class="pre">LoggerPIMPL</span></code> object is an abstract base class which defines the API for
+actual implementations. Our Spdlog-based implementation derives the
+<code class="docutils literal notranslate"><span class="pre">SpdlogPIMPL</span></code> class from <code class="docutils literal notranslate"><span class="pre">LoggerPIMPL</span></code> to implement the parts of the PIMPL
+API common to all Spdlog-based implementations.</p>
+<p>For now we have two sinks, and they are implemented by further specializing the
+<code class="docutils literal notranslate"><span class="pre">SpdlogPIMPL</span></code>. The sinks, <code class="docutils literal notranslate"><span class="pre">StdoutSpdlog</span></code> and <code class="docutils literal notranslate"><span class="pre">FileSpdlog</span></code> respectively
+output logs to standard out and a specified file.</p>
+<p>This design addresses the considerations remaining from
+<a class="reference internal" href="logging.html#logging-design"><span class="std std-ref">Designing the Logging Component</span></a> by:</p>
+<ol class="arabic simple">
+<li><p>Multiple logging levels.</p>
+<ul class="simple">
+<li><p>Gained by using Spdlog.</p></li>
+</ul>
+</li>
+<li><p>Concurrency aware.</p>
+<ul class="simple">
+<li><p>Spdlog is thread-safe.</p></li>
+</ul>
+</li>
+<li><p>Different “sinks”</p>
+<ul class="simple">
+<li><p>Provided by Spdlog.</p></li>
+</ul>
+</li>
+<li><p>Enable/disable logging</p>
+<ul class="simple">
+<li><p>Spdlog supports log filtering by severity.</p></li>
+<li><p>Logger can have a null pointer to represent null logging.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="future-considerations">
+<h2>Future Considerations<a class="headerlink" href="#future-considerations" title="Permalink to this heading"></a></h2>
+<p>The current design gets the job done, while being amenable to extension. In
+particular we note:</p>
+<ul class="simple">
+<li><p>Can add <code class="docutils literal notranslate"><span class="pre">Sink</span></code> classes so users define their own sink behavior (Spdlog
+also allows custom sinks, so our <code class="docutils literal notranslate"><span class="pre">Sink</span></code> class would wrap theirs).</p></li>
+<li><p>Can add more formatting options to <code class="docutils literal notranslate"><span class="pre">Logger</span></code>. Spdlog uses the C++ fmt library
+(which the C++20 extension is based heavily on). We can expose this down
+the road.</p></li>
+<li><p>Can add support for more types beyond <code class="docutils literal notranslate"><span class="pre">std::string</span></code>. At the end of the day
+we ultimately need to print strings so supporting of other types is simply
+a convenience mechanism for channeling them into the string paths.</p></li>
+<li><p>Can add wide-character support. Spdlog already supports it so it’s just a
+matter of exposing it.</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="logging.html" class="btn btn-neutral float-left" title="Designing the Logging Component" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reflection.html" class="btn btn-neutral float-right" title="Reflection Design" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

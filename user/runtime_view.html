@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The RuntimeView Class &mdash; parallelzone  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="../about.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The ResourceSet Class" href="resource_set.html" />
+    <link rel="prev" title="ParallelZone User Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            parallelzone
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../about.html">The ParallelZone Worldview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">ParallelZone User Documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The RuntimeView Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#first-steps">First Steps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#all-to-all-mpi-like-operations">All-to-All MPI-Like Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#program-wide-logging">Program-Wide Logging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="resource_set.html">The ResourceSet Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ram.html">The RAM Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mpi_and_custom_types.html">Using MPI With Custom Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mpi4py.html">Using ParallelZone with mpi4py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quick_reference.html">Quick Reference / FAQs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">parallelzone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">ParallelZone User Documentation</a></li>
+      <li class="breadcrumb-item active">The RuntimeView Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/user/runtime_view.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="the-runtimeview-class">
+<h1>The RuntimeView Class<a class="headerlink" href="#the-runtimeview-class" title="Permalink to this heading"></a></h1>
+<p>Programs operate within a runtime environment. In ParallelZone the
+responsibility for modeling the runtime environment falls to the
+<code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> class. The entire program runs in a single runtime environment.
+<code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> objects can “see” the singular runtime environment and interact
+with it.</p>
+<p>One of the first tasks that software built on ParallelZone will do
+is obtain a <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> object (analogous to how MPI-based software starts
+MPI). The program will then pass that <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> object to each sub call
+(similar to passing an MPI communicator around). So if you are contributing to
+software which already uses ParallelZone you will want to grab the
+<code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> instance via whatever mechanism your software affords, and not
+create a new instance. How to get the <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> is software specific, so
+for the purposes of this tutorial we ignore it and assume you already have a
+<code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> instance <code class="docutils literal notranslate"><span class="pre">rv</span></code>.</p>
+<div class="section" id="first-steps">
+<h2>First Steps<a class="headerlink" href="#first-steps" title="Permalink to this heading"></a></h2>
+<p>One of the most common <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> operations is to get the <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code>
+(the set of resources like RAM, CPUs, GPUs, etc.) that the current process has
+direct access to. This is done by:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">// Get the resource set containing resources local to the current process</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">my_rs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">my_resource_set</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>How to use a <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> is covered in the next tutorial,
+<a class="reference internal" href="resource_set.html#resource-set-class"><span class="std std-ref">The ResourceSet Class</span></a>.</p>
+</div>
+<div class="section" id="all-to-all-mpi-like-operations">
+<h2>All-to-All MPI-Like Operations<a class="headerlink" href="#all-to-all-mpi-like-operations" title="Permalink to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> objects have access to the entire runtime environment, thus
+one can use <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> objects to synchronize state across the entire
+runtime environment. For example, say we wanted to do an all gather operation.
+In an all gather operation each process computes some data, and gives that data
+to every other process. As a trivial example we first show how to have MPI rank
+<span class="math notranslate nohighlight">\(r\)</span> “compute” three pieces of data, the integers <span class="math notranslate nohighlight">\(r\)</span>, <span class="math notranslate nohighlight">\(r+1\)</span>,
+and <span class="math notranslate nohighlight">\(r+2\)</span>. After computing the data, we synchronize it so that each
+process has a copy of all the data.</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">// Get the MPI rank of the current process</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">my_rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_rs</span><span class="p">.</span><span class="n">mpi_rank</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// &quot;Compute some data&quot;</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">local_data</span><span class="p">{</span><span class="n">my_rank</span><span class="p">,</span><span class="w"> </span><span class="n">my_rank</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">my_rank</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">2</span><span class="p">};</span>
+
+<span class="w">    </span><span class="c1">// Synchronize the data across the program</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">gather</span><span class="p">(</span><span class="n">local_data</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The value of <code class="docutils literal notranslate"><span class="pre">results</span></code> will be a <span class="math notranslate nohighlight">\(3n\)</span> element vector with the elements:
+<span class="math notranslate nohighlight">\(0, 1, 2, 1, 2, 3, 2, 3, 4, \ldots, n, n+1, n+2\)</span> when the program is run
+with <span class="math notranslate nohighlight">\(n\)</span> processes.</p>
+</div>
+<div class="section" id="program-wide-logging">
+<h2>Program-Wide Logging<a class="headerlink" href="#program-wide-logging" title="Permalink to this heading"></a></h2>
+<p>Logging (the fancy term for printing) in a program distributed across several
+processes can be a bit tricky. ParallelZone exposes two logging mechanisms, one
+for logging program-wide state and one for logging process-local state.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Logging program-wide state to the process-local logger is always okay. It
+usually just results in logging redundant information. Logging process-local
+information to the program-wide logger will usually not cause an error, but
+it may cause deadlock if every process does not call the program-wide logger.</p>
+</div>
+<p>Generally speaking, the program-wide logger should be used for all logging
+needs except: when one needs to log distributed data, or when a logging
+statement will only be executed by a subset of processes. As an example, say
+we want to log the result of the all gather we performed in the previous
+example, we can do this by:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">// Log the value of result (N.B. after gather all processes have the result)</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">logger</span><span class="p">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This snippet shows the streaming API of the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class. This is a
+convenient API for users familiar with <code class="docutils literal notranslate"><span class="pre">std::cout</span></code> (or more generally
+<code class="docutils literal notranslate"><span class="pre">std::ostream</span></code>) style printing, but can only be used with “info”-level
+log messages…which brings us to log levels.</p>
+<p>Logging primarily differs from traditional printing in that each log statement
+is assigned a severity/importance. The severity levels tell you how severe the
+message is. In ParallelZone the severity choices are (and their suggested
+meanings):</p>
+<ul class="simple">
+<li><p>trace    - Logging that is considered verbose, even for debugging</p></li>
+<li><p>debug    - Logging that is likely only needed when trying to debug</p></li>
+<li><p>info     - Base-level logs, log messages primarily showing progress</p></li>
+<li><p>warn     - Something looks weird, it’s not necessarily wrong, but it’s odd</p></li>
+<li><p>error    - Something went wrong, but the program can recover</p></li>
+<li><p>critical - Something went wrong, but recovery is not possible</p></li>
+</ul>
+<p>Severity increases from “trace” to “critical” such that “trace” is the least
+important and “critical” is the most severe log statements. In practice, the
+value of a computed result usually falls under debug or trace. There’s at least
+two ways to do that:</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="w">    </span><span class="c1">// Log the value of result as severity::trace</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">logger</span><span class="p">().</span><span class="n">trace</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
+
+<span class="w">    </span><span class="c1">// Log the value of result as severity::debug</span>
+<span class="w">    </span><span class="k">auto</span><span class="w"> </span><span class="n">debug_s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parallelzone</span><span class="o">::</span><span class="n">Logger</span><span class="o">::</span><span class="n">severity</span><span class="o">::</span><span class="n">debug</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">logger</span><span class="p">().</span><span class="n">log</span><span class="p">(</span><span class="n">debug_s</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>The first example illustrates the use of the <code class="docutils literal notranslate"><span class="pre">trace</span></code> method. Each severity
+level has its own corresponding method. The second example shows how to use
+the more general <code class="docutils literal notranslate"><span class="pre">log</span></code> method. This particular overload of the <code class="docutils literal notranslate"><span class="pre">log</span></code> method
+allows you to specify (at runtime if you like) the severity of the message.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Notice that we did not discuss where the log message gets printed. This is
+called the “sink”. By default the program-wide logger has a sink which
+prints to standard out. When developing code with ParallelZone you should
+always use the loggers provided to your code, and not mess with the sinks.
+This is because the sinks are set by the person running the program to their
+liking.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="ParallelZone User Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="resource_set.html" class="btn btn-neutral float-right" title="The ResourceSet Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

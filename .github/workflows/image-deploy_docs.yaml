@@ -1,0 +1,13 @@
+name: Build and Deploy Documentation with Docker Image
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  Build-Deploy-Documentation:
+    uses: NWChemEx-Project/.github/.github/workflows/image-deploy_docs_tmpl.yaml@master
+    with:
+      target: parallelzone_cxx_api
+    secrets:
+      CONTAINER_REPO_TOKEN: ${{ secrets.CONTAINER_REPO_TOKEN }} 

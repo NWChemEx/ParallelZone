@@ -28,25 +28,21 @@ namespace parallelzone::runtime {
 namespace {
 
 // Basically a ternary statement dispatching on whether we need to initialize
-// MADNESS or not
-auto start_madness(int argc, char** argv, const MPI_Comm& comm) {
-    bool initialize = !madness::initialized();
-    madness::World* pworld;
-    if(initialize) {
-        // MADNESS doesn't appear to check if the provided comm is
-        // MPI_COMM_WORLD, so if you pass an MPI_COMM it assumes MPI was
-        // initialized. This if/else statement avoids passing a comm if we were
-        // given MPI_COMM_WORLD
+// MPI or not
+auto start_mpi(int argc, char** argv, const MPI_Comm& comm) {
+    bool mpi_initialized = madness::initialized();
+    if(!mpi_initialized) {
         if(comm == MPI_COMM_WORLD)
-            pworld = &madness::initialize(argc, argv, true);
+            madness::initialize(argc, argv, true);
         else
-            pworld = &madness::initialize(argc, argv, comm, true);
-    } else
-        pworld = madness::World::find_instance(SafeMPI::Intracomm(comm));
+            madness::initialize(argc, argv, comm, true);
+    }
+    mpi_helpers::CommPP commpp(comm);
 
-    auto log         = LoggerFactory::default_global_logger(pworld->rank());
+    auto log         = LoggerFactory::default_global_logger(commpp.me());
     using pimpl_type = detail_::RuntimeViewPIMPL;
-    return std::make_shared<pimpl_type>(initialize, *pworld, std::move(log));
+    return std::make_shared<pimpl_type>(!mpi_initialized, commpp,
+                                        std::move(log));
 }
 
 } // namespace
@@ -62,11 +58,8 @@ RuntimeView::RuntimeView(argc_type argc, argv_type argv) :
 
 RuntimeView::RuntimeView(mpi_comm_type comm) : RuntimeView(0, nullptr, comm) {}
 
-RuntimeView::RuntimeView(madness_world_reference world) :
-  RuntimeView(0, nullptr, world.mpi.comm().Get_mpi_comm()) {}
-
 RuntimeView::RuntimeView(int argc, char** argv, mpi_comm_type comm) :
-  RuntimeView(start_madness(argc, argv, comm)) {}
+  RuntimeView(start_mpi(argc, argv, comm)) {}
 
 RuntimeView::RuntimeView(pimpl_pointer pimpl) noexcept :
   m_pimpl_(std::move(pimpl)) {}
@@ -87,21 +80,17 @@ RuntimeView::~RuntimeView() noexcept = default;
 
 RuntimeView::mpi_comm_type RuntimeView::mpi_comm() const noexcept {
     if(null()) return MPI_COMM_NULL;
-    return m_pimpl_->m_world.mpi.comm().Get_mpi_comm();
-}
-
-RuntimeView::madness_world_reference RuntimeView::madness_world() const {
-    return pimpl_().m_world;
+    return m_pimpl_->m_comm.comm();
 }
 
 RuntimeView::size_type RuntimeView::size() const noexcept {
-    return !null() ? madness_world().size() : 0;
+    return !null() ? m_pimpl_->m_comm.size() : 0;
 }
 
 bool RuntimeView::null() const noexcept { return !static_cast<bool>(m_pimpl_); }
 
-bool RuntimeView::did_i_start_madness() const noexcept {
-    return !null() ? m_pimpl_->m_did_i_start_madness : false;
+bool RuntimeView::did_i_start_mpi() const noexcept {
+    return !null() ? m_pimpl_->m_did_i_start_mpi : false;
 }
 
 RuntimeView::const_resource_set_reference RuntimeView::at(size_type i) const {

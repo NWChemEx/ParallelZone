@@ -16,6 +16,7 @@
 
 #pragma once
 #include "resource_set_pimpl.hpp"
+#include <madness/world/MADworld.h>
 
 /** @file runtime_view_pimpl.ipp
  *
@@ -25,12 +26,10 @@
 
 namespace parallelzone::runtime::detail_ {
 
-inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
-                                          madness_world_reference world,
+inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_mpi, comm_type comm,
                                           logger_type logger) :
-  m_did_i_start_madness(did_i_start_madness),
-  m_world(world),
-  m_comm(world.mpi.comm().Get_mpi_comm()),
+  m_did_i_start_mpi(did_i_start_mpi),
+  m_comm(comm),
   m_plogger(std::make_shared<logger_type>(std::move(logger))),
   m_resource_sets_() {
     // Pre-populate the current rank's resource set.
@@ -38,7 +37,7 @@ inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_madness,
 }
 
 inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
-    if(!m_did_i_start_madness) return;
+    if(!m_did_i_start_mpi) return;
     madness::finalize();
 }
 

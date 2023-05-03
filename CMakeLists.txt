@@ -19,8 +19,8 @@ project(parallelzone VERSION "${VERSION}" LANGUAGES CXX)
 
 include(FetchContent)
 FetchContent_Declare(
-        nwx_cmake
-        GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
+    nwx_cmake
+    GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
 )
 FetchContent_MakeAvailable(nwx_cmake)
 list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
@@ -30,13 +30,16 @@ set(
     CACHE STRING "" FORCE
 )
 
-include(get_cpp)
+include(get_cmaize)
 include(nwx_cxx_api_docs)
 
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
+option(
+    BUILD_PYBINDINGS
+    "Should we build Python3 bindings, and if so, with what backend? Options: \
+     OFF, nanobind, cppyy. Default: nanobind" nanobind)
 option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
 option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF )
 option(BUILD_SYCL_BINDINGS "Enable SYCL Bindings" OFF )
@@ -57,8 +60,8 @@ set(project_depends "")
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 #TODO: Make sure MADworld uses the Cereal we build
-cpp_find_or_build_dependency(
-    MADworld
+cmaize_find_or_build_dependency(
+    MADNESS
     URL github.com/m-a-d-n-e-s-s/madness
     #VERSION 20d4d7cffbbc98dd7b7d6a5feb7d68f1df067cd6
     VERSION 997e8b458c4234fb6c8c2781a5df59cb14b7e700
@@ -74,12 +77,13 @@ cpp_find_or_build_dependency(
 
 list(APPEND project_depends MADworld)
 
-cpp_find_or_build_dependency(
+cmaize_find_or_build_dependency(
     spdlog
     URL github.com/gabime/spdlog
     VERSION ad0e89cbfb4d0c1ce4d097e134eb7be67baebb36
     BUILD_TARGET spdlog
     FIND_TARGET spdlog::spdlog
+    CMAKE_ARGS SPDLOG_INSTALL=ON
 )
 list(APPEND project_depends spdlog::spdlog)
 
@@ -88,8 +92,7 @@ if("${BUILD_PAPI_BINDINGS}")
     include(build_papi)
 endif ()
 
-
-cpp_find_or_build_dependency(
+cmaize_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
     BUILD_TARGET cereal
@@ -98,7 +101,7 @@ cpp_find_or_build_dependency(
 )
 list(APPEND project_depends cereal::cereal)
 
-cpp_add_library(
+cmaize_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIR "${project_inc_dir}"
@@ -107,21 +110,20 @@ cpp_add_library(
 
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
-
-    cpp_find_or_build_dependency(
+    cmaize_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
-		VERSION v2.13.9
+        VERSION v2.13.9
     )
-    cpp_add_tests(
+    cmaize_add_tests(
         test_parallelzone
         SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
         INCLUDE_DIR "${project_src_dir}"
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
-    cpp_add_tests(
+    cmaize_add_tests(
         test_parallelzone_docs
         SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
         INCLUDE_DIR "${project_src_dir}"
@@ -142,36 +144,39 @@ if("${BUILD_TESTING}")
 endif()
 
 if("${BUILD_PYBINDINGS}")
-    # Cppyy bindings
-    #include(nwx_python_mods)
-    #cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone)
-
-    cpp_find_or_build_dependency(
-        pybind11
-        URL github.com/pybind/pybind11
-        BUILD_TARGET pybind11::pybind11
-        FIND_TARGET pybind11::embed
-        CMAKE_ARGS PYBIND11_INSTALL=ON
-                   PYBIND11_FINDPYTHON=ON
-    )
-    file(
-        GLOB_RECURSE PY_FILES
-        CONFIGURE_DEPENDS
-        ${CMAKE_CURRENT_LIST_DIR}/src/python/*.cpp
-    )
-    pybind11_add_module(py_parallelzone MODULE ${PY_FILES})
-    target_link_libraries(py_parallelzone PUBLIC ${PROJECT_NAME})
-    set_target_properties(
-        py_parallelzone
-        PROPERTIES LIBRARY_OUTPUT_NAME
-        parallelzone
-    )
-
-    if("${BUILD_TESTING}")
-        set(PY_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
-        add_test(
-            NAME "pytest_parallelzone"
-            COMMAND "python" "${PY_TEST_DIR}/module.py"
+    if("${BUILD_PYBINGS}" STREQUAL "cppyy")
+        # Cppyy bindings
+        include(nwx_python_mods)
+        cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone)
+    elseif("${BUILD_PYBINDINGS}" STREQUAL "nanobind")
+        cpp_find_or_build_dependency(
+            nanobind
+            URL github.com/wjakob/nanobind
+            BUILD_TARGET nanobind::nanobind
+            FIND_TARGET pybind11::embed
+            CMAKE_ARGS PYBIND11_INSTALL=ON
+                       PYBIND11_FINDPYTHON=ON
         )
+        file(
+            GLOB_RECURSE PY_FILES
+            CONFIGURE_DEPENDS
+            ${CMAKE_CURRENT_LIST_DIR}/src/python/*.cpp
+        )
+        nanobind_add_module(py_parallelzone MODULE ${PY_FILES})
+        target_link_libraries(py_parallelzone PUBLIC ${PROJECT_NAME})
+        set_target_properties(
+            py_parallelzone
+            PROPERTIES LIBRARY_OUTPUT_NAME
+            parallelzone
+        )
+
+        if("${BUILD_TESTING}")
+            set(PY_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
+            add_test(
+                NAME "pytest_parallelzone"
+                COMMAND "python" "${PY_TEST_DIR}/module.py"
+            )
+        endif()
     endif()
 endif()
+cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)

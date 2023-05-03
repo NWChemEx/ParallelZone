@@ -1,4 +1,4 @@
-name: C_C++_CI
+name: C_C++_CI with docker image
 on:
   pull_request:
     branches:
@@ -6,21 +6,23 @@ on:
 
 jobs:
   build-with-gcc:
-    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
+    uses: NWChemEx-Project/.github/.github/workflows/image-c-cpp_tmpl.yaml@master
     with:
-      dependencies: 'ninja gcc gcovr cmake openmpi'
+      repo: ParalleZone
       gcc-build: true
       clang-build: false
       ninja_build: true
     secrets:
       CMAIZE_GITHUB_TOKEN: ${{ secrets.CMAIZE_GITHUB_TOKEN }}
+      CONTAINER_REPO_TOKEN: ${{ secrets.CONTAINER_REPO_TOKEN }}
 
   build-with-clang:
-    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
+    uses: NWChemEx-Project/.github/.github/workflows/image-c-cpp_tmpl.yaml@master
     with: 
-      dependencies: 'ninja clang gcovr cmake openmpi'
+      repo: ParalleZone
       gcc-build: false
       clang-build: true
       ninja_build: true
     secrets:
       CMAIZE_GITHUB_TOKEN: ${{ secrets.CMAIZE_GITHUB_TOKEN }}
+      CONTAINER_REPO_TOKEN: ${{ secrets.CONTAINER_REPO_TOKEN }}

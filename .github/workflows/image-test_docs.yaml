@@ -1,0 +1,13 @@
+name: Test Documentation with Docker Image
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  Build-Documentation:
+    uses: NWChemEx-Project/.github/.github/workflows/image-test_docs_tmpl.yaml@master
+    with:
+      target: parallelzone_cxx_api
+    secrets:
+      CONTAINER_REPO_TOKEN: ${{ secrets.CONTAINER_REPO_TOKEN }}

@@ -29,9 +29,21 @@ Getting RAM
 turn are containers of hardware including ``RAM``. Assuming we have a
 ``RuntimeView`` object ``rv`` we can get a ``RAM`` object by:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/ram.cpp
-   :language: c++
-   :lines: 29-33
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/ram.cpp
+         :language: c++
+         :lines: 29-33
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_ram.py
+         :language: c++
+         :lines: 23-27
+         :dedent: 8
 
 The first call to ``ResourceSet::ram()`` retrieves a handle to the RAM which
 is local to rank 0. The second call gets the ``RAM`` instance local to the
@@ -39,9 +51,22 @@ current process (which for rank 0 is the same as ``rank_0_ram``). Once you
 have the ``RAM`` object you can see basic stats such as how much total memory
 it has by using member functions, for example:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/ram.cpp
-   :language: c++
-   :lines: 35-37
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/ram.cpp
+         :language: c++
+         :lines: 35-37
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_ram.py
+         :language: c++
+         :lines: 29-31
+         :dedent: 8
+
 
 *************************
 All-to-One MPI Operations
@@ -54,15 +79,39 @@ tutorial will have process :math:`p` "compute" three integers: :math:`p`,
 :math:`p+1`, and :math:`p+2`. If we want to collect all of these computed
 results into rank 0's RAM we would do:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/ram.cpp
-   :language: c++
-   :lines: 39-43
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/ram.cpp
+         :language: c++
+         :lines: 39-43
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. note::
+
+         MPI operations are presently limited to the C++ API. Consider using
+         mpi4py for your Python-based MPI needs.
 
 The resulting object ``all_data`` is a ``std::optional`` which has a value if
 ``rank_0_ram`` is local to the current process. We can exploit whether or not
 ``all_data`` has a value to avoid needing to remember which process was the
 root for the gather operation. For example:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/ram.cpp
-   :language: c++
-   :lines: 45-49
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/ram.cpp
+         :language: c++
+         :lines: 45-49
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. note::
+
+         MPI operations are presently limited to the C++ API. Consider using
+         mpi4py for your Python-based MPI needs.

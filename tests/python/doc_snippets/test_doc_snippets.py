@@ -13,3 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import os
+import parallelzone as pz
+import sys
+import unittest
+
+
+
+if __name__ == '__main__':
+    # Make a RuntimeView and hold it until all tests run so MPI isn't shut
+    # down
+    rv = pz.runtime.RuntimeView()
+
+    my_dir = os.path.dirname(os.path.realpath(__file__))
+    print(my_dir)
+    loader = unittest.TestLoader()
+    tests  = loader.discover(my_dir)
+    testrunner = unittest.runner.TextTestRunner()
+    ret = not testrunner.run(tests).wasSuccessful()
+    sys.exit(ret)

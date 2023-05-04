@@ -13,23 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-import os
 import parallelzone as pz
-import sys
 import unittest
 
+class TestRuntimeViewTestCase(unittest.TestCase):
+    def test_runtimeview(self):
+        rv = pz.runtime.RuntimeView()
+        result = [0, 1, 2]
 
+        # Get the resource set containing resources local to the current process
+        my_rs = rv.my_resource_set()
 
-if __name__ == '__main__':
-    # Make a RuntimeView and hold it until all tests run so MPI isn't shut
-    # down
-    rv = pz.runtime.RuntimeView()
+        # Log the value of result as severity::trace
+        for x in result:
+            rv.logger().trace(str(x))
 
-    my_dir = os.path.dirname(os.path.realpath(__file__))
+        # Log the value of result as severity::debug
+        debug_s = pz.Logger.severity.debug
+        for x in result:
+            rv.logger().log(debug_s, str(x))
 
-    loader = unittest.TestLoader()
-    tests  = loader.discover(my_dir)
-    testrunner = unittest.runner.TextTestRunner()
-    ret = not testrunner.run(tests).wasSuccessful()
-    sys.exit(ret)
+        self.assertIsNotNone(my_rs)

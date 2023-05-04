@@ -61,11 +61,17 @@ function(nwx_pybind11_module npm_cxx_target npm_src_dir)
     )
 endfunction()
 
-function(nwx_pybind11_tests npt_name npt_directory)
+#[[[ Wraps the process of registering Python-based tests with CTest
+#
+#   :param npt_name: The name for the test
+#   :param npt_driver: The name of the Python module responsible for driving
+#                      the test.
+#]]
+function(nwx_pybind11_tests npt_name npt_driver)
     if("${BUILD_TESTING}")
         add_test(
             NAME "${npt_name}"
-            COMMAND "python" "${npt_directory}"
+            COMMAND "python" "${npt_driver}"
         )
         set_tests_properties(
             "${npt_name}"

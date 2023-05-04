@@ -22,32 +22,80 @@ runtime environment. The ``RuntimeView`` groups the process local resources
 typically interact with ``RuntimeView`` and the ``ResourceSet`` object for
 the current process. As an example:
 
-.. literalinclude:: ../../tests/cxx/doc_snippets/quickstart.cpp
-   :language: c++
-   :lines: 26-36
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../tests/cxx/doc_snippets/quickstart.cpp
+         :language: c++
+         :lines: 26-36
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../tests/python/doc_snippets/test_quickstart.py
+         :language: python
+         :lines: 24-34
+         :dedent: 8
 
 The ``RuntimeView`` also allows you to access other ``ResourceSet`` instances.
 Typically this is done to send or receive information. For example, say we
 wanted to copy data from each resource set into the RAM of the 0-th
 resource set:
 
-.. literalinclude:: ../../tests/cxx/doc_snippets/quickstart.cpp
-   :language: c++
-   :lines: 38-45
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../tests/cxx/doc_snippets/quickstart.cpp
+         :language: c++
+         :lines: 38-45
+         :dedent: 4
+
+   .. tab:: Python
+
+       .. note::
+
+          MPI operations are presently limited to the C++ API. Consider using
+          mpi4py for your Python-based MPI needs.
 
 If we instead wanted every resource set to have a copy of the result, we do a
 ``RuntimeView``-wide gather:
 
-.. literalinclude:: ../../tests/cxx/doc_snippets/quickstart.cpp
-   :language: c++
-   :lines: 47-48
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../tests/cxx/doc_snippets/quickstart.cpp
+         :language: c++
+         :lines: 47-48
+         :dedent: 4
+
+   .. tab:: Python
+
+       .. note::
+
+          MPI operations are presently limited to the C++ API. Consider using
+          mpi4py for your Python-based MPI needs.
 
 Another major feature of parallelzone is introspection of the runtime
 environment. Say we wanted to know how much total RAM each resource set has:
 
-.. literalinclude:: ../../tests/cxx/doc_snippets/quickstart.cpp
-   :language: c++
-   :lines: 50-51
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../tests/cxx/doc_snippets/quickstart.cpp
+         :language: c++
+         :lines: 50-51
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../tests/python/doc_snippets/test_quickstart.py
+         :language: python
+         :lines: 36-37
+         :dedent: 8
 
 To summarize:
 

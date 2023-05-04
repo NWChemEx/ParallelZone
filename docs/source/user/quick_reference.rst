@@ -28,9 +28,19 @@ better yet, add the missing feature/fix the inefficiency.
 
 To answer the question, given a ``RuntimeView`` object ``rv``:
 
-.. code-block:: c++
+.. tabs::
 
-   rv.mpi_comm();
+   .. tab:: C++
+
+      .. code-block:: c++
+
+         rv.mpi_comm();
+
+   .. tab:: Python
+
+      .. code-block:: python
+
+         rv.mpi_comm()
 
 ********************************************
 How do I get the current process's MPI rank?
@@ -40,6 +50,16 @@ Like the MPI communicator, you in general shouldn't need the rank as interacting
 with ``ResourceSet`` instances should suffice; however, if you still want it
 then given a ``RuntimeView`` object ``rv``:
 
-.. code-block:: c++
+.. tabs::
 
-   rv.my_resource_set().mpi_rank();
+   .. tab:: C++
+
+      .. code-block:: c++
+
+         rv.my_resource_set().mpi_rank();
+
+   .. tab:: Python
+
+      .. code-block:: python
+
+         rv.my_resource_set().mpi_rank()

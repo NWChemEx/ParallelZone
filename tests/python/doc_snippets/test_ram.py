@@ -13,23 +13,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-import os
 import parallelzone as pz
-import sys
 import unittest
 
+class TestRAMTestCase(unittest.TestCase):
+    def test_ram(self):
+        rv = pz.runtime.RuntimeView()
 
+        # Get the RAM for rank 0
+        rank_0_ram = rv.at(0).ram()
 
-if __name__ == '__main__':
-    # Make a RuntimeView and hold it until all tests run so MPI isn't shut
-    # down
-    rv = pz.runtime.RuntimeView()
+        # Get the RAM local to the current process
+        my_ram = rv.my_resource_set().ram()
 
-    my_dir = os.path.dirname(os.path.realpath(__file__))
+        # How much total ram does rank_0_ram and my_ram have?
+        rank_0_total = rank_0_ram.total_space()
+        my_total_ram = my_ram.total_space()
 
-    loader = unittest.TestLoader()
-    tests  = loader.discover(my_dir)
-    testrunner = unittest.runner.TextTestRunner()
-    ret = not testrunner.run(tests).wasSuccessful()
-    sys.exit(ret)
+        self.assertIsNotNone(rank_0_ram)
+        self.assertIsNotNone(my_ram)
+
+        self.assertGreater(rank_0_total, 0)
+        self.assertGreater(my_total_ram, 0)

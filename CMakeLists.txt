@@ -153,9 +153,12 @@ if("${BUILD_PYBINDINGS}")
     else()
         include(nwx_pybind11)
         nwx_pybind11_module(parallelzone "${CMAKE_CURRENT_LIST_DIR}/src/python")
-        set(py_utest_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests/")
+        set(py_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
         nwx_pybind11_tests(
-            py_parallelzone "${py_utest_dir}/test_parallelzone.py"
+            py_parallelzone "${py_test_dir}/unit_tests/test_parallelzone.py"
+        )
+        nwx_pybind11_tests(
+            py_doc_snippets "${py_test_dir}/doc_snippets/test_doc_snippets.py"
         )
     endif()
 endif()

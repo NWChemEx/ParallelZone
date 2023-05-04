@@ -36,10 +36,8 @@ include(nwx_cxx_api_docs)
 
 ### Options ###
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(
-    BUILD_PYBINDINGS
-    "Should we build Python3 bindings, and if so, with what backend? Options: \
-     OFF, nanobind, cppyy. Default: nanobind" nanobind)
+option(BUILD_PYBINDINGS "Should we build python bindings?" ON)
+option(BUILD_CPPYY_PYBINDINGS "Should the python bindings be Cppyy?" OFF)
 option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
 option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF )
 option(BUILD_SYCL_BINDINGS "Enable SYCL Bindings" OFF )
@@ -104,7 +102,7 @@ list(APPEND project_depends cereal::cereal)
 cmaize_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
-    INCLUDE_DIR "${project_inc_dir}"
+    INCLUDE_DIRS "${project_inc_dir}"
     DEPENDS "${project_depends}"
 )
 
@@ -120,13 +118,13 @@ if("${BUILD_TESTING}")
     cmaize_add_tests(
         test_parallelzone
         SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
-        INCLUDE_DIR "${project_src_dir}"
+        INCLUDE_DIRS "${project_src_dir}"
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
     cmaize_add_tests(
         test_parallelzone_docs
         SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
-        INCLUDE_DIR "${project_src_dir}"
+        INCLUDE_DIRS "${project_src_dir}"
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
 
@@ -144,39 +142,21 @@ if("${BUILD_TESTING}")
 endif()
 
 if("${BUILD_PYBINDINGS}")
-    if("${BUILD_PYBINGS}" STREQUAL "cppyy")
+    if("${BUILD_CPPYY_PYBINDINGS}")
         # Cppyy bindings
         include(nwx_python_mods)
-        cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone)
-    elseif("${BUILD_PYBINDINGS}" STREQUAL "nanobind")
-        cpp_find_or_build_dependency(
-            nanobind
-            URL github.com/wjakob/nanobind
-            BUILD_TARGET nanobind::nanobind
-            FIND_TARGET pybind11::embed
-            CMAKE_ARGS PYBIND11_INSTALL=ON
-                       PYBIND11_FINDPYTHON=ON
+        cppyy_make_python_package(
+            MPI
+            PACKAGE parallelzone
+            NAMESPACES parallelzone
         )
-        file(
-            GLOB_RECURSE PY_FILES
-            CONFIGURE_DEPENDS
-            ${CMAKE_CURRENT_LIST_DIR}/src/python/*.cpp
+    else()
+        include(nwx_pybind11)
+        nwx_pybind11_module(parallelzone "${CMAKE_CURRENT_LIST_DIR}/src/python")
+        set(py_utest_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests/")
+        nwx_pybind11_tests(
+            py_parallelzone "${py_utest_dir}/test_parallelzone.py"
         )
-        nanobind_add_module(py_parallelzone MODULE ${PY_FILES})
-        target_link_libraries(py_parallelzone PUBLIC ${PROJECT_NAME})
-        set_target_properties(
-            py_parallelzone
-            PROPERTIES LIBRARY_OUTPUT_NAME
-            parallelzone
-        )
-
-        if("${BUILD_TESTING}")
-            set(PY_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
-            add_test(
-                NAME "pytest_parallelzone"
-                COMMAND "python" "${PY_TEST_DIR}/module.py"
-            )
-        endif()
     endif()
 endif()
 cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)

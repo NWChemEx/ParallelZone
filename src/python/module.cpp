@@ -6,7 +6,7 @@
 namespace parallelzone {
 
 PYBIND11_MODULE(parallelzone, m) {
-    m.doc() = "pybind11 example";
+    m.doc() = "PyPZ : Python bindings for ParallelZone";
 
     hardware::export_hardware(m);
     export_logging(m);

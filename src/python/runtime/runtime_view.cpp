@@ -9,7 +9,7 @@ void export_runtime_view(pybind11::module_& m) {
       .def(pybind11::init<>())
       .def("size", &RuntimeView::size)
       .def("null", &RuntimeView::null)
-      .def("did_i_start_madness", &RuntimeView::did_i_start_madness)
+      .def("did_i_start_mpi", &RuntimeView::did_i_start_mpi)
       .def("at", &RuntimeView::at)
       .def("has_me", &RuntimeView::has_me)
       .def("my_resource_set", &RuntimeView::my_resource_set)

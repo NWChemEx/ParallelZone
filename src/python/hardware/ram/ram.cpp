@@ -15,4 +15,4 @@ void export_ram(pybind11::module_& m) {
       .def(pybind11::self != pybind11::self);
 }
 
-} // namespace parallelzone
+} // namespace parallelzone::hardware

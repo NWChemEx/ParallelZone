@@ -31,12 +31,14 @@ set(
 )
 
 include(get_cmaize)
-include(nwx_cxx_api_docs)
+
 
 
 ### Options ###
+# These are the default values, used only if the user hasn't already set them.
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_PYBINDINGS "Should we build python bindings?" ON)
+option(BUILD_SHARED_LIBS "Should we build shared libraries?" ON)
+option(BUILD_PYBIND_PYBINDINGS "Should we build pybind11 python bindings?" OFF)
 option(BUILD_CPPYY_PYBINDINGS "Should the python bindings be Cppyy?" OFF)
 option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
 option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF )
@@ -54,7 +56,7 @@ set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 # Project dependencies
 set(project_depends "")
 
-# set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/docs/build/html/cxx_api)
+include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 #TODO: Make sure MADworld uses the Cereal we build
@@ -106,8 +108,15 @@ cmaize_add_library(
     DEPENDS "${project_depends}"
 )
 
+# N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
+include(nwx_pybind11)
+nwx_pybind11_module(${PROJECT_NAME} "${CMAKE_CURRENT_LIST_DIR}/src/python")
+
+
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
+    set(PYTHON_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
+
     cmaize_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
@@ -128,6 +137,14 @@ if("${BUILD_TESTING}")
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
 
+    # N.B. these are no-ops if BUILD_PYBIND11_PYBINDINGS is not turned on
+    nwx_pybind11_tests(
+        py_parallelzone "${PYTHON_TEST_DIR}/unit_tests/test_parallelzone.py"
+    )
+    nwx_pybind11_tests(
+        py_doc_snippets "${PYTHON_TEST_DIR}/doc_snippets/test_doc_snippets.py"
+    )
+
     find_package(MPI REQUIRED)
     add_test(
         NAME "test_pz_under_mpi"
@@ -141,25 +158,14 @@ if("${BUILD_TESTING}")
     )
 endif()
 
-if("${BUILD_PYBINDINGS}")
-    if("${BUILD_CPPYY_PYBINDINGS}")
-        # Cppyy bindings
-        include(nwx_python_mods)
-        cppyy_make_python_package(
-            MPI
-            PACKAGE parallelzone
-            NAMESPACES parallelzone
-        )
-    else()
-        include(nwx_pybind11)
-        nwx_pybind11_module(parallelzone "${CMAKE_CURRENT_LIST_DIR}/src/python")
-        set(py_test_dir "${CMAKE_CURRENT_LIST_DIR}/tests/python")
-        nwx_pybind11_tests(
-            py_parallelzone "${py_test_dir}/unit_tests/test_parallelzone.py"
-        )
-        nwx_pybind11_tests(
-            py_doc_snippets "${py_test_dir}/doc_snippets/test_doc_snippets.py"
-        )
-    endif()
+if("${BUILD_CPPYY_PYBINDINGS}")
+    # Cppyy bindings
+    include(nwx_python_mods)
+    cppyy_make_python_package(
+        MPI
+        PACKAGE parallelzone
+        NAMESPACES parallelzone
+    )
 endif()
+
 cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)

@@ -20,19 +20,14 @@
 #       Python module from an NWChemEx-like library
 #    3. Defines a function ``nwx_python_tests`` to facilitate registering
 #       Python-based tests with CTest
+#
+#  All functionality in this CMake module is protected behind the
+#  ``BUILD_PYBIND11_PYBINDINGS`` variable. If ``BUILD_PYBIND11_PYBINDINGS``
+#  is not set to a truth-y value, the functions in this module are no-ops.
+#
 #]]
 
-
 include_guard()
-
-cmaize_find_or_build_dependency(
-    pybind11
-    URL github.com/pybind/pybind11
-    BUILD_TARGET pybind11::pybind11
-    FIND_TARGET pybind11::embed
-    CMAKE_ARGS PYBIND11_INSTALL=ON
-               PYBIND11_FINDPYTHON=ON
-)
 
 #[[[ Wraps the process of creating Python bindings for a target.
 #
@@ -50,15 +45,30 @@ cmaize_find_or_build_dependency(
 #
 #]]
 function(nwx_pybind11_module npm_cxx_target npm_src_dir)
-    file(GLOB_RECURSE _npm_py_files CONFIGURE_DEPENDS ${npm_src_dir}/*.cpp)
+    if("${BUILD_PYBIND11_PYBINDINGS}")
+        cmaize_find_or_build_dependency(
+            pybind11
+            URL github.com/pybind/pybind11
+            BUILD_TARGET pybind11::pybind11
+            FIND_TARGET pybind11::embed
+            CMAKE_ARGS PYBIND11_INSTALL=ON
+                       PYBIND11_FINDPYTHON=ON
+        )
 
-    set(_npm_py_target_name "py_${npm_cxx_target}")
-    pybind11_add_module("${_npm_py_target_name}" MODULE ${_npm_py_files})
-    target_link_libraries("${_npm_py_target_name}" PUBLIC ${npm_cxx_target})
-    set_target_properties(
-        "${_npm_py_target_name}"
-        PROPERTIES LIBRARY_OUTPUT_NAME "${npm_cxx_target}"
-    )
+        set(_npm_py_target_name "py_${npm_cxx_target}")
+        cmaize_add_library(
+            "${_npm_py_target_name}"
+            SOURCE_DIR "${npm_src_dir}"
+            DEPENDS ${npm_cxx_target} pybind11::pybind11 pybind11::embed
+        )
+        set_target_properties(
+            "${_npm_py_target_name}"
+            PROPERTIES
+            PREFIX ""
+            LIBRARY_OUTPUT_NAME "${npm_cxx_target}"
+        )
+        cmaize_add_package("${_npm_py_target_name}" NAMESPACE nwx::)
+    endif()
 endfunction()
 
 #[[[ Wraps the process of registering Python-based tests with CTest
@@ -68,14 +78,16 @@ endfunction()
 #                      the test.
 #]]
 function(nwx_pybind11_tests npt_name npt_driver)
-    if("${BUILD_TESTING}")
-        add_test(
-            NAME "${npt_name}"
-            COMMAND "python" "${npt_driver}"
-        )
-        set_tests_properties(
-            "${npt_name}"
-            PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}"
-        )
+    if("${BUILD_PYBIND11_PYBINDINGS}")
+        if("${BUILD_TESTING}")
+            add_test(
+                NAME "${npt_name}"
+                COMMAND "python" "${npt_driver}"
+            )
+            set_tests_properties(
+                "${npt_name}"
+                PROPERTIES ENVIRONMENT "PYTHONPATH=${CMAKE_BINARY_DIR}"
+            )
+        endif()
     endif()
 endfunction()

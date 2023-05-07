@@ -75,7 +75,7 @@ cmaize_find_or_build_dependency(
                BUILD_TESTING=OFF
 )
 
-list(APPEND project_depends MADworld)
+list(APPEND project_depends MADNESS)
 
 cmaize_find_or_build_dependency(
     spdlog
@@ -85,7 +85,7 @@ cmaize_find_or_build_dependency(
     FIND_TARGET spdlog::spdlog
     CMAKE_ARGS SPDLOG_INSTALL=ON
 )
-list(APPEND project_depends spdlog::spdlog)
+list(APPEND project_depends spdlog)
 
 # PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
 if("${BUILD_PAPI_BINDINGS}")
@@ -96,10 +96,10 @@ cmaize_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
     BUILD_TARGET cereal
-    FIND_TARGET cereal::cereal
+    FIND_TARGET cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
-list(APPEND project_depends cereal::cereal)
+list(APPEND project_depends cereal)
 
 cmaize_add_library(
     ${PROJECT_NAME}
@@ -107,6 +107,8 @@ cmaize_add_library(
     INCLUDE_DIRS "${project_inc_dir}"
     DEPENDS "${project_depends}"
 )
+
+cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
 
 # N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
 include(nwx_pybind11)
@@ -168,4 +170,4 @@ if("${BUILD_CPPYY_PYBINDINGS}")
     )
 endif()
 
-cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
+# cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)

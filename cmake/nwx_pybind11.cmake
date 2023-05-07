@@ -49,7 +49,7 @@ function(nwx_pybind11_module npm_cxx_target npm_src_dir)
         cmaize_find_or_build_dependency(
             pybind11
             URL github.com/pybind/pybind11
-            BUILD_TARGET pybind11::pybind11
+            BUILD_TARGET pybind11_headers
             FIND_TARGET pybind11::embed
             CMAKE_ARGS PYBIND11_INSTALL=ON
                        PYBIND11_FINDPYTHON=ON
@@ -59,7 +59,7 @@ function(nwx_pybind11_module npm_cxx_target npm_src_dir)
         cmaize_add_library(
             "${_npm_py_target_name}"
             SOURCE_DIR "${npm_src_dir}"
-            DEPENDS ${npm_cxx_target} pybind11::pybind11 pybind11::embed
+            DEPENDS ${npm_cxx_target} pybind11 Python::Python
         )
         set_target_properties(
             "${_npm_py_target_name}"

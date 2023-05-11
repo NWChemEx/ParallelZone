@@ -112,7 +112,11 @@ cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
 
 # N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
 include(nwx_pybind11)
-nwx_pybind11_module(${PROJECT_NAME} "${CMAKE_CURRENT_LIST_DIR}/src/python")
+nwx_add_pybind11_module(
+    ${PROJECT_NAME}
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
+    DEPENDS "${PROJECT_NAME}"
+)
 
 
 if("${BUILD_TESTING}")

@@ -108,8 +108,6 @@ cmaize_add_library(
     DEPENDS "${project_depends}"
 )
 
-cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
-
 # N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
 include(nwx_pybind11)
 nwx_add_pybind11_module(
@@ -118,6 +116,10 @@ nwx_add_pybind11_module(
     DEPENDS "${PROJECT_NAME}"
 )
 
+set(pz_install_targets ${PROJECT_NAME})
+if("${BUILD_PYBIND11_PYBINDINGS}")
+    list(APPEND pz_install_targets py_${PROJECT_NAME})
+endif()
 
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
@@ -174,4 +176,8 @@ if("${BUILD_CPPYY_PYBINDINGS}")
     )
 endif()
 
-# cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
+cmaize_add_package(
+    ${PROJECT_NAME}
+    NAMESPACE nwx::
+    TARGETS "${pz_install_targets}"
+)

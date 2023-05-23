@@ -97,6 +97,7 @@ cmaize_find_or_build_dependency(
     URL github.com/USCiLab/cereal
     BUILD_TARGET cereal
     FIND_TARGET cereal
+    VERSION v1.3.0 # Tied to MADNESS
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
 list(APPEND project_depends cereal)

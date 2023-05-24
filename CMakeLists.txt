@@ -31,6 +31,7 @@ set(
 )
 
 include(get_cmaize)
+include(nwx_versions)
 include(nwx_cxx_api_docs)
 
 
@@ -57,8 +58,7 @@ nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 cmaize_find_or_build_dependency(
     MADNESS
     URL github.com/m-a-d-n-e-s-s/madness
-    #VERSION 20d4d7cffbbc98dd7b7d6a5feb7d68f1df067cd6
-    VERSION 997e8b458c4234fb6c8c2781a5df59cb14b7e700
+    VERSION ${NWX_MADNESS_VERSION}
     BUILD_TARGET MADworld
     FIND_TARGET MADworld
     CMAKE_ARGS ENABLE_UNITTESTS=OFF
@@ -72,7 +72,7 @@ cmaize_find_or_build_dependency(
 cmaize_find_or_build_dependency(
     spdlog
     URL github.com/gabime/spdlog
-    VERSION ad0e89cbfb4d0c1ce4d097e134eb7be67baebb36
+    VERSION ${NWX_SPDLOG_VERSION}
     BUILD_TARGET spdlog
     FIND_TARGET spdlog::spdlog
     CMAKE_ARGS SPDLOG_INSTALL=ON
@@ -86,6 +86,7 @@ endif ()
 cmaize_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
+    VERSION ${NWX_CEREAL_VERSION}
     BUILD_TARGET cereal
     FIND_TARGET cereal::cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
@@ -108,7 +109,7 @@ if("${BUILD_TESTING}")
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
-        VERSION v2.13.9
+        VERSION ${NWX_CATCH2_VERSION}
     )
     cmaize_add_tests(
         test_parallelzone

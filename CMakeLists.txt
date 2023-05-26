@@ -32,8 +32,6 @@ set(
 
 include(get_cmaize)
 
-
-
 ### Options ###
 # These are the default values, used only if the user hasn't already set them.
 option(BUILD_TESTING "Should we build the tests?" OFF)
@@ -117,11 +115,6 @@ nwx_add_pybind11_module(
     DEPENDS "${PROJECT_NAME}"
 )
 
-set(pz_install_targets ${PROJECT_NAME})
-if("${BUILD_PYBIND11_PYBINDINGS}")
-    list(APPEND pz_install_targets py_${PROJECT_NAME})
-endif()
-
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
     set(PYTHON_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
@@ -177,8 +170,4 @@ if("${BUILD_CPPYY_PYBINDINGS}")
     )
 endif()
 
-cmaize_add_package(
-    ${PROJECT_NAME}
-    NAMESPACE nwx::
-    TARGETS "${pz_install_targets}"
-)
+cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)

@@ -35,25 +35,61 @@ being managed by the ``RuntimeView``. Assuming ``rv`` is a ``RuntimeView``
 object then we can get the ``ResourceSet`` for process 0 via:
 
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
-   :language: c++
-   :lines: 29-30
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
+         :language: c++
+         :lines: 29-30
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_resource_set.py
+         :language: python
+         :lines: 23-24
+         :dedent: 8
 
 It is important to understand that ``rank_0_rs`` is the set of resources local
 to process 0. So trying to use the resources in ``rank_0_rs`` from any process
 other than rank 0 will usually involve communication. To avoid communication
 one should work with their local ``ResourceSet`` which can be obtained by:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
-   :language: c++
-   :lines: 32-33
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
+         :language: c++
+         :lines: 32-33
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_resource_set.py
+         :language: c++
+         :lines: 26-27
+         :dedent: 8
 
 You can quickly figure out if a ``ResourceObject`` describes local or remote
 resources by:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
-   :language: c++
-   :lines: 35-36
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
+         :language: c++
+         :lines: 35-36
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_resource_set.py
+         :language: python
+         :lines: 29-30
+         :dedent: 8
 
 ******************
 Accessing Hardware
@@ -62,18 +98,42 @@ Accessing Hardware
 ``ResourceSet`` objects are containers of resources. As an example, let's say
 we wanted to access the local RAM or the RAM local to rank 0. Then one could do:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
-   :language: c++
-   :lines: 38-42
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
+         :language: c++
+         :lines: 38-42
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_resource_set.py
+         :language: python
+         :lines: 32-36
+         :dedent: 8
 
 Using the RAM is described :ref:`ram_class`. Similar methods exist for accessing
 other hardware such as the CPUs and GPUs. It is worth noting that not all
 computers have all types of hardware. While we expect that just about every
 computer has RAM, we can verify this by:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
-   :language: c++
-   :lines: 44-48
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
+         :language: c++
+         :lines: 44-48
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_resource_set.py
+         :language: python
+         :lines: 38-42
+         :dedent: 8
 
 Again similar methods are available for determining if other hardware is present
 or not. These methods can be a convenient mechanism for dispatching based on
@@ -88,9 +148,21 @@ is done through the ``ResourceSet`` class. Process-local logging works nearly
 identical to program-wide logging. For example, if we want each process to
 log whether its value of ``is_local`` this is done by:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
-   :language: c++
-   :lines: 50-51
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/resource_set.cpp
+         :language: c++
+         :lines: 50-51
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_resource_set.py
+         :language: python
+         :lines: 44-45
+         :dedent: 8
 
 Compared to program-wide logging the main difference is that with process-local
 logging each process can (but doesn't necessarily) log to a different sink.
@@ -99,7 +171,7 @@ over the logs.
 
 .. warning::
 
-   Care has been taken to ensure that replicated data can always be written 
+   Care has been taken to ensure that replicated data can always be written
    to the process-local logger. The reverse is not true. In particular,
    deadlock can occur if the program-wide logger is called from a block of
    source code that is not executed by all processes. Sinks in general

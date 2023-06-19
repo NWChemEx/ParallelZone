@@ -31,12 +31,14 @@ set(
 )
 
 include(get_cmaize)
-include(nwx_cxx_api_docs)
-
+include(nwx_versions)
 
 ### Options ###
+# These are the default values, used only if the user hasn't already set them.
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_PYBINDINGS "Should we build Python3 bindings?" ON)
+option(BUILD_SHARED_LIBS "Should we build shared libraries?" ON)
+option(BUILD_PYBIND11_PYBINDINGS "Should we build pybind11 python bindings?" OFF)
+option(BUILD_CPPYY_PYBINDINGS "Should the python bindings be Cppyy?" OFF)
 option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
 option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF )
 option(BUILD_SYCL_BINDINGS "Enable SYCL Bindings" OFF )
@@ -50,15 +52,17 @@ endif()
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
-# set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/docs/build/html/cxx_api)
+# Project dependencies
+set(project_depends "")
+
+include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 #TODO: Make sure MADworld uses the Cereal we build
 cmaize_find_or_build_dependency(
     MADNESS
     URL github.com/m-a-d-n-e-s-s/madness
-    #VERSION 20d4d7cffbbc98dd7b7d6a5feb7d68f1df067cd6
-    VERSION 997e8b458c4234fb6c8c2781a5df59cb14b7e700
+    VERSION ${NWX_MADNESS_VERSION}
     BUILD_TARGET MADworld
     FIND_TARGET MADworld
     CMAKE_ARGS ENABLE_UNITTESTS=OFF
@@ -69,14 +73,17 @@ cmaize_find_or_build_dependency(
                BUILD_TESTING=OFF
 )
 
+list(APPEND project_depends MADNESS)
+
 cmaize_find_or_build_dependency(
     spdlog
     URL github.com/gabime/spdlog
-    VERSION ad0e89cbfb4d0c1ce4d097e134eb7be67baebb36
+    VERSION ${NWX_SPDLOG_VERSION}
     BUILD_TARGET spdlog
     FIND_TARGET spdlog::spdlog
     CMAKE_ARGS SPDLOG_INSTALL=ON
 )
+list(APPEND project_depends spdlog)
 
 # PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
 if("${BUILD_PAPI_BINDINGS}")
@@ -86,42 +93,60 @@ endif ()
 cmaize_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
+    VERSION ${NWX_CEREAL_VERSION}
     BUILD_TARGET cereal
-    FIND_TARGET cereal::cereal
+    FIND_TARGET cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
+list(APPEND project_depends cereal)
 
 cmaize_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIRS "${project_inc_dir}"
-    DEPENDS MADNESS cereal spdlog
+    DEPENDS "${project_depends}"
 )
 
-include(nwx_python_mods)
-cppyy_make_python_package(MPI PACKAGE parallelzone NAMESPACES parallelzone )
+# N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
+include(nwx_pybind11)
+nwx_add_pybind11_module(
+    ${PROJECT_NAME}
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
+    DEPENDS "${PROJECT_NAME}"
+)
 
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
+    set(PYTHON_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
+
     cmaize_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
-        VERSION v2.13.9
+        VERSION ${NWX_CATCH2_VERSION}
     )
     cmaize_add_tests(
         test_parallelzone
         SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
         INCLUDE_DIRS "${project_src_dir}"
-        DEPENDS Catch2 MADNESS parallelzone cereal
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
     cmaize_add_tests(
         test_parallelzone_docs
         SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
         INCLUDE_DIRS "${project_src_dir}"
-        DEPENDS Catch2 MADNESS parallelzone cereal
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
+
+    # N.B. these are no-ops if BUILD_PYBIND11_PYBINDINGS is not turned on
+    nwx_pybind11_tests(
+        py_parallelzone "${PYTHON_TEST_DIR}/unit_tests/test_parallelzone.py"
+    )
+    nwx_pybind11_tests(
+        py_doc_snippets "${PYTHON_TEST_DIR}/doc_snippets/test_doc_snippets.py"
+    )
+
     find_package(MPI REQUIRED)
     add_test(
         NAME "test_pz_under_mpi"
@@ -132,6 +157,16 @@ if("${BUILD_TESTING}")
         NAME "test_pz_docs_under_mpi"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
                 "${CMAKE_BINARY_DIR}/test_parallelzone_docs"
+    )
+endif()
+
+if("${BUILD_CPPYY_PYBINDINGS}")
+    # Cppyy bindings
+    include(nwx_python_mods)
+    cppyy_make_python_package(
+        MPI
+        PACKAGE parallelzone
+        NAMESPACES parallelzone
     )
 endif()
 

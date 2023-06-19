@@ -52,7 +52,7 @@ author = u'NWChemEx Team'
 extensions = [
     'sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx',
     'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.mathjax',
-    'sphinx.ext.githubpages'
+    'sphinx.ext.githubpages', 'sphinx_tabs.tabs'
 ]
 dir_path = os.path.dirname(os.path.realpath(__file__))
 doc_path = os.path.dirname(dir_path)

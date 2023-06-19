@@ -40,9 +40,21 @@ One of the most common ``RuntimeView`` operations is to get the ``ResourceSet``
 (the set of resources like RAM, CPUs, GPUs, etc.) that the current process has
 direct access to. This is done by:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/runtime_view.cpp
-   :language: c++
-   :lines: 29-30
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/runtime_view.cpp
+         :language: c++
+         :lines: 29-30
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_runtime_view.py
+         :language: python
+         :lines: 24-25
+         :dedent: 8
 
 How to use a ``ResourceSet`` is covered in the next tutorial,
 :ref:`resource_set_class`.
@@ -60,9 +72,21 @@ to every other process. As a trivial example we first show how to have MPI rank
 and :math:`r+2`. After computing the data, we synchronize it so that each
 process has a copy of all the data.
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/runtime_view.cpp
-   :language: c++
-   :lines: 32-39
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/runtime_view.cpp
+         :language: c++
+         :lines: 32-39
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. note::
+
+         MPI operations are presently limited to the C++ API. Consider using
+         mpi4py for your Python-based MPI needs.
 
 The value of ``results`` will be a :math:`3n` element vector with the elements:
 :math:`0, 1, 2, 1, 2, 3, 2, 3, 4, \ldots, n, n+1, n+2` when the program is run
@@ -74,7 +98,7 @@ Program-Wide Logging
 
 Logging (the fancy term for printing) in a program distributed across several
 processes can be a bit tricky. ParallelZone exposes two logging mechanisms, one
-for logging program-wide state and one for logging process-local state. 
+for logging program-wide state and one for logging process-local state.
 
 .. warning::
 
@@ -84,23 +108,35 @@ for logging program-wide state and one for logging process-local state.
    it may cause deadlock if every process does not call the program-wide logger.
 
 Generally speaking, the program-wide logger should be used for all logging
-needs except: when one needs to log distributed data, or when a logging 
+needs except: when one needs to log distributed data, or when a logging
 statement will only be executed by a subset of processes. As an example, say
 we want to log the result of the all gather we performed in the previous
 example, we can do this by:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/runtime_view.cpp
-   :language: c++
-   :lines: 41-42
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/runtime_view.cpp
+         :language: c++
+         :lines: 41-42
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. note::
+
+         The streaming syntax of the Logger is presently a C++-only feature.
+         See the next code snippet for how to log in Python.
 
 This snippet shows the streaming API of the ``Logger`` class. This is a
-convenient API for users familiar with ``std::cout`` (or more generally 
+convenient API for users familiar with ``std::cout`` (or more generally
 ``std::ostream``) style printing, but can only be used with "info"-level
 log messages...which brings us to log levels.
 
 Logging primarily differs from traditional printing in that each log statement
 is assigned a severity/importance. The severity levels tell you how severe the
-message is. In ParallelZone the severity choices are (and their suggested 
+message is. In ParallelZone the severity choices are (and their suggested
 meanings):
 
 - trace    - Logging that is considered verbose, even for debugging
@@ -115,9 +151,21 @@ important and "critical" is the most severe log statements. In practice, the
 value of a computed result usually falls under debug or trace. There's at least
 two ways to do that:
 
-.. literalinclude:: ../../../tests/cxx/doc_snippets/runtime_view.cpp
-   :language: c++
-   :lines: 44-49
+.. tabs::
+
+   .. tab:: C++
+
+      .. literalinclude:: ../../../tests/cxx/doc_snippets/runtime_view.cpp
+         :language: c++
+         :lines: 44-49
+         :dedent: 4
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_runtime_view.py
+         :language: python
+         :lines: 27-34
+         :dedent: 8
 
 The first example illustrates the use of the ``trace`` method. Each severity
 level has its own corresponding method. The second example shows how to use
@@ -127,8 +175,8 @@ allows you to specify (at runtime if you like) the severity of the message.
 .. note::
 
    Notice that we did not discuss where the log message gets printed. This is
-   called the "sink". By default the program-wide logger has a sink which 
+   called the "sink". By default the program-wide logger has a sink which
    prints to standard out. When developing code with ParallelZone you should
-   always use the loggers provided to your code, and not mess with the sinks. 
+   always use the loggers provided to your code, and not mess with the sinks.
    This is because the sinks are set by the person running the program to their
    liking.

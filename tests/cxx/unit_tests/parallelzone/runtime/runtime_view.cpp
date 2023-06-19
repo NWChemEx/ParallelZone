@@ -154,7 +154,7 @@ TEST_CASE("RuntimeView") {
         REQUIRE(argc_argv.size() > 0);
     }
 
-    SECTION("did_i_start_commpp") {
+    SECTION("did_i_start_mpi") {
         REQUIRE_FALSE(null.did_i_start_mpi());
         REQUIRE_FALSE(defaulted.did_i_start_mpi());
         REQUIRE(argc_argv.did_i_start_mpi());

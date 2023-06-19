@@ -53,3 +53,6 @@ Release/
 
 # Users commonly store their specific CMake settings in a toolchain file
 toolchain.cmake
+
+# For development often install to a subdirectory of the repo called "install"
+install/

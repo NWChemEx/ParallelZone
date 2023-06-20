@@ -132,7 +132,7 @@ Examples of one-to-one communications
    }
 
    // Sends the data to rank 1, type U determined by template meta-programming
-   std::optional<U> output = rt.at(1).ram().send(data);
+   std::optional<U> output = rt.at(1).ram().send(data, "some tag");
 
    if(output.has_value()){
        // This part is only run by rank 1

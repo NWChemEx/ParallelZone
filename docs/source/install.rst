@@ -12,6 +12,8 @@
 .. See the License for the specific language governing permissions and
 .. limitations under the License.
 
+.. _installing_parallelzone:
+
 #######################
 Installing ParallelZone
 #######################
@@ -26,7 +28,7 @@ its build system, more detailed build instructions can be found
    ``cmake`` command. Typically CMake toolchains live in files named
    ``<prefix>-toolchain.cmake``, where ``<prefix>-`` is an optional prefix to
    distinguish among toolchains. The contents of the CMake toolchain file
-   usually just sets configuration values via a the standard CMake ``set``
+   usually just sets configuration values set via the standard CMake ``set``
    function, *i.e.*, ``set(<option_name> <value>)``.
 
 
@@ -46,24 +48,43 @@ In many cases ParallelZone can be installed by:
 
    git clone https://github.com/NWChemEx-Project/ParallelZone
    cd ParallelZone
-   cmake -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE=<path/to/toolchain/file>
-   cmake --build build
+   cmake -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE=<path/to/toolchain/file> \
+                     -DCMAKE_INSTALL_PREFIX=<where/to/install/parallelzone>
    cmake --build build --target install
 
 Where ``<path/to/toolchain/file>`` should be replaced by the path to your
-toolchain file (absolute path is recommended).
+toolchain file, and ``<where/to/install/parallelzone>`` should be replaced
+with where you want to put the installed library (absolute path is recommended
+in both cases).
 
-.. todo::
+.. note::
 
-   Can this be simplified by dropping the ``cmake --build build`` command?
+   The above command will build serially. To build ParallelZone with ``N``
+   processors additionally pass ``--parallel <N>`` to the last command in the
+   above code block, *i.e.*,
+
+   .. code-block:: console
+
+      cmake --build build --parallel <N> --target install
 
 *********************
 Configuration Options
 *********************
 
-- ``BUILD_TESTING``. Off by default. Set to a truth-y value to enable testing.
-- ``BUILD_PYBINDINGS``. On by default. When enabled the optional Python API is
-  built.
+This is a list of configuration options recognized by ParallelZone's build
+system.
+
+``BUILD_TESTING``.
+   Off by default. Set to a truth-y value to enable testing.
+``BUILD_DOCS``.
+   Off by default. Set to a truth-y value to build the C++ API documentation.
+``ONLY_BUILD_DOCS``.
+   Off by default. If ``BUILD_DOCS`` is set to a truth-y value and
+   ``ONLY_BUILD_DOCS`` is also set to a truth-y value, then the configure
+   process will skip all other aspects of the configuration aside from creating
+   the ``parallelzone_cxx_api`` target.
+``BUILD_PYBINDINGS``.
+  On by default. When enabled the optional Python API is built.
 
 
 *************************
@@ -148,3 +169,18 @@ URL: `<https://cmakepp.github.io/CMaize/index.html>`__
 
 Used to simplify writing a CMake-based build system. The build system will grab
 it for you.
+
+Doxygen
+-------
+
+URL: `<https://www.doxygen.nl/>`__
+
+Used to generate the C++ API documentation. Only needed if ``BUILD_DOCS`` is
+set to a truth-y value.
+
+spdlog
+------
+
+URL: `<https://www.github.com/gabime/spdlog>`__
+
+The guts of the logging system provided by ParallelZone.

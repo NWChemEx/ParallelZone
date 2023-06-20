@@ -1,4 +1,4 @@
-.. Copyright 2022 NWChemEx-Project
+.. Copyright 2023 NWChemEx-Project
 ..
 .. Licensed under the Apache License, Version 2.0 (the "License");
 .. you may not use this file except in compliance with the License.
@@ -13,18 +13,17 @@
 .. limitations under the License.
 
 #######################
-Developer Documentation
+ParallelZone Background
 #######################
 
-The documentation in this section is intended primarily for people who are
-interested in developing for, or understanding the internals of ParallelZone.
-The documentation in this section is specific to the design and development of
-ParallelZone. Since ParallelZone is developed by the NWChemEx organization,
-developers may also find the more general `NWChemEx Developer Documentation
-<https://nwchemex-project.github.io/.github/>`__ to be useful.
+The topics in this section are intended to provide the interested reader with an
+overview of the concepts underlying ParallelZone and the history leading up to
+the development of ParallelZone. Readers wanting to know how to use ParalellZone
+should skip ahead to :ref:`installing_parallelzone`.
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
 
-   design/index
+   abbreviations
+   mpi_primer
+   about

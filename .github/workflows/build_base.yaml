@@ -1,0 +1,114 @@
+# manually input version no.s here
+# will check in workflows to obtain 
+# this info from other files
+#
+
+name: Build base image
+
+on:
+  workflow_call:
+    inputs:
+      cmake_version:
+        type: string
+        required: false
+        default: 3.17.0
+      gcc_version:
+        type: string
+        required: false
+        default: 9
+      clang_version:
+        type: string
+        required: false
+        default: 11
+      ubuntu_version:
+        type: string
+        required: false
+        default: 20.04
+      madness_version:
+        type: string
+        required: false
+        default: 997e8b458c4234fb6c8c2781a5df59cb14b7e700
+      catch2_version:
+        type: string
+        required: false
+        default: 2.13.8
+      spdlog_version:
+        type: string
+        required: false
+        default: ad0e89cbfb4d0c1ce4d097e134eb7be67baebb36
+      cereal_version:
+        type: string
+        required: false
+        default: 1.3.0
+
+jobs:
+  build-image-gcc-clang-cmake:
+    uses: NWChemEx-Project/.github/.github/workflows/base_image_gcc-clang-cmake.yaml@master
+    with:
+      cmake_version: ${{ inputs.cmake_version }}
+      gcc_version: ${{ inputs.gcc_version }}
+      clang_version: ${{ inputs.clang_version }}
+      ubuntu_version: ${{ inputs.ubuntu_version }}
+    secrets: inherit
+
+  build-base-image:
+    runs-on: ubuntu-latest
+    needs: build-image-gcc-clang-cmake
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.CONTAINER_REPO_TOKEN }}
+      - name: Install MADNESS and MPI
+        uses: NWChemEx-Project/.github/actions/install_package@master
+        with:
+          madness_version: ${{ inputs.madness_version }}
+          package_name: madness
+          parent_image_name: ghcr.io/nwchemex-project/base-cmake
+      - name: Install spdlog
+        uses: NWChemEx-Project/.github/actions/install_package@master
+        with:
+          spdlog_version: ${{ inputs.spdlog_version }}
+          package_name: spdlog
+          parent_image_name: base-madness
+      - name: Install cereal
+        uses: NWChemEx-Project/.github/actions/install_package@master
+        with:
+          cereal_version: ${{ inputs.cereal_version }}
+          package_name: cereal
+          parent_image_name: base-spdlog
+      - name: Install catch2
+        uses: NWChemEx-Project/.github/actions/install_package@master
+        with:
+          catch2_version: ${{ inputs.catch2_version }}
+          package_name: catch2
+          parent_image_name: base-cereal
+      - name: Push the base image
+        uses: NWChemEx-Project/.github/actions/push_package@master
+        with:
+          tmp_image_name: base-catch2
+          tmp_image_tag: latest
+          image_name: ghcr.io/nwchemex-project/base_parallelzone
+          image_tag: latest
+      - name: Check stable release image
+        id: image_exists
+        uses: cloudposse/github-action-docker-image-exists@main
+        with:
+          image_name: nwchemex-project/base_parallelzone
+          registry: ghcr.io
+          organization: "${{ github.event.repository.owner.login }}"
+          repository: "${{ github.event.repository.name }}"
+          login: ${{ github.actor }}
+          password: "${{ secrets.CONTAINER_REPO_TOKEN }}"
+          tag: stable
+      - name: Push stable release image if not exist
+        if: ${{ steps.image_exists.conclusion != 'success' }}
+        uses: NWChemEx-Project/.github/actions/push_image@master
+        with:
+          tmp_image_name: ghcr.io/nwchemex-project/base_parallelzone
+          tmp_image_tag: latest
+          image_name: ghcr.io/nwchemex-project/base_parallelzone
+          image_tag: stable

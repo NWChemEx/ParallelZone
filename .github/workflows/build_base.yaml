@@ -87,7 +87,7 @@ jobs:
           package_name: catch2
           parent_image_name: base-cereal
       - name: Push the base image
-        uses: NWChemEx-Project/.github/actions/push_package@master
+        uses: NWChemEx-Project/.github/actions/push_image@master
         with:
           tmp_image_name: base-catch2
           tmp_image_tag: latest

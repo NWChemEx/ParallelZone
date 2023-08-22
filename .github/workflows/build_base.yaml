@@ -93,22 +93,15 @@ jobs:
           tmp_image_tag: latest
           image_name: ghcr.io/nwchemex-project/base_parallelzone
           image_tag: latest
-      - name: Check stable release image
+      - name: Check stable base image
         id: image_exists
-        uses: cloudposse/github-action-docker-image-exists@main
-        with:
-          image_name: nwchemex-project/base_parallelzone
-          registry: ghcr.io
-          organization: "${{ github.event.repository.owner.login }}"
-          repository: "${{ github.event.repository.name }}"
-          login: ${{ github.actor }}
-          password: "${{ secrets.CONTAINER_REPO_TOKEN }}"
-          tag: stable
-      - name: Push stable release image if not exist
-        if: ${{ steps.image_exists.conclusion != 'success' }}
-        uses: NWChemEx-Project/.github/actions/push_image@master
-        with:
-          tmp_image_name: ghcr.io/nwchemex-project/base_parallelzone
-          tmp_image_tag: latest
-          image_name: ghcr.io/nwchemex-project/base_parallelzone
-          image_tag: stable
+        shell: /usr/bin/bash {0}
+        run: |
+          docker manifest inspect ghcr.io/nwchemex-project/base_parallelzone:stable > /dev/null
+          echo "conclusion=$?" >> "$GITHUB_OUTPUT"
+      - name: Push stable base image if not exist
+        if: ${{ steps.image_exists.outputs.conclusion != 0 }}
+        run: |
+          docker pull ghcr.io/nwchemex-project/base_parallelzone:latest
+          docker tag ghcr.io/nwchemex-project/base_parallelzone:latest ghcr.io/nwchemex-project/base_parallelzone:stable
+          docker push ghcr.io/nwchemex-project/base_parallelzone:stable

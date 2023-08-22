@@ -36,10 +36,20 @@ jobs:
           bdfile:
             - 'Dockerfile/**'
 
+  branch-name:
+    runs-on: ubuntu-latest
+    outputs:
+      b_name: ${{ steps.extract_branch.outputs.branch }}
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
   update-base-image:
-    needs: docker-file-changes
+    needs: [docker-file-changes, branch-name]
     if: ${{ needs.docker-file-changes.outputs.build_dockfile == 'true' }}
-    uses: NWChemEx-Project/ParallelZone/.github/workflows/build_base.yaml@master
+    uses: NWChemEx-Project/ParallelZone/.github/workflows/build_base.yaml@{{needs.branch-name.outputs.b_name}}
     secrets: inherit
 
   build_update_check:

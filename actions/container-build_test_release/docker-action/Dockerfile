@@ -29,6 +29,7 @@ ARG cmaize_github_token
 ARG install
 ARG unit_test
 ARG int_test
+ARG branch_name
 
 ENV env_cmake_version=$cmake_version
 ENV env_gcc_version=$gcc_version
@@ -39,5 +40,6 @@ ENV env_cmaize_github_token=$cmaize_github_token
 ENV env_install=$install
 ENV env_unit_test=$unit_test
 ENV env_int_test=$int_test
+ENV env_branch_name=$branch_name
 
 ENTRYPOINT ["/build_test.sh"]

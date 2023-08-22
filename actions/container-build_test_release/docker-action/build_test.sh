@@ -25,9 +25,9 @@
 
 set -e # Exit with error if any command fails
 
-# checkout repo
+# checkout repo with the current branch (not master!)
 
-git clone https://github.com/NWChemEx-Project/ParallelZone.git
+git clone -b ${env_branch_name} https://github.com/NWChemEx-Project/ParallelZone.git
 cd ParallelZone
 
 cmake_command=cmake

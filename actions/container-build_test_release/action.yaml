@@ -57,6 +57,9 @@ inputs:
   integration_test:
     type: boolean
     required: true
+  branch_name:
+    type: string
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -73,3 +76,4 @@ runs:
     - ${{ inputs.INSTALL }} # 10
     - ${{ inputs.test }} # 11
     - ${{ inputs.integration_test }} # 12
+    - ${{ inputs.branch_name }} # 13

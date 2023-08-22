@@ -70,6 +70,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.CONTAINER_REPO_TOKEN }}
       - uses: actions/checkout@v3
+      - name: Get current branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
       - name: build test release in a container
         uses: ./actions/container-build_test_release
         with:
@@ -84,6 +87,7 @@ jobs:
           gcc_version: 9
           use_clang: false
           CMAIZE_GITHUB_TOKEN: ${{ secrets.CMAIZE_GITHUB_TOKEN }}
+          branch_name: ${{ steps.branch-name.outputs.current_branch }} 
       - name: Check stable release image
         id: image_exists
         shell: /usr/bin/bash {0}
@@ -109,6 +113,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.CONTAINER_REPO_TOKEN }}
       - uses: actions/checkout@v3
+      - name: Get current branch name
+        id: branch-name
+        uses: tj-actions/branch-names@v7
       - name: build test release in a container
         uses: ./actions/container-build_test_release
         with:
@@ -123,6 +130,7 @@ jobs:
           clang_version: 11
           use_clang: true
           CMAIZE_GITHUB_TOKEN: ${{ secrets.CMAIZE_GITHUB_TOKEN }}
+          branch_name: ${{ steps.branch-name.outputs.current_branch }}
       - name: Check stable release image
         id: image_exists
         shell: /usr/bin/bash {0}

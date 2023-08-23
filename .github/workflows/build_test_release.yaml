@@ -6,7 +6,7 @@
 # (do not break any downstream repos) or not is still 
 # to be tested.
 # This workflow should run in the branch which opens a
-# PR to dev.
+# PR to dev (dev/master model to be developed).
 
 name: Build test release
 

@@ -74,7 +74,7 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v7
       - name: build test release in a container
-        uses: ./actions/container-build_test_release
+        uses: ./.github/actions/container-build_test_release
         with:
           ninja_build: true
           test: true
@@ -117,7 +117,7 @@ jobs:
         id: branch-name
         uses: tj-actions/branch-names@v7
       - name: build test release in a container
-        uses: ./actions/container-build_test_release
+        uses: ./.github/actions/container-build_test_release
         with:
           ninja_build: true
           test: true

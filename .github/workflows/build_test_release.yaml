@@ -34,7 +34,7 @@ jobs:
       with:
         filters: |
           bdfile:
-            - 'Dockerfile/**'
+            - '.github/Dockerfile/**'
 
   update-base-image:
     needs: docker-file-changes

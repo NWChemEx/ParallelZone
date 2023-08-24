@@ -127,8 +127,14 @@ if("${BUILD_TESTING}")
         VERSION ${NWX_CATCH2_VERSION}
     )
     cmaize_add_tests(
-        test_parallelzone
+        test_unit_parallelzone
         SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
+        INCLUDE_DIRS "${project_src_dir}"
+        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+    )
+    cmaize_add_tests(
+        test_integration_parallelzone
+        SOURCE_DIR "${CXX_TEST_DIR}/integration_tests"
         INCLUDE_DIRS "${project_src_dir}"
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )

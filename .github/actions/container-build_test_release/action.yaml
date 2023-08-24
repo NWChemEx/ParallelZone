@@ -17,7 +17,7 @@ name: container action to build ParallelZone
 description: container action from the base image to build ParallelZone
 
 inputs:
-  btag:
+  base_tag:
     description: 'tag of the base image'
     required: false
     default: 'stable'
@@ -66,7 +66,7 @@ runs:
   args:
     - ${{ inputs.token }} # 1
     - ${{ inputs.user }}  # 2
-    - ${{ inputs.btag }}  # 3
+    - ${{ inputs.base_tag }}  # 3
     - ${{ inputs.cmake_version }} # 4
     - ${{ inputs.gcc_version }} # 5
     - ${{ inputs.clang_version }} # 6

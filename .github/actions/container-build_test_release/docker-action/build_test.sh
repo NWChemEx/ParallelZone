@@ -124,7 +124,7 @@ cd ..
 
 # MPI testing
 echo "Running MPI tests..."
-${ctest_command} -VV -R test_pz_*
+${ctest_command} -VV -R mpi
 
 #Step 5: Install
 if [ "${env_install}" = true ]; then

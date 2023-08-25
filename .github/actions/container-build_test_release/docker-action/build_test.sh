@@ -113,6 +113,17 @@ if [ "${env_int_test}" = true ]; then
   echo "Running integration tests..."
   ${ctest_command} -VV -R test_integration*
 fi
+# test docs
+echo "Running doc tests..."
+${ctest_command} -VV -R *docs
+
+# python testing
+echo "Running python tests..."
+${ctest_command} -VV -R py*
+
+# MPI testing
+echo "Runing MPI tests..."
+${ctest_command} -VV -R *mpi
 cd ..
 
 #Step 5: Install

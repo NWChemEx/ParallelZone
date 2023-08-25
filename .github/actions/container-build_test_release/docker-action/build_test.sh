@@ -122,6 +122,10 @@ echo "Running python tests..."
 ${ctest_command} -VV -R py
 cd ..
 
+# MPI testing
+echo "Running MPI tests..."
+${ctest_command} -VV -R test_pz
+
 #Step 5: Install
 if [ "${env_install}" = true ]; then
   echo "Installing package..."

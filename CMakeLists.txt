@@ -157,7 +157,7 @@ if("${BUILD_TESTING}")
     add_test(
         NAME "test_pz_under_mpi"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
-               "${CMAKE_BINARY_DIR}/test_parallelzone"
+               "${CMAKE_BINARY_DIR}/test_unit_parallelzone"
     )
     add_test(
         NAME "test_pz_docs_under_mpi"

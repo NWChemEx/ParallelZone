@@ -37,7 +37,7 @@ include(nwx_versions)
 # These are the default values, used only if the user hasn't already set them.
 option(BUILD_TESTING "Should we build the tests?" OFF)
 option(BUILD_SHARED_LIBS "Should we build shared libraries?" ON)
-option(BUILD_PYBIND11_PYBINDINGS "Should we build pybind11 python bindings?" OFF)
+option(BUILD_PYBIND11_PYBINDINGS "Should we build pybind11 python bindings?" ON)
 option(BUILD_CPPYY_PYBINDINGS "Should the python bindings be Cppyy?" OFF)
 option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
 option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF )
@@ -157,7 +157,7 @@ if("${BUILD_TESTING}")
     add_test(
         NAME "test_pz_under_mpi"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
-               "${CMAKE_BINARY_DIR}/test_parallelzone"
+               "${CMAKE_BINARY_DIR}/test_unit_parallelzone"
     )
     add_test(
         NAME "test_pz_docs_under_mpi"

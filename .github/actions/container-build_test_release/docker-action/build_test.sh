@@ -120,6 +120,7 @@ ${ctest_command} -VV -R *docs
 # python testing
 echo "Running python tests..."
 ${ctest_command} -VV -R py
+cd ..
 
 #Step 5: Install
 if [ "${env_install}" = true ]; then

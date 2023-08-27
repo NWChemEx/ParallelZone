@@ -124,6 +124,7 @@ cd ..
 
 # MPI testing
 echo "Running MPI tests..."
+ctest -N
 ${ctest_command} -VV -R mpi
 
 #Step 5: Install

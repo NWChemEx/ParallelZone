@@ -120,12 +120,11 @@ ${ctest_command} -VV -R *docs
 # python testing
 echo "Running python tests..."
 ${ctest_command} -VV -R py
-cd ..
 
 # MPI testing
 echo "Running MPI tests..."
-ctest -N
 ${ctest_command} -VV -R mpi
+cd ..
 
 #Step 5: Install
 if [ "${env_install}" = true ]; then

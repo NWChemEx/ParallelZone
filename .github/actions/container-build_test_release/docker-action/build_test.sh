@@ -119,11 +119,11 @@ ${ctest_command} -VV -R *docs
 
 # python testing
 echo "Running python tests..."
-${ctest_command} -VV -R py*
+${ctest_command} -VV -R py
 
 # MPI testing
-echo "Runing MPI tests..."
-${ctest_command} -VV -R *mpi
+echo "Running MPI tests..."
+${ctest_command} -VV -R mpi
 cd ..
 
 #Step 5: Install

@@ -63,28 +63,28 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.CONTAINER_REPO_TOKEN }}
       - name: Install MADNESS and MPI
-        uses: NWChemEx-Project/.github/actions/install_package@master
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
         with:
           madness_version: ${{ inputs.madness_version }}
           package_name: madness
           parent_image_name: ghcr.io/nwchemex-project/base-cmake
           path_to_dockerfile: .github/Dockerfile/base-madness.Dockerfile
       - name: Install spdlog
-        uses: NWChemEx-Project/.github/actions/install_package@master
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
         with:
           spdlog_version: ${{ inputs.spdlog_version }}
           package_name: spdlog
           parent_image_name: base-madness
           path_to_dockerfile: .github/Dockerfile/base-spdlog.Dockerfile
       - name: Install cereal
-        uses: NWChemEx-Project/.github/actions/install_package@master
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
         with:
           cereal_version: ${{ inputs.cereal_version }}
           package_name: cereal
           parent_image_name: base-spdlog
           path_to_dockerfile: .github/Dockerfile/base-cereal.Dockerfile
       - name: Install catch2
-        uses: NWChemEx-Project/.github/actions/install_package@master
+        uses: NWChemEx-Project/.github/actions/image-install_package@master
         with:
           catch2_version: ${{ inputs.catch2_version }}
           package_name: catch2

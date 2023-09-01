@@ -27,7 +27,7 @@ on:
       madness_version:
         type: string
         required: false
-        default: 997e8b458c4234fb6c8c2781a5df59cb14b7e700
+        default: 3d585293f0094588778dbd3bec24b65e7bbe6a5d
       catch2_version:
         type: string
         required: false

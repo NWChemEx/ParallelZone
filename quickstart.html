@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart &mdash; parallelzone  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/tabs.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ParallelZone User Documentation" href="user/index.html" />
+    <link rel="prev" title="Installing ParallelZone" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            parallelzone
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="background/index.html">ParallelZone Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/index.html">ParallelZone User Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">parallelzone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Quickstart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline"></a></h1>
+<p>The ParallelZone class <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> is an abstraction of the current
+runtime environment. The <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> groups the process local resources
+(memory, processors, loggers, etc.) into objects of type <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code>. Users
+typically interact with <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> and the <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> object for
+the current process. As an example:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// 99.9% of the time you will be using an existing RuntimeView</span>
+<span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Figure out how many resource sets there are total</span>
+<span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">n_rs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Get the resource set containing resources local to the current process</span>
+<span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">my_rs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">my_resource_set</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Figure out the mpi rank of the current resource set</span>
+<span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">my_rs_rank</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_rs</span><span class="p">.</span><span class="n">mpi_rank</span><span class="p">();</span><span class="w"></span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># 99.9% of the time you will be using an existing RuntimeView</span>
+<span class="n">rt</span> <span class="o">=</span> <span class="n">get_runtime</span><span class="p">()</span>
+
+<span class="c1"># Figure out how many resource sets there are total</span>
+<span class="n">n_rs</span> <span class="o">=</span> <span class="n">rt</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
+
+<span class="c1"># Get the resource set containing resources local to the current process</span>
+<span class="n">my_rs</span> <span class="o">=</span> <span class="n">rt</span><span class="o">.</span><span class="n">my_resource_set</span><span class="p">()</span>
+
+<span class="c1"># Figure out the mpi rank of the current resource set</span>
+<span class="n">my_rs_rank</span> <span class="o">=</span> <span class="n">my_rs</span><span class="o">.</span><span class="n">mpi_rank</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<p>The <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> also allows you to access other <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> instances.
+Typically this is done to send or receive information. For example, say we
+wanted to copy data from each resource set into the RAM of the 0-th
+resource set:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Have every resource set send its index to resource set 0</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">ranks_on_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">gather</span><span class="p">(</span><span class="n">my_rs_rank</span><span class="p">);</span><span class="w"></span>
+
+<span class="k">if</span><span class="p">(</span><span class="n">ranks_on_0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="c1">// Only resource set 0 will enter this block</span>
+<span class="w">    </span><span class="c1">// TODO: This should be the logger</span>
+<span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Received indices from &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">ranks_on_0</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">()</span><span class="w"></span>
+<span class="w">              </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot; resource set(s).&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>MPI operations are presently limited to the C++ API. Consider using
+mpi4py for your Python-based MPI needs.</p>
+</aside>
+</div></div>
+<p>If we instead wanted every resource set to have a copy of the result, we do a
+<code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code>-wide gather:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Have every resource set send their rank to every other resource set</span>
+<span class="k">auto</span><span class="w"> </span><span class="n">ranks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">gather</span><span class="p">(</span><span class="n">my_rs_rank</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>MPI operations are presently limited to the C++ API. Consider using
+mpi4py for your Python-based MPI needs.</p>
+</aside>
+</div></div>
+<p>Another major feature of parallelzone is introspection of the runtime
+environment. Say we wanted to know how much total RAM each resource set has:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">C++</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">Python</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Figure out how much RAM the local process has access to</span>
+<span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">my_ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_rs</span><span class="p">.</span><span class="n">ram</span><span class="p">().</span><span class="n">total_space</span><span class="p">();</span><span class="w"></span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-3-1" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-1" name="3-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Figure out how much RAM the local process has access to</span>
+<span class="n">my_ram</span> <span class="o">=</span> <span class="n">my_rs</span><span class="o">.</span><span class="n">ram</span><span class="p">()</span><span class="o">.</span><span class="n">total_space</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></div>
+<p>To summarize:</p>
+<ul class="simple">
+<li><p>System-wide runtime environment state lives in the <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code>.</p></li>
+<li><p>Operations involving every resource set getting data go through
+<code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code>.</p></li>
+<li><p>Environment state local to a single resource set goes through <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code>,
+which is accessed via <code class="docutils literal notranslate"><span class="pre">RuntimeView::at()</span></code>.</p></li>
+<li><p>Operations involving every resource set sending/getting data to/from a single
+resource set happen in <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code>.</p></li>
+<li><p>Use the logger to print.</p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installing ParallelZone" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="user/index.html" class="btn btn-neutral float-right" title="ParallelZone User Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

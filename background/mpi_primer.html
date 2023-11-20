@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MPI Primer &mdash; parallelzone  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The ParallelZone Worldview" href="about.html" />
+    <link rel="prev" title="Abbreviations Used Throughout ParallelZone" href="abbreviations.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            parallelzone
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">ParallelZone Background</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="abbreviations.html">Abbreviations Used Throughout ParallelZone</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">MPI Primer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about.html">The ParallelZone Worldview</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user/index.html">ParallelZone User Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developer/index.html">Developer Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">parallelzone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">ParallelZone Background</a></li>
+      <li class="breadcrumb-item active">MPI Primer</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/background/mpi_primer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="mpi-primer">
+<h1>MPI Primer<a class="headerlink" href="#mpi-primer" title="Permalink to this headline"></a></h1>
+<p><a class="reference internal" href="#fig-mpi-runtime"><span class="std std-numref">Fig. 1</span></a> illustrates a simplified version of how <a class="reference internal" href="abbreviations.html#mpi"><span class="std std-ref">MPI</span></a>
+sees a program. The view is process-centric. When the program starts, MPI
+defines a
+set <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code> which includes all of program’s processes. Within our
+example <code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code> has three processes. MPI assigns these processes an
+integer value (ranging from 0 to “the number of processes minus 1”) called the
+process’s rank. More complicated MPI setups can have further partition
+<code class="docutils literal notranslate"><span class="pre">MPI_COMM_WORLD</span></code> into subsets, but the overall point remains: MPI’s view of
+a program is a series of processes somehow grouped together.</p>
+<figure class="align-center" id="id1">
+<span id="fig-mpi-runtime"></span><img alt="../_images/mpi.png" src="../_images/mpi.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Illustration of MPI’s runtime abstraction model.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>In a typical MPI-based program parallelism is expressed by somehow mapping tasks
+and data to ranks. For example say we have three arbitrary functions <code class="docutils literal notranslate"><span class="pre">foo</span></code>,
+<code class="docutils literal notranslate"><span class="pre">bar</span></code>, and <code class="docutils literal notranslate"><span class="pre">baz`</span> <span class="pre">and</span> <span class="pre">a</span> <span class="pre">chunk</span> <span class="pre">of</span> <span class="pre">data</span> <span class="pre">we</span> <span class="pre">want</span> <span class="pre">to</span> <span class="pre">run</span> <span class="pre">``foo</span></code>, <code class="docutils literal notranslate"><span class="pre">bar</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">baz</span></code> on. <a class="reference internal" href="#fig-mpi-mappings"><span class="std std-numref">Fig. 2</span></a> shows the three ways we can do this in
+parallel.</p>
+<figure class="align-center" id="id2">
+<span id="fig-mpi-mappings"></span><img alt="../_images/mpi_mappings.png" src="../_images/mpi_mappings.png" />
+<figcaption>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Possible ways of mapping data and tasks to MPI ranks.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+</figcaption>
+</figure>
+<p>In the <a class="reference internal" href="abbreviations.html#simd"><span class="std std-ref">SIMD</span></a> approach depicted at the top of <a class="reference internal" href="#fig-mpi-mappings"><span class="std std-numref">Fig. 2</span></a> we
+distribute the data over the MPI ranks and have each rank pass its local chunk
+of data to the three functions. In <a class="reference internal" href="abbreviations.html#misd"><span class="std std-ref">MISD</span></a>, which is shown in the middle of
+<a class="reference internal" href="#fig-mpi-mappings"><span class="std std-numref">Fig. 2</span></a> we instead distribute the functions over the ranks.
+Finally, in the <a class="reference internal" href="abbreviations.html#mimd"><span class="std std-ref">MIMD</span></a> model shown at the bottom of
+<a class="reference internal" href="#fig-mpi-mappings"><span class="std std-numref">Fig. 2</span></a> we distribute both the data and the functions.</p>
+<p>Unfortunately on today’s machines it takes more than distributing tasks and/or
+data to otherwise opaque ranks to achieve high-performance. This is because
+the performance also depends on the hardware available to each rank and how
+well utilized that hardware is.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="abbreviations.html" class="btn btn-neutral float-left" title="Abbreviations Used Throughout ParallelZone" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="about.html" class="btn btn-neutral float-right" title="The ParallelZone Worldview" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParallelZone &mdash; parallelzone  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/tabs.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ParallelZone Background" href="background/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            parallelzone
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="background/index.html">ParallelZone Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/index.html">ParallelZone User Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">parallelzone</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">ParallelZone</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="parallelzone">
+<h1>ParallelZone<a class="headerlink" href="#parallelzone" title="Permalink to this headline"></a></h1>
+<p>ParallelZone is a high-level, object-oriented C++ runtime system designed to
+facilitate writing high-performance, object-oriented C++ software. ParallelZone
+is conceived as being a stable <a class="reference internal" href="background/abbreviations.html#api"><span class="std std-ref">API</span></a> more than an implementation of a full
+blown runtime system. By this we mean that under the hood ParallelZone simply
+dispatches to more established runtime systems (such as <a class="reference internal" href="background/abbreviations.html#mpi"><span class="std std-ref">MPI</span></a>) and lets
+them do the heavy lifting. Unfortunately, the space of runtime systems is highly
+turbulent at the moment, which is why we designed ParallelZone to provide a
+buffer that insulates downstream dependencies from the chaotic underpinnings.</p>
+<p>The main features of ParallelZone include:</p>
+<ul class="simple">
+<li><p>Object-oriented API. C++ is object-oriented. Your runtime should be too.</p></li>
+<li><p><a class="reference internal" href="background/abbreviations.html#simd"><span class="std std-ref">SIMD</span></a>-like API. ParallelZone’s API is designed to help you write
+parallel code that looks serial because that’s the easiest kind to write.</p></li>
+<li><p>Support for process parallelism.</p></li>
+<li><p>Backwards compatible with MPI.</p></li>
+</ul>
+<p>Planned features:</p>
+<ul class="simple">
+<li><p>Thread support</p></li>
+<li><p>Better hardware detection/introspection</p></li>
+<li><p>Asynchronous execution</p></li>
+<li><p>Hardware aware scheduling</p></li>
+</ul>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="background/index.html">ParallelZone Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing ParallelZone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user/index.html">ParallelZone User Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer/index.html">Developer Documentation</a></li>
+</ul>
+</div>
+<p><a class="reference external" href="https://nwchemex-project.github.io/ParallelZone/parallelzone_cxx_api/index.html">C++ API</a></p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="background/index.html" class="btn btn-neutral float-right" title="ParallelZone Background" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, NWChemEx Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

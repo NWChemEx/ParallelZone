@@ -107,6 +107,8 @@ cmaize_add_library(
     DEPENDS "${project_depends}"
 )
 
+cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
+
 # N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
 include(nwx_pybind11)
 nwx_add_pybind11_module(
@@ -175,5 +177,3 @@ if("${BUILD_CPPYY_PYBINDINGS}")
         NAMESPACES parallelzone
     )
 endif()
-
-cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)

@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MPI Primer &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -82,7 +85,7 @@
            <div itemprop="articleBody">
              
   <section id="mpi-primer">
-<h1>MPI Primer<a class="headerlink" href="#mpi-primer" title="Permalink to this headline"></a></h1>
+<h1>MPI Primer<a class="headerlink" href="#mpi-primer" title="Link to this heading"></a></h1>
 <p><a class="reference internal" href="#fig-mpi-runtime"><span class="std std-numref">Fig. 1</span></a> illustrates a simplified version of how <a class="reference internal" href="abbreviations.html#mpi"><span class="std std-ref">MPI</span></a>
 sees a program. The view is process-centric. When the program starts, MPI
 defines a
@@ -95,7 +98,7 @@ a program is a series of processes somehow grouped together.</p>
 <figure class="align-center" id="id1">
 <span id="fig-mpi-runtime"></span><img alt="../_images/mpi.png" src="../_images/mpi.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Illustration of MPI’s runtime abstraction model.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 1 </span><span class="caption-text">Illustration of MPI’s runtime abstraction model.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>In a typical MPI-based program parallelism is expressed by somehow mapping tasks
@@ -106,7 +109,7 @@ parallel.</p>
 <figure class="align-center" id="id2">
 <span id="fig-mpi-mappings"></span><img alt="../_images/mpi_mappings.png" src="../_images/mpi_mappings.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Possible ways of mapping data and tasks to MPI ranks.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 2 </span><span class="caption-text">Possible ways of mapping data and tasks to MPI ranks.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>In the <a class="reference internal" href="abbreviations.html#simd"><span class="std std-ref">SIMD</span></a> approach depicted at the top of <a class="reference internal" href="#fig-mpi-mappings"><span class="std std-numref">Fig. 2</span></a> we

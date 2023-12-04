@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing CommPP Class &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -93,12 +96,12 @@
            <div itemprop="articleBody">
              
   <section id="designing-commpp-class">
-<span id="compp-design"></span><h1>Designing CommPP Class<a class="headerlink" href="#designing-commpp-class" title="Permalink to this headline"></a></h1>
+<span id="compp-design"></span><h1>Designing CommPP Class<a class="headerlink" href="#designing-commpp-class" title="Link to this heading"></a></h1>
 <p>The design specifications in <a class="reference internal" href="runtime_view.html#runtime-view-design"><span class="std std-ref">Designing RuntimeView Class</span></a> and <a class="reference internal" href="ram.html#ram-design"><span class="std std-ref">Designing RAM Class</span></a>
 call for a <code class="docutils literal notranslate"><span class="pre">CommPP</span></code> class to take care of the MPI operations. Here we
 discuss the design of the <code class="docutils literal notranslate"><span class="pre">CommPP</span></code> class.</p>
 <section id="why-do-we-need-commpp">
-<h2>Why Do We Need CommPP?<a class="headerlink" href="#why-do-we-need-commpp" title="Permalink to this headline"></a></h2>
+<h2>Why Do We Need CommPP?<a class="headerlink" href="#why-do-we-need-commpp" title="Link to this heading"></a></h2>
 <p>ParallelZone needs access to MPI. MADNESS exposes MPI, but not in an
 object-oriented way (AFAIK it just assumes you’re working with types like
 <code class="docutils literal notranslate"><span class="pre">double</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, etc.). ParallelZone is object-oriented and needs something
@@ -108,7 +111,7 @@ context can lead to inefficiencies. CommPP should automate the conversion from
 objects to MPI data types in the most efficient manner possible.</p>
 </section>
 <section id="design-considerations">
-<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Permalink to this headline"></a></h2>
+<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Link to this heading"></a></h2>
 <p>The list below includes considerations from <a class="reference internal" href="runtime_view.html#runtime-view-design"><span class="std std-ref">Designing RuntimeView Class</span></a> and
 from <a class="reference internal" href="ram.html#ram-design"><span class="std std-ref">Designing RAM Class</span></a>.</p>
 <ol class="arabic simple">
@@ -120,11 +123,11 @@ from <a class="reference internal" href="ram.html#ram-design"><span class="std s
 </ol>
 </section>
 <section id="commpp-architecture">
-<h2>CommPP Architecture<a class="headerlink" href="#commpp-architecture" title="Permalink to this headline"></a></h2>
+<h2>CommPP Architecture<a class="headerlink" href="#commpp-architecture" title="Link to this heading"></a></h2>
 <figure class="align-center" id="id1">
 <span id="fig-compp"></span><img alt="../../_images/compp.png" src="../../_images/compp.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 10 </span><span class="caption-text">Overall architecture of the CommPP class.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 10 </span><span class="caption-text">Overall architecture of the CommPP class.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>Conceptually the state of the CommPP class is simple. The only point of note
@@ -136,7 +139,7 @@ common denominator, and transform all objects to binary.</p>
 <span id="fig-obj2binary"></span><img alt="../../_images/commpp_obj2binary.png" src="../../_images/commpp_obj2binary.png" />
 <figcaption>
 <p><span class="caption-number">Fig. 11 </span><span class="caption-text">Schematic illustration of how CommPP converts an object into a binary
-format.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+format.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p><a class="reference internal" href="#fig-obj2binary"><span class="std std-numref">Fig. 11</span></a> sketches out the object-to-binary process. On the left

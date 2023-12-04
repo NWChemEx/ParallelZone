@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing the Logger Class &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -93,18 +96,18 @@
            <div itemprop="articleBody">
              
   <section id="designing-the-logger-class">
-<span id="logger-design"></span><h1>Designing the Logger Class<a class="headerlink" href="#designing-the-logger-class" title="Permalink to this headline"></a></h1>
+<span id="logger-design"></span><h1>Designing the Logger Class<a class="headerlink" href="#designing-the-logger-class" title="Link to this heading"></a></h1>
 <p>The discussion <a class="reference internal" href="logging.html#logging-design"><span class="std std-ref">Designing the Logging Component</span></a> ends in concluding that ParallelZone needs
 a <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class. This page details the design and architecture of the
 <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class and the underlying infrastructure needed to make it work.</p>
 <section id="what-is-the-logger-class">
-<h2>What is the Logger Class?<a class="headerlink" href="#what-is-the-logger-class" title="Permalink to this headline"></a></h2>
+<h2>What is the Logger Class?<a class="headerlink" href="#what-is-the-logger-class" title="Link to this heading"></a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class is the user-facing API of ParallelZone’s logging
 component. The <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class is used by users of ParallelZone to log
 events, <em>i.e.</em>, errors, warnings, progress, etc.</p>
 </section>
 <section id="why-do-we-need-the-logger-class">
-<h2>Why do we need the Logger Class?<a class="headerlink" href="#why-do-we-need-the-logger-class" title="Permalink to this headline"></a></h2>
+<h2>Why do we need the Logger Class?<a class="headerlink" href="#why-do-we-need-the-logger-class" title="Link to this heading"></a></h2>
 <p>As summarized in <a class="reference internal" href="logging.html#logging-design"><span class="std std-ref">Designing the Logging Component</span></a>, we are not aware of any existing logging
 solutions that do everything we need. We have thus chosen to implement the
 missing features, to our liking, within the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class. The
@@ -115,7 +118,7 @@ log it”; “how to log it” is the responsibility of the sink (which is curre
 an implementation detail of the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class).</p>
 </section>
 <section id="logger-considerations">
-<h2>Logger Considerations<a class="headerlink" href="#logger-considerations" title="Permalink to this headline"></a></h2>
+<h2>Logger Considerations<a class="headerlink" href="#logger-considerations" title="Link to this heading"></a></h2>
 <p>The considerations for the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class are the considerations from
 <a class="reference internal" href="logging.html#logging-design"><span class="std std-ref">Designing the Logging Component</span></a> not addressed there. Specifically:</p>
 <ol class="arabic simple">
@@ -145,7 +148,7 @@ an implementation detail of the <code class="docutils literal notranslate"><span
 </ol>
 </section>
 <section id="existing-logger-solutions">
-<h2>Existing Logger Solutions<a class="headerlink" href="#existing-logger-solutions" title="Permalink to this headline"></a></h2>
+<h2>Existing Logger Solutions<a class="headerlink" href="#existing-logger-solutions" title="Link to this heading"></a></h2>
 <p><a class="reference internal" href="logging.html#existing-logging-solutions"><span class="std std-ref">Existing Logging Solutions</span></a> covered the existing logging solutions in
 detail and will not be replicated here. Instead we point out that of the
 available choices, Spdlog has most of the features we want and is heavily
@@ -153,11 +156,11 @@ supported. As seen in the next section we have opted to build our <code class="d
 infrastructure around Spdlog.</p>
 </section>
 <section id="id1">
-<h2>Logger Design<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<h2>Logger Design<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
 <figure class="align-center" id="id2">
 <span id="logger-arch"></span><img alt="../../_images/logger_arch.png" src="../../_images/logger_arch.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 13 </span><span class="caption-text">Architecture of the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class and its infrastructure.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 13 </span><span class="caption-text">Architecture of the <code class="docutils literal notranslate"><span class="pre">Logger</span></code> class and its infrastructure.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>For the first implementation of the logging component we adopted the simple
@@ -201,7 +204,7 @@ output logs to standard out and a specified file.</p>
 </ol>
 </section>
 <section id="future-considerations">
-<h2>Future Considerations<a class="headerlink" href="#future-considerations" title="Permalink to this headline"></a></h2>
+<h2>Future Considerations<a class="headerlink" href="#future-considerations" title="Link to this heading"></a></h2>
 <p>The current design gets the job done, while being amenable to extension. In
 particular we note:</p>
 <ul class="simple">

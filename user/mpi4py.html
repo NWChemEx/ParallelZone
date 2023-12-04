@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Using ParallelZone with mpi4py &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -89,22 +92,22 @@
            <div itemprop="articleBody">
              
   <section id="using-parallelzone-with-mpi4py">
-<h1>Using ParallelZone with mpi4py<a class="headerlink" href="#using-parallelzone-with-mpi4py" title="Permalink to this headline"></a></h1>
+<h1>Using ParallelZone with mpi4py<a class="headerlink" href="#using-parallelzone-with-mpi4py" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>mpi4py is not installed by ParallelZone, so should be installed separately.
 See <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/install.html">mpi4py documentation</a> for more
 information.</p>
-</aside>
+</div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Python support for ParallelZone is currently in beta. APIs are not
 considered stable at this time and are subject to change.</p>
-</aside>
+</div>
 <p>mpi4py is the most popular package that provides Python bindings for the MPI
 standard. Here, we describe how you can use mpi4py along with ParallelZone.</p>
 <section id="mpi-initialization-and-finalization">
-<h2>MPI Initialization and Finalization<a class="headerlink" href="#mpi-initialization-and-finalization" title="Permalink to this headline"></a></h2>
+<h2>MPI Initialization and Finalization<a class="headerlink" href="#mpi-initialization-and-finalization" title="Link to this heading"></a></h2>
 <p>The MPI standard requires <cite>MPI_Init</cite> or <cite>MPI_Init_thread</cite> function to be called
 by each process to initialize the MPI execution environment. mpi4py performs
 initialization (if necessary)
@@ -123,10 +126,10 @@ other.</p>
 thread support level manually. See the <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/mpi4py.html?highlight=initialization#runtime-configuration-options">mpi4py documentation</a>
 for more details. However, note that it is not possible to pass a
 communicator to mpi4py explicitly.</p>
-</aside>
+</div>
 </section>
 <section id="passing-mpi4py-communicator-to-parallelzone">
-<h2>Passing mpi4py Communicator to ParallelZone<a class="headerlink" href="#passing-mpi4py-communicator-to-parallelzone" title="Permalink to this headline"></a></h2>
+<h2>Passing mpi4py Communicator to ParallelZone<a class="headerlink" href="#passing-mpi4py-communicator-to-parallelzone" title="Link to this heading"></a></h2>
 <p>If a user is interested in only sharing a subset of resources with ParallelZone,
 then the user needs to initialize ParallelZone by passing the communicator
 created by mpi4py. An example, where the user passes <cite>MPI_COMM_SELF</cite> as the

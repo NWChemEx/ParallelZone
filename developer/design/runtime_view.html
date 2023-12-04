@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing RuntimeView Class &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -93,18 +96,18 @@
            <div itemprop="articleBody">
              
   <section id="designing-runtimeview-class">
-<span id="runtime-view-design"></span><h1>Designing RuntimeView Class<a class="headerlink" href="#designing-runtimeview-class" title="Permalink to this headline"></a></h1>
+<span id="runtime-view-design"></span><h1>Designing RuntimeView Class<a class="headerlink" href="#designing-runtimeview-class" title="Link to this heading"></a></h1>
 <p>The need for the <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> class grew out of
 <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a>. Here we flesh the design out more.</p>
 <section id="why-do-we-need-the-runtimeview-class">
-<h2>Why Do We Need the RuntimeView Class?<a class="headerlink" href="#why-do-we-need-the-runtimeview-class" title="Permalink to this headline"></a></h2>
+<h2>Why Do We Need the RuntimeView Class?<a class="headerlink" href="#why-do-we-need-the-runtimeview-class" title="Link to this heading"></a></h2>
 <p>As discussed in <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a>, the <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> class is
 ParallelZone’s abstraction for modeling the runtime environment. <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code>
 will also serve as the top-level <a class="reference internal" href="../../background/abbreviations.html#api"><span class="std std-ref">API</span></a> for accessing ParallelZone
 functionality.</p>
 </section>
 <section id="what-should-the-runtimeview-class-manage">
-<h2>What Should the RuntimeView Class Manage?<a class="headerlink" href="#what-should-the-runtimeview-class-manage" title="Permalink to this headline"></a></h2>
+<h2>What Should the RuntimeView Class Manage?<a class="headerlink" href="#what-should-the-runtimeview-class-manage" title="Link to this heading"></a></h2>
 <p>ParallelZone assumes it is managing the runtime environment for a potentially
 multi-process program. In general that program can be running on a laptop, the
 number one supercomputer in the world, or anything in between.</p>
@@ -124,11 +127,11 @@ System-wide state will be accessible from <code class="docutils literal notransl
 </ol>
 </section>
 <section id="runtimeview-architecture">
-<h2>RuntimeView Architecture<a class="headerlink" href="#runtimeview-architecture" title="Permalink to this headline"></a></h2>
+<h2>RuntimeView Architecture<a class="headerlink" href="#runtimeview-architecture" title="Link to this heading"></a></h2>
 <figure class="align-center" id="id1">
 <span id="fig-runtime-view"></span><img alt="../../_images/runtime_view.png" src="../../_images/runtime_view.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 7 </span><span class="caption-text">Schematic illustration of the RuntimeView class and its major pieces.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 7 </span><span class="caption-text">Schematic illustration of the RuntimeView class and its major pieces.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>The architecture of <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> is shown in <a class="reference internal" href="#fig-runtime-view"><span class="std std-numref">Fig. 7</span></a>. This
@@ -161,17 +164,17 @@ except that of the root process.</p></li>
 </ul>
 </section>
 <section id="proposed-apis">
-<h2>Proposed APIs<a class="headerlink" href="#proposed-apis" title="Permalink to this headline"></a></h2>
+<h2>Proposed APIs<a class="headerlink" href="#proposed-apis" title="Link to this heading"></a></h2>
 <p>Examples of all-to-all communications</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span>
 
-<span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_data</span><span class="p">();</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_data</span><span class="p">();</span>
 
 <span class="c1">// This is an all gather</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">gather</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">gather</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
 
 <span class="c1">// This is an all reduce</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">output2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">);</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">output2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -179,12 +182,12 @@ except that of the root process.</p></li>
 <p>As written the APIs assume the data is going to/from RAM. If we eventually
 want to support other memory spaces we could create overloads which take the
 target space. In particular we note that we can NOT do things like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">my_resource_set</span><span class="p">().</span><span class="n">ram</span><span class="p">().</span><span class="n">gather</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">my_resource_set</span><span class="p">().</span><span class="n">ram</span><span class="p">().</span><span class="n">gather</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>because that would result in deadlock (it calls a series of all-to-one calls
 where each rank thinks it’s the root).</p>
-</aside>
+</div>
 </section>
 </section>
 

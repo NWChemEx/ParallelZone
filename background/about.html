@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The ParallelZone Worldview &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/doctools.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -87,18 +90,18 @@
            <div itemprop="articleBody">
              
   <section id="the-parallelzone-worldview">
-<h1>The ParallelZone Worldview<a class="headerlink" href="#the-parallelzone-worldview" title="Permalink to this headline"></a></h1>
+<h1>The ParallelZone Worldview<a class="headerlink" href="#the-parallelzone-worldview" title="Link to this heading"></a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>TL;DR. In ParallelZone the <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> instance is your handle to the
 runtime environment. <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> is a container of <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code>
 objects. <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> objects describe the resources (<em>i.e.</em>, RAM, CPUs,
 GPUs, <em>etc.</em>) that processes have direct/local access to.</p>
-</aside>
+</div>
 <p>To use ParallelZone it is helpful to understand the abstraction model at a high
 level.</p>
 <section id="focusing-on-resources">
-<h2>Focusing on Resources<a class="headerlink" href="#focusing-on-resources" title="Permalink to this headline"></a></h2>
+<h2>Focusing on Resources<a class="headerlink" href="#focusing-on-resources" title="Link to this heading"></a></h2>
 <p>In ParallelZone we go beyond MPI by mapping tasks/data to hardware, bypassing
 the rank concept to the extent possible. More specifically, in ParallelZone we
 start by assuming that when a multi-process program starts running there is
@@ -114,7 +117,7 @@ forms the <code class="docutils literal notranslate"><span class="pre">RuntimeVi
 <p><span class="caption-number">Fig. 3 </span><span class="caption-text">Here the blue oval depicts the total resources the program is allowed to use
 and the green oval shows the resources the program lets ParallelZone use. In
 the top scenario ParallelZone manages all of the program’s resources, whereas
-in the bottom scenario it manages only some of the program’s resources.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+in the bottom scenario it manages only some of the program’s resources.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>To better illustrate the relationship between the program’s total resources
@@ -132,7 +135,7 @@ more resources than it shares with ParallelZone.</p>
 resources regardless of whether it is or isn’t.</p>
 </section>
 <section id="resource-affinity">
-<h2>Resource Affinity<a class="headerlink" href="#resource-affinity" title="Permalink to this headline"></a></h2>
+<h2>Resource Affinity<a class="headerlink" href="#resource-affinity" title="Link to this heading"></a></h2>
 <p>Simply knowing the total amounts of resources available isn’t quite enough. We
 also need to know which resources the current process has an affinity for. In
 ParallelZone we keep this simple by partitioning each process’s resources into
@@ -145,7 +148,7 @@ the process is running.</p>
 <span id="fig-resource-set-mapping"></span><img alt="../_images/resourceset_mapping.png" src="../_images/resourceset_mapping.png" />
 <figcaption>
 <p><span class="caption-number">Fig. 4 </span><span class="caption-text">ParallelZone’s view of the runtime environment for the common scenario of
-one process per node.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+one process per node.</span><a class="headerlink" href="#id2" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p><a class="reference internal" href="#fig-resource-set-mapping"><span class="std std-numref">Fig. 4</span></a> illustrates how ParallelZone sees the
@@ -161,7 +164,7 @@ processes its own <code class="docutils literal notranslate"><span class="pre">R
 longer be disjoint since each process on a node can see the same resources.</p>
 </section>
 <section id="the-vision">
-<h2>The Vision<a class="headerlink" href="#the-vision" title="Permalink to this headline"></a></h2>
+<h2>The Vision<a class="headerlink" href="#the-vision" title="Link to this heading"></a></h2>
 <p>At the moment ParallelZone’s feature set is pretty bare bones. The medium term
 goal is for the <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> objects to have task schedulers. Users will
 estimate the resources needed for a task and tell a particular <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code>

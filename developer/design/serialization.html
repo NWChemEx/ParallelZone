@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Serialization Design &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -93,9 +96,9 @@
            <div itemprop="articleBody">
              
   <section id="serialization-design">
-<span id="id1"></span><h1>Serialization Design<a class="headerlink" href="#serialization-design" title="Permalink to this headline"></a></h1>
+<span id="id1"></span><h1>Serialization Design<a class="headerlink" href="#serialization-design" title="Link to this heading"></a></h1>
 <section id="what-is-serialization">
-<h2>What is Serialization?<a class="headerlink" href="#what-is-serialization" title="Permalink to this headline"></a></h2>
+<h2>What is Serialization?<a class="headerlink" href="#what-is-serialization" title="Link to this heading"></a></h2>
 <p>In the context of object-oriented programming, serialization is the process of
 deconstructing an object’s state into a flat state that is suitable for storage
 and/or transmission. For most applications it is also important that it be
@@ -112,7 +115,7 @@ members and serializes/deserializes them (recursion terminating when fundamental
 C++ types are found).</p>
 </section>
 <section id="why-do-we-need-serialization">
-<h2>Why Do We Need Serialization?<a class="headerlink" href="#why-do-we-need-serialization" title="Permalink to this headline"></a></h2>
+<h2>Why Do We Need Serialization?<a class="headerlink" href="#why-do-we-need-serialization" title="Link to this heading"></a></h2>
 <p>In ParallelZone we need serialization for transmitting objects. More
 specifically in order to be able send/receive objects we need to be able to
 serialize/deserialize them. We anticipate that downstream dependencies may want
@@ -120,7 +123,7 @@ to piggy back off of the ParallelZone serialization infrastructure to store
 objects.</p>
 </section>
 <section id="serialization-considerations">
-<span id="id2"></span><h2>Serialization Considerations<a class="headerlink" href="#serialization-considerations" title="Permalink to this headline"></a></h2>
+<span id="id2"></span><h2>Serialization Considerations<a class="headerlink" href="#serialization-considerations" title="Link to this heading"></a></h2>
 <p>This section lists the points which were considered in devising our
 serialization solution.</p>
 <ul>
@@ -211,7 +214,7 @@ distributed object)</p></li>
 </ul>
 </section>
 <section id="serialization-implementations">
-<h2>Serialization Implementations<a class="headerlink" href="#serialization-implementations" title="Permalink to this headline"></a></h2>
+<h2>Serialization Implementations<a class="headerlink" href="#serialization-implementations" title="Link to this heading"></a></h2>
 <p>This section is a collection of the C++ serialization libraries for which we are
 aware. For each library we have provided some basic vitals and some notes. A
 detailed comparison of the more promising choices are given below.</p>
@@ -440,9 +443,9 @@ assessments are made by looking at the documentation and may or may not
 accurately reflect the actual state of the library. Statistics pertaining to
 activity, stars, and watchers were accurate as of March 2022 and have likely
 changed since then.</p>
-</aside>
+</div>
 <section id="detailed-comparison">
-<h3>Detailed Comparison<a class="headerlink" href="#detailed-comparison" title="Permalink to this headline"></a></h3>
+<h3>Detailed Comparison<a class="headerlink" href="#detailed-comparison" title="Link to this heading"></a></h3>
 <p>Based on the discussion in <a class="reference internal" href="#serialization-considerations"><span class="std std-ref">Serialization Considerations</span></a>, we have
 identified the following features we are looking for in a serialization library:</p>
 <p>Matureness</p>
@@ -589,11 +592,11 @@ exist). Conversely we said a library has a feature if the documentation
 discusses it. This means that it is possible that a library’s features may
 differ from those shown above based on the accuracy/completeness of its
 documentation.</p>
-</aside>
+</div>
 </section>
 </section>
 <section id="serialization-strategy">
-<span id="id3"></span><h2>Serialization Strategy<a class="headerlink" href="#serialization-strategy" title="Permalink to this headline"></a></h2>
+<span id="id3"></span><h2>Serialization Strategy<a class="headerlink" href="#serialization-strategy" title="Link to this heading"></a></h2>
 <p>On the basis of the head-to-head serialization library comparisons, Cereal
 appears to be the clear winner. While Cereal is currently being actively
 developed, this is a somewhat recent development. More specifically there was

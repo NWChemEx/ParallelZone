@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing ParallelZone &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -90,7 +93,7 @@
            <div itemprop="articleBody">
              
   <section id="designing-parallelzone">
-<span id="parallel-zone-design"></span><h1>Designing ParallelZone<a class="headerlink" href="#designing-parallelzone" title="Permalink to this headline"></a></h1>
+<span id="parallel-zone-design"></span><h1>Designing ParallelZone<a class="headerlink" href="#designing-parallelzone" title="Link to this heading"></a></h1>
 <p>Software runs on hardware. Hardware varies from computer to computer. And the
 available resources (cores, GPUs, RAM, etc.) of a computer vary with time.
 While these three statements may sound obvious, in order for high-performance
@@ -102,7 +105,7 @@ ParallelZone. Keep in mind, this page is a snapshot in time and served as the
 basis for starting ParallelZone. We fully expect ParallelZone to evolve over
 time and become more than what is here.</p>
 <section id="what-s-a-runtime">
-<h2>What’s a Runtime?<a class="headerlink" href="#what-s-a-runtime" title="Permalink to this headline"></a></h2>
+<h2>What’s a Runtime?<a class="headerlink" href="#what-s-a-runtime" title="Link to this heading"></a></h2>
 <p>Strictly speaking there are several different, but related, concepts which get
 labeled “runtime”. First, there is the runtime execution phase of a program,
 i.e., when the program is literally running (as opposed to say compile time,
@@ -117,7 +120,7 @@ phase. This includes things like environment variables and hardware devices.</p>
 really mean that it is a runtime system.</p>
 </section>
 <section id="why-do-we-need-a-runtime-system">
-<h2>Why Do We Need a Runtime (System)?<a class="headerlink" href="#why-do-we-need-a-runtime-system" title="Permalink to this headline"></a></h2>
+<h2>Why Do We Need a Runtime (System)?<a class="headerlink" href="#why-do-we-need-a-runtime-system" title="Link to this heading"></a></h2>
 <p>By its very nature, high-performance computing (HPC) is focused on maximizing the
 performance of software. Inevitably, this requires a tighter coupling between
 the software and the specifics of the runtime environment. The runtime system
@@ -132,7 +135,7 @@ parallelism),</p></li>
 <p>Hence we will need a runtime system to provide minimally these features.</p>
 </section>
 <section id="what-is-the-scope-of-the-parallelzone">
-<h2>What is the Scope of the ParallelZone?<a class="headerlink" href="#what-is-the-scope-of-the-parallelzone" title="Permalink to this headline"></a></h2>
+<h2>What is the Scope of the ParallelZone?<a class="headerlink" href="#what-is-the-scope-of-the-parallelzone" title="Link to this heading"></a></h2>
 <p>ParallelZone will ultimately be a C++ library used by most pieces of our
 software stack. We also want ParallelZone to be useful to developers/projects
 outside the NWChemEx-Project organization, and in turn we want to limit bloat.</p>
@@ -141,18 +144,18 @@ focused on parallelism and supporting that parallelism. Notably this excludes
 linear algebra.</p>
 </section>
 <section id="design-considerations">
-<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Permalink to this headline"></a></h2>
+<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Link to this heading"></a></h2>
 <p>This section lists what considerations affected the design of ParallelZone.
 Many of these considerations warrant entire discussions. Here we provide brief
 descriptions of the design considerations and link to the full discussion.</p>
 <p>In no particular order we want/need our runtime to support:</p>
 <section id="object-oriented-c-17">
-<h3>Object-oriented C++17<a class="headerlink" href="#object-oriented-c-17" title="Permalink to this headline"></a></h3>
+<h3>Object-oriented C++17<a class="headerlink" href="#object-oriented-c-17" title="Link to this heading"></a></h3>
 <p>Our software stack is object-oriented and written in C++17. The runtime must
 thus support object-oriented C++17 if we are to call it.</p>
 </section>
 <section id="parallelization">
-<h3>Parallelization<a class="headerlink" href="#parallelization" title="Permalink to this headline"></a></h3>
+<h3>Parallelization<a class="headerlink" href="#parallelization" title="Link to this heading"></a></h3>
 <p>The heart of ParallelZone is parallelization. This includes, but shouldn’t be
 limited to:</p>
 <ul class="simple">
@@ -170,20 +173,20 @@ task-based parallelism because it tends to be:</p>
 </ul>
 </section>
 <section id="message-passing-interface-mpi-support">
-<h3>Message Passing Interface (MPI) Support<a class="headerlink" href="#message-passing-interface-mpi-support" title="Permalink to this headline"></a></h3>
+<h3>Message Passing Interface (MPI) Support<a class="headerlink" href="#message-passing-interface-mpi-support" title="Link to this heading"></a></h3>
 <p>For better or for worse MPI is widely used for process parallelism. If our
 software is going to play well with other high-performance software, the
 process parallelism aspect ofour runtime needs to support MPI.</p>
 </section>
 <section id="scheduling">
-<h3>Scheduling<a class="headerlink" href="#scheduling" title="Permalink to this headline"></a></h3>
+<h3>Scheduling<a class="headerlink" href="#scheduling" title="Link to this heading"></a></h3>
 <p>We’d like our runtime to be capable of scheduling tasks for us. This includes
 spawning the tasks and load balancing them. While easy to express, scheduling
 is arguably the hardest part of writing parallel code. Generic solutions
 greatly simplify implementing performant software downstream.</p>
 </section>
 <section id="hardware-introspection">
-<h3>Hardware Introspection<a class="headerlink" href="#hardware-introspection" title="Permalink to this headline"></a></h3>
+<h3>Hardware Introspection<a class="headerlink" href="#hardware-introspection" title="Link to this heading"></a></h3>
 <p>Generic scheduling solutions will need a performance model for the task and
 knowledge of the runtime environment. Notably the scheduler needs to know what
 resources are available and their specs. Heterogeneous systems seem to be here
@@ -191,23 +194,23 @@ to stay, so the runtime should be able to adapt as new hardware types are added.
 At this point in time we foresee our algorithms needing knowledge of (both the
 entire program and to the current process):</p>
 <section id="central-processing-unit-cpu">
-<h4>Central Processing Unit (CPU)<a class="headerlink" href="#central-processing-unit-cpu" title="Permalink to this headline"></a></h4>
+<h4>Central Processing Unit (CPU)<a class="headerlink" href="#central-processing-unit-cpu" title="Link to this heading"></a></h4>
 <p>As a first pass, knowledge of how CPU cores are available suffices. More
 fine-grained optimization is possible by knowing cache sizes, and frequencies.
 However, this can be punted until an algorithm is ready for such optimizations.</p>
 </section>
 <section id="graphics-processing-unit-gpu">
-<h4>Graphics Processing Unit (GPU)<a class="headerlink" href="#graphics-processing-unit-gpu" title="Permalink to this headline"></a></h4>
+<h4>Graphics Processing Unit (GPU)<a class="headerlink" href="#graphics-processing-unit-gpu" title="Link to this heading"></a></h4>
 <p>Similar to the CPU we want to know how many GPUs there are and how many threads
 each supports. At the moment we also need to know the GPU vendor so we can
 make the correct device calls.</p>
 </section>
 <section id="random-access-memory-ram">
-<h4>Random Access Memory (RAM)<a class="headerlink" href="#random-access-memory-ram" title="Permalink to this headline"></a></h4>
+<h4>Random Access Memory (RAM)<a class="headerlink" href="#random-access-memory-ram" title="Link to this heading"></a></h4>
 <p>Available amount suffices for a first pass.</p>
 </section>
 <section id="disk">
-<h4>Disk<a class="headerlink" href="#disk" title="Permalink to this headline"></a></h4>
+<h4>Disk<a class="headerlink" href="#disk" title="Link to this heading"></a></h4>
 <p>Available memory. Whether it’s a hard disk drive or a sold state drive could be
 useful for assessing how costly reading/writing to it will be. Alternatively,
 the read/write speed would be useful for deciding when to store results versus
@@ -215,14 +218,14 @@ just recomputing them.</p>
 </section>
 </section>
 <section id="logging">
-<h3>Logging<a class="headerlink" href="#logging" title="Permalink to this headline"></a></h3>
+<h3>Logging<a class="headerlink" href="#logging" title="Link to this heading"></a></h3>
 <p>For post facto analysis of a package it is essential to log information about
 how software behaves at runtime. The logger should support multiple severity
 levels, conditional logging, and be parallel aware (<em>i.e.</em> be able to handle
 multiple processes/threads logging). Automatic timestamps and color is a plus.</p>
 </section>
 <section id="hashing">
-<h3>Hashing<a class="headerlink" href="#hashing" title="Permalink to this headline"></a></h3>
+<h3>Hashing<a class="headerlink" href="#hashing" title="Link to this heading"></a></h3>
 <p>Full discussion <a class="reference internal" href="hashing.html#hashing-design"><span class="std std-ref">Hashing Design</span></a>.</p>
 <p>Comparing objects can be expensive. If we establish a one-to-one mapping
 between each instance of an object and a number (called the hash and usually
@@ -231,14 +234,14 @@ corresponding hashes. Hashing has a number of applications ranging from
 verifying data integrity to constant time lookup.</p>
 </section>
 <section id="serialization">
-<h3>Serialization<a class="headerlink" href="#serialization" title="Permalink to this headline"></a></h3>
+<h3>Serialization<a class="headerlink" href="#serialization" title="Link to this heading"></a></h3>
 <p>Full discussion <a class="reference internal" href="serialization.html#serialization-design"><span class="std std-ref">Serialization Design</span></a>.</p>
 <p>Objects are great for encapsulation, but at the end of the day low-level
 operations typically only support a handful of types. Serialization is essential
 for going from an arbitrary object to more primitive types and vice versa.</p>
 </section>
 <section id="reflection">
-<h3>Reflection<a class="headerlink" href="#reflection" title="Permalink to this headline"></a></h3>
+<h3>Reflection<a class="headerlink" href="#reflection" title="Link to this heading"></a></h3>
 <p>Full discussion <a class="reference internal" href="reflection.html#reflection-design"><span class="std std-ref">Reflection Design</span></a>.</p>
 <p>At the moment, C++ lacks reflection (the ability to introspect and modify a
 program). Many generic programming tasks (for example hashing and
@@ -248,7 +251,7 @@ pursue this avenue.</p>
 </section>
 </section>
 <section id="existing-runtimes">
-<h2>Existing Runtimes<a class="headerlink" href="#existing-runtimes" title="Permalink to this headline"></a></h2>
+<h2>Existing Runtimes<a class="headerlink" href="#existing-runtimes" title="Link to this heading"></a></h2>
 <p>Depending on the definition of runtime there are a lot of possible choices
 out there. In this section, we limit ourselves to runtimes that support
 distributed parallelism. As a disclaimer, the information here is primarily
@@ -256,7 +259,7 @@ gleaned from skimming documentation and code, it may not reflect the actual
 state of the codes. If there is an egregious error please open a PR with a fix.
 Runtimes are listed in alphabetical order.</p>
 <section id="hpx">
-<h3>HPX<a class="headerlink" href="#hpx" title="Permalink to this headline"></a></h3>
+<h3>HPX<a class="headerlink" href="#hpx" title="Link to this heading"></a></h3>
 <p>URL: <a class="reference external" href="https://github.com/STEllAR-GROUP/hpx">https://github.com/STEllAR-GROUP/hpx</a></p>
 <p>First implementation of the ParalleleX programming model, which is notably an
 alternative parallel programming model to message passing. In this analogy, HPX
@@ -274,7 +277,7 @@ fashion relying on task-based parallelism.</p>
 - No hardware introspection</p>
 </section>
 <section id="legion">
-<h3>Legion<a class="headerlink" href="#legion" title="Permalink to this headline"></a></h3>
+<h3>Legion<a class="headerlink" href="#legion" title="Link to this heading"></a></h3>
 <p>URL: <a class="reference external" href="https://github.com/StanfordLegion/legion">https://github.com/StanfordLegion/legion</a></p>
 <p>Legion is another task-based runtime. One of the more unique features of Legion
 is the scheduler. From the examples, it seems that the scheduler is capable of
@@ -288,7 +291,7 @@ optimizing how the tasks are run based on the available hardware.</p>
 - Documentation is written at an expert level and hard to follow</p>
 </section>
 <section id="madness">
-<h3>MADNESS<a class="headerlink" href="#madness" title="Permalink to this headline"></a></h3>
+<h3>MADNESS<a class="headerlink" href="#madness" title="Link to this heading"></a></h3>
 <p>URL: <a class="reference external" href="https://github.com/m-a-d-n-e-s-s/madness">https://github.com/m-a-d-n-e-s-s/madness</a></p>
 <p>MADNESS is a somewhat monolithic project containing:</p>
 <ul class="simple">
@@ -312,7 +315,7 @@ asynchronous operations and provides task schedulers.</p>
 - No hardware introspection</p>
 </section>
 <section id="parsec">
-<h3>PaRSEC<a class="headerlink" href="#parsec" title="Permalink to this headline"></a></h3>
+<h3>PaRSEC<a class="headerlink" href="#parsec" title="Link to this heading"></a></h3>
 <p>URL: <a class="reference external" href="https://github.com/ICLDisco/parsec">https://github.com/ICLDisco/parsec</a></p>
 <p>PaRSEC provides architecture aware scheduling and management of micro-tasks.
 PaRSEC accomplishes this by modeling the algorithm as a directed acyclic task
@@ -327,7 +330,7 @@ hardware and its current loads.</p>
 - Relatively poor documentation</p>
 </section>
 <section id="upc">
-<h3>UPC++<a class="headerlink" href="#upc" title="Permalink to this headline"></a></h3>
+<h3>UPC++<a class="headerlink" href="#upc" title="Link to this heading"></a></h3>
 <p>URL: <a class="reference external" href="https://bitbucket.org/berkeleylab/upcxx/wiki/Home">https://bitbucket.org/berkeleylab/upcxx/wiki/Home</a></p>
 <p>UPC++ is a partitioned global address space programming model designed to be
 interoperable with MPI and most threading runtimes (including those for GPUs).
@@ -343,7 +346,7 @@ futures, puts, and gets (the put/get calls can be for data or functions).</p>
 </section>
 </section>
 <section id="parallelzone-strategy">
-<h2>ParallelZone Strategy<a class="headerlink" href="#parallelzone-strategy" title="Permalink to this headline"></a></h2>
+<h2>ParallelZone Strategy<a class="headerlink" href="#parallelzone-strategy" title="Link to this heading"></a></h2>
 <p>Ultimately we couldn’t find any runtime library out there which does everything
 we want. However, just about every piece of functionality we want can be found
 in an existing library. Writing a runtime system is a lengthy endeavor and we
@@ -356,7 +359,7 @@ stable, ParallelZone represents a hedge meant to insulate downstream repos from
 this turbulence.</p>
 </section>
 <section id="parallelzone-architecture">
-<h2>ParallelZone Architecture<a class="headerlink" href="#parallelzone-architecture" title="Permalink to this headline"></a></h2>
+<h2>ParallelZone Architecture<a class="headerlink" href="#parallelzone-architecture" title="Link to this heading"></a></h2>
 <p>ParallelZone has the following pieces:</p>
 <ul class="simple">
 <li><p>Parallel Runtime</p></li>
@@ -365,7 +368,7 @@ this turbulence.</p>
 <li><p>Utilities</p></li>
 </ul>
 <section id="parallel-runtime">
-<h3>Parallel Runtime<a class="headerlink" href="#parallel-runtime" title="Permalink to this headline"></a></h3>
+<h3>Parallel Runtime<a class="headerlink" href="#parallel-runtime" title="Link to this heading"></a></h3>
 <p>This is the biggest piece of ParallelZone. It is envisioned as containing the
 routines and infrastructure needed to support task-based parallelism with SIMD
 APIs. Infrastructure wise it should be capable of scheduling (including load
@@ -375,7 +378,7 @@ perspective of the remainder of the stack is that the APIs remain consistent
 and that they support whatever we need.</p>
 </section>
 <section id="hardware">
-<h3>Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline"></a></h3>
+<h3>Hardware<a class="headerlink" href="#hardware" title="Link to this heading"></a></h3>
 <p>This piece is made up of classes representing hardware components (CPU, RAM,
 GPU, etc.). Like the parallel runtime, the classes in this piece are responsible
 for providing the remainder of the stack with consistent stable APIs. Under the
@@ -383,14 +386,14 @@ hood the classes can be implemented by calling other libraries or via system
 calls.</p>
 </section>
 <section id="logger">
-<h3>Logger<a class="headerlink" href="#logger" title="Permalink to this headline"></a></h3>
+<h3>Logger<a class="headerlink" href="#logger" title="Link to this heading"></a></h3>
 <p>To a certain extent the logger is just a special case of a hardware element
 (typically it’s either redirected to standard out or a file). However, since
 logging plays such a crucial role in debugging, profiling, and monitoring
 program behavior it makes sense to call this component out specifically.</p>
 </section>
 <section id="utilities">
-<h3>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline"></a></h3>
+<h3>Utilities<a class="headerlink" href="#utilities" title="Link to this heading"></a></h3>
 <p>This is basically a grab bag of functionality needed to support the other
 pieces. The primary piece is serialization.</p>
 </section>

@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing ParallelZone’s ResourceSet Class &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -93,11 +96,11 @@
            <div itemprop="articleBody">
              
   <section id="designing-parallelzone-s-resourceset-class">
-<span id="resource-set-design"></span><h1>Designing ParallelZone’s ResourceSet Class<a class="headerlink" href="#designing-parallelzone-s-resourceset-class" title="Permalink to this headline"></a></h1>
+<span id="resource-set-design"></span><h1>Designing ParallelZone’s ResourceSet Class<a class="headerlink" href="#designing-parallelzone-s-resourceset-class" title="Link to this heading"></a></h1>
 <p>The need for a <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> class grew out of <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a>.
 This page fleshes the details out more.</p>
 <section id="why-do-we-need-the-resourceset-class">
-<h2>Why Do We Need the ResourceSet Class?<a class="headerlink" href="#why-do-we-need-the-resourceset-class" title="Permalink to this headline"></a></h2>
+<h2>Why Do We Need the ResourceSet Class?<a class="headerlink" href="#why-do-we-need-the-resourceset-class" title="Link to this heading"></a></h2>
 <p>When viewing resources we need to know the total set of resources, the
 responsibility of which falls to <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code>, and also which of those
 resources are local/directly accessible by the current process. As discussed
@@ -106,7 +109,7 @@ abstraction for delimiting which resources are part of the process’s local
 runtime environment.</p>
 </section>
 <section id="resourceset-responsibilities">
-<h2>ResourceSet Responsibilities<a class="headerlink" href="#resourceset-responsibilities" title="Permalink to this headline"></a></h2>
+<h2>ResourceSet Responsibilities<a class="headerlink" href="#resourceset-responsibilities" title="Link to this heading"></a></h2>
 <p>As enumerated in <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a> the main responsibilities of
 the <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> is to:</p>
 <ol class="arabic simple">
@@ -128,11 +131,11 @@ the <code class="docutils literal notranslate"><span class="pre">ResourceSet</sp
 </ol>
 </section>
 <section id="resourceset-architecture">
-<h2>ResourceSet Architecture<a class="headerlink" href="#resourceset-architecture" title="Permalink to this headline"></a></h2>
+<h2>ResourceSet Architecture<a class="headerlink" href="#resourceset-architecture" title="Link to this heading"></a></h2>
 <figure class="align-center" id="id1">
 <span id="fig-resource-set"></span><img alt="../../_images/resource_set.png" src="../../_images/resource_set.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 8 </span><span class="caption-text">Illustration of the ResourceSet class and its major members.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 8 </span><span class="caption-text">Illustration of the ResourceSet class and its major members.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p><a class="reference internal" href="#fig-resource-set"><span class="std std-numref">Fig. 8</span></a> shows the architecture of the <code class="docutils literal notranslate"><span class="pre">ResourceSet</span></code> class.
@@ -168,7 +171,7 @@ awkward.</p></li>
 <p>are not yet implemented or designed.</p>
 </section>
 <section id="additional-notes">
-<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline"></a></h2>
+<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Link to this heading"></a></h2>
 <p>We right now assume one RAM bank. Should we generalize this?</p>
 </section>
 </section>

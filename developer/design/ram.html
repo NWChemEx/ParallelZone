@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Designing RAM Class &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../_static/tabs.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../_static/tabs.css?v=a5c4661c" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -93,12 +96,12 @@
            <div itemprop="articleBody">
              
   <section id="designing-ram-class">
-<span id="ram-design"></span><h1>Designing RAM Class<a class="headerlink" href="#designing-ram-class" title="Permalink to this headline"></a></h1>
+<span id="ram-design"></span><h1>Designing RAM Class<a class="headerlink" href="#designing-ram-class" title="Link to this heading"></a></h1>
 <p>As stated in <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a> we need abstractions to represent
 the physical hardware resources on the computer. The <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class models
 the random-access memory of a node.</p>
 <section id="why-do-we-need-the-ram-class">
-<h2>Why Do We Need the RAM Class?<a class="headerlink" href="#why-do-we-need-the-ram-class" title="Permalink to this headline"></a></h2>
+<h2>Why Do We Need the RAM Class?<a class="headerlink" href="#why-do-we-need-the-ram-class" title="Link to this heading"></a></h2>
 <p>From the perspective of ParallelZone, the <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class is primarily envisioned
 as a means for users to specify the start/end points of one-to-all and
 all-to-one MPI operations. End users can also use the <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class to
@@ -106,7 +109,7 @@ figure out how much memory the process has access to, which can be useful for
 selecting among algorithms (space-time trade-off).</p>
 </section>
 <section id="design-considerations">
-<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Permalink to this headline"></a></h2>
+<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Link to this heading"></a></h2>
 <p>Including the considerations brought up in <a class="reference internal" href="parallel_runtime.html#parallel-runtime-design"><span class="std std-ref">Designing ParallelZone’s Parallel Runtime</span></a> and
 <a class="reference internal" href="resource_set.html#resource-set-design"><span class="std std-ref">Designing ParallelZone’s ResourceSet Class</span></a> we see the <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class needing to consider:</p>
 <ol class="arabic simple">
@@ -124,11 +127,11 @@ selecting among algorithms (space-time trade-off).</p>
 </ol>
 </section>
 <section id="architecture-of-the-ram-class">
-<h2>Architecture of the RAM Class<a class="headerlink" href="#architecture-of-the-ram-class" title="Permalink to this headline"></a></h2>
+<h2>Architecture of the RAM Class<a class="headerlink" href="#architecture-of-the-ram-class" title="Link to this heading"></a></h2>
 <figure class="align-center" id="id1">
 <span id="fig-ram"></span><img alt="../../_images/ram.png" src="../../_images/ram.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 9 </span><span class="caption-text">High-level architecture of the RAM class.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-number">Fig. 9 </span><span class="caption-text">High-level architecture of the RAM class.</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p><a class="reference internal" href="#fig-ram"><span class="std std-numref">Fig. 9</span></a> illustrates the main pieces of the <code class="docutils literal notranslate"><span class="pre">RAM</span></code> class. These
@@ -143,73 +146,73 @@ allocator class tied to the <code class="docutils literal notranslate"><span cla
 </ol>
 </section>
 <section id="proposed-apis">
-<h2>Proposed APIs<a class="headerlink" href="#proposed-apis" title="Permalink to this headline"></a></h2>
+<h2>Proposed APIs<a class="headerlink" href="#proposed-apis" title="Link to this heading"></a></h2>
 <p>Examples of all-to-one communication with ParallelZone.</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span><span class="w"></span>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span>
 
 <span class="c1">// Each resource set generates some data</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_data</span><span class="p">();</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_data</span><span class="p">();</span>
 
 <span class="c1">// This gathers the data from all members of rt to resource set 0</span>
 <span class="c1">// Type U is deducible from type of data w/ template meta-programming</span>
-<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">gather</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">gather</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
 
-<span class="k">if</span><span class="p">(</span><span class="n">output</span><span class="p">.</span><span class="n">has_value</span><span class="p">()){</span><span class="w"></span>
+<span class="k">if</span><span class="p">(</span><span class="n">output</span><span class="p">.</span><span class="n">has_value</span><span class="p">()){</span>
 <span class="w">    </span><span class="c1">// This only gets run on rank 0</span>
 <span class="w">    </span><span class="c1">// Do stuff with output</span>
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 
 <span class="c1">// Reductions are similar, but take an op to apply</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_op_to_apply</span><span class="p">();</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">op</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_op_to_apply</span><span class="p">();</span>
 
 <span class="c1">// Similar to gather, this reduces the data down to rank 0&#39;s RAM</span>
 <span class="c1">// Type V is deducible from type of op w/ template meta-programming</span>
-<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">reduce</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">);</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">reduce</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">);</span>
 
-<span class="k">if</span><span class="p">(</span><span class="n">output2</span><span class="p">.</span><span class="n">has_value</span><span class="p">()){</span><span class="w"></span>
+<span class="k">if</span><span class="p">(</span><span class="n">output2</span><span class="p">.</span><span class="n">has_value</span><span class="p">()){</span>
 <span class="w">    </span><span class="c1">// This only gets run on rank 0</span>
 <span class="w">    </span><span class="c1">// Do stuff with output2</span>
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>Examples of one-to-all communications</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span>
 
-<span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
-<span class="k">if</span><span class="p">(</span><span class="n">me</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)){</span><span class="w"></span>
-<span class="w">    </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fill_in_data</span><span class="p">();</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="n">me</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)){</span>
+<span class="w">    </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">fill_in_data</span><span class="p">();</span>
+<span class="p">}</span>
 
 <span class="c1">// Value of data is ignored for ranks not equal to 0</span>
-<span class="k">auto</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+<span class="k">auto</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">scatter</span><span class="p">(</span><span class="n">data</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Examples of one-to-one communications</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span>
 
-<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">fill_in_data</span><span class="p">())</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
-<span class="k">if</span><span class="p">(</span><span class="n">me</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)){</span><span class="w"></span>
-<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">fill_in_data</span><span class="p">());</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="k">decltype</span><span class="p">(</span><span class="n">fill_in_data</span><span class="p">())</span><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="p">;</span>
+<span class="k">if</span><span class="p">(</span><span class="n">me</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">)){</span>
+<span class="w">    </span><span class="n">data</span><span class="p">.</span><span class="n">emplace</span><span class="p">(</span><span class="n">fill_in_data</span><span class="p">());</span>
+<span class="p">}</span>
 
 <span class="c1">// Sends the data to rank 1, type U determined by template meta-programming</span>
-<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;some tag&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">U</span><span class="o">&gt;</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">ram</span><span class="p">().</span><span class="n">send</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;some tag&quot;</span><span class="p">);</span>
 
-<span class="k">if</span><span class="p">(</span><span class="n">output</span><span class="p">.</span><span class="n">has_value</span><span class="p">()){</span><span class="w"></span>
+<span class="k">if</span><span class="p">(</span><span class="n">output</span><span class="p">.</span><span class="n">has_value</span><span class="p">()){</span>
 <span class="w">    </span><span class="c1">// This part is only run by rank 1</span>
 <span class="w">    </span><span class="c1">// Do stuff with output</span>
-<span class="p">}</span><span class="w"></span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>The proposed APIs admittedly have some MIMD aspects to them in the
 “if I’m root” logic. This could be hidden in a scheduler. Something like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">future_2_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">schedule</span><span class="p">([](){</span><span class="k">return</span><span class="w"> </span><span class="n">fill_in_data</span><span class="p">();});</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">future_2_data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">schedule</span><span class="p">([](){</span><span class="k">return</span><span class="w"> </span><span class="n">fill_in_data</span><span class="p">();});</span>
 </pre></div>
 </div>
 <p>With the idea being the underlying scheduler chooses the root.</p>
 </section>
 <section id="additional-notes">
-<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Permalink to this headline"></a></h2>
+<h2>Additional Notes<a class="headerlink" href="#additional-notes" title="Link to this heading"></a></h2>
 <p>The RAM class is presently a stub. In particular PAPI is not hooked up.</p>
 </section>
 </section>

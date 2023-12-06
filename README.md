@@ -14,10 +14,10 @@
   ~ limitations under the License.
 -->
 
-[![Actions](https://github.com/NWChemEx-Project/ParallelZone/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx-Project/ParallelZone)
+[![Actions](https://github.com/NWChemEx/ParallelZone/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx/ParallelZone)
 
 <!-- TODO: Uncomment when code coverage works again
-[![Codecov](https://codecov.io/github/NWChemEx-Project/ParallelZone/branch/master/graphs/sunburst.svg?token=gdemefzIU7)](https://codecov.io/github/NWChemEx-Project/ParallelZone/branch/master)
+[![Codecov](https://codecov.io/github/NWChemEx/ParallelZone/branch/master/graphs/sunburst.svg?token=gdemefzIU7)](https://codecov.io/github/NWChemEx/ParallelZone/branch/master)
 -->
 
 # ParallelZone
@@ -30,7 +30,7 @@ dynamically based on the needs of its consumers (primarily the NWChemEx
 project).
 
 A more detailed, user-centric, description of the project can be found
-[here](https://nwchemex-project.github.io/ParallelZone/about.html).
+[here](https://nwchemex.github.io/ParallelZone/about.html).
 
 # Features
 
@@ -44,21 +44,21 @@ ParallelZone relies on CMake for configuring and building, meaning that
 installation is usually achieved via a variation on:
 
 ```.cmake
-git clone https://github.com/NWChemEx-Project/ParallelZone
+git clone https://github.com/NWChemEx/ParallelZone
 cd ParallelZone
 cmake -H. -Bbuild -D...
 cmake --build build
 cmake --build build --target install
 ```
 More detailed install instructions can be found
-[here](https://nwchemex-project.github.io/ParallelZone/install.html).
+[here](https://nwchemex.github.io/ParallelZone/install.html).
 
 # Contributing
 
-- [Contributor Guidelines](https://github.com/NWChemEx-Project/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md)
-- [Contributor License Agreement](https://github.com/NWChemEx-Project/.github/blob/master/.github/CONTRIBUTING.md#contributor-license-agreement-cla)
-- [Developer Documentation](https://nwchemex-project.github.io/ParallelZone/developer/index.html)
-- [Code of Conduct](https://github.com/NWChemEx-Project/.github/blob/master/.github/CODE_OF_CONDUCT.md)
+- [Contributor Guidelines](https://github.com/NWChemEx/.github/blob/1a883d64519f62da7c8ba2b28aabda7c6f196b2c/.github/CONTRIBUTING.md)
+- [Contributor License Agreement](https://github.com/NWChemEx/.github/blob/master/.github/CONTRIBUTING.md#contributor-license-agreement-cla)
+- [Developer Documentation](https://nwchemex.github.io/ParallelZone/developer/index.html)
+- [Code of Conduct](https://github.com/NWChemEx/.github/blob/master/.github/CODE_OF_CONDUCT.md)
 
 # Acknowledgments
 

@@ -70,7 +70,7 @@ What is the Scope of the ParallelZone?
 
 ParallelZone will ultimately be a C++ library used by most pieces of our
 software stack. We also want ParallelZone to be useful to developers/projects
-outside the NWChemEx-Project organization, and in turn we want to limit bloat.
+outside the NWChemEx organization, and in turn we want to limit bloat.
 
 To that end we limit ParallelZone to low-level, very general C++ operations
 focused on parallelism and supporting that parallelism. Notably this excludes

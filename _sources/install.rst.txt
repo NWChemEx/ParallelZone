@@ -46,7 +46,7 @@ In many cases ParallelZone can be installed by:
 
 .. code-block:: console
 
-   git clone https://github.com/NWChemEx-Project/ParallelZone
+   git clone https://github.com/NWChemEx/ParallelZone
    cd ParallelZone
    cmake -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE=<path/to/toolchain/file> \
                      -DCMAKE_INSTALL_PREFIX=<where/to/install/parallelzone>

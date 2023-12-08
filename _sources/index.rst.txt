@@ -50,4 +50,4 @@ Planned features:
    user/index
    developer/index
 
-`C++ API <https://nwchemex-project.github.io/ParallelZone/parallelzone_cxx_api/index.html>`_
+`C++ API <https://nwchemex.github.io/ParallelZone/parallelzone_cxx_api/index.html>`_

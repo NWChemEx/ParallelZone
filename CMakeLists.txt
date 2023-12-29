@@ -55,6 +55,8 @@ set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 # Project dependencies
 set(project_depends "MPI::MPI_CXX")
 
+find_package(MPI REQUIRED)
+
 include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
@@ -98,8 +100,6 @@ nwx_add_pybind11_module(
     DEPENDS "${PROJECT_NAME}"
 )
 
-find_package(MPI REQUIRED)
-
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
     set(PYTHON_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
@@ -138,7 +138,6 @@ if("${BUILD_TESTING}")
         py_doc_snippets "${PYTHON_TEST_DIR}/doc_snippets/test_doc_snippets.py"
     )
 
-    #find_package(MPI REQUIRED)
     add_test(
         NAME "test_pz_under_mpi"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"

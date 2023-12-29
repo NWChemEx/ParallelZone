@@ -58,23 +58,6 @@ set(project_depends "MPI::MPI_CXX")
 include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
-#TODO: Make sure MADworld uses the Cereal we build
-#cmaize_find_or_build_dependency(
-#    MADNESS
-#    URL github.com/m-a-d-n-e-s-s/madness
-#    VERSION ${NWX_MADNESS_VERSION}
-#    BUILD_TARGET MADworld
-#    FIND_TARGET MADworld
-#    CMAKE_ARGS ENABLE_UNITTESTS=OFF
-#               MADNESS_BUILD_MADWORLD_ONLY=ON
-#               MADNESS_ENABLE_CEREAL=ON
-#               ENABLE_MKL=OFF
-#               ENABLE_ACML=OFF
-#               BUILD_TESTING=OFF
-#)
-#
-#list(APPEND project_depends MADNESS)
-
 cmaize_find_or_build_dependency(
     spdlog
     URL github.com/gabime/spdlog

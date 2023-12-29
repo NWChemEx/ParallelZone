@@ -16,7 +16,6 @@
 
 #pragma once
 #include "resource_set_pimpl.hpp"
-//#include <madness/world/MADworld.h>
 
 /** @file runtime_view_pimpl.ipp
  *
@@ -38,7 +37,6 @@ inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_mpi, comm_type comm,
 
 inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
     if(!m_did_i_start_mpi) return;
-    //madness::finalize();
     MPI_Finalize();
 }
 

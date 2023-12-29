@@ -31,17 +31,9 @@ namespace {
 // Basically a ternary statement dispatching on whether we need to initialize
 // MPI or not
 auto start_mpi(int argc, char** argv, const MPI_Comm& comm) {
-    //bool mpi_initialized = madness::initialized();
-    //bool mpi_initialized = Is_initialized();
     int mpi_initialized;
     MPI_Initialized(&(mpi_initialized)); 
-    if(!mpi_initialized) {
-        //if(comm == MPI_COMM_WORLD)
-            //madness::initialize(argc, argv, true);
-            MPI_Init(&argc, &argv);
-        //else
-        //    madness::initialize(argc, argv, comm, true);
-    }
+    if(!mpi_initialized) MPI_Init(&argc, &argv);
     mpi_helpers::CommPP commpp(comm);
 
     auto log         = LoggerFactory::default_global_logger(commpp.me());

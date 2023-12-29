@@ -16,6 +16,7 @@
 
 #include "detail_/resource_set_pimpl.hpp"
 #include "detail_/runtime_view_pimpl.hpp"
+#include <mpi.h>
 #include <parallelzone/logging/logger_factory.hpp>
 
 // N.B. AFAIK the only way a RuntimeView can have no PIMPL is if an exception is
@@ -30,13 +31,9 @@ namespace {
 // Basically a ternary statement dispatching on whether we need to initialize
 // MPI or not
 auto start_mpi(int argc, char** argv, const MPI_Comm& comm) {
-    bool mpi_initialized = madness::initialized();
-    if(!mpi_initialized) {
-        if(comm == MPI_COMM_WORLD)
-            madness::initialize(argc, argv, true);
-        else
-            madness::initialize(argc, argv, comm, true);
-    }
+    int mpi_initialized;
+    MPI_Initialized(&(mpi_initialized));
+    if(!mpi_initialized) MPI_Init(&argc, &argv);
     mpi_helpers::CommPP commpp(comm);
 
     auto log         = LoggerFactory::default_global_logger(commpp.me());

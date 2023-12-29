@@ -16,8 +16,8 @@
 
 #include "detail_/resource_set_pimpl.hpp"
 #include "detail_/runtime_view_pimpl.hpp"
-#include <parallelzone/logging/logger_factory.hpp>
 #include <mpi.h>
+#include <parallelzone/logging/logger_factory.hpp>
 
 // N.B. AFAIK the only way a RuntimeView can have no PIMPL is if an exception is
 //      thrown in the ctor, the user catches the exception, and uses the
@@ -32,7 +32,7 @@ namespace {
 // MPI or not
 auto start_mpi(int argc, char** argv, const MPI_Comm& comm) {
     int mpi_initialized;
-    MPI_Initialized(&(mpi_initialized)); 
+    MPI_Initialized(&(mpi_initialized));
     if(!mpi_initialized) MPI_Init(&argc, &argv);
     mpi_helpers::CommPP commpp(comm);
 

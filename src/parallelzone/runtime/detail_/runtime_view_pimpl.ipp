@@ -25,6 +25,12 @@
 
 namespace parallelzone::runtime::detail_ {
 
+void callback_register_stack(std::function<void()> cb_func, std::stack<std::function<void()>> m_stack) {
+    m_stack.push(cb_func);
+}
+
+void mpi_finalize_wrapper() { MPI_Finalize();  }
+
 inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_mpi, comm_type comm,
                                           logger_type logger) :
   m_did_i_start_mpi(did_i_start_mpi),
@@ -33,11 +39,20 @@ inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_mpi, comm_type comm,
   m_resource_sets_() {
     // Pre-populate the current rank's resource set.
     instantiate_resource_set_(m_comm.me());
+
+  /// Register the finalize callbacks
+  callback_register_stack(std::function<void()>{&mpi_finalize_wrapper}, m_callbacks_final);
 }
 
 inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
     if(!m_did_i_start_mpi) return;
-    MPI_Finalize();
+    //MPI_Finalize();
+
+    /// call the initialize callback functions
+    while(!m_callbacks_final.empty()) {
+      m_callbacks_final.top()(); 
+      m_callbacks_final.pop();   
+    } 
 }
 
 inline RuntimeViewPIMPL::const_resource_set_reference RuntimeViewPIMPL::at(

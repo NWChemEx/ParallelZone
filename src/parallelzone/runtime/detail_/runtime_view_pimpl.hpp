@@ -126,6 +126,13 @@ struct RuntimeViewPIMPL {
     /// Pointer to the logger (pointer to allow logging with const ResourceSets)
     logger_pointer m_plogger;
 
+    /// Stacks of initialize and finalize callback functions
+    //std::stack<std::function<void()>> m_callbacks_init;
+    std::stack<std::function<void()>> m_callbacks_final;
+
+    /// Register callback functions to stacks
+    void callback_register_stack(std::function<void()> cb_func, std::stack<std::function<void()>> m_stack);
+
 private:
     /** @brief Wraps the process of instantiating a ResourceSet.
      *

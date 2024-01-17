@@ -25,7 +25,7 @@
 
 namespace parallelzone::runtime::detail_ {
 
-void callback_register_stack(std::function<void()> cb_func, std::stack<std::function<void()>> m_stack) {
+inline void RuntimeViewPIMPL::callback_register_stack(std::function<void()> cb_func, std::stack<std::function<void()>> m_stack) {
     m_stack.push(cb_func);
 }
 

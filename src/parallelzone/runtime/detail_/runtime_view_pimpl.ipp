@@ -42,17 +42,18 @@ inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_mpi, comm_type comm,
     // Pre-populate the current rank's resource set.
     instantiate_resource_set_(m_comm.me());
 
-  /// Register the finalize callbacks
-  stack_callback(std::function<void()>{&mpi_finalize_wrapper}, m_callbacks_final);
+    /// Register the finalize callbacks
+    stack_callback(std::function<void()>{&mpi_finalize_wrapper},
+                   m_callbacks_final);
 }
 
 inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
     if(!m_did_i_start_mpi) return;
     /// call the initialize callback functions
     while(!m_callbacks_final.empty()) {
-      m_callbacks_final.top()(); 
-      m_callbacks_final.pop();   
-    } 
+        m_callbacks_final.top()();
+        m_callbacks_final.pop();
+    }
 }
 
 inline RuntimeViewPIMPL::const_resource_set_reference RuntimeViewPIMPL::at(

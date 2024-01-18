@@ -15,8 +15,8 @@
  */
 
 #pragma once
-#include <parallelzone/runtime/runtime_view.hpp>
 #include <functional>
+#include <parallelzone/runtime/runtime_view.hpp>
 #include <stack>
 
 namespace parallelzone::runtime::detail_ {
@@ -129,11 +129,12 @@ struct RuntimeViewPIMPL {
     logger_pointer m_plogger;
 
     /// Stacks of initialize and finalize callback functions
-    //std::stack<std::function<void()>> m_callbacks_init;
+    // std::stack<std::function<void()>> m_callbacks_init;
     std::stack<std::function<void()>> m_callbacks_final;
 
     /// Register callback functions to stacks
-    void stack_callback(std::function<void()> cb_func, std::stack<std::function<void()>> m_stack);
+    void stack_callback(std::function<void()> cb_func,
+                        std::stack<std::function<void()>> m_stack);
 
 private:
     /** @brief Wraps the process of instantiating a ResourceSet.

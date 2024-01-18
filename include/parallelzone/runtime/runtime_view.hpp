@@ -97,6 +97,9 @@ public:
     /// Type of a pointer to the PIMPL
     using pimpl_pointer = std::shared_ptr<pimpl_type>;
 
+    /// Type of a callback function
+    using callback_function_type = std::function<void()>;
+
     // -------------------------------------------------------------------------
     // -- Ctors, Assignment, Dtor
     // -------------------------------------------------------------------------
@@ -489,6 +492,17 @@ public:
     // -------------------------------------------------------------------------
     // -- Utility methods
     // -------------------------------------------------------------------------
+
+    /** @brief Adds callback function to call when destructed.
+     * 
+     *  Adds functions to a stack of callback functions that will be called
+     *  upone the destruction of *this.
+     *
+     *  @param[in] cb_func The callback function to add to the stack
+     *
+     *  @throw None No throw guarantee.
+     */
+    void stack_callback(callback_function_type cb_func);
 
     /** @brief Swaps the state of *this with @p other.
      *

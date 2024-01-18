@@ -79,6 +79,18 @@ class RuntimeViewTestCase(unittest.TestCase):
         self.assertIsNotNone(self.defaulted.logger())
         self.defaulted.logger().log("Hello").log("world")
 
+    def test_stack_callback(self):
+        is_running = [True]
+        
+        def turn_off(val=is_running):
+            val[0] = False
+        
+        falls_off = pz.runtime.RuntimeView()
+        falls_off.stack_callback(turn_off)
+        del falls_off
+
+        self.assertFalse(is_running[0])
+
     def test_comparisons(self):
         self.assertEqual(self.defaulted, pz.runtime.RuntimeView())
         self.assertFalse(self.defaulted != pz.runtime.RuntimeView())

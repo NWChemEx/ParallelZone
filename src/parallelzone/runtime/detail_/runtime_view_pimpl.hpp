@@ -64,6 +64,9 @@ struct RuntimeViewPIMPL {
     /// Ultimately a typedef of RuntimeView::argv_type
     using argv_type = parent_type::argv_type;
 
+    /// Type of a callback function
+    using callback_function_type = parent_type::callback_function_type;
+
     /** @brief Initializes *this from the provided MPI communicator.
      *
      *  Constructor for the RuntimeViewPIMPL class.
@@ -119,6 +122,14 @@ struct RuntimeViewPIMPL {
      */
     bool operator==(const RuntimeViewPIMPL& rhs) const noexcept;
 
+    /** @brief Adds callback function to call when destructed.
+     *
+     *  @param[in] cb_func The callback function to add to the stack
+     *
+     *  @throw None No throw guarantee.
+     */
+    void stack_callback(callback_function_type cb_func);
+
     /// Did this PIMPL start MPI?
     bool m_did_i_start_mpi;
 
@@ -127,14 +138,6 @@ struct RuntimeViewPIMPL {
 
     /// Pointer to the logger (pointer to allow logging with const ResourceSets)
     logger_pointer m_plogger;
-
-    /// Stacks of initialize and finalize callback functions
-    // std::stack<std::function<void()>> m_callbacks_init;
-    std::stack<std::function<void()>> m_callbacks_final;
-
-    /// Register callback functions to stacks
-    void stack_callback(std::function<void()> cb_func,
-                        std::stack<std::function<void()>>& m_stack);
 
 private:
     /** @brief Wraps the process of instantiating a ResourceSet.
@@ -168,6 +171,9 @@ private:
      *  ResourceSet in a const function we can do that.
      */
     mutable resource_set_container m_resource_sets_;
+
+    /// Stacks of initialize and finalize callback functions
+    std::stack<std::function<void()>> m_callbacks_final;
 };
 
 } // namespace parallelzone::runtime::detail_

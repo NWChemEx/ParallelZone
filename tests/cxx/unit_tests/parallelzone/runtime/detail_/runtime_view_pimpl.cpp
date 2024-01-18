@@ -73,4 +73,19 @@ TEST_CASE("RuntimeViewPIMPL") {
             REQUIRE_FALSE(pimpl == other);
         }
     }
+
+    SECTION("stack_callback") {
+        // Simulate initialization
+        bool is_running = true;
+
+        // Simulate finalize callback
+        auto turn_off = [&is_running](){ is_running = false; };
+
+        // RuntimeViewPIMPL will fall off, call the turn_off lambda
+        {
+            RuntimeViewPIMPL falls_off(false, comm, log);
+            falls_off.stack_callback(turn_off);
+        }
+        REQUIRE(is_running == false);
+    }
 }

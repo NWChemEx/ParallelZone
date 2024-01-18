@@ -208,6 +208,21 @@ TEST_CASE("RuntimeView") {
         }
     }
 
+    SECTION("stack_callback") {
+        // Simulate initialization
+        bool is_running = true;
+
+        // Simulate finalize callback
+        auto turn_off = [&is_running](){ is_running = false; };
+
+        // RuntimeView will fall off, call the turn_off lambda
+        {
+            RuntimeView falls_off;
+            falls_off.stack_callback(turn_off);
+        }
+        REQUIRE(is_running == false);
+    }
+
     SECTION("gather") {
         using data_type = std::vector<std::string>;
         data_type local_data(3, "Hello");

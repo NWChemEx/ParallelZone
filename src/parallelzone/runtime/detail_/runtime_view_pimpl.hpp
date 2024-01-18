@@ -133,7 +133,8 @@ struct RuntimeViewPIMPL {
     std::stack<std::function<void()>> m_callbacks_final;
 
     /// Register callback functions to stacks
-    void stack_callback(std::function<void()> cb_func, std::stack<std::function<void()>>& m_stack);
+    void stack_callback(std::function<void()> cb_func,
+                        std::stack<std::function<void()>>& m_stack);
 
 private:
     /** @brief Wraps the process of instantiating a ResourceSet.

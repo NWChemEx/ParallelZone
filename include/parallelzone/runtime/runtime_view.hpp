@@ -494,7 +494,7 @@ public:
     // -------------------------------------------------------------------------
 
     /** @brief Adds callback function to call when destructed.
-     * 
+     *
      *  Adds functions to a stack of callback functions that will be called
      *  upone the destruction of *this.
      *

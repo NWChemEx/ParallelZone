@@ -79,7 +79,7 @@ TEST_CASE("RuntimeViewPIMPL") {
         bool is_running = true;
 
         // Simulate finalize callback
-        auto turn_off = [&is_running](){ is_running = false; };
+        auto turn_off = [&is_running]() { is_running = false; };
 
         // RuntimeViewPIMPL will fall off, call the turn_off lambda
         {

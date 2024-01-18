@@ -213,7 +213,7 @@ TEST_CASE("RuntimeView") {
         bool is_running = true;
 
         // Simulate finalize callback
-        auto turn_off = [&is_running](){ is_running = false; };
+        auto turn_off = [&is_running]() { is_running = false; };
 
         // RuntimeView will fall off, call the turn_off lambda
         {

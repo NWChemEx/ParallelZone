@@ -126,7 +126,8 @@ struct RuntimeViewPIMPL {
      *
      *  @param[in] cb_func The callback function to add to the stack
      *
-     *  @throw None No throw guarantee.
+     *  @throw std::bad_alloc if there is problem adding the function to the
+     *         stack. Strong throw guarantee.
      */
     void stack_callback(callback_function_type cb_func);
 
@@ -173,7 +174,7 @@ private:
     mutable resource_set_container m_resource_sets_;
 
     /// Stacks of initialize and finalize callback functions
-    std::stack<std::function<void()>> m_callbacks_final;
+    std::stack<callback_function_type> m_callbacks_final;
 };
 
 } // namespace parallelzone::runtime::detail_

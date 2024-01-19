@@ -121,7 +121,7 @@ RuntimeView::logger_reference RuntimeView::logger() const {
 // -----------------------------------------------------------------------------
 
 void RuntimeView::stack_callback(callback_function_type cb_func) {
-    pimpl_().stack_callback(cb_func);
+    pimpl_().stack_callback(std::move(cb_func));
 }
 
 void RuntimeView::swap(RuntimeView& other) noexcept {

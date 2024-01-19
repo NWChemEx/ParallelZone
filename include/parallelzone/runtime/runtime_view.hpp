@@ -496,11 +496,13 @@ public:
     /** @brief Adds callback function to call when destructed.
      *
      *  Adds functions to a stack of callback functions that will be called
-     *  upone the destruction of *this.
+     *  upone the destruction of *this. N.b., the functions are called LIFO.
      *
-     *  @param[in] cb_func The callback function to add to the stack
+     *  @param[in] cb_func The callback function with the signature 'void()'
+     *                     to add to the stack.
      *
-     *  @throw None No throw guarantee.
+     *  @throw std::bad_alloc if there is problem adding the function to the
+     *         stack. Strong throw guarantee.               
      */
     void stack_callback(callback_function_type cb_func);
 

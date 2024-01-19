@@ -208,7 +208,7 @@ TEST_CASE("RuntimeView") {
         }
     }
 
-    SECTION("stack_callback") {
+    SECTION("stack_callback I") {
         // Simulate initialization
         bool is_running = true;
 
@@ -221,6 +221,25 @@ TEST_CASE("RuntimeView") {
             falls_off.stack_callback(turn_off);
         }
         REQUIRE(is_running == false);
+    }
+
+    SECTION("stack_callback II") {
+        // Testing the stack
+        int func_no = 1;
+
+        // Two lambdas to be pushed into the stack
+        auto call_back_1 = [&func_no]() { func_no += 1; };
+        auto call_back_2 = [&func_no]() { func_no *= 2; };
+
+        // RuntimeView will fall off, call the turn_off lambda
+        {
+            RuntimeView rt;
+            rt.stack_callback(call_back_1);
+            rt.stack_callback(call_back_2);
+        }
+
+        REQUIRE(func_no == 3);
+
     }
 
     SECTION("gather") {

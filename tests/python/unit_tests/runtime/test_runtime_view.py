@@ -79,7 +79,7 @@ class RuntimeViewTestCase(unittest.TestCase):
         self.assertIsNotNone(self.defaulted.logger())
         self.defaulted.logger().log("Hello").log("world")
 
-    def test_stack_callback(self):
+    def test_stack_callback_1(self):
         is_running = [True]
         
         def turn_off(val=is_running):
@@ -90,6 +90,22 @@ class RuntimeViewTestCase(unittest.TestCase):
         del falls_off
 
         self.assertFalse(is_running[0])
+
+    def test_stack_callback_2(self):
+        func_no = [1]
+
+        def call_back_1(val=func_no):
+            val[0] = val[0] + 1
+
+        def call_back_2(val=func_no):
+            val[0] = val[0] * 2
+
+        rt = pz.runtime.RuntimeView()
+        rt.stack_callback(call_back_1)
+        rt.stack_callback(call_back_2)
+        del rt
+
+        self.assertEqual(func_no[0], 3)
 
     def test_comparisons(self):
         self.assertEqual(self.defaulted, pz.runtime.RuntimeView())

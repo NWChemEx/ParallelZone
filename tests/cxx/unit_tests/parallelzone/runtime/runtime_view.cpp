@@ -239,7 +239,6 @@ TEST_CASE("RuntimeView") {
         }
 
         REQUIRE(func_no == 3);
-
     }
 
     SECTION("gather") {

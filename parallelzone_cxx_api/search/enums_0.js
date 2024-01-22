@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['severity_309',['severity',['../classparallelzone_1_1Logger.html#aec1dbefabe1e4532efe43221b672c658',1,'parallelzone::Logger']]]
+  ['severity_313',['severity',['../classparallelzone_1_1Logger.html#aec1dbefabe1e4532efe43221b672c658',1,'parallelzone::Logger']]]
 ];

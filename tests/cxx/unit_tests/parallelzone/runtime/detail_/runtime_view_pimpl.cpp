@@ -73,4 +73,37 @@ TEST_CASE("RuntimeViewPIMPL") {
             REQUIRE_FALSE(pimpl == other);
         }
     }
+
+    SECTION("stack_callback I") {
+        // Simulate initialization
+        bool is_running = true;
+
+        // Simulate finalize callback
+        auto turn_off = [&is_running]() { is_running = false; };
+
+        // RuntimeViewPIMPL will fall off, call the turn_off lambda
+        {
+            RuntimeViewPIMPL falls_off(false, comm, log);
+            falls_off.stack_callback(turn_off);
+        }
+        REQUIRE(is_running == false);
+    }
+
+    SECTION("stack_callback II") {
+        // Testing the stack
+        int func_no = 1;
+
+        // Two lambdas to be pushed into the stack
+        auto call_back_1 = [&func_no]() { func_no += 1; };
+        auto call_back_2 = [&func_no]() { func_no *= 2; };
+
+        // RuntimeViewPIMPL will fall off, call the turn_off lambda
+        {
+            RuntimeViewPIMPL rt_pimpl(false, comm, log);
+            rt_pimpl.stack_callback(call_back_1);
+            rt_pimpl.stack_callback(call_back_2);
+        }
+
+        REQUIRE(func_no == 3);
+    }
 }

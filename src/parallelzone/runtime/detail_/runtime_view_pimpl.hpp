@@ -15,7 +15,9 @@
  */
 
 #pragma once
+#include <functional>
 #include <parallelzone/runtime/runtime_view.hpp>
+#include <stack>
 
 namespace parallelzone::runtime::detail_ {
 
@@ -61,6 +63,9 @@ struct RuntimeViewPIMPL {
 
     /// Ultimately a typedef of RuntimeView::argv_type
     using argv_type = parent_type::argv_type;
+
+    /// Type of a callback function
+    using callback_function_type = parent_type::callback_function_type;
 
     /** @brief Initializes *this from the provided MPI communicator.
      *
@@ -117,6 +122,15 @@ struct RuntimeViewPIMPL {
      */
     bool operator==(const RuntimeViewPIMPL& rhs) const noexcept;
 
+    /** @brief Adds callback function to call when destructed.
+     *
+     *  @param[in] cb_func The callback function to add to the stack
+     *
+     *  @throw std::bad_alloc if there is problem adding the function to the
+     *         stack. Strong throw guarantee.
+     */
+    void stack_callback(callback_function_type cb_func);
+
     /// Did this PIMPL start MPI?
     bool m_did_i_start_mpi;
 
@@ -158,6 +172,9 @@ private:
      *  ResourceSet in a const function we can do that.
      */
     mutable resource_set_container m_resource_sets_;
+
+    /// Stacks of initialize and finalize callback functions
+    std::stack<callback_function_type> m_callbacks_final_;
 };
 
 } // namespace parallelzone::runtime::detail_

@@ -16,6 +16,7 @@
 
 #include "runtime.hpp"
 #include <parallelzone/runtime/runtime_view.hpp>
+#include <pybind11/functional.h>
 #include <pybind11/operators.h>
 
 namespace parallelzone::runtime {
@@ -31,6 +32,7 @@ void export_runtime_view(pybind11::module_& m) {
       .def("my_resource_set", &RuntimeView::my_resource_set)
       .def("count", &RuntimeView::count)
       .def("logger", &RuntimeView::logger)
+      .def("stack_callback", &RuntimeView::stack_callback)
       .def(pybind11::self == pybind11::self)
       .def(pybind11::self != pybind11::self);
 }

@@ -26,7 +26,7 @@
 namespace parallelzone::runtime::detail_ {
 
 inline void RuntimeViewPIMPL::stack_callback(callback_function_type cb_func) {
-    m_callbacks_final.push(std::move(cb_func));
+    m_callbacks_final_.push(std::move(cb_func));
 }
 
 inline void mpi_finalize_wrapper() { MPI_Finalize(); }
@@ -48,9 +48,9 @@ inline RuntimeViewPIMPL::RuntimeViewPIMPL(bool did_i_start_mpi, comm_type comm,
 
 inline RuntimeViewPIMPL::~RuntimeViewPIMPL() noexcept {
     /// call the initialize callback functions
-    while(!m_callbacks_final.empty()) {
-        m_callbacks_final.top()();
-        m_callbacks_final.pop();
+    while(!m_callbacks_final_.empty()) {
+        m_callbacks_final_.top()();
+        m_callbacks_final_.pop();
     }
 }
 

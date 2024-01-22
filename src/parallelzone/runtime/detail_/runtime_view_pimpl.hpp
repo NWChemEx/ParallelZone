@@ -174,7 +174,7 @@ private:
     mutable resource_set_container m_resource_sets_;
 
     /// Stacks of initialize and finalize callback functions
-    std::stack<callback_function_type> m_callbacks_final;
+    std::stack<callback_function_type> m_callbacks_final_;
 };
 
 } // namespace parallelzone::runtime::detail_

@@ -502,7 +502,7 @@ public:
      *                     to add to the stack.
      *
      *  @throw std::bad_alloc if there is problem adding the function to the
-     *         stack. Strong throw guarantee.               
+     *         stack. Strong throw guarantee.
      */
     void stack_callback(callback_function_type cb_func);
 

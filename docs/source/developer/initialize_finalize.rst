@@ -202,7 +202,7 @@ with callbacks:
        library_a::initialize(rv.mpi_comm());
 
        // Register that rv must call finalize upon destruction
-       rv.stack_callback(library_a::finalize());
+       rv.stack_callback(library_a::finalize);
        return rv; // Must keep rv alive
    }
 

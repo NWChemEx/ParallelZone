@@ -50,11 +50,11 @@ number one supercomputer in the world, or anything in between.
 #. MPI compatability.
 #. Flexibility of backend.
 
+.. _parallel_manage_design:
+
 ***************************************************************
 How Does RuntimeView Manage the Parallel Computing Environment?
 ***************************************************************
-
-.. _design_parallel_manage:
 
 Currently when a RuntimeView object is created, the standard MPI function 
 ``MPI_Init()`` is called to initialize the parallel computing 
@@ -103,7 +103,7 @@ addresses the above consideration by (numbering is from above):
 #. MPI_Init() is called directly to initialize the parallel computing 
    environment. Callbacks are implemented to allow different finalize function
    to clean the parallel computing environment. For the design considerations 
-   on callbacks please see :ref:`design_parallel_manage`.
+   on callbacks please see :ref:`parallel_manage_design`.
 
 #. The use of the PIMPL design allows us to hide many of the backend types. It
    also facilitates writing an implementation for a different backend down the

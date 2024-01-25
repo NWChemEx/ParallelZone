@@ -28,3 +28,4 @@ developers may also find the more general `NWChemEx Developer Documentation
    :caption: Contents:
 
    design/index
+   initialize_finalize

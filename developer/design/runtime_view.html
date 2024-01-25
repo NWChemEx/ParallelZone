@@ -65,6 +65,7 @@
 <li class="toctree-l3"><a class="reference internal" href="index.html#utilities-design">Utilities Design</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../initialize_finalize.html">Understanding Runtime Initialization/Finalization</a></li>
 </ul>
 </li>
 </ul>
@@ -122,8 +123,14 @@ System-wide state will be accessible from <code class="docutils literal notransl
 </ul>
 </li>
 <li><p>Multi-process operations need to go through <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code>.</p></li>
-<li><p>MPI compatability.</p></li>
+<li><p>MPI compatibility.</p></li>
 <li><p>Flexibility of backend.</p></li>
+<li><p>Setup/teardown of parallel resources</p>
+<ul class="simple">
+<li><p>See <a class="reference internal" href="../initialize_finalize.html#understanding-runtime-initialization-finalization"><span class="std std-ref">Understanding Runtime Initialization/Finalization</span></a> for more
+details, but basically we need callbacks.</p></li>
+</ul>
+</li>
 </ol>
 </section>
 <section id="runtimeview-architecture">
@@ -146,10 +153,20 @@ is maintained by <code class="docutils literal notranslate"><span class="pre">Re
 <li><p>This facilitates selecting start/end points.</p></li>
 </ul>
 </li>
-<li><p>MADNESS is built on MPI. MPI is exposed through MADNESS.</p></li>
+<li><p>MPI support happens via the <code class="docutils literal notranslate"><span class="pre">CommPP</span></code> class.</p></li>
 <li><p>The use of the PIMPL design allows us to hide many of the backend types. It
 also facilitates writing an implementation for a different backend down the
 line (although the API would need to change too).</p></li>
+<li><p>Storing of callbacks allows us to tie the lifetime of the <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> to
+the teardown of parallel resources, i.e., <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> will automatically
+finalize any parallel resources which depend on <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> before
+finalizing itself.</p>
+<ul class="simple">
+<li><p>Note, finalization callbacks are stored in a stack to ensure a controlled
+teardown order as is usually needed for libraries with initialize/finalize
+functions.</p></li>
+</ul>
+</li>
 </ol>
 <p>Some finer points:</p>
 <ul class="simple">
@@ -165,7 +182,7 @@ except that of the root process.</p></li>
 </section>
 <section id="proposed-apis">
 <h2>Proposed APIs<a class="headerlink" href="#proposed-apis" title="Link to this heading"></a></h2>
-<p>Examples of all-to-all communications</p>
+<p>Examples of all-to-all communications:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">auto</span><span class="w"> </span><span class="n">rt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">get_runtime</span><span class="p">();</span>
 
 <span class="k">auto</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generate_data</span><span class="p">();</span>
@@ -175,6 +192,18 @@ except that of the root process.</p></li>
 
 <span class="c1">// This is an all reduce</span>
 <span class="k">auto</span><span class="w"> </span><span class="n">output2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rt</span><span class="p">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">op</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Example of tying another library’s parallel runtime teardown to the lifetime of
+a <code class="docutils literal notranslate"><span class="pre">RuntimeView</span></code> (note this is only relevant when ParallelZone starts MPI):</p>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="c1">// Create a RuntimeView object</span>
+<span class="n">RuntimeView</span><span class="w"> </span><span class="n">rt</span><span class="p">;</span>
+
+<span class="c1">// Initialize the other library</span>
+<span class="n">other_library_initialize</span><span class="p">();</span>
+
+<span class="c1">// Register the corresponding finalization routine with the RuntimeView</span>
+<span class="n">rt</span><span class="p">.</span><span class="n">stack_callback</span><span class="p">(</span><span class="n">other_library_finalize</span><span class="p">);</span>
 </pre></div>
 </div>
 <div class="admonition note">

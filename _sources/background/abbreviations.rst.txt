@@ -76,6 +76,18 @@ MPI
 Message Passing Interface. An API standard defining functions and utilities
 useful for writing software using distributed parallelism.
 
+.. _raii:
+
+****
+RAII
+****
+
+Resource acquisition is initialization. In C++ RAII has come to mean that
+resources (such as memory, file handles, basically anything whose use needs to
+be managed) should be tied to the lifetime of an object. This ensures that when
+the object is deleted the resources are released, which in turn helps avoid
+leaks.
+
 .. _simd:
 
 ****

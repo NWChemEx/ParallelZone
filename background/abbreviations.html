@@ -55,6 +55,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#mimd">MIMD</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#misd">MISD</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#mpi">MPI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#raii">RAII</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simd">SIMD</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sisd">SISD</a></li>
 </ul>
@@ -128,14 +129,22 @@ executes different instructions on the same data.</p>
 <p>Message Passing Interface. An API standard defining functions and utilities
 useful for writing software using distributed parallelism.</p>
 </section>
+<section id="raii">
+<span id="id7"></span><h2>RAII<a class="headerlink" href="#raii" title="Link to this heading"></a></h2>
+<p>Resource acquisition is initialization. In C++ RAII has come to mean that
+resources (such as memory, file handles, basically anything whose use needs to
+be managed) should be tied to the lifetime of an object. This ensures that when
+the object is deleted the resources are released, which in turn helps avoid
+leaks.</p>
+</section>
 <section id="simd">
-<span id="id7"></span><h2>SIMD<a class="headerlink" href="#simd" title="Link to this heading"></a></h2>
+<span id="id8"></span><h2>SIMD<a class="headerlink" href="#simd" title="Link to this heading"></a></h2>
 <p>Single instruction, multiple data. Refers to a parallelism model in which each
 parallel worker has different data, but executes the same function on that
 data.</p>
 </section>
 <section id="sisd">
-<span id="id8"></span><h2>SISD<a class="headerlink" href="#sisd" title="Link to this heading"></a></h2>
+<span id="id9"></span><h2>SISD<a class="headerlink" href="#sisd" title="Link to this heading"></a></h2>
 <p>Single instruction, single data. Serial execution as expressed by the remaining
 permutation of single/multiple instruction(s), single/multiple data.</p>
 </section>

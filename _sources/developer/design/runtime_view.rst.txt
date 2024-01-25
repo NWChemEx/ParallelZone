@@ -47,8 +47,12 @@ number one supercomputer in the world, or anything in between.
    - Hardware
 
 #. Multi-process operations need to go through ``RuntimeView``.
-#. MPI compatability.
+#. MPI compatibility.
 #. Flexibility of backend.
+#. Setup/teardown of parallel resources
+
+   - See :ref:`understanding_runtime_initialization_finalization` for more
+     details, but basically we need callbacks.
 
 ************************
 RuntimeView Architecture
@@ -72,10 +76,20 @@ addresses the above consideration by (numbering is from above):
      ``GPU`` objects in a particular ``ResourceSet``.
    - This facilitates selecting start/end points.
 
-#. MADNESS is built on MPI. MPI is exposed through MADNESS.
+#. MPI support happens via the ``CommPP`` class.
+
 #. The use of the PIMPL design allows us to hide many of the backend types. It
    also facilitates writing an implementation for a different backend down the
    line (although the API would need to change too).
+
+#. Storing of callbacks allows us to tie the lifetime of the ``RuntimeView`` to
+   the teardown of parallel resources, i.e., ``RuntimeView`` will automatically
+   finalize any parallel resources which depend on ``RuntimeView`` before
+   finalizing itself.
+
+   - Note, finalization callbacks are stored in a stack to ensure a controlled
+     teardown order as is usually needed for libraries with initialize/finalize
+     functions.
 
 Some finer points:
 
@@ -92,7 +106,7 @@ Some finer points:
 Proposed APIs
 *************
 
-Examples of all-to-all communications
+Examples of all-to-all communications:
 
 .. code-block:: c++
 
@@ -105,6 +119,21 @@ Examples of all-to-all communications
 
    // This is an all reduce
    auto output2 = rt.reduce(data, op);
+
+
+Example of tying another library's parallel runtime teardown to the lifetime of
+a ``RuntimeView`` (note this is only relevant when ParallelZone starts MPI):
+
+.. code-block:: c++
+
+   // Create a RuntimeView object
+   RuntimeView rt;
+
+   // Initialize the other library
+   other_library_initialize();
+
+   // Register the corresponding finalization routine with the RuntimeView
+   rt.stack_callback(other_library_finalize);
 
 .. note::
 

@@ -99,10 +99,10 @@
 into establishing ParallelZone’s scope. Here we lay out the architecture of
 ParallelZone. The overall architecture is shown in
 Figure: <a class="reference internal" href="#architecture"><span class="std std-numref">Fig. 5</span></a>.</p>
-<figure class="align-center" id="id5">
+<figure class="align-center" id="id4">
 <span id="architecture"></span><img alt="../../_images/architecture.png" src="../../_images/architecture.png" />
 <figcaption>
-<p><span class="caption-number">Fig. 5 </span><span class="caption-text">Software architecture of ParallelZone.</span><a class="headerlink" href="#id5" title="Link to this image"></a></p>
+<p><span class="caption-number">Fig. 5 </span><span class="caption-text">Software architecture of ParallelZone.</span><a class="headerlink" href="#id4" title="Link to this image"></a></p>
 </figcaption>
 </figure>
 <p>The outer box labeled “ParallelZone” delimits the contents of the ParallelZone
@@ -123,18 +123,7 @@ presently a placeholder.</p>
 sections are ordered such that they work their way up the software stack.</p>
 <section id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Link to this heading"></a></h2>
-<p>ParallelZone presently has two major dependencies: MADNESS and Cereal.</p>
-<section id="madness">
-<h3>MADNESS<a class="headerlink" href="#madness" title="Link to this heading"></a></h3>
-<p>MADNESS is at the moment a dependency primarily because Tiled Array uses it.
-ParallelZone doesn’t actually leverage any of the MADNESS features.</p>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>The decision to put MADNESS under ParallelZone, as opposed to straight MPI,
-should be revisited. If no MADNESS features will be used in ParallelZone it
-should be dropped.</p>
-</div>
-</section>
+<p>ParallelZone presently has one dependency: Cereal.</p>
 <section id="cereal">
 <h3>Cereal<a class="headerlink" href="#cereal" title="Link to this heading"></a></h3>
 <p>See <a class="reference internal" href="serialization.html#serialization-design"><span class="std std-ref">Serialization Design</span></a> for decisions underpinning the usage of Cereal.
@@ -154,7 +143,7 @@ which are then used by the rest of ParallelZone.</p>
 </section>
 <section id="hardware">
 <h2>Hardware<a class="headerlink" href="#hardware" title="Link to this heading"></a></h2>
-<div class="admonition-todo admonition" id="id2">
+<div class="admonition-todo admonition" id="id1">
 <p class="admonition-title">Todo</p>
 <p>Document design and link to it.</p>
 </div>
@@ -168,14 +157,14 @@ important results, timing information, or problems.</p>
 </section>
 <section id="schedulers">
 <h2>Schedulers<a class="headerlink" href="#schedulers" title="Link to this heading"></a></h2>
-<div class="admonition-todo admonition" id="id3">
+<div class="admonition-todo admonition" id="id2">
 <p class="admonition-title">Todo</p>
 <p>Write this section when more design has gone into the Schedulers.</p>
 </div>
 </section>
 <section id="serialization">
 <h2>Serialization<a class="headerlink" href="#serialization" title="Link to this heading"></a></h2>
-<div class="admonition-todo admonition" id="id4">
+<div class="admonition-todo admonition" id="id3">
 <p class="admonition-title">Todo</p>
 <p>Design the user-facing serialization API.</p>
 </div>

@@ -52,19 +52,7 @@ sections are ordered such that they work their way up the software stack.
 Dependencies
 ************
 
-ParallelZone presently has two major dependencies: MADNESS and Cereal.
-
-MADNESS
-=======
-
-MADNESS is at the moment a dependency primarily because Tiled Array uses it.
-ParallelZone doesn't actually leverage any of the MADNESS features.
-
-.. todo::
-
-   The decision to put MADNESS under ParallelZone, as opposed to straight MPI,
-   should be revisited. If no MADNESS features will be used in ParallelZone it
-   should be dropped.
+ParallelZone presently has one dependency: Cereal.
 
 Cereal
 ======

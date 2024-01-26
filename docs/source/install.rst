@@ -112,8 +112,7 @@ compiler you want to use.
 MPI
 ===
 
-ParallelZone's heaviest dependency is MADNESS which implicitly brings in
-:ref:`mpi`. Users must have an MPI distribution installed prior to building
+Users must have an MPI distribution installed prior to building
 ParallelZone. MPI distributions exist in most major OS-level package managers,
 so check your package manager before installing MPI from source.
 

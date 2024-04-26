@@ -16,7 +16,9 @@
 import parallelzone as pz
 import unittest
 
+
 class TestResourceSetTestCase(unittest.TestCase):
+
     def test_resourceset(self):
         rv = pz.runtime.RuntimeView()
 

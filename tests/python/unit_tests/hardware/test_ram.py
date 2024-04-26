@@ -16,7 +16,9 @@
 import parallelzone as pz
 import unittest
 
+
 class RAMTestCase(unittest.TestCase):
+
     def setUp(self):
         """
         For unit testing purposes we "create" two RAM instances:
@@ -26,8 +28,8 @@ class RAMTestCase(unittest.TestCase):
         """
 
         self.defaulted = pz.hardware.RAM()
-        self.rv        = pz.runtime.RuntimeView()
-        self.rs        = self.rv.my_resource_set()
+        self.rv = pz.runtime.RuntimeView()
+        self.rs = self.rv.my_resource_set()
         self.has_value = self.rs.ram()
 
     def test_default_ctor(self):

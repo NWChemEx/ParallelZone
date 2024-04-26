@@ -16,7 +16,9 @@
 import parallelzone as pz
 import unittest
 
+
 class TestRAMTestCase(unittest.TestCase):
+
     def test_ram(self):
         rv = pz.runtime.RuntimeView()
 

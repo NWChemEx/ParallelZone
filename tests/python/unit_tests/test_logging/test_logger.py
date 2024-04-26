@@ -17,6 +17,7 @@
 import parallelzone as pz
 import unittest
 
+
 class LoggerTestCase(unittest.TestCase):
     """
     Testing the logger from Python is difficult because we have not
@@ -30,9 +31,11 @@ class LoggerTestCase(unittest.TestCase):
         severity = pz.Logger.severity
 
         self.defaulted = pz.Logger()
-        self.log       = pz.runtime.RuntimeView().logger()
-        self.severities = [severity.trace, severity.debug, severity.info,
-                           severity.warn, severity.error, severity.critical]
+        self.log = pz.runtime.RuntimeView().logger()
+        self.severities = [
+            severity.trace, severity.debug, severity.info, severity.warn,
+            severity.error, severity.critical
+        ]
 
     def test_set_severity(self):
         self.defaulted.set_severity(pz.Logger.severity.debug)
@@ -96,7 +99,6 @@ class LoggerTestCase(unittest.TestCase):
 
         self.defaulted.log("Hello").log("World!")
         self.log.log("Hello").log("World!")
-
 
     def test_log2(self):
         """

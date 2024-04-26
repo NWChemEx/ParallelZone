@@ -16,10 +16,13 @@
 import parallelzone as pz
 import unittest
 
+
 def get_runtime():
     return pz.runtime.RuntimeView()
 
+
 class TestQuickstartTestCase(unittest.TestCase):
+
     def test_quickstart(self):
         # 99.9% of the time you will be using an existing RuntimeView
         rt = get_runtime()

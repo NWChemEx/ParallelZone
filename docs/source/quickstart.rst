@@ -35,7 +35,7 @@ the current process. As an example:
 
       .. literalinclude:: ../../tests/python/doc_snippets/test_quickstart.py
          :language: python
-         :lines: 24-34
+         :lines: 24-25, 27-28, 30-31, 33-34
          :dedent: 8
 
 The ``RuntimeView`` also allows you to access other ``ResourceSet`` instances.

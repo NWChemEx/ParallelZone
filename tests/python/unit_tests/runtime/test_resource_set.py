@@ -16,7 +16,9 @@
 import parallelzone as pz
 import unittest
 
+
 class ResourceSetTestCase(unittest.TestCase):
+
     def test_default_ctor(self):
         self.assertTrue(self.defaulted.empty())
         self.assertFalse(self.defaulted.is_mine())
@@ -57,7 +59,6 @@ class ResourceSetTestCase(unittest.TestCase):
         self.assertEqual(my_ram, default_ram)
         self.assertNotEqual(self.rs.ram(), default_ram)
 
-
     def test_logger(self):
         """
         Default-initialized instances have no logger object, so we check that
@@ -90,5 +91,5 @@ class ResourceSetTestCase(unittest.TestCase):
 
     def setUp(self):
         self.defaulted = pz.runtime.ResourceSet()
-        self.rv        = pz.runtime.RuntimeView()
-        self.rs        = self.rv.my_resource_set()
+        self.rv = pz.runtime.RuntimeView()
+        self.rs = self.rv.my_resource_set()

@@ -35,7 +35,7 @@ the current process. As an example:
 
       .. literalinclude:: ../../tests/python/doc_snippets/test_quickstart.py
          :language: python
-         :lines: 24-34
+         :lines: 27-37
          :dedent: 8
 
 The ``RuntimeView`` also allows you to access other ``ResourceSet`` instances.
@@ -94,7 +94,7 @@ environment. Say we wanted to know how much total RAM each resource set has:
 
       .. literalinclude:: ../../tests/python/doc_snippets/test_quickstart.py
          :language: python
-         :lines: 36-37
+         :lines: 39-40
          :dedent: 8
 
 To summarize:

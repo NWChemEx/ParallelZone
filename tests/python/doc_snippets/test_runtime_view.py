@@ -16,7 +16,9 @@
 import parallelzone as pz
 import unittest
 
+
 class TestRuntimeViewTestCase(unittest.TestCase):
+
     def test_runtimeview(self):
         rv = pz.runtime.RuntimeView()
         result = [0, 1, 2]

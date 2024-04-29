@@ -17,7 +17,7 @@
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../_static/documentation_options.js?v=5929fcd5"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
         <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../_static/tabs.js?v=3030b3cb"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -110,11 +110,10 @@ turn are containers of hardware including <code class="docutils literal notransl
 <span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">my_ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">my_resource_set</span><span class="p">().</span><span class="n">ram</span><span class="p">();</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp"># Get the RAM for rank 0</span>
-<span class="n">rank_0_ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">()</span>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">rv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pz</span><span class="p">.</span><span class="n">runtime</span><span class="p">.</span><span class="n">RuntimeView</span><span class="p">()</span>
 
-<span class="cp"># Get the RAM local to the current process</span>
-<span class="n">my_ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">my_resource_set</span><span class="p">().</span><span class="n">ram</span><span class="p">()</span>
+<span class="cp"># Get the RAM for rank 0</span>
+<span class="n">rank_0_ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="n">ram</span><span class="p">()</span>
 </pre></div>
 </div>
 </div></div>
@@ -129,9 +128,9 @@ it has by using member functions, for example:</p>
 <span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="n">my_total_ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_ram</span><span class="p">.</span><span class="n">total_space</span><span class="p">();</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="cp"># How much total ram does rank_0_ram and my_ram have?</span>
-<span class="n">rank_0_total</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rank_0_ram</span><span class="p">.</span><span class="n">total_space</span><span class="p">()</span>
-<span class="n">my_total_ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">my_ram</span><span class="p">.</span><span class="n">total_space</span><span class="p">()</span>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">my_ram</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rv</span><span class="p">.</span><span class="n">my_resource_set</span><span class="p">().</span><span class="n">ram</span><span class="p">()</span>
+
+<span class="cp"># How much total ram does rank_0_ram and my_ram have?</span>
 </pre></div>
 </div>
 </div></div>

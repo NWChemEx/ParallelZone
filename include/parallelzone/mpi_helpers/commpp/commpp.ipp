@@ -90,7 +90,7 @@ typename CommPP::gather_return_type<T> CommPP::gather_t_(
         auto serialized_size = buffer.size() / size();
 
         value_type vec(size());
-        for(size_type i = 0, j = 0; i < buffer.size();
+        for(size_type i = 0, j = 0; i < size_type(buffer.size());
             i += serialized_size, ++j) {
             const_binary_reference view(binary_rv->data() + i, serialized_size);
             vec[j] = std::move(from_binary_view<clean_type>(view));
@@ -121,8 +121,6 @@ typename CommPP::gather_return_type<T> CommPP::gatherv_t_(
     using clean_type  = std::decay_t<T>;
     using return_type = typename CommPP::gather_return_type<clean_type>;
     using value_type  = typename return_type::value_type;
-
-    const bool am_i_root = root.has_value() ? me() == *root : true;
 
     if constexpr(needs_serialized_v<clean_type>) {
         //  Do gather in binary
@@ -165,8 +163,7 @@ typename CommPP::gather_return_type<T> CommPP::gatherv_t_(
         constexpr auto t_size = sizeof(element_type);
 
         value_type vec;
-        auto n_elements = buffer.size() / t_size;
-        for(size_type i = 0; i < buffer.size(); i += t_size) {
+        for(size_type i = 0; i < size_type(buffer.size()); i += t_size) {
             const_binary_reference view(buffer.data() + i, t_size);
             vec.emplace_back(std::move(from_binary_view<element_type>(view)));
         }

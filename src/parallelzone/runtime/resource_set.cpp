@@ -51,8 +51,8 @@ ResourceSet::size_type ResourceSet::mpi_rank() const noexcept {
 
 bool ResourceSet::is_mine() const noexcept {
     if(!has_pimpl_()) return false;
-    if(mpi_rank() == MPI_PROC_NULL) return false;
-    return m_pimpl_->m_my_mpi.me() == mpi_rank();
+    if(mpi_rank() == size_type(MPI_PROC_NULL)) return false;
+    return size_type(m_pimpl_->m_my_mpi.me()) == mpi_rank();
 }
 
 bool ResourceSet::has_ram() const noexcept { return has_pimpl_() && !null(); }
@@ -71,7 +71,9 @@ ResourceSet::logger_reference ResourceSet::logger() const {
 // -- Utility methods
 // -----------------------------------------------------------------------------
 
-bool ResourceSet::null() const noexcept { return mpi_rank() == MPI_PROC_NULL; }
+bool ResourceSet::null() const noexcept {
+    return mpi_rank() == size_type(MPI_PROC_NULL);
+}
 
 bool ResourceSet::empty() const noexcept {
     // TODO: Need to check for loggers

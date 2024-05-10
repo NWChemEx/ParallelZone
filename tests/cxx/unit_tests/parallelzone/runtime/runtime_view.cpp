@@ -164,7 +164,7 @@ TEST_CASE("RuntimeView") {
         REQUIRE_THROWS_AS(null.at(0), std::out_of_range);
         auto n_resource_sets = defaulted.size();
         logger_type log;
-        for(auto i = 0; i < n_resource_sets; ++i) {
+        for(decltype(n_resource_sets) i = 0; i < n_resource_sets; ++i) {
             auto corr = runtime::detail_::make_resource_set(i, comm, log);
             REQUIRE(defaulted.at(i) == corr);
             REQUIRE(argc_argv.at(i) == corr);

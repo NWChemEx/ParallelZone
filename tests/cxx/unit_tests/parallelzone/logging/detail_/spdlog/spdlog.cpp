@@ -51,7 +51,7 @@ TEST_CASE("SpdlogPIMPL") {
                                          severity::info,  severity::warn,
                                          severity::error, severity::critical};
 
-        for(auto i = 0; i < all_levels.size(); ++i) {
+        for(decltype(all_levels.size()) i = 0; i < all_levels.size(); ++i) {
             SECTION("level = " + std::to_string(i)) {
                 ss_log.set_severity(all_levels[i]);
                 ss_log.log(severity::trace, "Hello trace");

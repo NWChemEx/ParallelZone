@@ -21,7 +21,7 @@
 
 namespace parallelzone::runtime {
 namespace detail_ {
-class RuntimeViewPIMPL;
+struct RuntimeViewPIMPL;
 }
 
 /** @brief A view of the execution environment.

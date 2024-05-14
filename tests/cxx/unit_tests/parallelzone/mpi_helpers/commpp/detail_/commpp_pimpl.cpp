@@ -49,9 +49,7 @@ auto make_data(std::size_t min, std::size_t max) {
  */
 template<typename T>
 void gather_kernel(std::size_t chunk_size, root_type root, pimpl_type& comm) {
-    using reference       = pimpl_type::binary_reference;
     using const_reference = pimpl_type::const_binary_reference;
-    using size_type       = std::size_t;
 
     auto am_i_root = root.has_value() ? comm.me() == *root : true;
     auto data      = make_data<T>(0, chunk_size * comm.size());
@@ -83,7 +81,6 @@ void gather_buffer_kernel(std::size_t chunk_size, root_type root,
                           pimpl_type& comm) {
     using reference       = pimpl_type::binary_reference;
     using const_reference = pimpl_type::const_binary_reference;
-    using size_type       = std::size_t;
 
     bool am_i_root = root.has_value() ? comm.me() == *root : true;
 
@@ -128,7 +125,7 @@ void gatherv_kernel(std::size_t chunk_size, root_type root, pimpl_type& comm) {
         REQUIRE(rv.has_value());
         std::vector<T> corr;
         std::vector<int> sizes_corr; // Sizes (in bytes)
-        for(std::size_t rank = 0; rank < n_ranks; ++rank) {
+        for(std::size_t rank = 0; rank < std::size_t(n_ranks); ++rank) {
             sizes_corr.push_back((chunk_size + rank) * sizeof(T));
             for(std::size_t i = 0; i < chunk_size + rank; ++i)
                 corr.push_back(T(i + 1));
@@ -202,7 +199,8 @@ TEST_CASE("CommPPPIMPL") {
             gatherv_kernel<double>(chunk_size, std::nullopt, comm);
         }
 
-        for(std::size_t root = 0; root < std::min(n_ranks, 5); ++root) {
+        std::size_t min = std::min(n_ranks, 5);
+        for(std::size_t root = 0; root < min; ++root) {
             auto root_str = " root = " + std::to_string(root);
             SECTION("gather" + root_str + chunk_str) {
                 gather_kernel<std::byte>(chunk_size, root, comm);

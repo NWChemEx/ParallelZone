@@ -28,10 +28,11 @@ using namespace parallelzone::runtime;
  *
  */
 TEST_CASE("ResourceSet") {
-    using pimpl_type     = ResourceSet::pimpl_type;
-    using comm_type      = parallelzone::mpi_helpers::CommPP;
-    using logger_type    = ResourceSet::logger_type;
-    const auto null_rank = MPI_PROC_NULL;
+    using pimpl_type  = ResourceSet::pimpl_type;
+    using comm_type   = parallelzone::mpi_helpers::CommPP;
+    using logger_type = ResourceSet::logger_type;
+    using size_type   = ResourceSet::size_type;
+    const size_type null_rank(MPI_PROC_NULL);
 
     logger_type log;
 
@@ -59,7 +60,7 @@ TEST_CASE("ResourceSet") {
             REQUIRE_FALSE(null.is_mine());
             REQUIRE_FALSE(null.has_ram());
 
-            REQUIRE(rs.mpi_rank() == comm.me());
+            REQUIRE(rs.mpi_rank() == size_type(comm.me()));
             REQUIRE(rs.is_mine());
             REQUIRE(rs.has_ram()); // I presume all computers have RAM...
         }
@@ -112,7 +113,7 @@ TEST_CASE("ResourceSet") {
     SECTION("mpi_rank") {
         REQUIRE(defaulted.mpi_rank() == null_rank);
         REQUIRE(null.mpi_rank() == null_rank);
-        REQUIRE(rs.mpi_rank() == comm.me());
+        REQUIRE(rs.mpi_rank() == size_type(comm.me()));
     }
 
     SECTION("is_mine") {

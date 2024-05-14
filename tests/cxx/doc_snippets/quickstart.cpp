@@ -50,6 +50,7 @@ TEST_CASE("quick start") {
     // Figure out how much RAM the local process has access to
     const auto my_ram = my_rs.ram().total_space();
 
+    REQUIRE(my_ram >= 0);
     REQUIRE(n_rs > 0);
     if(my_rs_rank == 0) {
         REQUIRE(ranks_on_0);

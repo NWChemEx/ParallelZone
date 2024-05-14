@@ -22,7 +22,7 @@
 namespace parallelzone::runtime {
 
 namespace detail_ {
-class ResourceSetPIMPL;
+struct ResourceSetPIMPL;
 }
 
 /** @brief A set of runtime resources.

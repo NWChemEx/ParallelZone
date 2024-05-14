@@ -57,4 +57,6 @@ TEST_CASE("ram") {
     } else {
         REQUIRE_FALSE(all_data);
     }
+    REQUIRE(rank_0_total >= 0);
+    REQUIRE(my_total_ram >= 0);
 }

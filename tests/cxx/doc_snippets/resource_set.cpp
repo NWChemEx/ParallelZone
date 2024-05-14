@@ -57,4 +57,6 @@ TEST_CASE("resource_set") {
     REQUIRE(is_local == am_i_supposed_to_be_0);
     REQUIRE(do_i_have_ram);
     REQUIRE(does_0_have_ram);
+    REQUIRE(my_ram.total_space() >= 0);
+    REQUIRE(ram_0.total_space() >= 0);
 }

@@ -22,9 +22,6 @@ using size_type     = std::size_t;
 using opt_root_type = std::optional<size_type>;
 
 TEST_CASE("CommPP") {
-    using value_type      = CommPP::binary_type;
-    using const_reference = CommPP::const_binary_reference;
-
     auto& world = testing::PZEnvironment::comm_world();
 
     CommPP defaulted;
@@ -35,8 +32,8 @@ TEST_CASE("CommPP") {
     MPI_Comm_size(comm.comm(), &corr_size);
     MPI_Comm_rank(comm.comm(), &corr_rank);
 
-    auto n_ranks = comm.size();
-    auto me      = comm.me();
+    auto n_ranks = size_type(comm.size());
+    auto me      = size_type(comm.me());
 
     SECTION("CTors") {
         SECTION("Default") {
@@ -125,13 +122,13 @@ TEST_CASE("CommPP") {
     SECTION("size()") {
         REQUIRE(defaulted.size() == 0);
         REQUIRE(null.size() == 0);
-        REQUIRE(n_ranks == corr_size);
+        REQUIRE(n_ranks == size_type(corr_size));
     }
 
     SECTION("me()") {
         REQUIRE(defaulted.me() == MPI_PROC_NULL);
         REQUIRE(null.me() == MPI_PROC_NULL);
-        REQUIRE(me == corr_rank);
+        REQUIRE(me == size_type(corr_rank));
     }
 
     SECTION("swap") {
@@ -168,16 +165,15 @@ TEST_CASE("CommPP") {
     // These loops test various MPI operations under different roots and
     // different message sizes.
 
-    // All of these types must be constructible given a single std::size_t
-    const int max_ranks              = 5;
-    const std::size_t max_chunk_size = 5;
-    using needs_serialized           = std::string;
-    using no_serialization           = double;
+    // All of these types must be constructible given a single size_type
+    const size_type max_ranks      = 5;
+    const size_type max_chunk_size = 5;
+    using needs_serialized         = std::string;
+    using no_serialization         = double;
 
-    for(std::size_t chunk_size = 1; chunk_size < max_chunk_size; ++chunk_size) {
+    for(size_type chunk_size = 1; chunk_size < max_chunk_size; ++chunk_size) {
         auto chunk_str = " chunk = " + std::to_string(chunk_size);
         auto begin     = me * chunk_size;
-        auto end       = begin + chunk_size;
 
         SECTION("all gather" + chunk_str) {
             SECTION("needs serialized") {
@@ -205,7 +201,7 @@ TEST_CASE("CommPP") {
                 data_type local_data(chunk_size * me, "Hello");
                 auto rv = comm.gatherv(local_data);
                 std::vector<data_type> corr;
-                for(std::size_t i = 0; i < n_ranks; ++i) {
+                for(size_type i = 0; i < n_ranks; ++i) {
                     corr.emplace_back(data_type(chunk_size * i, "Hello"));
                 }
                 REQUIRE(rv == corr);
@@ -240,7 +236,7 @@ TEST_CASE("CommPP") {
             REQUIRE(rv == corr);
         }
 
-        for(std::size_t root = 0; root < std::min(n_ranks, max_ranks); ++root) {
+        for(size_type root = 0; root < std::min(n_ranks, max_ranks); ++root) {
             auto root_str = " root = " + std::to_string(root);
 
             SECTION("gather " + root_str + chunk_str) {
@@ -281,7 +277,7 @@ TEST_CASE("CommPP") {
 
                     if(me == root) {
                         std::vector<data_type> corr;
-                        for(std::size_t i = 0; i < n_ranks; ++i) {
+                        for(size_type i = 0; i < n_ranks; ++i) {
                             corr.emplace_back(
                               data_type(chunk_size * i, "Hello"));
                         }

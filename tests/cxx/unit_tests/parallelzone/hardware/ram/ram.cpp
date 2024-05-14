@@ -30,7 +30,6 @@ TEST_CASE("RAM") {
     using size_type = ram_type::size_type;
     const auto& run = testing::PZEnvironment::comm_world();
     const auto& rs  = run.my_resource_set();
-    auto my_rank    = rs.mpi_rank();
 
     RAM defaulted;
     RAM has_value = rs.ram();

@@ -25,7 +25,7 @@ namespace parallelzone::hardware {
 
 namespace detail_ {
 
-class RAMPIMPL;
+struct RAMPIMPL;
 }
 
 /** @brief Provides a runtime API for interacting with memory

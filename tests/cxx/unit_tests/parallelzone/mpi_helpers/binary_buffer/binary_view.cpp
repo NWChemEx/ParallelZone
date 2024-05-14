@@ -31,7 +31,6 @@ namespace {
 template<typename T>
 auto byte_data(T&& input) {
     using const_pointer = BinaryView::const_pointer;
-    using size_type     = BinaryView::size_type;
     using clean_type    = std::decay_t<T>;
     auto p              = reinterpret_cast<const_pointer>(input.data());
     auto n = input.size() * sizeof(typename clean_type::value_type);

@@ -62,7 +62,7 @@ inline auto map_severity_levels(Logger::severity s) {
 // -----------------------------------------------------------------------------
 
 SpdlogPIMPL::SpdlogPIMPL(spdlog_type logger) : m_logger_(std::move(logger)) {
-    m_logger_.set_level(spdlog::level::trace);
+    m_logger_.set_level(spdlog::level::info);
 }
 
 SpdlogPIMPL::pimpl_ptr SpdlogPIMPL::clone_() const {

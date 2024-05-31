@@ -31,7 +31,8 @@ void export_runtime_view(pybind11::module_& m) {
       .def("has_me", &RuntimeView::has_me)
       .def("my_resource_set", &RuntimeView::my_resource_set)
       .def("count", &RuntimeView::count)
-      .def("logger", &RuntimeView::logger)
+      .def("logger", &RuntimeView::logger,
+           pybind11::return_value_policy::reference_internal)
       .def("stack_callback", &RuntimeView::stack_callback)
       .def(pybind11::self == pybind11::self)
       .def(pybind11::self != pybind11::self);

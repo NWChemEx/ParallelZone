@@ -40,6 +40,7 @@ TEST_CASE("SpdlogPIMPL") {
     std::string pattern = "[%n] [%l] %v";
     spdlog_log.set_pattern(pattern);
     SpdlogPIMPL ss_log(spdlog_log);
+    ss_log.set_severity(severity::trace);
 
     SECTION("clone") {
         auto p = ss_log.clone();

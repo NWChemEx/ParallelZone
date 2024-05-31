@@ -44,6 +44,8 @@ TEST_CASE("Logger") {
     spdlog_log.set_pattern(pattern);
 
     Logger log(std::make_unique<pimpl_type>(spdlog_log));
+    log.set_severity(severity::trace);
+
     Logger null;
 
     SECTION("ctors") {

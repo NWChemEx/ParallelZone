@@ -15,6 +15,7 @@
  */
 
 #include "../../test_parallelzone.hpp"
+#include <numeric>
 #include <parallelzone/mpi_helpers/commpp/commpp.hpp>
 
 using namespace parallelzone::mpi_helpers;

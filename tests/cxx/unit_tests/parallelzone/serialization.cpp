@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "catch.hpp"
 #include "parallelzone/serialization.hpp"
-#include <catch2/catch.hpp>
 
 TEMPLATE_TEST_CASE("Serialization with Cereal wrapper",
                    "[serialization][serializer][deserializer]",

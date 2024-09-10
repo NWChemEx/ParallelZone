@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../../catch.hpp"
 #include <map>
 #include <parallelzone/mpi_helpers/binary_buffer/binary_buffer.hpp>
 #include <vector>

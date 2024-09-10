@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../../../catch.hpp"
 #include <filesystem>
 #include <iostream>
 #include <parallelzone/logging/detail_/spdlog/spdlog.hpp>

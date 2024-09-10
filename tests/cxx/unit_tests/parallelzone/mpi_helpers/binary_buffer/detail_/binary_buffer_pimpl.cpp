@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../../../catch.hpp"
 #include <parallelzone/mpi_helpers/binary_buffer/detail_/binary_buffer_pimpl.hpp>
 
 /* Testing Strategy:

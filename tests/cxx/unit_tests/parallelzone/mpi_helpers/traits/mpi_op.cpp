@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../../catch.hpp"
 #include <parallelzone/mpi_helpers/traits/mpi_op.hpp>
 
 using namespace parallelzone::mpi_helpers;

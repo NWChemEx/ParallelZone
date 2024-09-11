@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "catch.hpp"
 #include "parallelzone/archive_wrapper.hpp"
-#include <catch2/catch.hpp>
 
 TEMPLATE_TEST_CASE("Serialization with  ArchiveWrapper",
                    "[serialization][Serializer][Deserializer]",

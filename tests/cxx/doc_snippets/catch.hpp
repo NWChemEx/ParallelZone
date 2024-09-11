@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 NWChemEx-Project
+ * Copyright 2024 NWChemEx-Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-#define CATCH_CONFIG_MAIN
-#include <catch2/catch.hpp>
-#include <iostream>
-
-int print_and_return(int ii) {
-    std::cout << "This is only a blank model for an integration test."
-              << std::endl;
-    return 0;
-}
-
-TEST_CASE("Blank test", "[classic]") { REQUIRE(print_and_return(0) == 0); }
+#pragma once
+#include <catch2/catch_approx.hpp>
+#include <catch2/catch_session.hpp>
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>

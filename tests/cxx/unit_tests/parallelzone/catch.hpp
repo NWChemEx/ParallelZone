@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 NWChemEx-Project
+ * Copyright 2024 NWChemEx-Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,7 @@
  */
 
 #pragma once
-#include "catch.hpp"
-#include <parallelzone/runtime/runtime_view.hpp>
-
-namespace testing {
-
-/** @brief Struct representing the testing environment
- *
- *  At the moment this struct just has the default runtime in it.
- *
- */
-struct PZEnvironment {
-    static auto& comm_world() { return *pcomm_world; }
-
-    static parallelzone::runtime::RuntimeView* pcomm_world;
-};
-
-inline parallelzone::runtime::RuntimeView* PZEnvironment::pcomm_world = nullptr;
-
-} // namespace testing
+#include <catch2/catch_approx.hpp>
+#include <catch2/catch_session.hpp>
+#include <catch2/catch_template_test_macros.hpp>
+#include <catch2/catch_test_macros.hpp>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <catch2/catch.hpp>
+#include "../../catch.hpp"
 #include <parallelzone/logging/logger_factory.hpp>
 #include <parallelzone/runtime/detail_/resource_set_pimpl.hpp>
 

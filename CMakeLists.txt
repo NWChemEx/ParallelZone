@@ -13,52 +13,44 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.14)
-#TODO: Get from git
-set(VERSION 1.0)
-project(parallelzone VERSION "${VERSION}" LANGUAGES CXX)
 
-include(FetchContent)
-FetchContent_Declare(
-    nwx_cmake
-    GIT_REPOSITORY https://github.com/NWChemEx/NWXCMake
-)
-FetchContent_MakeAvailable(nwx_cmake)
-list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
+# Downloads common CMake modules used throughout NWChemEx
+include(cmake/get_nwx_cmake.cmake)
 
-set(
-    CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
-    CACHE STRING "" FORCE
-)
+#Sets the version to whatever git thinks it is
+include(get_version_from_git)
+get_version_from_git(parallelzone_version "${CMAKE_CURRENT_LIST_DIR}")
+project(parallelzone VERSION "${parallelzone_version}" LANGUAGES CXX)
 
 include(nwx_versions)
 include(get_cmaize)
-
-### Options ###
-# These are the default values, used only if the user hasn't already set them.
-option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_SHARED_LIBS "Should we build shared libraries?" ON)
-option(BUILD_PYBIND11_PYBINDINGS "Should we build pybind11 python bindings?" ON)
-option(BUILD_CPPYY_PYBINDINGS "Should the python bindings be Cppyy?" OFF)
-option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF )
-option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF )
-option(BUILD_SYCL_BINDINGS "Enable SYCL Bindings" OFF )
-option(BUILD_PAPI_BINDINGS "Enable PAPI Bindings" OFF )
-
-if (BUILD_CUDA_BINDING OR BUILD_HIP_BINDINGS OR BUILD_SYCL_BINDING)
-  include(build_device)
-endif()
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
-# Project dependencies
+# Builds C++ API documentation
+include(nwx_cxx_api_docs)
+nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
+
+### Options ###
+cmaize_option_list(
+    BUILD_TESTING OFF "Should we build the tests?"
+    BUILD_PYBIND11_PYBINDINGS ON "Should we build pybind11 python bindings?"
+    BUILD_CUDA_BINDINGS OFF "Enable CUDA Bindings"
+    BUILD_HIP_BINDINGS  OFF "Enable HIP Bindings" 
+    BUILD_SYCL_BINDINGS OFF "Enable SYCL Bindings"
+    BUILD_PAPI_BINDINGS OFF "Enable PAPI Bindings"
+)
+
+if (BUILD_CUDA_BINDING OR BUILD_HIP_BINDINGS OR BUILD_SYCL_BINDING)
+  include(build_device)
+endif()
+
+### Dependendencies ###
 set(project_depends "MPI::MPI_CXX")
 
 find_package(MPI REQUIRED)
-
-include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 cmaize_find_or_build_dependency(
     spdlog
@@ -104,19 +96,15 @@ if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
     set(PYTHON_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
 
-    cmaize_find_or_build_dependency(
-        Catch2
-        URL github.com/catchorg/Catch2
-        BUILD_TARGET Catch2
-        FIND_TARGET Catch2::Catch2
-        VERSION v3.6.0
-    )
+    include(get_catch2)
+
     cmaize_add_tests(
         test_unit_parallelzone
         SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
         INCLUDE_DIRS "${project_src_dir}"
 	DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
+
     cmaize_add_tests(
         test_parallelzone_docs
         SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
@@ -128,6 +116,7 @@ if("${BUILD_TESTING}")
     nwx_pybind11_tests(
         py_parallelzone "${PYTHON_TEST_DIR}/unit_tests/test_parallelzone.py"
     )
+
     nwx_pybind11_tests(
         py_doc_snippets "${PYTHON_TEST_DIR}/doc_snippets/test_doc_snippets.py"
     )
@@ -137,20 +126,11 @@ if("${BUILD_TESTING}")
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
                "${CMAKE_BINARY_DIR}/test_unit_parallelzone"
     )
+
     add_test(
         NAME "test_pz_docs_under_mpi"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
                 "${CMAKE_BINARY_DIR}/test_parallelzone_docs"
-    )
-endif()
-
-if("${BUILD_CPPYY_PYBINDINGS}")
-    # Cppyy bindings
-    include(nwx_python_mods)
-    cppyy_make_python_package(
-        MPI
-        PACKAGE parallelzone
-        NAMESPACES parallelzone
     )
 endif()
 

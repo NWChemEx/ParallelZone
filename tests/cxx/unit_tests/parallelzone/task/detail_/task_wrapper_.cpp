@@ -198,3 +198,21 @@ TEST_CASE("apply_") {
         REQUIRE(rv.data() == pa_vector);
     }
 }
+
+TEST_CASE("make_inner_lambda_") {
+    // This function is largely implemented by wrap_args_ and apply_. As long
+    // as those two functions work this function should work. Point being we
+    // just spot check a round-trip of the input
+
+    vector_type a_vector{1, 2, 3};
+    auto pa_vector = a_vector.data();
+
+    auto lambda = [pa_vector](vector_type x) {
+        REQUIRE(x.data() == pa_vector);
+        return std::move(x);
+    };
+    auto lambda2 = detail_::make_inner_lambda_(lambda, std::move(a_vector));
+    REQUIRE(lambda2().data() == pa_vector);
+}
+
+TEST_CASE("make_outer_lambda_") {}

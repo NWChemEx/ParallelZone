@@ -17,14 +17,14 @@ namespace parallelzone::task::detail_ {
  *  @throw None No throw guarantee.
  */
 template<typename... Args>
-static auto wrap_args_(Args&&... args) {
+auto wrap_args_(Args&&... args) {
     return std::tuple{ArgumentWrapper<Args>(std::forward<Args>(args))...};
 }
 
 /// Implements apply_ by expanding tuple. See other overload
 template<typename FxnType, typename... Args, std::size_t... I>
-static auto apply_(FxnType&& fxn, std::tuple<ArgumentWrapper<Args>...> args,
-                   std::index_sequence<I...>) {
+auto apply_(FxnType&& fxn, std::tuple<ArgumentWrapper<Args>...> args,
+            std::index_sequence<I...>) {
     return fxn(std::forward<Args>(std::get<I>(args).value())...);
 }
 
@@ -49,17 +49,36 @@ static auto apply_(FxnType&& fxn, std::tuple<ArgumentWrapper<Args>...> args,
  *  @throws Throws if @p fxn throws. Same throw guarantee.
  */
 template<typename FxnType, typename... Args>
-static auto apply_(FxnType&& fxn, std::tuple<ArgumentWrapper<Args>...> args) {
+auto apply_(FxnType&& fxn, std::tuple<ArgumentWrapper<Args>...> args) {
     return apply_(std::forward<FxnType>(fxn), std::move(args),
                   std::make_index_sequence<sizeof...(Args)>());
 }
 
+/** @brief Creates a lambda that wil forward @p args to @p fxn.
+ *
+ *  @tparam FxnType A callable type.
+ *  @tparam Args The types of args
+ *
+ *  This function creates a lambda that can be called with no arguments. When
+ *  the lambda is called, @p args will be forwarded to @p fxn and the result
+ *  returned from the lambda, i.e., this function creates a lambda that can be
+ *  used to run @p fxn lazily.
+ *
+ *  @param[in] fxn The callable to run.
+ *  @param[in] args The arguments to forward to @p fxn.
+ *
+ *  @return A lambda that wraps the process of forwarding @p args to @p fxn.
+ *
+ *  @throw None No throw guarantee.
+ */
 template<typename FxnType, typename... Args>
-static auto make_inner_lambda_(FxnType&& fxn, Args&&... args) {
-    return [fxn  = std::forward<FxnType>(fxn),
-            args = wrap_args_(std::forward<Args>(args)...)]() {
-        apply_(fxn, std::move(args));
+auto make_inner_lambda_(FxnType&& fxn, Args&&... args) {
+    auto wrapped_args = wrap_args_(std::forward<Args>(args)...);
+    auto l            = [fxn  = std::forward<FxnType>(fxn),
+              args = std::move(wrapped_args)]() mutable {
+        return apply_(fxn, std::move(args));
     };
+    return l;
 }
 
 template<typename FxnType, typename... Args>
@@ -69,12 +88,12 @@ static auto make_outer_lambda_(FxnType&& fxn, Args&&... args) {
 
     using result_type = decltype(inner_lambda());
     if constexpr(std::is_same_v<result_type, void>) {
-        return [inner_lambda = std::move(inner_lambda)]() {
+        return [inner_lambda = std::move(inner_lambda)]() mutable {
             inner_lambda();
             return std::any{};
         };
     } else {
-        return [inner_lambda = std::move(inner_lambda)]() {
+        return [inner_lambda = std::move(inner_lambda)]() mutable {
             return std::make_any<result_type>(inner_lambda());
         };
     }

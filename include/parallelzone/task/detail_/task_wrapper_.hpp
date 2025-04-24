@@ -97,6 +97,25 @@ auto make_inner_lambda_(FxnType&& fxn, Args&&... args) {
     return l;
 }
 
+/** @brief Wraps the process of type-erasing a lazy function call.
+ *
+ *  @tparam FxnType The type of the callable.
+ *  @tparam Args The types of the arguments to forward to the function.
+ *
+ *  This is the top-level function implementing the type-erasure of lazily
+ *  executing a call. It relies on `make_inner_lambda_` to create the lambda
+ *  capable of lazily running the call. The lambda from make_inner_lambda_ still
+ *  retains the return type, which is what the lambda from this function
+ *  erases. The lambda resulting from this function has the signature
+ *  `std::any lambda();`.
+ *
+ *  @param[in] fxn The callable to wrap.
+ *  @param[in] args The arguments to pass to the callable when it is executed.
+ *
+ *  @return A type-erased callable, that when run will execute @p fxn.
+ *
+ *  @throw None No throw guarantee.
+ */
 template<typename FxnType, typename... Args>
 static auto make_outer_lambda_(FxnType&& fxn, Args&&... args) {
     auto inner_lambda = make_inner_lambda_(std::forward<FxnType>(fxn),

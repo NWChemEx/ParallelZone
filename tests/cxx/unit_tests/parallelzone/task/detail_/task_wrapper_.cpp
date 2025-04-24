@@ -231,4 +231,27 @@ TEST_CASE("make_inner_lambda_") {
     REQUIRE(lambda2().data() == pa_vector);
 }
 
-TEST_CASE("make_outer_lambda_") {}
+TEST_CASE("make_outer_lambda_") {
+    // This function is largely implemented by make_inner_lambda_. Here we just
+    // check it wraps the return correctly
+
+    vector_type a_vector{1, 2, 3};
+    auto pa_vector = a_vector.data();
+
+    SECTION("Doesn't return") {
+        auto lambda = [pa_vector](vector_type x) {
+            REQUIRE(x.data() == pa_vector);
+        };
+        auto lambda2 = detail_::make_outer_lambda_(lambda, std::move(a_vector));
+        REQUIRE_FALSE(lambda2().has_value());
+    }
+
+    SECTION("Returns") {
+        auto lambda = [pa_vector](vector_type x) {
+            REQUIRE(x.data() == pa_vector);
+            return std::move(x);
+        };
+        auto lambda2 = detail_::make_outer_lambda_(lambda, std::move(a_vector));
+        REQUIRE(std::any_cast<vector_type&&>(lambda2()).data() == pa_vector);
+    }
+}

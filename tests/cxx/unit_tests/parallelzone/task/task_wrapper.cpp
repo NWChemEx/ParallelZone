@@ -30,6 +30,19 @@ void no_return_free0() {}
 void no_return_free1(int) {}
 void no_return_free2(int* pv, vector_type v) { REQUIRE(v.data() == pv); }
 
+vector_type return_free2(int* pv, vector_type v) {
+    REQUIRE(v.data() == pv);
+    return std::move(v);
+}
+
+struct TestFunctor {
+    TestFunctor(vector_type v) : m_v(std::move(v)) {}
+
+    vector_type operator()() { return std::move(m_v); }
+
+    vector_type m_v;
+};
+
 } // namespace
 
 using type_erased_return_type = TaskWrapper::type_erased_return_type;
@@ -38,10 +51,53 @@ TEST_CASE("TaskWrapper") {
     vector_type a_vector{1, 2, 3};
     auto pa_vector = a_vector.data();
 
-    // SECTION("Constructor") {
-    //     TaskWrapper t(no_return_free2, pa_vector, std::move(a_vector));
-    //     // t();
-    // }
+    SECTION("Ctor") {
+        SECTION("value") {
+            // This is heavily tested throughout the rest of the test case.
+            // So just spot check we can pass different function types
+
+            SECTION("lambda") {
+                auto l = [pa_vector](vector_type v) {
+                    REQUIRE(v.data() == pa_vector);
+                };
+                TaskWrapper t(l, std::move(a_vector));
+                t();
+            }
+            SECTION("free function") {
+                TaskWrapper t(no_return_free2, pa_vector, std::move(a_vector));
+                t();
+            }
+            SECTION("Functor") {
+                TestFunctor fxn(std::move(a_vector));
+                TaskWrapper t(std::move(fxn));
+                t();
+            }
+        }
+
+        SECTION("move") {
+            TaskWrapper t(no_return_free2, pa_vector, std::move(a_vector));
+            TaskWrapper t_moved(std::move(t));
+            t_moved();
+        }
+
+        SECTION("move assignment") {
+            TaskWrapper t(return_free2, pa_vector, std::move(a_vector));
+            TaskWrapper t_moved(no_return_free0);
+            auto pt_moved = &(t_moved = std::move(t));
+            auto rv       = t_moved();
+            REQUIRE(std::any_cast<vector_type&>(rv).data() == pa_vector);
+            REQUIRE(pt_moved == &t_moved);
+        }
+    }
+
+    SECTION("operator()") {
+        // This method just runs the wrapped function and returns the
+        // result. As long as make_outer_lambda_ works, this method should
+        // work and we just spot check
+        TaskWrapper t(return_free2, pa_vector, std::move(a_vector));
+        auto rv = t();
+        REQUIRE(std::any_cast<vector_type&>(rv).data() == pa_vector);
+    }
 
     SECTION("unwrapper") {
         SECTION("no result, i.e., void") {

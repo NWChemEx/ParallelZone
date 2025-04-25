@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 NWChemEx-Project
+ * Copyright 2025 NWChemEx-Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-#pragma once
+#include <parallelzone/hardware/cpu/cpu.hpp>
 
-/**
- * @file parallelzone.hpp
- *
- * This is a convenience header defining the public API of the parallelzone
- * library.
- */
+namespace parallelzone::hardware {
 
-#include <parallelzone/hardware/hardware.hpp>
-#include <parallelzone/logging/logging.hpp>
-#include <parallelzone/runtime/runtime.hpp>
-#include <parallelzone/serialization.hpp>
-#include <parallelzone/task/task.hpp>
+typename CPU::profile_return_type CPU::profile_it_(task_type&& task) const {
+    profile_information i;
+    const auto t1 = std::chrono::high_resolution_clock::now();
+    auto result   = task();
+    const auto t2 = std::chrono::high_resolution_clock::now();
+    i.wall_time   = (t2 - t1);
+    return std::make_pair(std::move(result), std::move(i));
+}
 
-namespace parallelzone {} // namespace parallelzone
+} // namespace parallelzone::hardware

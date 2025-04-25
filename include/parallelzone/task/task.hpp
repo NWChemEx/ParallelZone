@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 NWChemEx-Project
+ * Copyright 2025 NWChemEx-Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,5 @@
  */
 
 #pragma once
-
-/**
- * @file parallelzone.hpp
- *
- * This is a convenience header defining the public API of the parallelzone
- * library.
- */
-
-#include <parallelzone/hardware/hardware.hpp>
-#include <parallelzone/logging/logging.hpp>
-#include <parallelzone/runtime/runtime.hpp>
-#include <parallelzone/serialization.hpp>
-#include <parallelzone/task/task.hpp>
-
-namespace parallelzone {} // namespace parallelzone
+#include <parallelzone/task/argument_wrapper.hpp>
+#include <parallelzone/task/task_wrapper.hpp>

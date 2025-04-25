@@ -16,6 +16,7 @@
 
 #pragma once
 #include <any>
+#include <functional>
 #include <parallelzone/task/detail_/task_wrapper_.hpp>
 
 namespace parallelzone::task {

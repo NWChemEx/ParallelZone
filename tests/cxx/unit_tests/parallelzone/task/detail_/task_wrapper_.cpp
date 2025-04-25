@@ -208,7 +208,7 @@ TEST_CASE("apply_") {
         auto inputs = detail_::wrap_args_(std::move(a_vector));
         auto lambda = [pa_vector](vector_type x) {
             REQUIRE(x.data() == pa_vector);
-            return std::move(x);
+            return x;
         };
         auto rv = detail_::apply_(lambda, std::move(inputs));
         REQUIRE(rv.data() == pa_vector);
@@ -225,7 +225,7 @@ TEST_CASE("make_inner_lambda_") {
 
     auto lambda = [pa_vector](vector_type x) {
         REQUIRE(x.data() == pa_vector);
-        return std::move(x);
+        return x;
     };
     auto lambda2 = detail_::make_inner_lambda_(lambda, std::move(a_vector));
     REQUIRE(lambda2().data() == pa_vector);
@@ -249,7 +249,7 @@ TEST_CASE("make_outer_lambda_") {
     SECTION("Returns") {
         auto lambda = [pa_vector](vector_type x) {
             REQUIRE(x.data() == pa_vector);
-            return std::move(x);
+            return x;
         };
         auto lambda2 = detail_::make_outer_lambda_(lambda, std::move(a_vector));
         REQUIRE(std::any_cast<vector_type&&>(lambda2()).data() == pa_vector);

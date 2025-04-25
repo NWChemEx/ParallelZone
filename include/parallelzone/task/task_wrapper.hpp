@@ -165,7 +165,7 @@ public:
 
 private:
     /// Deleted because there can only be one instance of a task.
-    TaskWrapper(const TaskWrapper&)            = delete;
+    TaskWrapper(const TaskWrapper&) = delete;
     TaskWrapper& operator=(const TaskWrapper&) = delete;
 
     /// Type *this will use to hold the task

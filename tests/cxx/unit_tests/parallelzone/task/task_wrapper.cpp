@@ -32,7 +32,7 @@ void no_return_free2(int* pv, vector_type v) { REQUIRE(v.data() == pv); }
 
 vector_type return_free2(int* pv, vector_type v) {
     REQUIRE(v.data() == pv);
-    return std::move(v);
+    return v;
 }
 
 struct TestFunctor {

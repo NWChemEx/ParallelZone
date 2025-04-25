@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">parallelzone
-   &#160;<span id="projectnumber">0.1.30</span>
+   &#160;<span id="projectnumber">0.1.31</span>
    </div>
   </td>
  </tr>
@@ -73,6 +73,9 @@ $(function() {
 , <a class="el" href="classparallelzone_1_1detail___1_1LoggerPIMPL.html#acf5c74a314237b6da253667894f6cb58">parallelzone::detail_::LoggerPIMPL</a>
 , <a class="el" href="classparallelzone_1_1detail___1_1SpdlogPIMPL.html#aec5d0fe9641da168e98929e10743b91c">parallelzone::detail_::SpdlogPIMPL</a>
 , <a class="el" href="classparallelzone_1_1detail___1_1StdoutSpdlog.html#ae46771dd3f7899444690e3efd6f7a199">parallelzone::detail_::StdoutSpdlog</a>
+</li>
+<li>ArgumentWrapper()
+: <a class="el" href="classparallelzone_1_1task_1_1ArgumentWrapper.html#aeef5a7dce243f1b7ec010386847774ce">parallelzone::task::ArgumentWrapper&lt; T &gt;</a>
 </li>
 <li>at()
 : <a class="el" href="structparallelzone_1_1runtime_1_1detail___1_1RuntimeViewPIMPL.html#a6bafca19ade0696ad2d7862aa28815e8">parallelzone::runtime::detail_::RuntimeViewPIMPL</a>
@@ -234,6 +237,9 @@ $(function() {
 <li>make_ram()
 : <a class="el" href="structparallelzone_1_1hardware_1_1detail___1_1RAMPIMPL.html#ac850372194167ee00d2594f18eb32f47">parallelzone::hardware::detail_::RAMPIMPL</a>
 </li>
+<li>make_task()
+: <a class="el" href="classparallelzone_1_1task_1_1TaskWrapper.html#a83f967afed86f36813abac1e1e3a26c8">parallelzone::task::TaskWrapper</a>
+</li>
 <li>me()
 : <a class="el" href="classparallelzone_1_1mpi__helpers_1_1CommPP.html#ad1a8b81c9b466b24e55575c9b01863cb">parallelzone::mpi_helpers::CommPP</a>
 , <a class="el" href="classparallelzone_1_1mpi__helpers_1_1detail___1_1CommPPPIMPL.html#a10dff15a59650bbd04067d1bddd57929">parallelzone::mpi_helpers::detail_::CommPPPIMPL</a>
@@ -274,6 +280,9 @@ $(function() {
 , <a class="el" href="classparallelzone_1_1runtime_1_1ResourceSet.html#ac6698f7a2168078a511355169479a29d">parallelzone::runtime::ResourceSet</a>
 , <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#aab1663be4841dae1432f2ed351a76eaf">parallelzone::runtime::RuntimeView</a>
 </li>
+<li>operator()()
+: <a class="el" href="classparallelzone_1_1task_1_1TaskWrapper.html#a40b8197098f05f70c2950580916c95f6">parallelzone::task::TaskWrapper</a>
+</li>
 <li>operator&lt;&lt;()
 : <a class="el" href="classparallelzone_1_1Logger.html#a50dc8b4f0c7305b3e63aa286f64eb69c">parallelzone::Logger</a>
 </li>
@@ -285,6 +294,7 @@ $(function() {
 , <a class="el" href="classparallelzone_1_1mpi__helpers_1_1detail___1_1BinaryBufferPIMPLBase.html#ab5d7d926619d51ce8a828b0980ad4f9a">parallelzone::mpi_helpers::detail_::BinaryBufferPIMPLBase</a>
 , <a class="el" href="classparallelzone_1_1runtime_1_1ResourceSet.html#a9f4151c7dde39838a483c708eee96631">parallelzone::runtime::ResourceSet</a>
 , <a class="el" href="classparallelzone_1_1runtime_1_1RuntimeView.html#aa58421c3d05daabe728979250be6cd1b">parallelzone::runtime::RuntimeView</a>
+, <a class="el" href="classparallelzone_1_1task_1_1TaskWrapper.html#ae39b3a134fc37d353ad9d6fd83f89d40">parallelzone::task::TaskWrapper</a>
 </li>
 <li>operator==()
 : <a class="el" href="classparallelzone_1_1hardware_1_1RAM.html#ac8387024f6a149dd44916ec585fd0a35">parallelzone::hardware::RAM</a>
@@ -301,9 +311,16 @@ $(function() {
 </ul>
 
 
+<h3><a id="index_p"></a>- p -</h3><ul>
+<li>profile_it()
+: <a class="el" href="classparallelzone_1_1hardware_1_1CPU.html#ab2a41ce459be1f1588e0844a34be31c5">parallelzone::hardware::CPU</a>
+</li>
+</ul>
+
+
 <h3><a id="index_r"></a>- r -</h3><ul>
 <li>RAM()
-: <a class="el" href="classparallelzone_1_1hardware_1_1RAM.html#acec9a98da52934fa79a347c9e20228b7">parallelzone::hardware::RAM</a>
+: <a class="el" href="classparallelzone_1_1hardware_1_1RAM.html#a2c7285310df6bef6b222030ca7190924">parallelzone::hardware::RAM</a>
 </li>
 <li>ram()
 : <a class="el" href="classparallelzone_1_1runtime_1_1ResourceSet.html#aca2c70bb131bd55e48774e5a3ad5ba67">parallelzone::runtime::ResourceSet</a>
@@ -370,11 +387,28 @@ $(function() {
 
 
 <h3><a id="index_t"></a>- t -</h3><ul>
+<li>TaskWrapper()
+: <a class="el" href="classparallelzone_1_1task_1_1TaskWrapper.html#a5e0898aa6203f87c63a786f656beedc5">parallelzone::task::TaskWrapper</a>
+</li>
 <li>total_space()
 : <a class="el" href="classparallelzone_1_1hardware_1_1RAM.html#af3080e085f52fdae8b612ac8fc87f950">parallelzone::hardware::RAM</a>
 </li>
 <li>trace()
 : <a class="el" href="classparallelzone_1_1Logger.html#a271105b93b5099050bbc53d5a2c56183">parallelzone::Logger</a>
+</li>
+</ul>
+
+
+<h3><a id="index_u"></a>- u -</h3><ul>
+<li>unwrapper()
+: <a class="el" href="classparallelzone_1_1task_1_1TaskWrapper.html#a26bfea198f7d86f7aadf861e6d91f9b5">parallelzone::task::TaskWrapper</a>
+</li>
+</ul>
+
+
+<h3><a id="index_v"></a>- v -</h3><ul>
+<li>value()
+: <a class="el" href="classparallelzone_1_1task_1_1ArgumentWrapper.html#a0a14f51d2c9e07568db8108880ba30a3">parallelzone::task::ArgumentWrapper&lt; T &gt;</a>
 </li>
 </ul>
 

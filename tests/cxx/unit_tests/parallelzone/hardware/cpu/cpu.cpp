@@ -39,7 +39,7 @@ TEST_CASE("CPU") {
         SECTION("Has return") {
             auto l = [pa_vector](vector_type v) {
                 REQUIRE(v.data() == pa_vector);
-                return std::move(v);
+                return v;
             };
 
             auto&& [rv, info] = defaulted.profile_it(l, std::move(a_vector));

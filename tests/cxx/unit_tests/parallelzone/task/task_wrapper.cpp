@@ -129,12 +129,22 @@ TEST_CASE("TaskWrapper") {
         };
 
         std::apply(tester, make_task(no_return_free0));
+
         std::apply(tester, make_task(no_return_free1, 1));
 
-        // This one makes sure that a moved object is forwarded all the way
-        // into the task.
         auto task = make_task(no_return_free2, pa_vector, std::move(a_vector));
-        // std::get<0>(task)();
-        //  std::apply(tester, std::move(task));
+        std::apply(tester, std::move(task));
+    }
+
+    SECTION("return") {
+        auto tester = [pa_vector](auto&& task, auto&& unwrapper) {
+            type_erased_return_type result;
+            REQUIRE_NOTHROW(result = task());
+            REQUIRE(result.has_value());
+            REQUIRE(unwrapper(std::move(result)).data() == pa_vector);
+        };
+
+        auto task = make_task(return_free2, pa_vector, std::move(a_vector));
+        std::apply(tester, std::move(task));
     }
 }

@@ -23,7 +23,10 @@
  * library.
  */
 
-#include "parallelzone/serialization.hpp"
+#include <parallelzone/hardware/hardware.hpp>
+#include <parallelzone/logging/logging.hpp>
 #include <parallelzone/runtime/runtime.hpp>
+#include <parallelzone/serialization.hpp>
+#include <parallelzone/task/task.hpp>
 
 namespace parallelzone {} // namespace parallelzone

@@ -13,3 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "../../catch.hpp"
+#include <parallelzone/hardware/cpu/cpu.hpp>
+
+using namespace parallelzone;
+
+TEST_CASE("CPU") {
+    hardware::CPU defaulted;
+
+    SECTION("profile_it") {
+        using vector_type = std::vector<int>;
+        vector_type a_vector{1, 2, 3};
+        auto pa_vector = a_vector.data();
+
+        SECTION("No return") {
+            auto l = [pa_vector](vector_type v) {
+                REQUIRE(v.data() == pa_vector);
+            };
+
+            auto info = defaulted.profile_it(l, std::move(a_vector));
+            REQUIRE(info.wall_time.count() > 0); // Should have taken time...
+        }
+
+        SECTION("Has return") {
+            auto l = [pa_vector](vector_type v) {
+                REQUIRE(v.data() == pa_vector);
+                return std::move(v);
+            };
+
+            auto&& [rv, info] = defaulted.profile_it(l, std::move(a_vector));
+            REQUIRE(rv.data() == pa_vector); // Test there's no hidden copies
+            REQUIRE(info.wall_time.count() > 0); // Should have taken time...
+        }
+    }
+}

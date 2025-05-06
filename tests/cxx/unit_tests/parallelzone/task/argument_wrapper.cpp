@@ -17,6 +17,7 @@
 #include "../catch.hpp"
 #include <iostream>
 #include <parallelzone/task/argument_wrapper.hpp>
+#include <utility>
 #include <vector>
 
 using namespace parallelzone::task;

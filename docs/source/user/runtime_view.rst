@@ -147,9 +147,17 @@ meanings):
 - critical - Something went wrong, but recovery is not possible
 
 Severity increases from "trace" to "critical" such that "trace" is the least
-important and "critical" is the most severe log statements. In practice, the
-value of a computed result usually falls under debug or trace. There's at least
-two ways to do that:
+important and "critical" is the most severe log statements. This means that
+all logging statements set as trace and below are enabled if the severity of
+the logger is set to trace. If the logger is set to debug, all debug, info,
+warn, error, and critical message logs are enabled, while trace message logs
+are not. For completeness, info includes info, warn, error, critical, and
+warn includes warn, error, critical, and error includes error and critical,
+and critical only includes critical. 
+
+
+In practice, the value of a computed result usually falls under debug or
+trace. There's at least two ways to do that:
 
 .. tabs::
 
@@ -171,6 +179,43 @@ The first example illustrates the use of the ``trace`` method. Each severity
 level has its own corresponding method. The second example shows how to use
 the more general ``log`` method. This particular overload of the ``log`` method
 allows you to specify (at runtime if you like) the severity of the message.
+
+********************
+Python Example
+********************
+
+.. tabs::
+
+   .. tab:: Python
+
+      .. code-block:: python
+
+         import parallelzone as pz
+
+         log = pz.runtime.RuntimeView().logger()
+         severity = pz.Logger.severity
+         severities = [severity.trace, severity.debug, severity.info, severity.warn, severity.error, severity.critical] 
+
+         log.set_severity(severity.critical)
+
+         for level in severities:
+            log.log(level, "Hello")
+
+         # OUTPUT:
+         # [2025-05-06 11:29:54.722] [Rank 0] [critical] Hello
+
+         log.set_severity(severity.trace)
+
+         for level in severities:
+            log.log(level, "Hello")
+
+         # OUTPUT:
+         # [2025-05-06 11:33:05.203] [Rank 0] [trace] Hello
+         # [2025-05-06 11:33:05.203] [Rank 0] [debug] Hello
+         # [2025-05-06 11:33:05.203] [Rank 0] [info] Hello
+         # [2025-05-06 11:33:05.203] [Rank 0] [warning] Hello
+         # [2025-05-06 11:33:05.203] [Rank 0] [error] Hello
+         # [2025-05-06 11:33:05.203] [Rank 0] [critical] Hello
 
 .. note::
 

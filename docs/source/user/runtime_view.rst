@@ -189,11 +189,16 @@ when different severities are set:
 
 .. tabs::
 
+   .. tab:: C++
+      .. code-block:: C++
+
+         // TODO
+
    .. tab:: Python
 
       .. literalinclude:: ../../../tests/python/doc_snippets/test_logging.py
          :language: python
-         :lines: 10-22
+         :lines: 24-40
          :dedent: 8
 
 

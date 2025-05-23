@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <parallelzone/hardware/cpu/cpu.hpp>
 #include "energy_monitor.hpp"
+#include <parallelzone/hardware/cpu/cpu.hpp>
 namespace parallelzone::hardware {
 
 typename CPU::profile_return_type CPU::profile_it_(task_type&& task) const {
@@ -26,7 +26,7 @@ typename CPU::profile_return_type CPU::profile_it_(task_type&& task) const {
     auto result   = task();
     const auto t2 = std::chrono::high_resolution_clock::now();
     monitor.stop();
-    i.wall_time   = (t2 - t1);
+    i.wall_time = (t2 - t1);
     return std::make_pair(std::move(result), std::move(i));
 }
 

@@ -37,6 +37,7 @@ nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 cmaize_option_list(
     BUILD_TESTING OFF "Should we build the tests?"
     BUILD_PYBIND11_PYBINDINGS ON "Should we build pybind11 python bindings?"
+    BUILD_CPP_JOULES OFF "Enable energy usage tracking with CPP Joules library?"
     BUILD_CUDA_BINDINGS OFF "Enable CUDA Bindings"
     BUILD_HIP_BINDINGS  OFF "Enable HIP Bindings" 
     BUILD_SYCL_BINDINGS OFF "Enable SYCL Bindings"
@@ -67,6 +68,18 @@ if("${BUILD_PAPI_BINDINGS}")
     include(build_papi)
 endif ()
 
+if("${BUILD_CPP_JOULES}")
+    cmaize_find_or_build_dependency(
+        cpp_joules
+        BUILD_CPP_JOULES
+        URL github.com/rishalab/CPPJoules
+        VERSION main
+        BUILD_TARGET CPP_Joules
+        FIND_TARGET CPP_Joules::CPP_Joules
+    )
+    list(APPEND project_depends cpp_joules)
+endif()
+
 cmaize_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
@@ -83,6 +96,10 @@ cmaize_add_library(
     INCLUDE_DIRS "${project_inc_dir}"
     DEPENDS "${project_depends}"
 )
+
+if("${BUILD_CPP_JOULES}")
+    target_compile_definitions("${PROJECT_NAME}" PRIVATE BUILD_CPP_JOULES)
+endif()
 
 # N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
 include(nwx_pybind11)

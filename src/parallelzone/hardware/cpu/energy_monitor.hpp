@@ -14,20 +14,40 @@
  * limitations under the License.
  */
 
-#include "energy_monitor.hpp"
-#include <parallelzone/hardware/cpu/cpu.hpp>
+#pragma once
+#ifdef BUILD_CPP_JOULES
+#include <cppJoules.h>
+
 namespace parallelzone::hardware {
 
-typename CPU::profile_return_type CPU::profile_it_(task_type&& task) const {
-    profile_information i;
-    EnergyMonitor monitor;
-    monitor.start();
-    const auto t1 = std::chrono::high_resolution_clock::now();
-    auto result   = task();
-    const auto t2 = std::chrono::high_resolution_clock::now();
-    monitor.stop();
-    i.wall_time = (t2 - t1);
-    return std::make_pair(std::move(result), std::move(i));
-}
+class EnergyMonitor {
+public:
+    using energy_type = long long;
+    bool is_active() { return true; }
+    void start() { m_tracker_.start(); }
+
+    void stop() {
+        m_tracker_.stop();
+        m_tracker_.calculate_energy();
+        m_tracker_.print_energy();
+    }
+
+private:
+    EnergyTracker m_tracker_;
+};
 
 } // namespace parallelzone::hardware
+
+#else
+namespace parallelzone::hardware {
+
+class EnergyMonitor {
+public:
+    bool is_active() { return false; }
+    void start() {}
+    void stop() {}
+};
+
+} // namespace parallelzone::hardware
+
+#endif

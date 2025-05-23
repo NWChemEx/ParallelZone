@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Using ParallelZone with mpi4py &mdash; parallelzone  documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
@@ -131,8 +131,8 @@ communicator to mpi4py explicitly.</p>
 then the user needs to initialize ParallelZone by passing the communicator
 created by mpi4py. An example, where the user passes <cite>MPI_COMM_SELF</cite> as the
 communicator for ParallelZone is given below.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
-<span class="kn">import</span> <span class="nn">cppyy.ll</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">mpi4py</span><span class="w"> </span><span class="kn">import</span> <span class="n">MPI</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">cppyy.ll</span>
 
 <span class="n">pz_comm</span> <span class="o">=</span> <span class="n">cppyy</span><span class="o">.</span><span class="n">ll</span><span class="o">.</span><span class="n">cast</span><span class="p">[</span><span class="s2">&quot;MPI_Comm&quot;</span><span class="p">](</span><span class="n">MPI</span><span class="o">.</span><span class="n">_handleof</span><span class="p">(</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_SELF</span><span class="p">))</span>
 <span class="n">pz_world</span> <span class="o">=</span> <span class="n">parallelzone</span><span class="o">.</span><span class="n">runtime</span><span class="o">.</span><span class="n">RuntimeView</span><span class="p">(</span><span class="n">pz_comm</span><span class="p">)</span>

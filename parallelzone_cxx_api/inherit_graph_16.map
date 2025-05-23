@@ -1,4 +1,10 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,13,117,39"/>
-<area shape="rect" id="node2" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized.html" title="Determines if T needs to be serialized for MPI communication." alt="" coords="165,5,412,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,209,124,235"/>
+<area shape="rect" id="node2" href="$structparallelzone_1_1mpi__helpers_1_1MPIDataType.html" title="Primary template for mapping type T to its MPI enum." alt="" coords="200,5,391,47"/>
+<area shape="rect" id="node3" href="$structparallelzone_1_1mpi__helpers_1_1MPIOp.html" title="Maps a functor to an MPI operation." alt="" coords="200,71,391,112"/>
+<area shape="rect" id="node4" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01BinaryBuffer_01_4.html" title="Registers BinaryBuffer as not needing serialized." alt="" coords="172,136,419,177"/>
+<area shape="rect" id="node5" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01BinaryView_01_4.html" title="Registers BinaryView as not needing serialized." alt="" coords="176,201,415,243"/>
+<area shape="rect" id="node6" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01ConstBinaryView_01_4.html" title="Registers ConstBinaryView as not needing serialized." alt="" coords="181,267,410,323"/>
+<area shape="rect" id="node7" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01std_1_1string_01_4.html" title="Registers std::string as not needing to be serialized." alt="" coords="200,347,391,403"/>
+<area shape="rect" id="node8" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01std_1_1vector_3_01T_01_4_00_01std_1_1e3ad4c2a234ead607aefb9a963a6c8482.html" title="Specialization for std::vector&lt;T&gt; (T trivially copyable)" alt="" coords="182,427,409,513"/>
 </map>

@@ -16,6 +16,8 @@
 
 #include "../../catch.hpp"
 #include <parallelzone/hardware/cpu/cpu.hpp>
+#include <numeric>
+#include <iostream>
 
 using namespace parallelzone;
 

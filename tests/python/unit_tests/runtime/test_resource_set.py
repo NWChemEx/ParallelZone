@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import parallelzone as pz
 import unittest
+
+import parallelzone as pz
 
 
 class ResourceSetTestCase(unittest.TestCase):
-
     def test_default_ctor(self):
         self.assertTrue(self.defaulted.empty())
         self.assertFalse(self.defaulted.is_mine())

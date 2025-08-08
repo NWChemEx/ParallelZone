@@ -39,7 +39,7 @@ cmaize_option_list(
     BUILD_PYBIND11_PYBINDINGS ON "Should we build pybind11 python bindings?"
     BUILD_CPP_JOULES OFF "Enable energy usage tracking with CPP Joules library?"
     BUILD_CUDA_BINDINGS OFF "Enable CUDA Bindings"
-    BUILD_HIP_BINDINGS  OFF "Enable HIP Bindings" 
+    BUILD_HIP_BINDINGS  OFF "Enable HIP Bindings"
     BUILD_SYCL_BINDINGS OFF "Enable SYCL Bindings"
     BUILD_PAPI_BINDINGS OFF "Enable PAPI Bindings"
 )

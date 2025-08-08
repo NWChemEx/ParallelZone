@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import parallelzone as pz
 import unittest
+
+import parallelzone as pz
 
 
 class RuntimeViewTestCase(unittest.TestCase):
-
     def test_default_ctor(self):
         self.assertGreater(self.defaulted.size(), 0)
         self.assertFalse(self.defaulted.did_i_start_mpi())

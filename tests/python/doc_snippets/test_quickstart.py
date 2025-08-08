@@ -13,8 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import parallelzone as pz
 import unittest
+
+import parallelzone as pz
 
 
 def get_runtime():
@@ -22,7 +23,6 @@ def get_runtime():
 
 
 class TestQuickstartTestCase(unittest.TestCase):
-
     def test_quickstart(self):
         # 99.9% of the time you will be using an existing RuntimeView
         rt = get_runtime()

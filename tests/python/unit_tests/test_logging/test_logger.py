@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 
-import parallelzone as pz
 import unittest
+
+import parallelzone as pz
 
 
 class LoggerTestCase(unittest.TestCase):
@@ -33,8 +34,12 @@ class LoggerTestCase(unittest.TestCase):
         self.defaulted = pz.Logger()
         self.log = pz.runtime.RuntimeView().logger()
         self.severities = [
-            severity.trace, severity.debug, severity.info, severity.warn,
-            severity.error, severity.critical
+            severity.trace,
+            severity.debug,
+            severity.info,
+            severity.warn,
+            severity.error,
+            severity.critical,
         ]
 
     def test_set_severity(self):

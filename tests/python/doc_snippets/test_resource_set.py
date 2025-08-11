@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import parallelzone as pz
 import unittest
+
+import parallelzone as pz
 
 
 class TestResourceSetTestCase(unittest.TestCase):
-
     def test_resourceset(self):
         rv = pz.runtime.RuntimeView()
 
@@ -44,7 +44,7 @@ class TestResourceSetTestCase(unittest.TestCase):
         does_0_have_ram = rank_0_rs.has_ram()
 
         # Have each resource set print whether it's rank 0 or not
-        my_rs.logger().debug('Am I rank 0: ' + str(is_local))
+        my_rs.logger().debug("Am I rank 0: " + str(is_local))
 
         # TODO: Better tests
         self.assertIsNotNone(rank_0_rs)

@@ -28,7 +28,7 @@ Logger::Logger() noexcept : Logger(nullptr) {}
 Logger::Logger(pimpl_ptr&& p) noexcept : m_pimpl_(std::move(p)) {}
 Logger::~Logger() noexcept = default;
 
-Logger::Logger(Logger&&) noexcept = default;
+Logger::Logger(Logger&&) noexcept            = default;
 Logger& Logger::operator=(Logger&&) noexcept = default;
 
 Logger::Logger(const Logger& other) :

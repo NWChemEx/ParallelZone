@@ -49,10 +49,10 @@ public:
     explicit SpdlogPIMPL(spdlog_type logger);
 
 protected:
-    SpdlogPIMPL(const SpdlogPIMPL&) = default;
+    SpdlogPIMPL(const SpdlogPIMPL&)            = default;
     SpdlogPIMPL& operator=(const SpdlogPIMPL&) = default;
     SpdlogPIMPL(SpdlogPIMPL&&)                 = default;
-    SpdlogPIMPL& operator=(SpdlogPIMPL&&) = default;
+    SpdlogPIMPL& operator=(SpdlogPIMPL&&)      = default;
 
     /// Calls the copy ctor on *this, derived classes must override too
     pimpl_ptr clone_() const override;

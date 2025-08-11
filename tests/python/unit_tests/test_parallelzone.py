@@ -15,11 +15,12 @@
 #
 
 import os
-import parallelzone as pz
 import sys
 import unittest
 
-if __name__ == '__main__':
+import parallelzone as pz
+
+if __name__ == "__main__":
     # Make a RuntimeView and hold it until all tests run so MPI isn't shut
     # down
     rv = pz.runtime.RuntimeView()

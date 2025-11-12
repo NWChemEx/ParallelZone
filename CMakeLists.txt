@@ -28,7 +28,7 @@ include(get_cmaize)
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
-set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
+set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/")
 
 # Builds C++ API documentation
 include(nwx_cxx_api_docs)
@@ -91,6 +91,20 @@ cmaize_find_or_build_dependency(
 )
 list(APPEND project_depends cereal)
 
+## Copying python stuff from NWXCMake ##
+
+find_package(Python3 COMPONENTS Interpreter Development)
+find_package(Python COMPONENTS Interpreter Development)
+
+cmaize_find_or_build_dependency(
+    pybind11
+    URL github.com/pybind/pybind11
+    BUILD_TARGET pybind11::headers
+    FIND_TARGET pybind11::embed
+    CMAKE_ARGS PYBIND11_INSTALL=ON
+                PYBIND11_FINDPYTHON=ON
+)
+
 cmaize_add_library(
     ${PROJECT_NAME}
     SOURCE_DIR "${project_src_dir}"
@@ -98,17 +112,23 @@ cmaize_add_library(
     DEPENDS "${project_depends}"
 )
 
+set_target_properties(
+    "${PROJECT_NAME}"
+    PROPERTIES
+    PREFIX ""
+    LIBRARY_OUTPUT_NAME "${PROEJCT_NAME}"
+)
+
+target_include_directories(
+    "${PROJECT_NAME}" PUBLIC pybind11::headers Python::Python
+)
+target_link_libraries(
+    "${PROJECT_NAME}" PUBLIC pybind11::embed Python::Python
+)
+
 if("${BUILD_CPP_JOULES}")
     target_compile_definitions("${PROJECT_NAME}" PRIVATE BUILD_CPP_JOULES)
 endif()
-
-# N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
-include(nwx_pybind11)
-nwx_add_pybind11_module(
-    ${PROJECT_NAME}
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
-    DEPENDS "${PROJECT_NAME}"
-)
 
 if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
@@ -131,6 +151,7 @@ if("${BUILD_TESTING}")
     )
 
     # N.B. these are no-ops if BUILD_PYBIND11_PYBINDINGS is not turned on
+    include(nwx_pybind11)
     nwx_pybind11_tests(
         py_parallelzone "${PYTHON_TEST_DIR}/unit_tests/test_parallelzone.py"
     )

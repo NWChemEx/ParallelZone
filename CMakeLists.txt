@@ -28,7 +28,7 @@ include(get_cmaize)
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
-set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/")
+set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
 # Builds C++ API documentation
 include(nwx_cxx_api_docs)
@@ -93,7 +93,6 @@ list(APPEND project_depends cereal)
 
 ## Copying python stuff from NWXCMake ##
 
-find_package(Python3 COMPONENTS Interpreter Development)
 find_package(Python COMPONENTS Interpreter Development)
 
 cmaize_find_or_build_dependency(
@@ -116,7 +115,7 @@ set_target_properties(
     "${PROJECT_NAME}"
     PROPERTIES
     PREFIX ""
-    LIBRARY_OUTPUT_NAME "${PROEJCT_NAME}"
+    LIBRARY_OUTPUT_NAME "${PROJECT_NAME}"
 )
 
 target_include_directories(
@@ -140,7 +139,7 @@ if("${BUILD_TESTING}")
         test_unit_parallelzone
         SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
         INCLUDE_DIRS "${project_src_dir}"
-	DEPENDS Catch2::Catch2 ${PROJECT_NAME}
+	    DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
 
     cmaize_add_tests(

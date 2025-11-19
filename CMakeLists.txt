@@ -98,8 +98,8 @@ find_package(Python COMPONENTS Interpreter Development)
 cmaize_find_or_build_dependency(
     pybind11
     URL github.com/pybind/pybind11
-    BUILD_TARGET pybind11::headers
-    FIND_TARGET pybind11::embed
+    BUILD_TARGET pybind11::module
+    FIND_TARGET pybind11::module
     CMAKE_ARGS PYBIND11_INSTALL=ON
                 PYBIND11_FINDPYTHON=ON
 )
@@ -118,11 +118,8 @@ set_target_properties(
     LIBRARY_OUTPUT_NAME "${PROJECT_NAME}"
 )
 
-target_include_directories(
-    "${PROJECT_NAME}" PUBLIC pybind11::headers Python::Python
-)
 target_link_libraries(
-    "${PROJECT_NAME}" PUBLIC pybind11::embed Python::Python
+    "${PROJECT_NAME}" PUBLIC pybind11::module Python::Python
 )
 
 if("${BUILD_CPP_JOULES}")

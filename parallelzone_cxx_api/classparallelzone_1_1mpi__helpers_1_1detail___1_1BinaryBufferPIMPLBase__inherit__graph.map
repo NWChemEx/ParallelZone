@@ -1,4 +1,5 @@
 <map id="parallelzone::mpi_helpers::detail_::BinaryBufferPIMPLBase" name="parallelzone::mpi_helpers::detail_::BinaryBufferPIMPLBase">
-<area shape="rect" id="node1" title="Allows us to interact with buffer in a type&#45;erased manner." alt="" coords="5,5,240,47"/>
-<area shape="rect" id="node2" href="$classparallelzone_1_1mpi__helpers_1_1detail___1_1BinaryBufferPIMPL.html" title="Implements base&#39;s API for type InternalBuffer." alt="" coords="21,95,224,151"/>
+<area shape="rect" id="Node000001" title="Allows us to interact with buffer in a type&#45;erased manner." alt="" coords="5,5,240,45"/>
+<area shape="rect" id="Node000002" href="$classparallelzone_1_1mpi__helpers_1_1detail___1_1BinaryBufferPIMPL.html" title="Implements base&#39;s API for type InternalBuffer." alt="" coords="21,93,224,148"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="125,59,125,93,120,93,120,59"/>
 </map>

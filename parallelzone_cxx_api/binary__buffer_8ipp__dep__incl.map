@@ -1,16 +1,37 @@
 <map id="include/parallelzone/mpi_helpers/binary_buffer/binary_buffer.ipp" name="include/parallelzone/mpi_helpers/binary_buffer/binary_buffer.ipp">
-<area shape="rect" id="node1" title=" " alt="" coords="491,5,687,61"/>
-<area shape="rect" id="node2" href="$binary__buffer_8hpp_source.html" title=" " alt="" coords="491,109,687,165"/>
-<area shape="rect" id="node3" href="$commpp_8hpp_source.html" title=" " alt="" coords="461,213,717,255"/>
-<area shape="rect" id="node4" href="$ram_8hpp_source.html" title=" " alt="" coords="189,310,364,351"/>
-<area shape="rect" id="node9" href="$runtime__view_8hpp_source.html" title=" " alt="" coords="261,496,458,537"/>
-<area shape="rect" id="node10" href="$resource__set__pimpl_8hpp_source.html" title=" " alt="" coords="398,585,627,627"/>
-<area shape="rect" id="node13" href="$ram__pimpl_8hpp_source.html" title=" " alt="" coords="349,407,551,448"/>
-<area shape="rect" id="node14" href="$commpp__pimpl_8hpp_source.html" title=" " alt="" coords="677,303,855,359"/>
-<area shape="rect" id="node5" href="$hardware_8hpp_source.html" title=" " alt="" coords="5,496,185,537"/>
-<area shape="rect" id="node7" href="$resource__set_8hpp_source.html" title=" " alt="" coords="133,407,325,448"/>
-<area shape="rect" id="node6" href="$parallelzone_8hpp.html" title=" " alt="" coords="88,675,241,716"/>
-<area shape="rect" id="node8" href="$runtime_8hpp.html" title=" " alt="" coords="143,585,303,627"/>
-<area shape="rect" id="node12" href="$runtime__view__pimpl_8hpp_source.html" title=" " alt="" coords="318,764,553,805"/>
-<area shape="rect" id="node11" href="$runtime__view__pimpl_8ipp.html" title=" " alt="" coords="397,675,628,716"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="491,5,687,60"/>
+<area shape="rect" id="Node000002" href="$binary__buffer_8hpp_source.html" title=" " alt="" coords="491,108,687,163"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="591,74,591,108,586,108,586,74"/>
+<area shape="rect" id="Node000003" href="$commpp_8hpp_source.html" title=" " alt="" coords="461,211,717,251"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="591,176,591,211,586,211,586,176"/>
+<area shape="rect" id="Node000004" href="$ram_8hpp_source.html" title=" " alt="" coords="189,306,364,346"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="513,257,340,308,339,303,512,252"/>
+<area shape="rect" id="Node000009" href="$runtime__view_8hpp_source.html" title=" " alt="" coords="261,489,458,529"/>
+<area shape="poly" id="edge18_Node000003_Node000009" title=" " alt="" coords="597,264,601,303,599,351,589,399,579,422,565,443,543,464,517,481,488,493,459,501,458,496,486,488,514,476,540,460,561,440,575,420,584,398,594,350,595,304,592,264"/>
+<area shape="rect" id="Node000010" href="$resource__set__pimpl_8hpp_source.html" title=" " alt="" coords="398,577,627,617"/>
+<area shape="poly" id="edge21_Node000003_Node000010" title=" " alt="" coords="607,263,619,298,622,326,619,354,611,399,596,442,561,519,527,578,522,576,556,517,592,440,606,398,614,353,617,326,614,299,602,264"/>
+<area shape="rect" id="Node000013" href="$ram__pimpl_8hpp_source.html" title=" " alt="" coords="349,401,551,441"/>
+<area shape="poly" id="edge19_Node000003_Node000013" title=" " alt="" coords="569,263,466,402,462,399,565,260"/>
+<area shape="rect" id="Node000014" href="$commpp__pimpl_8hpp_source.html" title=" " alt="" coords="677,299,855,353"/>
+<area shape="poly" id="edge20_Node000003_Node000014" title=" " alt="" coords="638,255,717,296,715,301,635,259"/>
+<area shape="rect" id="Node000005" href="$hardware_8hpp_source.html" title=" " alt="" coords="5,489,185,529"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="194,353,155,374,123,403,110,424,103,447,98,490,92,489,98,446,106,421,119,400,152,370,192,349"/>
+<area shape="rect" id="Node000007" href="$resource__set_8hpp_source.html" title=" " alt="" coords="133,401,325,441"/>
+<area shape="poly" id="edge6_Node000004_Node000007" title=" " alt="" coords="263,360,241,403,236,400,258,357"/>
+<area shape="poly" id="edge16_Node000004_Node000013" title=" " alt="" coords="325,350,416,399,414,404,322,355"/>
+<area shape="rect" id="Node000006" href="$parallelzone_8hpp.html" title=" " alt="" coords="88,665,241,705"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="107,541,134,616,157,664,152,666,129,618,102,543"/>
+<area shape="rect" id="Node000008" href="$runtime_8hpp.html" title=" " alt="" coords="143,577,303,617"/>
+<area shape="poly" id="edge7_Node000007_Node000008" title=" " alt="" coords="230,455,227,577,221,577,225,455"/>
+<area shape="poly" id="edge9_Node000007_Node000009" title=" " alt="" coords="270,447,332,487,329,491,267,451"/>
+<area shape="poly" id="edge15_Node000007_Node000010" title=" " alt="" coords="339,440,418,461,450,474,472,487,489,508,501,532,513,577,508,578,496,534,484,511,468,491,447,479,416,466,337,446"/>
+<area shape="poly" id="edge8_Node000008_Node000006" title=" " alt="" coords="205,630,180,667,175,664,201,627"/>
+<area shape="poly" id="edge10_Node000009_Node000008" title=" " alt="" coords="319,539,255,580,252,575,316,535"/>
+<area shape="poly" id="edge11_Node000009_Node000010" title=" " alt="" coords="406,534,480,575,478,580,404,538"/>
+<area shape="rect" id="Node000012" href="$runtime__view__pimpl_8hpp_source.html" title=" " alt="" coords="318,753,553,793"/>
+<area shape="poly" id="edge14_Node000009_Node000012" title=" " alt="" coords="361,543,366,619,374,662,387,704,402,730,419,752,415,755,397,733,382,706,369,664,361,620,356,544"/>
+<area shape="rect" id="Node000011" href="$runtime__view__pimpl_8ipp.html" title=" " alt="" coords="397,665,628,705"/>
+<area shape="poly" id="edge12_Node000010_Node000011" title=" " alt="" coords="515,631,515,665,510,665,510,631"/>
+<area shape="poly" id="edge13_Node000011_Node000012" title=" " alt="" coords="489,717,454,755,450,751,485,714"/>
+<area shape="poly" id="edge17_Node000013_Node000010" title=" " alt="" coords="488,449,504,467,516,488,523,512,524,536,520,577,514,577,519,536,517,513,512,490,500,470,484,453"/>
 </map>

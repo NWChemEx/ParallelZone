@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['mpidatatype_192',['MPIDataType',['../structparallelzone_1_1mpi__helpers_1_1MPIDataType.html',1,'parallelzone::mpi_helpers']]],
-  ['mpiop_193',['MPIOp',['../structparallelzone_1_1mpi__helpers_1_1MPIOp.html',1,'parallelzone::mpi_helpers']]]
+  ['mpidatatype_0',['MPIDataType',['../structparallelzone_1_1mpi__helpers_1_1MPIDataType.html',1,'parallelzone::mpi_helpers']]],
+  ['mpiop_1',['MPIOp',['../structparallelzone_1_1mpi__helpers_1_1MPIOp.html',1,'parallelzone::mpi_helpers']]]
 ];

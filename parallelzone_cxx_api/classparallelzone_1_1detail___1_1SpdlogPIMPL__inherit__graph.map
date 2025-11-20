@@ -1,6 +1,9 @@
 <map id="parallelzone::detail_::SpdlogPIMPL" name="parallelzone::detail_::SpdlogPIMPL">
-<area shape="rect" id="node1" title="LoggerPIMPL object which wraps a spdlog::logger." alt="" coords="91,95,237,136"/>
-<area shape="rect" id="node3" href="$classparallelzone_1_1detail___1_1FileSpdlog.html" title="Logger which writes to file." alt="" coords="5,184,152,225"/>
-<area shape="rect" id="node4" href="$classparallelzone_1_1detail___1_1StdoutSpdlog.html" title="Implements LoggerPIMPL so the sink is standard out." alt="" coords="176,184,323,225"/>
-<area shape="rect" id="node2" href="$classparallelzone_1_1detail___1_1LoggerPIMPL.html" title="Defines the API for Logger implementations." alt="" coords="91,5,237,47"/>
+<area shape="rect" id="Node000001" title="LoggerPIMPL object which wraps a spdlog::logger." alt="" coords="91,93,237,133"/>
+<area shape="rect" id="Node000003" href="$classparallelzone_1_1detail___1_1FileSpdlog.html" title="Logger which writes to file." alt="" coords="5,181,152,221"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="137,145,99,183,96,179,134,141"/>
+<area shape="rect" id="Node000004" href="$classparallelzone_1_1detail___1_1StdoutSpdlog.html" title="Implements LoggerPIMPL so the sink is standard out." alt="" coords="176,181,323,221"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="194,141,232,179,229,183,191,145"/>
+<area shape="rect" id="Node000002" href="$classparallelzone_1_1detail___1_1LoggerPIMPL.html" title="Defines the API for Logger implementations." alt="" coords="91,5,237,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="167,59,167,93,161,93,161,59"/>
 </map>

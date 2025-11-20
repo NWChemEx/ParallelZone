@@ -1,5 +1,7 @@
 <map id="parallelzone::detail_::FileSpdlog" name="parallelzone::detail_::FileSpdlog">
-<area shape="rect" id="node1" title="Logger which writes to file." alt="" coords="5,184,152,225"/>
-<area shape="rect" id="node2" href="$classparallelzone_1_1detail___1_1SpdlogPIMPL.html" title="LoggerPIMPL object which wraps a spdlog::logger." alt="" coords="5,95,152,136"/>
-<area shape="rect" id="node3" href="$classparallelzone_1_1detail___1_1LoggerPIMPL.html" title="Defines the API for Logger implementations." alt="" coords="5,5,152,47"/>
+<area shape="rect" id="Node000001" title="Logger which writes to file." alt="" coords="5,181,152,221"/>
+<area shape="rect" id="Node000002" href="$classparallelzone_1_1detail___1_1SpdlogPIMPL.html" title="LoggerPIMPL object which wraps a spdlog::logger." alt="" coords="5,93,152,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,147,81,181,76,181,76,147"/>
+<area shape="rect" id="Node000003" href="$classparallelzone_1_1detail___1_1LoggerPIMPL.html" title="Defines the API for Logger implementations." alt="" coords="5,5,152,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="81,59,81,93,76,93,76,59"/>
 </map>

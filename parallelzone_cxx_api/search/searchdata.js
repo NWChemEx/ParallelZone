@@ -7,7 +7,7 @@ var indexSectionsWithContent =
   4: "imw",
   5: "abcdgilmoprstv",
   6: "s",
-  7: "rt"
+  7: "lrt"
 };
 
 var indexSectionNames =

@@ -1,3 +1,17 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classparallelzone_1_1task_1_1ArgumentWrapper.html" title="Class to help forward arguments for generic functions." alt="" coords="5,5,192,47"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,205,124,230"/>
+<area shape="rect" id="Node000001" href="$structparallelzone_1_1mpi__helpers_1_1MPIDataType.html" title="Primary template for mapping type T to its MPI enum." alt="" coords="200,5,391,45"/>
+<area shape="poly" id="edge7_Node000000_Node000001" title=" " alt="" coords="73,191,109,123,137,86,170,55,198,40,201,45,174,60,141,90,114,126,78,193"/>
+<area shape="rect" id="Node000002" href="$structparallelzone_1_1mpi__helpers_1_1MPIOp.html" title="Maps a functor to an MPI operation." alt="" coords="200,69,391,109"/>
+<area shape="poly" id="edge8_Node000000_Node000002" title=" " alt="" coords="84,192,121,155,171,119,199,107,201,112,173,124,125,159,87,196"/>
+<area shape="rect" id="Node000003" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01BinaryBuffer_01_4.html" title="Registers BinaryBuffer as not needing serialized." alt="" coords="172,133,419,173"/>
+<area shape="poly" id="edge9_Node000000_Node000003" title=" " alt="" coords="119,198,171,183,215,171,216,176,173,188,121,203"/>
+<area shape="rect" id="Node000004" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01BinaryView_01_4.html" title="Registers BinaryView as not needing serialized." alt="" coords="176,197,415,237"/>
+<area shape="poly" id="edge10_Node000000_Node000004" title=" " alt="" coords="138,215,176,215,176,220,138,220"/>
+<area shape="rect" id="Node000005" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01ConstBinaryView_01_4.html" title="Registers ConstBinaryView as not needing serialized." alt="" coords="181,262,410,317"/>
+<area shape="poly" id="edge11_Node000000_Node000005" title=" " alt="" coords="120,232,208,259,207,265,118,237"/>
+<area shape="rect" id="Node000006" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01std_1_1string_01_4.html" title="Registers std::string as not needing to be serialized." alt="" coords="200,341,391,395"/>
+<area shape="poly" id="edge12_Node000000_Node000006" title=" " alt="" coords="85,240,123,283,147,306,173,326,201,340,199,345,171,330,144,310,119,287,81,243"/>
+<area shape="rect" id="Node000007" href="$structparallelzone_1_1mpi__helpers_1_1NeedsSerialized_3_01std_1_1vector_3_01T_01_4_00_01std_1_1e3ad4c2a234ead607aefb9a963a6c8482.html" title="Specialization for std::vector&lt;T&gt; (T trivially copyable)" alt="" coords="182,419,409,503"/>
+<area shape="poly" id="edge13_Node000000_Node000007" title=" " alt="" coords="77,242,91,278,112,321,139,365,174,405,190,417,186,421,170,409,135,369,107,324,86,280,72,244"/>
 </map>

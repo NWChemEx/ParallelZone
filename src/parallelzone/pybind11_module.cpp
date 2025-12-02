@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-#include "logging.hpp"
-#include <parallelzone/logging/logger_factory.hpp>
+#include "hardware/export_hardware.hpp"
+#include "logging/export_logging.hpp"
+#include "runtime/export_runtime.hpp"
+#include <pybind11/pybind11.h>
 
 namespace parallelzone {
 
-void export_logger_factory(pybind11::module_& m) {
-    pybind11::class_<LoggerFactory>(m, "LoggerFactory")
-      .def(pybind11::init<>())
-      .def("default_global_logger", &LoggerFactory::default_global_logger);
+PYBIND11_MODULE(parallelzone, m) {
+    m.doc() = "PyPZ : Python bindings for ParallelZone";
+
+    export_logging(m);
+    hardware::export_hardware(m);
+    runtime::export_runtime(m);
 }
 
 } // namespace parallelzone

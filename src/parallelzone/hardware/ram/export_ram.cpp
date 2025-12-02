@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "../hardware.hpp"
+#include "../export_hardware.hpp"
 #include <parallelzone/hardware/ram/ram.hpp>
 #include <pybind11/operators.h>
 

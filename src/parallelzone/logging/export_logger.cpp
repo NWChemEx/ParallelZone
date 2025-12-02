@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "logging.hpp"
+#include "export_logging.hpp"
 #include <parallelzone/logging/logger.hpp>
 #include <pybind11/operators.h>
 

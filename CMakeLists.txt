@@ -14,24 +14,20 @@
 
 cmake_minimum_required(VERSION 3.14)
 
-# Downloads common CMake modules used throughout NWChemEx
-include(cmake/get_nwx_cmake.cmake)
-
 #Sets the version to whatever git thinks it is
-include(get_version_from_git)
+include(cmake/get_version_from_git.cmake)
 get_version_from_git(parallelzone_version "${CMAKE_CURRENT_LIST_DIR}")
 project(parallelzone VERSION "${parallelzone_version}" LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
-include(nwx_versions)
-include(get_cmaize)
+include(cmake/get_cmaize.cmake)
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
 set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
 
 # Builds C++ API documentation
-include(nwx_cxx_api_docs)
+include(cmake/nwx_cxx_api_docs.cmake)
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 ### Options ###
@@ -39,20 +35,21 @@ cmaize_option_list(
     BUILD_TESTING OFF "Should we build the tests?"
     BUILD_PYBIND11_PYBINDINGS ON "Should we build pybind11 python bindings?"
     BUILD_CPP_JOULES OFF "Enable energy usage tracking with CPP Joules library?"
-    BUILD_CUDA_BINDINGS OFF "Enable CUDA Bindings"
-    BUILD_HIP_BINDINGS  OFF "Enable HIP Bindings"
-    BUILD_SYCL_BINDINGS OFF "Enable SYCL Bindings"
-    BUILD_PAPI_BINDINGS OFF "Enable PAPI Bindings"
 )
 
-if (BUILD_CUDA_BINDING OR BUILD_HIP_BINDINGS OR BUILD_SYCL_BINDING)
-  include(build_device)
-endif()
-
 ### Dependendencies ###
+find_package(MPI REQUIRED)
 set(project_depends "MPI::MPI_CXX")
 
-find_package(MPI REQUIRED)
+cmaize_find_or_build_dependency(
+    cereal
+    URL github.com/USCiLab/cereal
+    VERSION v1.3.0
+    BUILD_TARGET cereal
+    FIND_TARGET cereal
+    CMAKE_ARGS JUST_INSTALL_CEREAL=ON
+)
+list(APPEND project_depends cereal)
 
 cmaize_find_or_build_dependency(
     spdlog
@@ -63,11 +60,6 @@ cmaize_find_or_build_dependency(
     CMAKE_ARGS SPDLOG_INSTALL=ON
 )
 list(APPEND project_depends spdlog)
-
-# PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
-if("${BUILD_PAPI_BINDINGS}")
-    include(build_papi)
-endif ()
 
 if("${BUILD_CPP_JOULES}")
     cmaize_find_or_build_dependency(
@@ -81,18 +73,6 @@ if("${BUILD_CPP_JOULES}")
     list(APPEND project_depends cpp_joules)
 endif()
 
-cmaize_find_or_build_dependency(
-    cereal
-    URL github.com/USCiLab/cereal
-    VERSION v1.3.0
-    BUILD_TARGET cereal
-    FIND_TARGET cereal
-    CMAKE_ARGS JUST_INSTALL_CEREAL=ON
-)
-list(APPEND project_depends cereal)
-
-## Copying python stuff from NWXCMake ##
-
 find_package(Python COMPONENTS Interpreter Development)
 
 cmaize_find_or_build_dependency(
@@ -101,7 +81,7 @@ cmaize_find_or_build_dependency(
     BUILD_TARGET pybind11::module
     FIND_TARGET pybind11::module
     CMAKE_ARGS PYBIND11_INSTALL=ON
-                PYBIND11_FINDPYTHON=ON
+               PYBIND11_FINDPYTHON=ON
 )
 
 cmaize_add_library(
@@ -111,6 +91,7 @@ cmaize_add_library(
     DEPENDS "${project_depends}"
 )
 
+# Need to remove this once the Python alias is setup
 set_target_properties(
     "${PROJECT_NAME}"
     PROPERTIES
@@ -130,7 +111,13 @@ if("${BUILD_TESTING}")
     set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
     set(PYTHON_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
 
-    include(get_catch2)
+    cmaize_find_or_build_dependency(
+        Catch2
+        URL github.com/catchorg/Catch2
+        BUILD_TARGET Catch2
+        FIND_TARGET Catch2::Catch2
+        VERSION v3.6.0
+    )
 
     cmaize_add_tests(
         test_unit_parallelzone
@@ -146,16 +133,6 @@ if("${BUILD_TESTING}")
         DEPENDS Catch2::Catch2 ${PROJECT_NAME}
     )
 
-    # N.B. these are no-ops if BUILD_PYBIND11_PYBINDINGS is not turned on
-    include(nwx_pybind11)
-    nwx_pybind11_tests(
-        py_parallelzone "${PYTHON_TEST_DIR}/unit_tests/test_parallelzone.py"
-    )
-
-    nwx_pybind11_tests(
-        py_doc_snippets "${PYTHON_TEST_DIR}/doc_snippets/test_doc_snippets.py"
-    )
-
     add_test(
         NAME "test_pz_under_mpi"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
@@ -166,6 +143,15 @@ if("${BUILD_TESTING}")
         NAME "test_pz_docs_under_mpi"
         COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
                 "${CMAKE_BINARY_DIR}/test_parallelzone_docs"
+    )
+
+    include(cmake/python_utils.cmake)
+    nwx_pybind11_tests(
+        py_parallelzone "${PYTHON_TEST_DIR}/unit_tests/test_parallelzone.py"
+    )
+
+    nwx_pybind11_tests(
+        py_doc_snippets "${PYTHON_TEST_DIR}/doc_snippets/test_doc_snippets.py"
     )
 endif()
 

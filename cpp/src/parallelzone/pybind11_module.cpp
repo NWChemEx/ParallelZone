@@ -21,7 +21,7 @@
 
 namespace parallelzone {
 
-PYBIND11_MODULE(parallelzone, m) {
+PYBIND11_MODULE(libparallelzone, m) {
     m.doc() = "PyPZ : Python bindings for ParallelZone";
 
     export_logging(m);

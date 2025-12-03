@@ -23,8 +23,8 @@ set(CMAKE_CXX_STANDARD 20)
 include(cmake/get_cmaize.cmake)
 
 # Work out the project paths
-set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
-set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
+set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/cpp/include/${PROJECT_NAME}")
+set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/cpp/src/${PROJECT_NAME}")
 
 # Builds C++ API documentation
 include(cmake/nwx_cxx_api_docs.cmake)
@@ -89,14 +89,6 @@ cmaize_add_library(
     SOURCE_DIR "${project_src_dir}"
     INCLUDE_DIRS "${project_inc_dir}"
     DEPENDS "${project_depends}"
-)
-
-# Need to remove this once the Python alias is setup
-set_target_properties(
-    "${PROJECT_NAME}"
-    PROPERTIES
-    PREFIX ""
-    LIBRARY_OUTPUT_NAME "${PROJECT_NAME}"
 )
 
 target_link_libraries(

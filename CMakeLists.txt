@@ -147,4 +147,13 @@ if("${BUILD_TESTING}")
     )
 endif()
 
+# Install the python package
+cmake_path(GET Python_EXECUTABLE PARENT_PATH pyroot)
+cmake_path(GET pyroot PARENT_PATH pyroot)
+cmake_path(RELATIVE_PATH Python_SITELIB BASE_DIRECTORY "${pyroot}" OUTPUT_VARIABLE pysitelib)
+install(
+    DIRECTORY "${CMAKE_SOURCE_DIR}/python/${PROJECT_NAME}"
+    DESTINATION "${CMAKE_INSTALL_PREFIX}/${pysitelib}"
+)
+
 cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)

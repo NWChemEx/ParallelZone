@@ -14,13 +14,16 @@
   ~ limitations under the License.
 -->
 
-[![Actions](https://github.com/NWChemEx/ParallelZone/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx/ParallelZone)
-
 <!-- TODO: Uncomment when code coverage works again
 [![Codecov](https://codecov.io/github/NWChemEx/ParallelZone/branch/master/graphs/sunburst.svg?token=gdemefzIU7)](https://codecov.io/github/NWChemEx/ParallelZone/branch/master)
 -->
 
 # ParallelZone
+
+[![Nightly Workflow](https://github.com/NWChemEx/ParallelZone/actions/workflows/nightly.yaml/badge.svg)](https://github.com/NWChemEx/ParallelZone/actions/workflows/nightly.yaml)
+<!-- TODO: Uncomment when code coverage works again
+[![Codecov](https://codecov.io/github/NWChemEx/ParallelZone/branch/master/graphs/sunburst.svg?token=gdemefzIU7)](https://codecov.io/github/NWChemEx/ParallelZone/branch/master)
+-->
 
 ParallelZone is a parallel
 [runtime system](https://en.wikipedia.org/wiki/Runtime_system) designed to be
@@ -32,7 +35,7 @@ project).
 A more detailed, user-centric, description of the project can be found
 [here](https://nwchemex.github.io/ParallelZone/about.html).
 
-# Features
+## Features
 
 - Object-oriented C++ bindings to MPI.
 - Logging primitives.

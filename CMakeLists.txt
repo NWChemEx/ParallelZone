@@ -23,7 +23,6 @@ get_version_from_git(parallelzone_version "${CMAKE_CURRENT_LIST_DIR}")
 project(parallelzone VERSION "${parallelzone_version}" LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
-include(nwx_versions)
 include(get_cmaize)
 
 # Work out the project paths
@@ -57,7 +56,7 @@ find_package(MPI REQUIRED)
 cmaize_find_or_build_dependency(
     spdlog
     URL github.com/gabime/spdlog
-    VERSION ad0e89cbfb4d0c1ce4d097e134eb7be67baebb36
+    VERSION v1.16.0
     BUILD_TARGET spdlog
     FIND_TARGET spdlog::spdlog
     CMAKE_ARGS SPDLOG_INSTALL=ON
@@ -84,9 +83,9 @@ endif()
 cmaize_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
-    VERSION v1.3.0
+    VERSION v1.3.2
     BUILD_TARGET cereal
-    FIND_TARGET cereal
+    FIND_TARGET cereal::cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
 list(APPEND project_depends cereal)

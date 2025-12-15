@@ -24,6 +24,7 @@ project(parallelzone VERSION "${parallelzone_version}" LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
 include(get_cmaize)
+include(nwx_find_package)
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
@@ -49,9 +50,14 @@ if (BUILD_CUDA_BINDING OR BUILD_HIP_BINDINGS OR BUILD_SYCL_BINDING)
 endif()
 
 ### Dependendencies ###
-set(project_depends "MPI::MPI_CXX")
 
-find_package(MPI REQUIRED)
+nwx_find_package(
+    MPI
+    REQUIRED
+    TARGETS
+        mpi "MPI::MPI_CXX"
+)
+set(project_depends mpi)
 
 cmaize_find_or_build_dependency(
     spdlog

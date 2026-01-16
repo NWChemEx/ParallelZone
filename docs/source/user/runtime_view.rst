@@ -147,9 +147,17 @@ meanings):
 - critical - Something went wrong, but recovery is not possible
 
 Severity increases from "trace" to "critical" such that "trace" is the least
-important and "critical" is the most severe log statements. In practice, the
-value of a computed result usually falls under debug or trace. There's at least
-two ways to do that:
+important and "critical" is the most severe log statements. This means that
+all logging statements with severity trace and above are enabled if the
+severity ofthe logger is set to trace. If the logger is set to debug, all
+debug, info, warn, error, and critical message logs are enabled, while trace
+message logs are not. As another example, info severity includes info, warn,
+error, critical logging statements, and warn includes warn, error, and critical
+loggingstatements.
+
+
+In practice, the value of a computed result usually falls under debug or
+trace. There's at least two ways to do that:
 
 .. tabs::
 
@@ -171,6 +179,28 @@ The first example illustrates the use of the ``trace`` method. Each severity
 level has its own corresponding method. The second example shows how to use
 the more general ``log`` method. This particular overload of the ``log`` method
 allows you to specify (at runtime if you like) the severity of the message.
+
+************
+Code Example
+************
+
+Here is an example in both Python and C++ that shows the differences in output
+when different severities are set:
+
+.. tabs::
+
+   .. tab:: C++
+      .. code-block:: C++
+
+         // TODO
+
+   .. tab:: Python
+
+      .. literalinclude:: ../../../tests/python/doc_snippets/test_logging.py
+         :language: python
+         :lines: 24-40
+         :dedent: 8
+
 
 .. note::
 

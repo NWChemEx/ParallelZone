@@ -69,7 +69,7 @@ cmaize_find_or_build_dependency(
 )
 list(APPEND project_depends spdlog)
 
-# PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
+# PAPI bindings are enabled, leading to building PAPI with CUDA or ROCm support
 if("${BUILD_PAPI_BINDINGS}")
     include(build_papi)
 endif ()

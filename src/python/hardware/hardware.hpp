@@ -15,13 +15,13 @@
  */
 
 #pragma once
-#include <pybind11/pybind11.h>
+#include "../pyparallelzone.hpp"
 
 namespace parallelzone::hardware {
 
-void export_ram(pybind11::module_& m);
+void export_ram(python_module_type& m);
 
-inline void export_hardware(pybind11::module_& m) {
+inline void export_hardware(python_module_type& m) {
     auto mhardware = m.def_submodule("hardware");
     export_ram(mhardware);
 }

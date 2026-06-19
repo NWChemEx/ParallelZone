@@ -15,16 +15,21 @@
  */
 
 #pragma once
-#include "../pyparallelzone.hpp"
+#include <pybind11/functional.h>
+#include <pybind11/native_enum.h>
+#include <pybind11/operators.h>
+#include <pybind11/pybind11.h>
 
 namespace parallelzone {
 
-void export_logger_factory(python_module_type& m);
-void export_logger(python_module_type& m);
+namespace py = pybind11;
 
-inline void export_logging(python_module_type& m) {
-    export_logger_factory(m);
-    export_logger(m);
-}
+using python_module_type = py::module_;
+
+template<typename... Args>
+using python_class_type = py::class_<Args...>;
+
+template<typename... Args>
+using python_enum_type = py::native_enum<Args...>;
 
 } // namespace parallelzone

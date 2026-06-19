@@ -19,9 +19,9 @@
 
 namespace parallelzone {
 
-void export_logger_factory(pybind11::module_& m) {
-    pybind11::class_<LoggerFactory>(m, "LoggerFactory")
-      .def(pybind11::init<>())
+void export_logger_factory(python_module_type& m) {
+    python_class_type<LoggerFactory>(m, "LoggerFactory")
+      .def(py::init<>())
       .def("default_global_logger", &LoggerFactory::default_global_logger);
 }
 

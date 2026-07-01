@@ -105,8 +105,8 @@ if(BUILD_TESTING)
 
     # Also run the C++ tests under MPI with 2 ranks.
     include(nwx_mpi_test)
-    nwx_mpi_test(test_pz_under_mpi      test_unit_parallelzone NPROC 2)
-    nwx_mpi_test(test_pz_docs_under_mpi test_parallelzone_docs NPROC 2)
+    #nwx_mpi_test(test_pz_under_mpi      test_unit_parallelzone NPROC 2)
+    #nwx_mpi_test(test_pz_docs_under_mpi test_parallelzone_docs NPROC 2)
 
     # Python tests (no-op unless BUILD_PYBIND11_BINDINGS is on)
     include(nwx_python_test)

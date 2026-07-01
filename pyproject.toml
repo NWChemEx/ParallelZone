@@ -17,12 +17,12 @@ requires = [
     "scikit-build-core>=0.10",
     "pybind11",
     "setuptools-scm>=8",
-    "nwxcmake @ git+https://github.com/NWChemEx/NWXCMake",
+    "nwchemex-nwxcmake @ git+https://github.com/NWChemEx/NWXCMake",
 ]
 build-backend = "scikit_build_core.build"
 
 [project]
-name = "parallelzone"
+name = "nwchemex-parallelzone"
 dynamic = ["version"]
 description = "Runtime, hardware, and MPI abstractions for the NWChemEx ecosystem"
 license = { text = "Apache-2.0" }

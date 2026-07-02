@@ -94,14 +94,17 @@ nwx_python_module(${PROJECT_NAME} "${project_src_dir}")
 if(BUILD_TESTING)
     include(catch2_tests_from_dir)
     catch2_tests_from_dir(
-        test_unit_parallelzone "tests/cxx/unit_tests" ${PROJECT_NAME}
+        test_unit_parallelzone
+        "tests/cxx/unit_tests"
+        ${PROJECT_NAME}
+        PRIVATE_INCLUDES "${project_priv_dir}"
     )
     catch2_tests_from_dir(
-        test_parallelzone_docs "tests/cxx/doc_snippets" ${PROJECT_NAME}
+        test_parallelzone_docs
+        "tests/cxx/doc_snippets"
+        ${PROJECT_NAME}
+        PRIVATE_INCLUDES "${project_priv_dir}"
     )
-    # Tests reach into the private source tree for detail_ headers.
-    target_include_directories(test_unit_parallelzone PRIVATE "${project_priv_dir}")
-    target_include_directories(test_parallelzone_docs PRIVATE "${project_priv_dir}")
 
     # Also run the C++ tests under MPI with 2 ranks.
     include(nwx_mpi_test)

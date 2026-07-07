@@ -23,13 +23,9 @@ nwx_set_version(parallelzone_version "${CMAKE_CURRENT_LIST_DIR}")
 project(parallelzone VERSION "${parallelzone_version}" LANGUAGES CXX)
 
 include(disable_in_source_builds)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
+include(set_default_nwx_options)
 
 ### Options ###
-option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_PYBIND11_BINDINGS "Should we build pybind11 python bindings?" ON)
 option(BUILD_CPP_JOULES "Enable energy usage tracking with CPP Joules library?" OFF)
 option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF)
 option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF)
@@ -91,34 +87,32 @@ include(nwx_python_module)
 nwx_python_module(${PROJECT_NAME} "${project_src_dir}")
 
 ### Tests ###
-if(BUILD_TESTING)
-    include(catch2_tests_from_dir)
-    catch2_tests_from_dir(
-        test_unit_parallelzone
-        "tests/cxx/unit_tests"
-        ${PROJECT_NAME}
-        PRIVATE_INCLUDES "${project_priv_dir}"
-    )
-    catch2_tests_from_dir(
-        test_parallelzone_docs
-        "tests/cxx/doc_snippets"
-        ${PROJECT_NAME}
-        PRIVATE_INCLUDES "${project_priv_dir}"
-    )
+include(catch2_tests_from_dir)
+catch2_tests_from_dir(
+    test_unit_parallelzone
+    "tests/cxx/unit_tests"
+    ${PROJECT_NAME}
+    PRIVATE_INCLUDES "${project_priv_dir}"
+)
+catch2_tests_from_dir(
+    test_parallelzone_docs
+    "tests/cxx/doc_snippets"
+    ${PROJECT_NAME}
+    PRIVATE_INCLUDES "${project_priv_dir}"
+)
 
-    # Also run the C++ tests under MPI with 2 ranks.
-    include(nwx_mpi_test)
-    #nwx_mpi_test(test_pz_under_mpi      test_unit_parallelzone NPROC 2)
-    #nwx_mpi_test(test_pz_docs_under_mpi test_parallelzone_docs NPROC 2)
+# Also run the C++ tests under MPI with 2 ranks.
+include(nwx_mpi_test)
+#nwx_mpi_test(test_pz_under_mpi      test_unit_parallelzone NPROC 2)
+#nwx_mpi_test(test_pz_docs_under_mpi test_parallelzone_docs NPROC 2)
 
-    # Python tests (no-op unless BUILD_PYBIND11_BINDINGS is on)
-    include(nwx_python_test)
-    nwx_python_test(
-        py_parallelzone
-        "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests/test_parallelzone.py"
-    )
-    nwx_python_test(
-        py_doc_snippets
-        "${CMAKE_CURRENT_LIST_DIR}/tests/python/doc_snippets/test_doc_snippets.py"
-    )
-endif()
+# Python tests (no-op unless BUILD_PYBIND11_BINDINGS is on)
+include(nwx_python_test)
+nwx_python_test(
+    py_parallelzone
+    "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests/test_parallelzone.py"
+)
+nwx_python_test(
+    py_doc_snippets
+    "${CMAKE_CURRENT_LIST_DIR}/tests/python/doc_snippets/test_doc_snippets.py"
+)

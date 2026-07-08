@@ -14,9 +14,8 @@
 # limitations under the License.
 #
 
-import pytest
-
 import parallelzone as pz
+import pytest
 
 
 @pytest.fixture(scope="session", autouse=True)

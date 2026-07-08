@@ -29,7 +29,7 @@ namespace parallelzone::hardware {
  */
 struct ProfileInformation {
     /// Type used to measure time durations
-    using duration = std::chrono::high_resolution_clock::duration;
+    using duration = std::chrono::steady_clock::duration;
 
     /// Long the function ran for
     duration wall_time;

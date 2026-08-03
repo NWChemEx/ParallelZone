@@ -51,3 +51,6 @@ install/
 
 # PyTest's cache directory
 .pytest_cache/
+
+# Automatically installed in dev mode
+.pre-commit-config.yaml

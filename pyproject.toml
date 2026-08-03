@@ -48,4 +48,4 @@ fallback_version = "0.0.0"
 # For editable (developer) installs, also build the tests.
 [[tool.scikit-build.overrides]]
 if.state = "editable"
-cmake.args = ["-DBUILD_PYBIND11_BINDINGS=ON", "-DBUILD_TESTING=ON"]
+cmake.args = ["-DDEVELOPER_SETUP=ON"]

@@ -15,14 +15,14 @@
  */
 
 #pragma once
-#include <pybind11/pybind11.h>
+#include "../pyparallelzone.hpp"
 
 namespace parallelzone::runtime {
 
-void export_runtime_view(pybind11::module_& m);
-void export_resource_set(pybind11::module_& m);
+void export_runtime_view(python_module_type& m);
+void export_resource_set(python_module_type& m);
 
-inline void export_runtime(pybind11::module_& m) {
+inline void export_runtime(python_module_type& m) {
     auto mruntime = m.def_submodule("runtime");
     export_runtime_view(mruntime);
     export_resource_set(mruntime);

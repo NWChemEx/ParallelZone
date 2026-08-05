@@ -38,7 +38,7 @@ function(build_device)
       set(CMAKE_CXX_STANDARD 17)
     endif()
 
-endfunction()       
+endfunction()
 
 # Call the function we just wrote to get CMakePP
 build_device()

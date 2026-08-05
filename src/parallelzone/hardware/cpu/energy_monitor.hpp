@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 NWChemEx-Project
+ * Copyright 2025 NWChemEx-Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,39 @@
  */
 
 #pragma once
-#include "../pyparallelzone.hpp"
+#ifdef BUILD_CPP_JOULES
+#include <cppJoules.h>
 
 namespace parallelzone::hardware {
 
-void export_ram(python_module_type& m);
+class EnergyMonitor {
+public:
+    using energy_type = long long;
+    bool is_active() { return true; }
+    void start() { m_tracker_.start(); }
 
-inline void export_hardware(python_module_type& m) {
-    auto mhardware = m.def_submodule("hardware");
-    export_ram(mhardware);
-}
+    void stop() {
+        m_tracker_.stop();
+        m_tracker_.calculate_energy();
+        m_tracker_.print_energy();
+    }
+
+private:
+    EnergyTracker m_tracker_;
+};
 
 } // namespace parallelzone::hardware
+
+#else
+namespace parallelzone::hardware {
+
+class EnergyMonitor {
+public:
+    bool is_active() { return false; }
+    void start() {}
+    void stop() {}
+};
+
+} // namespace parallelzone::hardware
+
+#endif

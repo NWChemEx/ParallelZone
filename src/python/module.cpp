@@ -16,8 +16,8 @@
 
 #include "hardware/hardware.hpp"
 #include "logging/logging.hpp"
+#include "pyparallelzone.hpp"
 #include "runtime/runtime.hpp"
-#include <pybind11/pybind11.h>
 
 namespace parallelzone {
 

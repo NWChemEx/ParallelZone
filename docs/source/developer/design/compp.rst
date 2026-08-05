@@ -26,10 +26,10 @@ discuss the design of the ``CommPP`` class.
 Why Do We Need CommPP?
 **********************
 
-ParallelZone needs access to MPI. ParallelZone is object-oriented and needs 
-something to bridge the gap between objects and types recognized by MPI. At a 
-high-level this leads to serialization, but naive application of serializaiton 
-in an MPI context can lead to inefficiencies. CommPP should automate the 
+ParallelZone needs access to MPI. ParallelZone is object-oriented and needs
+something to bridge the gap between objects and types recognized by MPI. At a
+high-level this leads to serialization, but naive application of serializaiton
+in an MPI context can lead to inefficiencies. CommPP should automate the
 conversion from objects to MPI data types in the most efficient manner possible.
 
 *********************

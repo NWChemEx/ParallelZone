@@ -21,9 +21,10 @@ include(cmake/get_nwx_cmake.cmake)
 include(get_version_from_git)
 get_version_from_git(parallelzone_version "${CMAKE_CURRENT_LIST_DIR}")
 project(parallelzone VERSION "${parallelzone_version}" LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
 
-include(nwx_versions)
 include(get_cmaize)
+include(nwx_find_package)
 
 # Work out the project paths
 set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
@@ -37,8 +38,9 @@ nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 cmaize_option_list(
     BUILD_TESTING OFF "Should we build the tests?"
     BUILD_PYBIND11_PYBINDINGS ON "Should we build pybind11 python bindings?"
+    BUILD_CPP_JOULES OFF "Enable energy usage tracking with CPP Joules library?"
     BUILD_CUDA_BINDINGS OFF "Enable CUDA Bindings"
-    BUILD_HIP_BINDINGS  OFF "Enable HIP Bindings" 
+    BUILD_HIP_BINDINGS  OFF "Enable HIP Bindings"
     BUILD_SYCL_BINDINGS OFF "Enable SYCL Bindings"
     BUILD_PAPI_BINDINGS OFF "Enable PAPI Bindings"
 )
@@ -48,31 +50,48 @@ if (BUILD_CUDA_BINDING OR BUILD_HIP_BINDINGS OR BUILD_SYCL_BINDING)
 endif()
 
 ### Dependendencies ###
-set(project_depends "MPI::MPI_CXX")
 
-find_package(MPI REQUIRED)
+nwx_find_package(
+    MPI
+    REQUIRED
+    TARGETS
+        mpi "MPI::MPI_CXX"
+)
+set(project_depends mpi)
 
 cmaize_find_or_build_dependency(
     spdlog
     URL github.com/gabime/spdlog
-    VERSION ad0e89cbfb4d0c1ce4d097e134eb7be67baebb36
+    VERSION v1.16.0
     BUILD_TARGET spdlog
     FIND_TARGET spdlog::spdlog
     CMAKE_ARGS SPDLOG_INSTALL=ON
 )
 list(APPEND project_depends spdlog)
 
-# PAPI bindings are enabled, leading to building PAPI with CUDA or rocm support
+# PAPI bindings are enabled, leading to building PAPI with CUDA or ROCm support
 if("${BUILD_PAPI_BINDINGS}")
     include(build_papi)
 endif ()
 
+if("${BUILD_CPP_JOULES}")
+    cmaize_find_or_build_dependency(
+        cpp_joules
+        BUILD_CPP_JOULES
+        URL github.com/rishalab/CPPJoules
+        VERSION main
+        BUILD_TARGET CPP_Joules
+        FIND_TARGET CPP_Joules::CPP_Joules
+    )
+    list(APPEND project_depends cpp_joules)
+endif()
+
 cmaize_find_or_build_dependency(
     cereal
     URL github.com/USCiLab/cereal
-    VERSION v1.3.0
+    VERSION v1.3.2
     BUILD_TARGET cereal
-    FIND_TARGET cereal
+    FIND_TARGET cereal::cereal
     CMAKE_ARGS JUST_INSTALL_CEREAL=ON
 )
 list(APPEND project_depends cereal)
@@ -83,6 +102,10 @@ cmaize_add_library(
     INCLUDE_DIRS "${project_inc_dir}"
     DEPENDS "${project_depends}"
 )
+
+if("${BUILD_CPP_JOULES}")
+    target_compile_definitions("${PROJECT_NAME}" PRIVATE BUILD_CPP_JOULES)
+endif()
 
 # N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
 include(nwx_pybind11)

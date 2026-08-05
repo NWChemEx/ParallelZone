@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import parallelzone as pz
 import unittest
+
+import parallelzone as pz
 
 
 class TestRAMTestCase(unittest.TestCase):
-
     def test_ram(self):
         rv = pz.runtime.RuntimeView()
 

@@ -13,12 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import parallelzone as pz
 import unittest
+
+import parallelzone as pz
 
 
 class RAMTestCase(unittest.TestCase):
-
     def setUp(self):
         """
         For unit testing purposes we "create" two RAM instances:

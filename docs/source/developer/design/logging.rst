@@ -18,7 +18,7 @@
 Designing the Logging Component
 ###############################
 
-ParallelZone provides a ``Logger`` class to facilitate recording of events, 
+ParallelZone provides a ``Logger`` class to facilitate recording of events,
 i.e., print statements. The high-level design is summarized on this page.
 
 *****************
@@ -261,7 +261,7 @@ Logging Design
    Software architecture of ParallelZone's Logging component.
 
 Ultimately none of the widely available logging solutions do everything we want
-and we have chosen to have the user-facing logger be written by us. This 
+and we have chosen to have the user-facing logger be written by us. This
 provides a stable API to users of ParallelZone, while allowing ParallelZone
 developers to graft the missing features onto existing logging libraries.
 
@@ -312,7 +312,7 @@ This architecture addresses the considerations raised above by:
 
 1. Multiple loggers.
 
-   - We can have multiple logger instances. Each instance is configured 
+   - We can have multiple logger instances. Each instance is configured
      for a specific scope (global vs. process-local).
    - Thread-safety should avoid the need for a "thread-local" logger.
 
@@ -324,7 +324,7 @@ This architecture addresses the considerations raised above by:
 
 The remaining issues, including the thread-safety requirement of consideration
 3, are punted to the ``Logger`` class, which is the class actually
-implementing the global and process-local loggers. The design of ``Logger`` 
+implementing the global and process-local loggers. The design of ``Logger``
 is provided here: :ref:`logger_design`.
 
 *********************
@@ -338,7 +338,6 @@ if/when users want to customize logging more. In particular:
   for specific instances. Turning on/off such loggers makes it easier to track
   what's going on with the class and instances.
 - Realistically we probably want a factory, or similar mechanism, for
-  setting up the initial loggers. Since our initialization choices are 
+  setting up the initial loggers. Since our initialization choices are
   presently very limited we punt on the factory until more choices become
   available.
-

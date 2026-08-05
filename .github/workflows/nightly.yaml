@@ -1,4 +1,4 @@
-# Copyright 2021 NWChemEx-Project
+# Copyright 2025 NWChemEx-Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,16 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-header:
-  license:
-    spdx-id: Apache-2.0
-    copyright-owner: NWChemEx-Project
 
-  paths-ignore:
-    - .github/
-    - docs/Makefile
-    - LICENSE
-    - docs/requirements.txt
-    - version.txt 
+name: Nightly Workflow
 
-  comment: never
+on:
+  schedule:
+    - cron: "0 6 * * *" # Every day at 06:00 UTC (00:00 CST)
+
+jobs:
+  test_library:
+    uses: NWChemEx/.github/.github/workflows/test_nwx_library.yaml@master
+    with:
+      compilers: '["gcc-14", "clang-18"]'

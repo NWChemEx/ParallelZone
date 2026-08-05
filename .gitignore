@@ -48,3 +48,9 @@ toolchain.cmake
 
 # For development often install to a subdirectory of the repo called "install"
 install/
+
+# PyTest's cache directory
+.pytest_cache/
+
+# Automatically installed in dev mode
+.pre-commit-config.yaml

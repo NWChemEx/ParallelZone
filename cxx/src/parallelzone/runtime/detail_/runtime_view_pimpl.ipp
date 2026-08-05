@@ -68,7 +68,7 @@ inline bool RuntimeViewPIMPL::operator==(
     return *m_plogger == *rhs.m_plogger;
 }
 
-void RuntimeViewPIMPL::instantiate_resource_set_(size_type rank) const {
+inline void RuntimeViewPIMPL::instantiate_resource_set_(size_type rank) const {
     using rs_pimpl = detail_::ResourceSetPIMPL;
     if(m_resource_sets_.count(rank)) return;
 

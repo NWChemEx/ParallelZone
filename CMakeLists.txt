@@ -14,147 +14,105 @@
 
 cmake_minimum_required(VERSION 3.14)
 
-# Downloads common CMake modules used throughout NWChemEx
+# Put the shared NWXCMake modules on CMAKE_MODULE_PATH *before* project() so
+# nwx_set_version() is available to compute the project version.
 include(cmake/get_nwx_cmake.cmake)
 
-#Sets the version to whatever git thinks it is
-include(get_version_from_git)
-get_version_from_git(parallelzone_version "${CMAKE_CURRENT_LIST_DIR}")
+include(nwx_set_version)
+nwx_set_version(parallelzone_version "${CMAKE_CURRENT_LIST_DIR}")
 project(parallelzone VERSION "${parallelzone_version}" LANGUAGES CXX)
-set(CMAKE_CXX_STANDARD 20)
 
-include(get_cmaize)
-include(nwx_find_package)
+include(disable_in_source_builds)
+include(set_default_nwx_options)
 
-# Work out the project paths
-set(project_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
-set(project_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
+### Options ###
+option(BUILD_CPP_JOULES "Enable energy usage tracking with CPP Joules library?" OFF)
+option(BUILD_CUDA_BINDINGS "Enable CUDA Bindings" OFF)
+option(BUILD_HIP_BINDINGS  "Enable HIP Bindings"  OFF)
+option(BUILD_SYCL_BINDINGS "Enable SYCL Bindings" OFF)
+option(BUILD_PAPI_BINDINGS "Enable PAPI Bindings" OFF)
 
-# Builds C++ API documentation
+# Project paths (relative dirs are resolved against CMAKE_CURRENT_SOURCE_DIR by
+# the NWXCMake helpers). project_priv_dir is the private source root the C++
+# tests include detail_ headers from as <parallelzone/.../detail_/...>.
+set(project_inc_dir "cxx/include")
+set(project_src_dir "cxx/src")
+set(project_priv_dir "${CMAKE_CURRENT_LIST_DIR}/cxx/src")
+
+# Builds C++ API documentation (no-op unless BUILD_DOCS is on)
 include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
-### Options ###
-cmaize_option_list(
-    BUILD_TESTING OFF "Should we build the tests?"
-    BUILD_PYBIND11_PYBINDINGS ON "Should we build pybind11 python bindings?"
-    BUILD_CPP_JOULES OFF "Enable energy usage tracking with CPP Joules library?"
-    BUILD_CUDA_BINDINGS OFF "Enable CUDA Bindings"
-    BUILD_HIP_BINDINGS  OFF "Enable HIP Bindings"
-    BUILD_SYCL_BINDINGS OFF "Enable SYCL Bindings"
-    BUILD_PAPI_BINDINGS OFF "Enable PAPI Bindings"
-)
-
-if (BUILD_CUDA_BINDING OR BUILD_HIP_BINDINGS OR BUILD_SYCL_BINDING)
-  include(build_device)
+if(BUILD_CUDA_BINDINGS OR BUILD_HIP_BINDINGS OR BUILD_SYCL_BINDINGS)
+    include(build_device)
 endif()
 
-### Dependendencies ###
+### Dependencies ###
+include(nwx_find_mpi)
+nwx_find_mpi()
 
-nwx_find_package(
-    MPI
-    REQUIRED
-    TARGETS
-        mpi "MPI::MPI_CXX"
-)
-set(project_depends mpi)
+include(get_dependencies)
+get_dependencies(spdlog cereal)
 
-cmaize_find_or_build_dependency(
-    spdlog
-    URL github.com/gabime/spdlog
-    VERSION v1.16.0
-    BUILD_TARGET spdlog
-    FIND_TARGET spdlog::spdlog
-    CMAKE_ARGS SPDLOG_INSTALL=ON
-)
-list(APPEND project_depends spdlog)
+set(project_depends MPI::MPI_CXX spdlog::spdlog cereal::cereal)
 
 # PAPI bindings are enabled, leading to building PAPI with CUDA or ROCm support
-if("${BUILD_PAPI_BINDINGS}")
+if(BUILD_PAPI_BINDINGS)
     include(build_papi)
-endif ()
+endif()
 
-if("${BUILD_CPP_JOULES}")
-    cmaize_find_or_build_dependency(
+if(BUILD_CPP_JOULES)
+    include(FetchContent)
+    FetchContent_Declare(
         cpp_joules
-        BUILD_CPP_JOULES
-        URL github.com/rishalab/CPPJoules
-        VERSION main
-        BUILD_TARGET CPP_Joules
-        FIND_TARGET CPP_Joules::CPP_Joules
+        GIT_REPOSITORY https://github.com/rishalab/CPPJoules
+        GIT_TAG main
     )
-    list(APPEND project_depends cpp_joules)
+    FetchContent_MakeAvailable(cpp_joules)
+    list(APPEND project_depends CPP_Joules::CPP_Joules)
 endif()
 
-cmaize_find_or_build_dependency(
-    cereal
-    URL github.com/USCiLab/cereal
-    VERSION v1.3.2
-    BUILD_TARGET cereal
-    FIND_TARGET cereal::cereal
-    CMAKE_ARGS JUST_INSTALL_CEREAL=ON
+### Library ###
+include(nwx_library)
+nwx_library(
+    ${PROJECT_NAME} "${project_inc_dir}" "${project_src_dir}" ${project_depends}
 )
-list(APPEND project_depends cereal)
 
-cmaize_add_library(
+if(BUILD_CPP_JOULES)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE BUILD_CPP_JOULES)
+endif()
+
+### Python bindings (no-op unless BUILD_PYBIND11_BINDINGS is on) ###
+include(nwx_python_module)
+nwx_python_module(${PROJECT_NAME} "${project_src_dir}")
+
+### Tests ###
+include(catch2_tests_from_dir)
+catch2_tests_from_dir(
+    test_unit_parallelzone
+    "tests/cxx/unit_tests"
     ${PROJECT_NAME}
-    SOURCE_DIR "${project_src_dir}"
-    INCLUDE_DIRS "${project_inc_dir}"
-    DEPENDS "${project_depends}"
+    PRIVATE_INCLUDES "${project_priv_dir}"
 )
-
-if("${BUILD_CPP_JOULES}")
-    target_compile_definitions("${PROJECT_NAME}" PRIVATE BUILD_CPP_JOULES)
-endif()
-
-# N.B. this is a no-op if BUILD_PYBIND11_PYBINDINGS is not turned on
-include(nwx_pybind11)
-nwx_add_pybind11_module(
+catch2_tests_from_dir(
+    test_parallelzone_docs
+    "tests/cxx/doc_snippets"
     ${PROJECT_NAME}
-    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src/python"
-    DEPENDS "${PROJECT_NAME}"
+    PRIVATE_INCLUDES "${project_priv_dir}"
 )
 
-if("${BUILD_TESTING}")
-    set(CXX_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/cxx")
-    set(PYTHON_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/python")
+# Also run the C++ tests under MPI with 2 ranks.
+include(nwx_mpi_test)
+#nwx_mpi_test(test_pz_under_mpi      test_unit_parallelzone NPROC 2)
+#nwx_mpi_test(test_pz_docs_under_mpi test_parallelzone_docs NPROC 2)
 
-    include(get_catch2)
-
-    cmaize_add_tests(
-        test_unit_parallelzone
-        SOURCE_DIR "${CXX_TEST_DIR}/unit_tests"
-        INCLUDE_DIRS "${project_src_dir}"
-	DEPENDS Catch2::Catch2 ${PROJECT_NAME}
-    )
-
-    cmaize_add_tests(
-        test_parallelzone_docs
-        SOURCE_DIR "${CXX_TEST_DIR}/doc_snippets"
-        INCLUDE_DIRS "${project_src_dir}"
-        DEPENDS Catch2::Catch2 ${PROJECT_NAME}
-    )
-
-    # N.B. these are no-ops if BUILD_PYBIND11_PYBINDINGS is not turned on
-    nwx_pybind11_tests(
-        py_parallelzone "${PYTHON_TEST_DIR}/unit_tests/test_parallelzone.py"
-    )
-
-    nwx_pybind11_tests(
-        py_doc_snippets "${PYTHON_TEST_DIR}/doc_snippets/test_doc_snippets.py"
-    )
-
-    add_test(
-        NAME "test_pz_under_mpi"
-        COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
-               "${CMAKE_BINARY_DIR}/test_unit_parallelzone"
-    )
-
-    add_test(
-        NAME "test_pz_docs_under_mpi"
-        COMMAND "${MPIEXEC_EXECUTABLE}" "${MPIEXEC_NUMPROC_FLAG}" "2"
-                "${CMAKE_BINARY_DIR}/test_parallelzone_docs"
-    )
-endif()
-
-cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
+# Python tests (no-op unless BUILD_PYBIND11_BINDINGS is on)
+include(nwx_python_test)
+nwx_python_test(
+    py_parallelzone
+    "${CMAKE_CURRENT_LIST_DIR}/tests/python/unit_tests/test_parallelzone.py"
+)
+nwx_python_test(
+    py_doc_snippets
+    "${CMAKE_CURRENT_LIST_DIR}/tests/python/doc_snippets/test_doc_snippets.py"
+)

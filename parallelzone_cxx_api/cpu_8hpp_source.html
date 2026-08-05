@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>parallelzone: include/parallelzone/hardware/cpu/cpu.hpp Source File</title>
+<title>parallelzone: cxx/include/parallelzone/hardware/cpu/cpu.hpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,7 +74,7 @@ $(document).ready(function() { init_codefold(0); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a class="el" href="dir_6f322a68a0a7196d329000ebe92f89aa.html">parallelzone</a></li><li class="navelem"><a class="el" href="dir_56fefba244af5dca990f77bca3dfe9f1.html">hardware</a></li><li class="navelem"><a class="el" href="dir_3af2117e196655debf21260699afc91e.html">cpu</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_8fb20675bc3e1682e6cd2ca1ed0f7deb.html">cxx</a></li><li class="navelem"><a class="el" href="dir_00901edb2c5fc9ff9a99effabe26e19f.html">include</a></li><li class="navelem"><a class="el" href="dir_3675aabcbb8bf1afe2191614372ad8d8.html">parallelzone</a></li><li class="navelem"><a class="el" href="dir_8f91564fe38633322bdf6efe4ef9ea35.html">hardware</a></li><li class="navelem"><a class="el" href="dir_40c24179af506bc14b03ef62799b045a.html">cpu</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -105,9 +105,9 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
 <div class="foldopen" id="foldopen00030" data-start="{" data-end="};">
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno"><a class="line" href="structparallelzone_1_1hardware_1_1ProfileInformation.html">   30</a></span><span class="keyword">struct </span><a class="code hl_struct" href="structparallelzone_1_1hardware_1_1ProfileInformation.html">ProfileInformation</a> {</div>
-<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#a5e5df045a0875604427bb06e050d1006">   32</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#a5e5df045a0875604427bb06e050d1006">duration</a> = std::chrono::high_resolution_clock::duration;</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno"><a class="line" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#aa42614a73915efe3f9dcb64901d5f8cb">   32</a></span>    <span class="keyword">using </span><a class="code hl_typedef" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#aa42614a73915efe3f9dcb64901d5f8cb">duration</a> = std::chrono::steady_clock::duration;</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
-<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#aeb36df8dffdce4fe70171f454a755fa7">   35</a></span>    <a class="code hl_typedef" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#a5e5df045a0875604427bb06e050d1006">duration</a> <a class="code hl_variable" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#aeb36df8dffdce4fe70171f454a755fa7">wall_time</a>;</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno"><a class="line" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#aeb36df8dffdce4fe70171f454a755fa7">   35</a></span>    <a class="code hl_typedef" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#aa42614a73915efe3f9dcb64901d5f8cb">duration</a> <a class="code hl_variable" href="structparallelzone_1_1hardware_1_1ProfileInformation.html#aeb36df8dffdce4fe70171f454a755fa7">wall_time</a>;</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>};</div>
 </div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span> </div>
@@ -153,7 +153,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="ttc" id="aclassparallelzone_1_1task_1_1TaskWrapper_html"><div class="ttname"><a href="classparallelzone_1_1task_1_1TaskWrapper.html">parallelzone::task::TaskWrapper</a></div><div class="ttdoc">Infrastructure for type-erasing a task.</div><div class="ttdef"><b>Definition</b> task_wrapper.hpp:48</div></div>
 <div class="ttc" id="aclassparallelzone_1_1task_1_1TaskWrapper_html_aa75f5a9bf38df06171d2a9426c3149e5"><div class="ttname"><a href="classparallelzone_1_1task_1_1TaskWrapper.html#aa75f5a9bf38df06171d2a9426c3149e5">parallelzone::task::TaskWrapper::type_erased_return_type</a></div><div class="ttdeci">std::any type_erased_return_type</div><div class="ttdoc">Type used to return the results of the task.</div><div class="ttdef"><b>Definition</b> task_wrapper.hpp:60</div></div>
 <div class="ttc" id="astructparallelzone_1_1hardware_1_1ProfileInformation_html"><div class="ttname"><a href="structparallelzone_1_1hardware_1_1ProfileInformation.html">parallelzone::hardware::ProfileInformation</a></div><div class="ttdoc">Aggregates known profiling information.</div><div class="ttdef"><b>Definition</b> cpu.hpp:30</div></div>
-<div class="ttc" id="astructparallelzone_1_1hardware_1_1ProfileInformation_html_a5e5df045a0875604427bb06e050d1006"><div class="ttname"><a href="structparallelzone_1_1hardware_1_1ProfileInformation.html#a5e5df045a0875604427bb06e050d1006">parallelzone::hardware::ProfileInformation::duration</a></div><div class="ttdeci">std::chrono::high_resolution_clock::duration duration</div><div class="ttdoc">Type used to measure time durations.</div><div class="ttdef"><b>Definition</b> cpu.hpp:32</div></div>
+<div class="ttc" id="astructparallelzone_1_1hardware_1_1ProfileInformation_html_aa42614a73915efe3f9dcb64901d5f8cb"><div class="ttname"><a href="structparallelzone_1_1hardware_1_1ProfileInformation.html#aa42614a73915efe3f9dcb64901d5f8cb">parallelzone::hardware::ProfileInformation::duration</a></div><div class="ttdeci">std::chrono::steady_clock::duration duration</div><div class="ttdoc">Type used to measure time durations.</div><div class="ttdef"><b>Definition</b> cpu.hpp:32</div></div>
 <div class="ttc" id="astructparallelzone_1_1hardware_1_1ProfileInformation_html_aeb36df8dffdce4fe70171f454a755fa7"><div class="ttname"><a href="structparallelzone_1_1hardware_1_1ProfileInformation.html#aeb36df8dffdce4fe70171f454a755fa7">parallelzone::hardware::ProfileInformation::wall_time</a></div><div class="ttdeci">duration wall_time</div><div class="ttdoc">Long the function ran for.</div><div class="ttdef"><b>Definition</b> cpu.hpp:35</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

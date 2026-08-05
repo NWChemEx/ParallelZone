@@ -1,4 +1,4 @@
-<map id="include/parallelzone/mpi_helpers/commpp/commpp.ipp" name="include/parallelzone/mpi_helpers/commpp/commpp.ipp">
+<map id="cxx/include/parallelzone/mpi_helpers/commpp/commpp.ipp" name="cxx/include/parallelzone/mpi_helpers/commpp/commpp.ipp">
 <area shape="rect" id="Node000001" title=" " alt="" coords="131,5,383,45"/>
 <area shape="rect" id="Node000002" href="$mpi__data__type_8hpp_source.html" title=" " alt="" coords="57,93,246,133"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="235,48,187,87,183,83,232,44"/>

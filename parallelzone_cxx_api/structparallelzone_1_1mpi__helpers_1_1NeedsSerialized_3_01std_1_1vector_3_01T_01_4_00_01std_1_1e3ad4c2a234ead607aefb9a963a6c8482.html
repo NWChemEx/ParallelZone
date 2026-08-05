@@ -106,7 +106,7 @@ Collaboration diagram for parallelzone::mpi_helpers::NeedsSerialized&lt; std::ve
 struct parallelzone::mpi_helpers::NeedsSerialized&lt; std::vector&lt; T &gt;, std::enable_if_t&lt; std::is_trivially_copyable_v&lt; T &gt; &gt; &gt;</div><p>Specialization for std::vector&lt;T&gt; (<code>T</code> trivially copyable) </p>
 <p>Trivially copyable types are stored contiguously, thus a std::vector of them does not need to be serialized (it's perhaps worth noting that std::vector itself is not trivially copyable). </p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>include/parallelzone/mpi_helpers/traits/<a class="el" href="needs__serialized_8hpp_source.html">needs_serialized.hpp</a></li>
+<li>cxx/include/parallelzone/mpi_helpers/traits/<a class="el" href="needs__serialized_8hpp_source.html">needs_serialized.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

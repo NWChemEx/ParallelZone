@@ -1,4 +1,4 @@
-<map id="include/parallelzone/mpi_helpers/binary_buffer/binary_view.ipp" name="include/parallelzone/mpi_helpers/binary_buffer/binary_view.ipp">
+<map id="cxx/include/parallelzone/mpi_helpers/binary_buffer/binary_view.ipp" name="cxx/include/parallelzone/mpi_helpers/binary_buffer/binary_view.ipp">
 <area shape="rect" id="Node000001" title=" " alt="" coords="3089,5,3285,60"/>
 <area shape="rect" id="Node000002" href="$traits_8hpp_source.html" title=" " alt="" coords="257,108,444,148"/>
 <area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="3089,40,458,126,458,120,3089,35"/>

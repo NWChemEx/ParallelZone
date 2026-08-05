@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>parallelzone: src/parallelzone/runtime/detail_/runtime_view_pimpl.ipp Source File</title>
+<title>parallelzone: cxx/src/parallelzone/runtime/detail_/runtime_view_pimpl.ipp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -74,7 +74,7 @@ $(document).ready(function() { init_codefold(0); });
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_88798e3232605c89ea30316cc6f0c2c2.html">parallelzone</a></li><li class="navelem"><a class="el" href="dir_575d7522a63d21be12ed20f098cd158a.html">runtime</a></li><li class="navelem"><a class="el" href="dir_6a7e3331eadbaebb8cf75ffa3f0dfc2b.html">detail_</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_8fb20675bc3e1682e6cd2ca1ed0f7deb.html">cxx</a></li><li class="navelem"><a class="el" href="dir_df021466bc7b7e3053d254cdbb2647a5.html">src</a></li><li class="navelem"><a class="el" href="dir_09db36198ad06d24e99038f071f829c3.html">parallelzone</a></li><li class="navelem"><a class="el" href="dir_63d8ce369b86b2220707183ac351571e.html">runtime</a></li><li class="navelem"><a class="el" href="dir_dbe003f0fba182c6c6ca05ae6ad67829.html">detail_</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -153,7 +153,7 @@ $(document).ready(function() { init_codefold(0); });
 <div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>}</div>
 </div>
 <div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span> </div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="keywordtype">void</span> RuntimeViewPIMPL::instantiate_resource_set_(size_type rank)<span class="keyword"> const </span>{</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="keyword">inline</span> <span class="keywordtype">void</span> RuntimeViewPIMPL::instantiate_resource_set_(size_type rank)<span class="keyword"> const </span>{</div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>    <span class="keyword">using </span>rs_pimpl = <a class="code hl_struct" href="structparallelzone_1_1runtime_1_1detail___1_1ResourceSetPIMPL.html">detail_::ResourceSetPIMPL</a>;</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    <span class="keywordflow">if</span>(m_resource_sets_.count(rank)) <span class="keywordflow">return</span>;</div>
 <div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span> </div>
